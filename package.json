@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Protocol Buffers for Node.js without compiliation",
   "repository": {
     "type": "git",
