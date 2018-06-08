@@ -5,7 +5,7 @@
 
 > [Protocol Buffers](https://developers.google.com/protocol-buffers/) for Node.js and the browser without compilation and `eval`.
 >
-> Forked from [protocol-buffers](https://github.com/mafintos/protocol-buffers) to remove usage of `eval`.
+> Forked from [protocol-buffers](https://github.com/mafintosh/protocol-buffers) to remove usage of `eval`.
 
 ```
 > npm install protons
