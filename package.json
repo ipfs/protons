@@ -16,7 +16,6 @@
     "aegir": "^12.2.0",
     "benchmark": "^2.1.4",
     "protocol-buffers": "^3.2.1",
-    "protons": "^1.0.0",
     "tape": "^4.8.0"
   },
   "scripts": {
