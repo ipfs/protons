@@ -209,18 +209,10 @@ var defaultValue = function (f, def) {
         return def
       }
 
-      if (f.required) {
-        return ''
-      }
-
       return null
     case 'bool':
       if (def) {
         return def === 'true'
-      }
-
-      if (f.required) {
-        return false
       }
 
       return null
@@ -238,10 +230,6 @@ var defaultValue = function (f, def) {
     case 'sint32':
       if (def !== undefined) {
         return parseInt(def, 10)
-      }
-
-      if (f.required) {
-        return 0
       }
 
       return null
