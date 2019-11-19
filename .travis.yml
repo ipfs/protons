@@ -16,5 +16,13 @@ os:
 script: npx nyc -s npm run test -- --bail
 after_success: npx nyc report --reporter=text-lcov > coverage.lcov && npx codecov
 
+jobs:
+  include:
+    - stage: check
+      script:
+        - npx aegir commitlint --travis
+        - npx aegir dep-check
+        - npm run lint
+
 notifications:
   email: false
