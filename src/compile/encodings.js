@@ -121,12 +121,6 @@ exports.int32 = (function () {
     return val > 2147483647 ? val - 4294967296 : val
   }
 
-  var encode = function (val, buffer, offset) {
-    varint.encode(val < 0 ? val + 4294967296 : val, buffer, offset)
-    encode.bytes = varint.encode.bytes
-    return buffer
-  }
-
   var encodingLength = function (val) {
     return varint.encodingLength(val < 0 ? val + 4294967296 : val)
   }
