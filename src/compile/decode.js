@@ -205,11 +205,25 @@ var defaultValue = function (f, def) {
 
   switch (f.type) {
     case 'string':
-      return def != null ? def : ''
+      if (def) {
+        return def
+      }
 
+      if (f.required) {
+        return ''
+      }
+
+      return null
     case 'bool':
-      return def === 'true'
+      if (def) {
+        return def === 'true'
+      }
 
+      if (f.required) {
+        return false
+      }
+
+      return null
     case 'float':
     case 'double':
     case 'sfixed32':
@@ -222,8 +236,15 @@ var defaultValue = function (f, def) {
     case 'int32':
     case 'sint64':
     case 'sint32':
-      return parseInt(def || 0, 10)
+      if (def !== undefined) {
+        return parseInt(def, 10)
+      }
 
+      if (f.required) {
+        return 0
+      }
+
+      return null
     default:
       return null
   }

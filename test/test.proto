@@ -36,6 +36,26 @@ message Float {
   optional float float3 = 3;
 }
 
+message Strings {
+  required string name = 1;
+  optional string desc = 2;
+}
+
+message Booleans {
+  required bool bool1 = 1;
+  optional bool bool2 = 2;
+}
+
+message Bytes {
+  required bytes req = 1;
+  optional bytes opt = 2;
+}
+
+message CustomType {
+  required Basic req = 1;
+  optional Basic opt = 2;
+}
+
 message Packed {
   repeated Basic list = 1;
   repeated int32 packed = 2 [packed=true];
