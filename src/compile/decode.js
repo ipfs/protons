@@ -236,9 +236,9 @@ var defaultValue = function (f, def) {
         return parseInt(def, 10)
       }
       break
+    default:
+      return undefined
   }
-
-  return undefined
 }
 
 module.exports = compileDecode
