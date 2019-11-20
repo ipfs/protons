@@ -30,9 +30,9 @@ tape('booleans encode + decode + optional', function (t) {
   var o1 = Booleans.decode(b1)
 
   t.same(o1, {
-    bool1: true,
-    bool2: null
+    bool1: true
   })
+  t.notOk(Object.keys(o1).includes('bool2'))
 
   t.end()
 })

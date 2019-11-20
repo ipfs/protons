@@ -138,7 +138,11 @@ function compileDecode (m, resolve, enc) {
               obj[name] = parseInt(def || 0, 10)
             }
           } else {
-            obj[name] = defaultValue(field, def)
+            const val = defaultValue(field, def)
+
+            if (val !== undefined) {
+              obj[name] = val
+            }
           }
         }
 
@@ -209,13 +213,13 @@ var defaultValue = function (f, def) {
         return def
       }
 
-      return null
+      break
     case 'bool':
       if (def) {
         return def === 'true'
       }
 
-      return null
+      break
     case 'float':
     case 'double':
     case 'sfixed32':
@@ -231,11 +235,10 @@ var defaultValue = function (f, def) {
       if (def !== undefined) {
         return parseInt(def, 10)
       }
-
-      return null
-    default:
-      return null
+      break
   }
+
+  return undefined
 }
 
 module.exports = compileDecode

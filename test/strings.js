@@ -22,17 +22,15 @@ tape('strings encode + decode', function (t) {
   t.end()
 })
 
-tape('strings encode + decode + optional', function (t) {
+tape('strings encode + decode + omitted', function (t) {
   var b1 = Strings.encode({
     name: 'hello'
   })
 
   var o1 = Strings.decode(b1)
 
-  t.same(o1, {
-    name: 'hello',
-    desc: null
-  })
+  t.same(o1.name, 'hello')
+  t.notOk(Object.keys(o1).includes('desc'))
 
   t.end()
 })

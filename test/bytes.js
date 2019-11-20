@@ -14,9 +14,9 @@ tape('bytes encode + decode', function (t) {
   var o1 = Bytes.decode(b1)
 
   t.same(o1, {
-    req: Buffer.from([0, 1, 2, 3]),
-    opt: null
+    req: Buffer.from([0, 1, 2, 3])
   })
+  t.notOk(Object.keys(o1).includes('opt'))
 
   t.end()
 })

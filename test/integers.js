@@ -63,7 +63,7 @@ tape('integers encode + decode + optional', function (t) {
   t.ok(b1.length < b2.length)
 
   var o1 = Integers.decode(b1)
-  t.equal(o1.sint32, null)
+  t.notOk(Object.keys(o1).includes('sint32'))
 
   var o2 = Integers.decode(b2)
   t.equal(o2.sint32, 0)

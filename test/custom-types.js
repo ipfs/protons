@@ -20,9 +20,9 @@ tape('custom types encode + decode', function (t) {
     req: {
       num: 5,
       payload: Buffer.from([])
-    },
-    opt: null
+    }
   })
+  t.notOk(Object.keys(o1).includes('opt'))
 
   t.end()
 })
