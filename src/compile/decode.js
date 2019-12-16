@@ -209,7 +209,7 @@ var defaultValue = function (f, def) {
 
   switch (f.type) {
     case 'string':
-      if (def) {
+      if (def !== undefined) {
         return def
       }
 
@@ -237,7 +237,6 @@ var defaultValue = function (f, def) {
       }
       break
     default:
-      return undefined
   }
 }
 
