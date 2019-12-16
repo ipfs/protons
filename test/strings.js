@@ -34,3 +34,16 @@ tape('strings encode + decode + omitted', function (t) {
 
   t.end()
 })
+
+tape('strings empty', function (t) {
+  var b1 = Strings.encode({
+    name: ''
+  })
+
+  var o1 = Strings.decode(b1)
+
+  t.same(o1.name, '')
+  t.notOk(Object.keys(o1).includes('desc'))
+
+  t.end()
+})
