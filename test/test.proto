@@ -22,6 +22,10 @@ message Repeated {
   repeated Basic list = 1;
 }
 
+message Optional {
+  optional int32 value = 1;
+}
+
 message Integers {
   optional sint32 sint32 = 1;
   optional sint64 sint64 = 2;
@@ -34,6 +38,26 @@ message Float {
   optional float float1 = 1;
   optional float float2 = 2;
   optional float float3 = 3;
+}
+
+message Strings {
+  required string name = 1;
+  optional string desc = 2;
+}
+
+message Booleans {
+  required bool bool1 = 1;
+  optional bool bool2 = 2;
+}
+
+message Bytes {
+  required bytes req = 1;
+  optional bytes opt = 2;
+}
+
+message CustomType {
+  required Basic req = 1;
+  optional Basic opt = 2;
 }
 
 message Packed {

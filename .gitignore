@@ -3,6 +3,8 @@ docs
 **/*.log
 test/repo-tests*
 **/bundle.js
+.nyc_output/
+coverage.lcov
 
 # Logs
 logs

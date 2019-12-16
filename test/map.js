@@ -15,7 +15,7 @@ tape('map encode + decode', function (t) {
 
   var o1 = Map.decode(b1)
 
-  t.same(o1.foo, {hello: 'world'})
+  t.same(o1.foo, { hello: 'world' })
 
   var doc = {
     foo: {

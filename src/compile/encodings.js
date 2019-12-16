@@ -131,7 +131,7 @@ exports.int32 = (function () {
     return varint.encodingLength(val < 0 ? val + 4294967296 : val)
   }
 
-  return encoder(0, varint.encode, decode, encodingLength)
+  return encoder(0, encode, decode, encodingLength)
 })()
 
 exports.int64 = (function () {

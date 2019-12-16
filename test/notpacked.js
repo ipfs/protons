@@ -10,7 +10,7 @@ var FalsePacked = protobuf(proto).FalsePacked
 
 tape('NotPacked encode + FalsePacked decode', function (t) {
   var b1 = NotPacked.encode({
-    id: [ 9847136125 ],
+    id: [9847136125],
     value: 10000
   })
 
@@ -24,7 +24,7 @@ tape('NotPacked encode + FalsePacked decode', function (t) {
 
 tape('FalsePacked encode + NotPacked decode', function (t) {
   var b1 = FalsePacked.encode({
-    id: [ 9847136125 ],
+    id: [9847136125],
     value: 10000
   })
 

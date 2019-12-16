@@ -3,9 +3,9 @@
 [![Dependency Status](https://david-dm.org/ipfs/protons.svg?style=flat-square)](https://david-dm.org/ipfs/protons)
 [![Travis CI](https://travis-ci.org/ipfs/protons.svg?branch=master)](https://travis-ci.org/ipfs/protons)
 
-> [Protocol Buffers](https://developers.google.com/protocol-buffers/) for Node.js and the browser without compilation and `eval`.
+> [Protocol Buffers](https://developers.google.com/protocol-buffers/) for Node.js and the browser without compilation.
 >
-> Forked from [protocol-buffers](https://github.com/mafintosh/protocol-buffers) to remove usage of `eval`.
+> Forked from [protocol-buffers](https://github.com/mafintosh/protocol-buffers).
 
 ```
 > npm install protons
@@ -27,6 +27,10 @@ message Test {
 
 message AnotherOne {
   repeated FOO list = 1;
+}
+
+message WithOptional {
+  optional string payload = 1;
 }
 ```
 
@@ -75,6 +79,21 @@ const buf = message.SomeMessage.encode({
 
 See the [Google Protocol Buffers docs](https://developers.google.com/protocol-buffers/) for more information about the
 available types etc.
+
+## Properties
+
+Decoded object properties can be interacted with using accessor methods:
+
+```javascript
+ const obj = messages.WithOptional.decode(messages.WithOptional.encode({}))
+
+obj.hasPayload() // false
+obj.getPayload() // ''
+obj.setPayload('hello world')
+obj.getPayload() // 'hello world'
+obj.clearPayload()
+obj.getPayload() // undefined
+```
 
 ## Performance
 
