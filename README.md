@@ -104,18 +104,15 @@ You can run the benchmarks yourself by doing `npm run bench`.
 On my Macbook Pro it gives the following results
 
 ```
-JSON (encode) x 516,087 ops/sec ±6.68% (73 runs sampled)
-JSON (decode) x 534,339 ops/sec ±1.79% (89 runs sampled)
-JSON(encode + decode) x 236,625 ops/sec ±5.42% (81 runs sampled)
-protocol-buffers (encode) x 385,121 ops/sec ±3.89% (82 runs sampled)
-protocol-buffers (decode) x 945,545 ops/sec ±2.39% (86 runs sampled)
-protocol-buffers(encode + decode) x 279,605 ops/sec ±2.83% (86 runs sampled)
-npm (encode) x 377,625 ops/sec ±3.15% (84 runs sampled)
-npm (decode) x 948,428 ops/sec ±3.59% (87 runs sampled)
-npm(encode + decode) x 251,929 ops/sec ±2.91% (81 runs sampled)
-local (encode) x 373,376 ops/sec ±6.90% (66 runs sampled)
-local (decode) x 1,770,870 ops/sec ±1.50% (83 runs sampled)
-local(encode + decode) x 322,507 ops/sec ±2.82% (79 runs sampled)
+JSON (encode) x 703,160 ops/sec ±2.06% (91 runs sampled)
+JSON (decode) x 619,564 ops/sec ±1.60% (94 runs sampled)
+JSON (encode + decode) x 308,635 ops/sec ±1.74% (92 runs sampled)
+protocol-buffers@4.1.0 (encode) x 693,570 ops/sec ±1.55% (92 runs sampled)
+protocol-buffers@4.1.0 (decode) x 1,894,031 ops/sec ±1.61% (93 runs sampled)
+protocol-buffers@4.1.0 (encode + decode) x 444,229 ops/sec ±1.50% (93 runs sampled)
+protons@1.0.1 (encode) x 435,058 ops/sec ±1.46% (91 runs sampled)
+protons@1.0.1 (decode) x 29,548 ops/sec ±3.29% (78 runs sampled)
+protons@1.0.1 (encode + decode) x 27,042 ops/sec ±4.41% (80 runs sampled)
 ```
 
 Note that JSON parsing/serialization in node is a native function that is *really* fast.

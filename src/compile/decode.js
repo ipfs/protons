@@ -9,12 +9,12 @@ function toSentenceCase (string) {
 }
 
 function addPropertyAccessors (obj, name, value, defaultValue) {
-  const sentenceCaseName = toSentenceCase(name)
-
   if (Object.prototype.hasOwnProperty.call(obj, name)) {
     // have already added this property
     return
   }
+
+  const sentenceCaseName = toSentenceCase(name)
 
   Object.defineProperties(obj, {
     [name]: {
@@ -204,7 +204,7 @@ function compileDecode (m, resolve, enc) {
               def = parseInt(def || 0, 10)
             }
           } else {
-            defaultVal = defaultValue(field, def)
+            defaultVal = defaultValue(field)
             def = coerceValue(field, def)
           }
 
@@ -268,17 +268,15 @@ var skip = function (type, buffer, offset) {
   }
 }
 
-var defaultValue = function (f, def) {
+var defaultValue = function (f) {
   if (f.map) return {}
   if (f.repeated) return []
 
   switch (f.type) {
     case 'string':
-      return def != null ? def : ''
-
+      return ''
     case 'bool':
-      return def === 'true'
-
+      return false
     case 'float':
     case 'double':
     case 'sfixed32':
@@ -291,8 +289,7 @@ var defaultValue = function (f, def) {
     case 'int32':
     case 'sint64':
     case 'sint32':
-      return parseInt(def || 0, 10)
-
+      return 0
     default:
       return null
   }

@@ -45,3 +45,22 @@ tape('optional accessors', function (t) {
 
   t.end()
 })
+
+tape('optional accessors with zero values', function (t) {
+  const o1 = Optional.decode(Optional.encode({}))
+
+  t.notOk(o1.hasValue())
+
+  o1.setValue(0)
+  t.ok(o1.hasValue())
+
+  t.ok(o1.getValue)
+  t.same(o1.getValue(), 0)
+
+  const o2 = Optional.decode(Optional.encode(o1))
+
+  t.ok(o2.hasValue())
+  t.same(o2.getValue(), 0)
+
+  t.end()
+})
