@@ -2,6 +2,7 @@
   "name": "protons",
   "version": "1.0.1",
   "description": "Protocol Buffers for Node.js without compiliation",
+  "leadMaintainer": "Alex Potsides <alex@achingbrain.net>",
   "repository": {
     "type": "git",
     "url": "https://github.com/ipfs/protons"
