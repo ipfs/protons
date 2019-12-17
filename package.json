@@ -13,15 +13,19 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^12.2.0",
+    "aegir": "^20.4.1",
     "benchmark": "^2.1.4",
-    "protocol-buffers": "^3.2.1",
+    "protocol-buffers": "^4.1.0",
     "protons": "^1.0.0",
     "tape": "^4.8.0"
   },
   "scripts": {
-    "lint": "aegir lint",
     "test": "tape test/*.js",
+    "build": "aegir build",
+    "lint": "aegir lint",
+    "release": "aegir release",
+    "release-minor": "aegir release --type minor",
+    "release-major": "aegir release --type major",
     "bench": "node bench"
   },
   "bugs": {

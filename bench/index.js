@@ -40,15 +40,15 @@ function add (name, encode, decode) {
     .add(name + ' (decode)', function () {
       return decode(EXAMPLE_BUFFER)
     })
-    .add(name + '(encode + decode)', function () {
+    .add(name + ' (encode + decode)', function () {
       return decode(encode(EXAMPLE))
     })
 }
 
 add('JSON', JSON.stringify, JSON.parse)
-add('protocol-buffers', messagesBuf.Test.encode, messagesBuf.Test.decode)
-add('npm', messagesNpm.Test.encode, messagesNpm.Test.decode)
-add('local', messages.Test.encode, messages.Test.decode)
+add(`protocol-buffers@${require('protocol-buffers/package.json').version}`, messages.Test.encode, messages.Test.decode)
+add(`protons@${require('protons/package.json').version}`, messagesNpm.Test.encode, messagesNpm.Test.decode)
+add('local', messagesBuf.Test.encode, messagesBuf.Test.decode)
 
 suite
   .on('cycle', (e) => {

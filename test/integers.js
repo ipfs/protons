@@ -49,3 +49,24 @@ tape('integers encode + decode + negative', function (t) {
 
   t.end()
 })
+
+tape('integers encode + decode + optional', function (t) {
+  var b1 = Integers.encode({
+    sint32: null
+  })
+  var b2 = Integers.encode({
+    sint32: 0
+  })
+
+  // sint32 is optional, verify that setting it to null does not
+  // cause a value to be written into the encoded buffer
+  t.ok(b1.length < b2.length)
+
+  var o1 = Integers.decode(b1)
+  t.notOk(o1.hasSint32())
+
+  var o2 = Integers.decode(b2)
+  t.equal(o2.sint32, 0)
+
+  t.end()
+})
