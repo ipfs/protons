@@ -93,10 +93,11 @@ function compileDecode (m, resolve, enc) {
       var props = Object.keys(obj)
       for (var j = 0; j < props.length; j++) {
         if (oneofFields.indexOf(props[j]) > -1) {
-          delete obj[`has${toSentenceCase(props[j])}`]
-          delete obj[`get${toSentenceCase(props[j])}`]
-          delete obj[`set${toSentenceCase(props[j])}`]
-          delete obj[`clear${toSentenceCase(props[j])}`]
+          const sentenceCase = toSentenceCase(props[j])
+          delete obj[`has${sentenceCase}`]
+          delete obj[`get${sentenceCase}`]
+          delete obj[`set${sentenceCase}`]
+          delete obj[`clear${sentenceCase}`]
           delete obj[props[j]]
         }
       }
@@ -316,7 +317,6 @@ var coerceValue = function (f, def) {
     case 'sint64':
     case 'sint32':
       return parseInt(def, 10)
-
     default:
       return def
   }
