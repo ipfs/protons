@@ -1,4 +1,5 @@
-message Basic {
+'use strict'
+module.exports = `message Basic {
   required double num = 1;
   required bytes payload = 2;
 }
@@ -129,4 +130,4 @@ message ComplexProperty {
     int32 int_value = 9;
     string string_value = 10;
   }
-}
+}`

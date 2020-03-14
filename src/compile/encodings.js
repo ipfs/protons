@@ -2,7 +2,7 @@
 
 var varint = require('varint')
 var svarint = require('signed-varint')
-var Buffer = require('safe-buffer').Buffer
+const { Buffer } = require('buffer')
 
 var encoder = function (type, encode, decode, encodingLength) {
   encode.bytes = decode.bytes = 0
