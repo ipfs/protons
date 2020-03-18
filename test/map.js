@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var Map = protobuf(require('./test.proto.js')).Map
+var Map = protobuf(require('./test.proto')).Map
 
 tape('map encode + decode', function (t) {
   var b1 = Map.encode({

@@ -3,7 +3,7 @@
 var tape = require('tape')
 var protobufNpm = require('protocol-buffers')
 var protobuf = require('../')
-var proto = require('./test.proto.js')
+var proto = require('./test.proto')
 var Basic = protobuf(proto).Basic
 var BasicNpm = protobufNpm(proto).Basic
 

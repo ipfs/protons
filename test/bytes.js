@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../src')
-var Bytes = protobuf(require('./test.proto.js')).Bytes
+var Bytes = protobuf(require('./test.proto')).Bytes
 
 tape('bytes encode + decode', function (t) {
   var b1 = Bytes.encode({

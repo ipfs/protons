@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var Integers = protobuf(require('./test.proto.js')).Integers
+var Integers = protobuf(require('./test.proto')).Integers
 
 tape('integers encode + decode', function (t) {
   var b1 = Integers.encode({

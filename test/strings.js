@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../src')
-var Strings = protobuf(require('./test.proto.js')).Strings
+var Strings = protobuf(require('./test.proto')).Strings
 
 tape('strings encode + decode', function (t) {
   var b1 = Strings.encode({

@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var Float = protobuf(require('./test.proto.js')).Float
+var Float = protobuf(require('./test.proto')).Float
 
 tape('float encode + decode', function (t) {
   var arr = new Float32Array(3)

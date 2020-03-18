@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../src')
-var proto = require('./test.proto.js')
+var proto = require('./test.proto')
 var Booleans = protobuf(proto).Booleans
 
 tape('booleans encode + decode', function (t) {

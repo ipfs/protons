@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var Defaults = protobuf(require('./test.proto.js')).Defaults
+var Defaults = protobuf(require('./test.proto')).Defaults
 
 tape('defaults decode', function (t) {
   var o1 = Defaults.decode(Buffer.alloc(0)) // everything default

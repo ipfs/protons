@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var Packed = protobuf(require('./test.proto.js')).Packed
+var Packed = protobuf(require('./test.proto')).Packed
 
 tape('Packed encode', function (t) {
   var b1 = Packed.encode({

@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var proto = require('./test.proto.js')
+var proto = require('./test.proto')
 var NotPacked = protobuf(proto).NotPacked
 var FalsePacked = protobuf(proto).FalsePacked
 

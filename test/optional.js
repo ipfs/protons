@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var proto = require('./test.proto.js')
+var proto = require('./test.proto')
 var Optional = protobuf(proto).Optional
 
 tape('optional encode + decode has zero value', function (t) {

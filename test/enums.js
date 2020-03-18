@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var messages = protobuf(require('./test.proto.js'))
+var messages = protobuf(require('./test.proto'))
 
 tape('enums', function (t) {
   var e = messages.FOO

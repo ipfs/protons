@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var UTF8 = protobuf(require('./test.proto.js')).UTF8
+var UTF8 = protobuf(require('./test.proto')).UTF8
 
 tape('strings can be utf-8', function (t) {
   var ex = {

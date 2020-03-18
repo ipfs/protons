@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var Repeated = protobuf(require('./test.proto.js')).Repeated
+var Repeated = protobuf(require('./test.proto')).Repeated
 
 tape('repeated encode', function (t) {
   var b1 = Repeated.encode({

@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../src')
-var CustomType = protobuf(require('./test.proto.js')).CustomType
+var CustomType = protobuf(require('./test.proto')).CustomType
 
 tape('custom types encode + decode', function (t) {
   var b1 = CustomType.encode({

@@ -2,7 +2,7 @@
 
 var tape = require('tape')
 var protobuf = require('../')
-var proto = protobuf(require('./test.proto.js'))
+var proto = protobuf(require('./test.proto'))
 var Property = proto.Property
 var PropertyNoOneof = proto.PropertyNoOneof
 
