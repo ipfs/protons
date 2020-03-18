@@ -1,10 +1,8 @@
 'use strict'
 
 var tape = require('tape')
-var fs = require('fs')
-var path = require('path')
 var protobuf = require('../src')
-var CustomType = protobuf(fs.readFileSync(path.join(__dirname, '/test.proto'))).CustomType
+var CustomType = protobuf(require('./test.proto.js')).CustomType
 
 tape('custom types encode + decode', function (t) {
   var b1 = CustomType.encode({

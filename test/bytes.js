@@ -1,10 +1,8 @@
 'use strict'
 
 var tape = require('tape')
-var fs = require('fs')
-var path = require('path')
 var protobuf = require('../src')
-var Bytes = protobuf(fs.readFileSync(path.join(__dirname, '/test.proto'))).Bytes
+var Bytes = protobuf(require('./test.proto.js')).Bytes
 
 tape('bytes encode + decode', function (t) {
   var b1 = Bytes.encode({
