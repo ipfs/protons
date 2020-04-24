@@ -24,9 +24,9 @@
     "test": "tape test/*.js",
     "build": "aegir build",
     "lint": "aegir lint",
-    "release": "aegir release",
-    "release-minor": "aegir release --type minor",
-    "release-major": "aegir release --type major",
+    "release": "aegir release --test=false",
+    "release-minor": "aegir release --type minor --test=false",
+    "release-major": "aegir release --type major --test=false",
     "bench": "node bench"
   },
   "bugs": {
