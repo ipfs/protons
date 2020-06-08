@@ -7,20 +7,20 @@ var Nested = protobuf(require('./test.proto')).Nested
 tape('nested encode', function (t) {
   var b1 = Nested.encode({
     num: 1,
-    payload: Buffer.from('lol'),
+    payload: new TextEncoder().encode('lol'),
     meh: {
       num: 2,
-      payload: Buffer.from('bar')
+      payload: new TextEncoder().encode('bar')
     }
   })
 
   var b2 = Nested.encode({
     num: 1,
-    payload: Buffer.from('lol'),
+    payload: new TextEncoder().encode('lol'),
     meeeh: 42,
     meh: {
       num: 2,
-      payload: Buffer.from('bar')
+      payload: new TextEncoder().encode('bar')
     }
   })
 
@@ -31,10 +31,10 @@ tape('nested encode', function (t) {
 tape('nested encode + decode', function (t) {
   var b1 = Nested.encode({
     num: 1,
-    payload: Buffer.from('lol'),
+    payload: new TextEncoder().encode('lol'),
     meh: {
       num: 2,
-      payload: Buffer.from('bar')
+      payload: new TextEncoder().encode('bar')
     }
   })
 
@@ -48,11 +48,11 @@ tape('nested encode + decode', function (t) {
 
   var b2 = Nested.encode({
     num: 1,
-    payload: Buffer.from('lol'),
+    payload: new TextEncoder().encode('lol'),
     meeeh: 42,
     meh: {
       num: 2,
-      payload: Buffer.from('bar')
+      payload: new TextEncoder().encode('bar')
     }
   })
 
