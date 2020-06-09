@@ -2,6 +2,8 @@
 
 var tape = require('tape')
 var protobuf = require('../')
+const TextEncoder = require('ipfs-utils/src/text-encoder')
+
 var Nested = protobuf(require('./test.proto')).Nested
 
 tape('nested encode', function (t) {

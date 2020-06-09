@@ -3,6 +3,7 @@
 var tape = require('tape')
 var protobuf = require('../')
 var Repeated = protobuf(require('./test.proto')).Repeated
+const TextEncoder = require('ipfs-utils/src/text-encoder')
 
 tape('repeated encode', function (t) {
   var b1 = Repeated.encode({
