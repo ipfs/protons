@@ -4,32 +4,6 @@ var varint = require('varint')
 var svarint = require('signed-varint')
 const { Buffer } = require('buffer')
 
-/**
- * @template T
- * @typedef {{bytes?:number} & function(T, Buffer, number):Buffer} Encoder
- */
-/**
- * @template T
- * @typedef {{bytes?:number} & function(Buffer, number):T} Decoder
- */
-
-/**
- * @template T
- * @typedef {Object} Codec
- * @property {number} type
- * @property {Encoder<T>} encode
- * @property {Decoder<T>} decode
- * @property {function(T):number} encodingLength
- */
-
-/**
- * @template T
- * @param {number} type
- * @param {Encoder<T>} encode
- * @param {Decoder<T>} decode
- * @param {function(T):number} encodingLength
- * @returns {Codec<T>}
- */
 var encoder = function (type, encode, decode, encodingLength) {
   encode.bytes = decode.bytes = 0
 
@@ -43,12 +17,7 @@ var encoder = function (type, encode, decode, encodingLength) {
 
 exports.make = encoder
 
-/** @type {Codec<Uint8Array>} */
 exports.bytes = (function () {
-  /**
-   * @param {Uint8Array|string} val
-   * @returns {number}
-   */
   var bufferLength = function (val) {
     return Buffer.isBuffer(val) ? val.length : Buffer.byteLength(val)
   }
@@ -89,7 +58,6 @@ exports.bytes = (function () {
   return encoder(2, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<string>} */
 exports.string = (function () {
   var encodingLength = function (val) {
     var len = Buffer.byteLength(val)
@@ -126,12 +94,7 @@ exports.string = (function () {
   return encoder(2, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<boolean>} */
 exports.bool = (function () {
-  /**
-   * @param {boolean} val
-   * @returns {number}
-   */
   var encodingLength = function (val) {
     return 1
   }
@@ -151,7 +114,6 @@ exports.bool = (function () {
   return encoder(0, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.int32 = (function () {
   var decode = function (buffer, offset) {
     var val = varint.decode(buffer, offset)
@@ -172,7 +134,6 @@ exports.int32 = (function () {
   return encoder(0, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.int64 = (function () {
   var decode = function (buffer, offset) {
     var val = varint.decode(buffer, offset)
@@ -217,13 +178,11 @@ exports.int64 = (function () {
   return encoder(0, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.sint32 =
 exports.sint64 = (function () {
   return encoder(0, svarint.encode, svarint.decode, svarint.encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.uint32 =
 exports.uint64 =
 exports.enum =
@@ -232,7 +191,6 @@ exports.varint = (function () {
 })()
 
 // we cannot represent these in javascript so we just use buffers
-/** @type {Codec<Uint8Array>} */
 exports.fixed64 =
 exports.sfixed64 = (function () {
   var encodingLength = function (val) {
@@ -274,7 +232,6 @@ exports.double = (function () {
   return encoder(1, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.fixed32 = (function () {
   var encodingLength = function (val) {
     return 4
@@ -295,7 +252,6 @@ exports.fixed32 = (function () {
   return encoder(5, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.sfixed32 = (function () {
   var encodingLength = function (val) {
     return 4
@@ -316,7 +272,6 @@ exports.sfixed32 = (function () {
   return encoder(5, encode, decode, encodingLength)
 })()
 
-/** @type {Codec<number>} */
 exports.float = (function () {
   var encodingLength = function (val) {
     return 4
