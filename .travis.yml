@@ -8,6 +8,8 @@ stages:
 node_js:
   - '10'
   - '12'
+  - '14'
+  - 'current'
 
 os:
   - linux
