@@ -1,3 +1,18 @@
+<a name="1.2.1"></a>
+## [1.2.1](https://github.com/ipfs/protons/compare/v1.2.0...v1.2.1) (2020-06-24)
+
+
+### Bug Fixes
+
+* **ci:** add empty commit to fix lint checks on master ([3b5276f](https://github.com/ipfs/protons/commit/3b5276f))
+
+
+### Features
+
+* support Uint8Array input in place of Buffer ([#13](https://github.com/ipfs/protons/issues/13)) ([6c7add4](https://github.com/ipfs/protons/commit/6c7add4)), closes [/github.com/ipfs/protons/blob/3b5276f052f2e17c2d806d27cd9a88e156588977/src/compile/encodings.js#L30-L43](https://github.com//github.com/ipfs/protons/blob/3b5276f052f2e17c2d806d27cd9a88e156588977/src/compile/encodings.js/issues/L30-L43) [#12](https://github.com/ipfs/protons/issues/12)
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/ipfs/protons/compare/v1.1.0...v1.2.0) (2020-04-24)
 
