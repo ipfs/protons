@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Protocol Buffers for Node.js without compiliation",
   "leadMaintainer": "Alex Potsides <alex@achingbrain.net>",
   "repository": {
@@ -58,6 +58,7 @@
     "Mathias Buus <mathiasbuus@gmail.com>",
     "dignifiedquire <dignifiedquire@gmail.com>",
     "achingbrain <alex@achingbrain.net>",
+    "Hector Sanjuan <code@hector.link>",
     "Young Hahn <young@mapbox.com>",
     "David Dias <daviddias.p@gmail.com>",
     "Mo Kamioner <mkamioner@gmail.com>",
@@ -65,7 +66,8 @@
     "Lars-Magnus Skog <ralphtheninja@riseup.net>",
     "Patrick Pfeiffer <patrick@buzzle.at>",
     "tcme <hi@this-connect.me>",
-    "Kevin Ennis <kennis84@gmail.com>",
+    "João Antunes <j.goncalo.antunes@gmail.com>",
+    "Brendan Ward <bcward@consbio.org>",
     "David Bruant <bruant.d@gmail.com>",
     "Astro <astro@spaceboyz.net>",
     "Andreas Madsen <amwebdk@gmail.com>",
@@ -73,7 +75,7 @@
     "Steven Allen <steven@stebalien.com>",
     "Elijah Insua <tmpvar@gmail.com>",
     "Hugo Dias <hugomrdias@gmail.com>",
-    "João Antunes <j.goncalo.antunes@gmail.com>",
-    "Brendan Ward <bcward@consbio.org>"
+    "Irakli Gozalishvili <contact@gozala.io>",
+    "Kevin Ennis <kennis84@gmail.com>"
   ]
 }
