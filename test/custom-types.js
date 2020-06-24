@@ -8,7 +8,7 @@ tape('custom types encode + decode', function (t) {
   var b1 = CustomType.encode({
     req: {
       num: 5,
-      payload: Buffer.from([])
+      payload: Uint8Array.from([])
     }
   })
 

@@ -3,25 +3,26 @@
 var tape = require('tape')
 var protobuf = require('../')
 var Repeated = protobuf(require('./test.proto')).Repeated
+const TextEncoder = require('ipfs-utils/src/text-encoder')
 
 tape('repeated encode', function (t) {
   var b1 = Repeated.encode({
     list: [{
       num: 1,
-      payload: Buffer.from('lol')
+      payload: new TextEncoder().encode('lol')
     }, {
       num: 2,
-      payload: Buffer.from('lol1')
+      payload: new TextEncoder().encode('lol1')
     }]
   })
 
   var b2 = Repeated.encode({
     list: [{
       num: 1,
-      payload: Buffer.from('lol')
+      payload: new TextEncoder().encode('lol')
     }, {
       num: 2,
-      payload: Buffer.from('lol1'),
+      payload: new TextEncoder().encode('lol1'),
       meeeeh: 100
     }],
     meeh: 42
@@ -35,10 +36,10 @@ tape('repeated encode + decode', function (t) {
   var b1 = Repeated.encode({
     list: [{
       num: 1,
-      payload: Buffer.from('lol')
+      payload: new TextEncoder().encode('lol')
     }, {
       num: 2,
-      payload: Buffer.from('lol1')
+      payload: new TextEncoder().encode('lol1')
     }]
   })
 
@@ -53,10 +54,10 @@ tape('repeated encode + decode', function (t) {
   var b2 = Repeated.encode({
     list: [{
       num: 1,
-      payload: Buffer.from('lol')
+      payload: new TextEncoder().encode('lol')
     }, {
       num: 2,
-      payload: Buffer.from('lol1'),
+      payload: new TextEncoder().encode('lol1'),
       meeeeh: 100
     }],
     meeh: 42
