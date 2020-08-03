@@ -1,11 +1,11 @@
 'use strict'
 
-var tape = require('tape')
-var protobuf = require('../')
-var Packed = protobuf(require('./test.proto')).Packed
+const tape = require('tape')
+const protobuf = require('../')
+const Packed = protobuf(require('./test.proto')).Packed
 
 tape('Packed encode', function (t) {
-  var b1 = Packed.encode({
+  const b1 = Packed.encode({
     packed: [
       12,
       13,
@@ -13,7 +13,7 @@ tape('Packed encode', function (t) {
     ]
   })
 
-  var b2 = Packed.encode({
+  const b2 = Packed.encode({
     packed: [
       12,
       13,
@@ -27,7 +27,7 @@ tape('Packed encode', function (t) {
 })
 
 tape('Packed encode + decode', function (t) {
-  var b1 = Packed.encode({
+  const b1 = Packed.encode({
     packed: [
       12,
       13,
@@ -35,14 +35,14 @@ tape('Packed encode + decode', function (t) {
     ]
   })
 
-  var o1 = Packed.decode(b1)
+  const o1 = Packed.decode(b1)
 
   t.same(o1.packed.length, 3)
   t.same(o1.packed[0], 12)
   t.same(o1.packed[1], 13)
   t.same(o1.packed[2], 14)
 
-  var b2 = Packed.encode({
+  const b2 = Packed.encode({
     packed: [
       12,
       13,
@@ -51,7 +51,7 @@ tape('Packed encode + decode', function (t) {
     meeh: 42
   })
 
-  var o2 = Packed.decode(b2)
+  const o2 = Packed.decode(b2)
 
   t.same(o2, o1)
   t.end()

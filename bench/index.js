@@ -1,6 +1,5 @@
 'use strict'
 
-const { Buffer } = require('buffer')
 const Benchmark = require('benchmark')
 if (typeof window !== 'undefined') {
   window.Benchmark = Benchmark
@@ -13,11 +12,12 @@ const proto = require('./bench.proto')
 const messages = protobuf(proto)
 const messagesBuf = protons(proto)
 const messagesNpm = protonsNpm(proto)
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
 const EXAMPLE = {
   foo: 'hello',
   hello: 42,
-  payload: Buffer.from('a'),
+  payload: uint8ArrayFromString('a'),
   meh: {
     b: {
       tmp: {

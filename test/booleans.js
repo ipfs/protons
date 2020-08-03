@@ -1,17 +1,17 @@
 'use strict'
 
-var tape = require('tape')
-var protobuf = require('../src')
-var proto = require('./test.proto')
-var Booleans = protobuf(proto).Booleans
+const tape = require('tape')
+const protobuf = require('../src')
+const proto = require('./test.proto')
+const Booleans = protobuf(proto).Booleans
 
 tape('booleans encode + decode', function (t) {
-  var b1 = Booleans.encode({
+  const b1 = Booleans.encode({
     bool1: true,
     bool2: false
   })
 
-  var o1 = Booleans.decode(b1)
+  const o1 = Booleans.decode(b1)
 
   t.same(o1, {
     bool1: true,
@@ -22,11 +22,11 @@ tape('booleans encode + decode', function (t) {
 })
 
 tape('booleans encode + decode + optional', function (t) {
-  var b1 = Booleans.encode({
+  const b1 = Booleans.encode({
     bool1: true
   })
 
-  var o1 = Booleans.decode(b1)
+  const o1 = Booleans.decode(b1)
 
   t.same(o1, {
     bool1: true,

@@ -1,9 +1,9 @@
 'use strict'
 
-var tape = require('tape')
-var protobuf = require('../')
-var proto = require('./test.proto')
-var Optional = protobuf(proto).Optional
+const tape = require('tape')
+const protobuf = require('../')
+const proto = require('./test.proto')
+const Optional = protobuf(proto).Optional
 
 tape('optional encode + decode has zero value', function (t) {
   const o1 = {}

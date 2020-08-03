@@ -1,24 +1,24 @@
 'use strict'
-const { Buffer } = require('buffer')
+
 var defined = require('./utils').defined
 var varint = require('varint')
 
 function compileEncode (m, resolve, enc, oneofs, encodingLength) {
-  var oneofsKeys = Object.keys(oneofs)
-  var encLength = enc.length
-  var ints = {}
-  for (var i = 0; i < encLength; i++) {
+  const oneofsKeys = Object.keys(oneofs)
+  const encLength = enc.length
+  const ints = {}
+  for (let i = 0; i < encLength; i++) {
     ints[i] = {
       p: varint.encode(m.fields[i].tag << 3 | 2),
       h: varint.encode(m.fields[i].tag << 3 | enc[i].type)
     }
 
-    var field = m.fields[i]
+    const field = m.fields[i]
     m.fields[i].packed = field.repeated && field.options && field.options.packed && field.options.packed !== 'false'
   }
 
-  function encodeField (buf, offset, h, e, packed, innerVal) {
-    var j = 0
+  function encodeField (buf, view, offset, h, e, packed, innerVal) {
+    let j = 0
     if (!packed) {
       for (j = 0; j < h.length; j++) {
         buf[offset++] = h[j]
@@ -30,28 +30,30 @@ function compileEncode (m, resolve, enc, oneofs, encodingLength) {
       offset += varint.encode.bytes
     }
 
-    e.encode(innerVal, buf, offset)
+    e.encode(innerVal, buf, view, offset)
+
     return offset + e.encode.bytes
   }
 
-  return function encode (obj, buf, offset) {
-    if (offset == null) {
-      offset = 0
-    }
+  return function encode (obj, buf, view, offset = 0) {
     if (buf == null) {
-      buf = Buffer.allocUnsafe(encodingLength(obj))
+      buf = new Uint8Array(encodingLength(obj))
     }
 
-    var oldOffset = offset
-    var objKeys = Object.keys(obj)
-    var i = 0
+    if (view == null) {
+      view = new DataView(buf.buffer)
+    }
+
+    const oldOffset = offset
+    const objKeys = Object.keys(obj)
+    let i = 0
 
     // oneof checks
 
-    var match = false
+    let match = false
     for (i = 0; i < oneofsKeys.length; i++) {
-      var name = oneofsKeys[i]
-      var prop = oneofs[i]
+      const name = oneofsKeys[i]
+      const prop = oneofs[i]
       if (objKeys.indexOf(prop) > -1) {
         if (match) {
           throw new Error('only one of the properties defined in oneof ' + name + ' can be set')
@@ -62,10 +64,10 @@ function compileEncode (m, resolve, enc, oneofs, encodingLength) {
     }
 
     for (i = 0; i < encLength; i++) {
-      var e = enc[i]
-      var field = m.fields[i] // was f
-      var val = obj[field.name]
-      var j = 0
+      const e = enc[i]
+      const field = m.fields[i] // was f
+      let val = obj[field.name]
+      let j = 0
 
       if (!defined(val)) {
         if (field.required) {
@@ -73,13 +75,13 @@ function compileEncode (m, resolve, enc, oneofs, encodingLength) {
         }
         continue
       }
-      var p = ints[i].p
-      var h = ints[i].h
+      const p = ints[i].p
+      const h = ints[i].h
 
-      var packed = field.packed
+      const packed = field.packed
 
       if (field.map) {
-        var tmp = Object.keys(val)
+        const tmp = Object.keys(val)
         for (j = 0; j < tmp.length; j++) {
           tmp[j] = {
             key: tmp[j],
@@ -90,7 +92,7 @@ function compileEncode (m, resolve, enc, oneofs, encodingLength) {
       }
 
       if (packed) {
-        var packedLen = 0
+        let packedLen = 0
         for (j = 0; j < val.length; j++) {
           if (!Object.prototype.hasOwnProperty.call(val, j)) {
             continue
@@ -109,16 +111,17 @@ function compileEncode (m, resolve, enc, oneofs, encodingLength) {
       }
 
       if (field.repeated) {
-        var innerVal
+        let innerVal
         for (j = 0; j < val.length; j++) {
           innerVal = val[j]
           if (!defined(innerVal)) {
             continue
           }
-          offset = encodeField(buf, offset, h, e, packed, innerVal)
+
+          offset = encodeField(buf, view, offset, h, e, packed, innerVal)
         }
       } else {
-        offset = encodeField(buf, offset, h, e, packed, val)
+        offset = encodeField(buf, view, offset, h, e, packed, val)
       }
     }
 

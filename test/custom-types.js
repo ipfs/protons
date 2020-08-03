@@ -1,8 +1,8 @@
 'use strict'
 
-var tape = require('tape')
-var protobuf = require('../src')
-var CustomType = protobuf(require('./test.proto')).CustomType
+const tape = require('tape')
+const protobuf = require('../src')
+const CustomType = protobuf(require('./test.proto')).CustomType
 
 tape('custom types encode + decode', function (t) {
   var b1 = CustomType.encode({
@@ -17,7 +17,7 @@ tape('custom types encode + decode', function (t) {
   t.same(o1, {
     req: {
       num: 5,
-      payload: Buffer.from([])
+      payload: Uint8Array.from([])
     },
     opt: null
   })

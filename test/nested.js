@@ -1,28 +1,28 @@
 'use strict'
 
-var tape = require('tape')
-var protobuf = require('../')
-const TextEncoder = require('ipfs-utils/src/text-encoder')
+const tape = require('tape')
+const protobuf = require('../')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
-var Nested = protobuf(require('./test.proto')).Nested
+const Nested = protobuf(require('./test.proto')).Nested
 
 tape('nested encode', function (t) {
-  var b1 = Nested.encode({
+  const b1 = Nested.encode({
     num: 1,
-    payload: new TextEncoder().encode('lol'),
+    payload: uint8ArrayFromString('lol'),
     meh: {
       num: 2,
-      payload: new TextEncoder().encode('bar')
+      payload: uint8ArrayFromString('bar')
     }
   })
 
-  var b2 = Nested.encode({
+  const b2 = Nested.encode({
     num: 1,
-    payload: new TextEncoder().encode('lol'),
+    payload: uint8ArrayFromString('lol'),
     meeeh: 42,
     meh: {
       num: 2,
-      payload: new TextEncoder().encode('bar')
+      payload: uint8ArrayFromString('bar')
     }
   })
 
@@ -31,34 +31,34 @@ tape('nested encode', function (t) {
 })
 
 tape('nested encode + decode', function (t) {
-  var b1 = Nested.encode({
+  const b1 = Nested.encode({
     num: 1,
-    payload: new TextEncoder().encode('lol'),
+    payload: uint8ArrayFromString('lol'),
     meh: {
       num: 2,
-      payload: new TextEncoder().encode('bar')
+      payload: uint8ArrayFromString('bar')
     }
   })
 
-  var o1 = Nested.decode(b1)
+  const o1 = Nested.decode(b1)
 
   t.same(o1.num, 1)
-  t.same(o1.payload, Buffer.from('lol'))
+  t.same(o1.payload, uint8ArrayFromString('lol'))
   t.ok(o1.meh, 'has nested property')
   t.same(o1.meh.num, 2)
-  t.same(o1.meh.payload, Buffer.from('bar'))
+  t.same(o1.meh.payload, uint8ArrayFromString('bar'))
 
-  var b2 = Nested.encode({
+  const b2 = Nested.encode({
     num: 1,
-    payload: new TextEncoder().encode('lol'),
+    payload: uint8ArrayFromString('lol'),
     meeeh: 42,
     meh: {
       num: 2,
-      payload: new TextEncoder().encode('bar')
+      payload: uint8ArrayFromString('bar')
     }
   })
 
-  var o2 = Nested.decode(b2)
+  const o2 = Nested.decode(b2)
 
   t.same(o2, o1)
   t.end()

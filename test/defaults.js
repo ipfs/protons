@@ -1,18 +1,18 @@
 'use strict'
 
-var tape = require('tape')
-var protobuf = require('../')
-var Defaults = protobuf(require('./test.proto')).Defaults
+const tape = require('tape')
+const protobuf = require('../')
+const Defaults = protobuf(require('./test.proto')).Defaults
 
 tape('defaults decode', function (t) {
-  var o1 = Defaults.decode(Buffer.alloc(0)) // everything default
+  const o1 = Defaults.decode(new Uint8Array()) // everything default
 
-  var b2 = Defaults.encode({
+  const b2 = Defaults.encode({
     num: 10,
     foos: [1]
   })
 
-  var b3 = Defaults.encode({
+  const b3 = Defaults.encode({
     num: 10,
     foo2: 2
   })
