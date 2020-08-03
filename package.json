@@ -14,14 +14,14 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^21.10.2",
+    "aegir": "^25.0.0",
     "benchmark": "^2.1.4",
     "protocol-buffers": "^4.1.0",
     "protons": "^1.0.0",
     "tape": "^4.8.0"
   },
   "scripts": {
-    "test": "tape test/*.js",
+    "test": "aegir test",
     "build": "aegir build",
     "lint": "aegir lint",
     "release": "aegir release --test=false",
