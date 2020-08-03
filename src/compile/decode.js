@@ -150,7 +150,7 @@ function compileDecode (m, resolve, enc) {
     }
 
     if (!view) {
-      view = new DataView(buf.buffer)
+      view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
     }
 
     var oldOffset = offset

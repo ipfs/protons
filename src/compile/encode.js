@@ -41,7 +41,7 @@ function compileEncode (m, resolve, enc, oneofs, encodingLength) {
     }
 
     if (view == null) {
-      view = new DataView(buf.buffer)
+      view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
     }
 
     const oldOffset = offset
