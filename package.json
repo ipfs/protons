@@ -22,11 +22,13 @@
   },
   "scripts": {
     "test": "aegir test",
-    "build": "aegir build",
+    "test:browser": "aegir test --target browser",
+    "test:node": "aegir test --target node",
     "lint": "aegir lint",
-    "release": "aegir release --test=false",
-    "release-minor": "aegir release --type minor --test=false",
-    "release-major": "aegir release --type major --test=false",
+    "release": "aegir release",
+    "release-minor": "aegir release --type minor",
+    "release-major": "aegir release --type major",
+    "build": "aegir build",
     "bench": "node bench"
   },
   "bugs": {
