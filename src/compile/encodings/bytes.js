@@ -19,11 +19,7 @@ function bytesEncode (val, buffer, dataView, offset) {
   varint.encode(len, buffer, offset)
   offset += varint.encode.bytes
 
-  if (val instanceof Uint8Array) {
-    buffer.set(val, offset)
-  } else {
-    buffer.write(val, offset, len)
-  }
+  buffer.set(val, offset)
   offset += len
 
   bytesEncode.bytes = offset - oldOffset
