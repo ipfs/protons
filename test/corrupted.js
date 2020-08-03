@@ -23,7 +23,7 @@ const protoStr = 'enum AbcType {\n' +
   '  required bytes nonce = 2;\n' +
   '}'
 
-  const messages = protobuf(protoStr)
+const messages = protobuf(protoStr)
 
 tape('invalid message decode', function (t) {
   let didFail = false

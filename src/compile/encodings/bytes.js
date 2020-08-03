@@ -44,4 +44,3 @@ function bytesDecode (buffer, dataView, offset) {
 }
 
 module.exports = encoder(2, bytesEncode, bytesDecode, bytesEncodingLength)
-
