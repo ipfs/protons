@@ -1,7 +1,9 @@
+/* eslint-env mocha */
+
 'use strict'
 
-const tape = require('tape')
-const protobuf = require('../')
+const { expect } = require('aegir/utils/chai')
+const protobuf = require('../src')
 
 const protoStr = 'message MyMessage {\n' +
   '  optional uint32 my_number = 1;\n' +
@@ -10,22 +12,17 @@ const protoStr = 'message MyMessage {\n' +
 
 const messages = protobuf(protoStr)
 
-tape('NaN considered not defined', function (t) {
-  let didFail = false
-  let error
-  let encoded
-  let decoded
-  const testString = 'hello!'
-  const properResult = Uint8Array.from([0x12, 0x06, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x21])
-  try {
-    encoded = messages.MyMessage.encode({ my_number: NaN, my_other: testString })
-    decoded = messages.MyMessage.decode(encoded)
-    t.same(decoded.my_other, testString, 'object is parsable')
-    t.same(encoded, properResult, 'object was encoded properly')
-  } catch (e) {
-    error = e
-    didFail = true
-  }
-  t.same(didFail, false, error ? 'parsing error: ' + error.toString() : 'no parsing error')
-  t.end()
+describe('NaN', () => {
+  it('should consider NaN as not defined', () => {
+    const testString = 'hello!'
+    const properResult = Uint8Array.from([0x12, 0x06, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x21])
+    const encoded = messages.MyMessage.encode({
+      my_number: NaN,
+      my_other: testString
+    })
+    const decoded = messages.MyMessage.decode(encoded)
+
+    expect(decoded).to.have.property('my_other', testString)
+    expect(encoded).to.deep.equal(properResult)
+  })
 })

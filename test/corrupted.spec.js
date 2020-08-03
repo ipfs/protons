@@ -1,8 +1,10 @@
+/* eslint-env mocha */
+
 'use strict'
 
-const tape = require('tape')
+const { expect } = require('aegir/utils/chai')
 const uint8ArrayFromString = require('uint8arrays/from-string')
-const protobuf = require('../')
+const protobuf = require('../src')
 
 const protoStr = 'enum AbcType {\n' +
   '  IGNORE                 =  0;\n' +
@@ -25,36 +27,24 @@ const protoStr = 'enum AbcType {\n' +
 
 const messages = protobuf(protoStr)
 
-tape('invalid message decode', function (t) {
-  let didFail = false
-  try {
-    messages.ABC.decode(Uint8Array.from([8, 182, 168, 235, 144, 178, 41]))
-  } catch (e) {
-    didFail = true
-  }
-  t.same(didFail, true, 'bad input')
-  t.end()
-})
+describe('corrupted', () => {
+  it('should fail to decode an invalid message', () => {
+    expect(() => {
+      messages.ABC.decode(Uint8Array.from([8, 182, 168, 235, 144, 178, 41]))
+    }).to.throw(/not valid/)
+  })
 
-tape('non buffers should fail', function (t) {
-  let didFail = false
-  try {
-    messages.ABC.decode({})
-  } catch (e) {
-    didFail = true
-  }
-  t.same(didFail, true, 'bad input')
-  t.end()
-})
+  it('should fail to decode non-byte arrays', () => {
+    expect(() => {
+      messages.ABC.decode({})
+    }).to.throw(/not valid/)
+  })
 
-tape('protocol parser test case', function (t) {
-  let didFail = false
-  const buf = uint8ArrayFromString('cec1', 'base16')
-  try {
-    messages.Open.decode(buf)
-  } catch (err) {
-    didFail = true
-  }
-  t.same(didFail, true, 'bad input')
-  t.end()
+  it('should fail to decode a base16 message', () => {
+    const buf = uint8ArrayFromString('cec1', 'base16')
+
+    expect(() => {
+      messages.Open.decode(buf)
+    }).to.throw(/Could not decode varint/)
+  })
 })

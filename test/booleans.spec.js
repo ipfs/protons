@@ -1,38 +1,37 @@
+/* eslint-env mocha */
+
 'use strict'
 
-const tape = require('tape')
+const { expect } = require('aegir/utils/chai')
 const protobuf = require('../src')
 const proto = require('./test.proto')
 const Booleans = protobuf(proto).Booleans
 
-tape('booleans encode + decode', function (t) {
-  const b1 = Booleans.encode({
-    bool1: true,
-    bool2: false
+describe('booleans', () => {
+  it('should encode and decode booleans', () => {
+    const b1 = Booleans.encode({
+      bool1: true,
+      bool2: false
+    })
+
+    const o1 = Booleans.decode(b1)
+
+    expect(o1).to.deep.equal({
+      bool1: true,
+      bool2: false
+    })
   })
 
-  const o1 = Booleans.decode(b1)
+  it('should encode and decode optional booleans', () => {
+    const b1 = Booleans.encode({
+      bool1: true
+    })
+    const o1 = Booleans.decode(b1)
 
-  t.same(o1, {
-    bool1: true,
-    bool2: false
+    expect(o1).to.deep.equal({
+      bool1: true,
+      bool2: false
+    })
+    expect(o1.hasBool2()).to.be.false()
   })
-
-  t.end()
-})
-
-tape('booleans encode + decode + optional', function (t) {
-  const b1 = Booleans.encode({
-    bool1: true
-  })
-
-  const o1 = Booleans.decode(b1)
-
-  t.same(o1, {
-    bool1: true,
-    bool2: false
-  })
-  t.notOk(o1.hasBool2())
-
-  t.end()
 })

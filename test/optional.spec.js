@@ -1,64 +1,65 @@
+/* eslint-env mocha */
+
 'use strict'
 
-const tape = require('tape')
-const protobuf = require('../')
+const { expect } = require('aegir/utils/chai')
+const protobuf = require('../src')
 const proto = require('./test.proto')
 const Optional = protobuf(proto).Optional
 
-tape('optional encode + decode has zero value', function (t) {
-  const o1 = {}
-  const b1 = Optional.encode(o1)
-  const o2 = Optional.decode(b1)
+describe('optional', () => {
+  it('should encode and decode zero value for optional value', () => {
+    const o1 = {}
+    const b1 = Optional.encode(o1)
+    const o2 = Optional.decode(b1)
 
-  t.same(o1.value, undefined)
-  t.same(o2.value, 0)
-  t.end()
-})
+    expect(o1).to.not.have.property('value')
+    expect(o2).to.have.property('value', 0)
+  })
 
-tape('optional accessors', function (t) {
-  const o1 = Optional.decode(Optional.encode({}))
+  it('should create accessors for optional values', () => {
+    const o1 = Optional.decode(Optional.encode({}))
 
-  t.ok(o1.hasValue)
-  t.notOk(o1.hasValue())
+    expect(o1).to.have.property('hasValue').that.is.a('function')
+    expect(o1.hasValue()).to.be.false()
 
-  t.ok(o1.setValue)
-  o1.setValue(5)
-  t.ok(o1.hasValue())
+    expect(o1).to.have.property('setValue').that.is.a('function')
+    o1.setValue(5)
+    expect(o1.hasValue()).to.be.true()
 
-  t.ok(o1.getValue)
-  t.same(o1.getValue(), 5)
+    expect(o1).to.have.property('getValue').that.is.a('function')
+    expect(o1.getValue()).to.equal(5)
 
-  t.ok(o1.clearValue)
-  o1.clearValue()
+    expect(o1).to.have.property('clearValue').that.is.a('function')
+    o1.clearValue()
 
-  t.notOk(o1.hasValue())
-  t.same(o1.getValue(), undefined)
+    expect(o1.hasValue()).to.be.false()
+    expect(o1.getValue()).to.be.undefined()
+  })
 
-  const methods = Object.keys(o1)
+  it('should have non-enumerable accessors for optional values', () => {
+    const o1 = Optional.decode(Optional.encode({}))
+    const methods = Object.keys(o1)
 
-  t.notOk(methods.includes('getValue'))
-  t.notOk(methods.includes('setValue'))
-  t.notOk(methods.includes('hasValue'))
-  t.notOk(methods.includes('clearValue'))
+    expect(methods).to.not.include('getValue')
+    expect(methods).to.not.include('setValue')
+    expect(methods).to.not.include('hasValue')
+    expect(methods).to.not.include('clearValue')
+  })
 
-  t.end()
-})
+  it('should return zero values from optional accessors when no value has been set', () => {
+    const o1 = Optional.decode(Optional.encode({}))
 
-tape('optional accessors with zero values', function (t) {
-  const o1 = Optional.decode(Optional.encode({}))
+    expect(o1.hasValue()).to.be.false()
+    o1.setValue(0)
+    expect(o1.hasValue()).to.be.true()
 
-  t.notOk(o1.hasValue())
+    expect(o1.getValue).to.be.a('function')
+    expect(o1.getValue()).to.equal(0)
 
-  o1.setValue(0)
-  t.ok(o1.hasValue())
+    const o2 = Optional.decode(Optional.encode(o1))
 
-  t.ok(o1.getValue)
-  t.same(o1.getValue(), 0)
-
-  const o2 = Optional.decode(Optional.encode(o1))
-
-  t.ok(o2.hasValue())
-  t.same(o2.getValue(), 0)
-
-  t.end()
+    expect(o2.hasValue()).to.be.ok()
+    expect(o2.getValue()).to.equal(0)
+  })
 })

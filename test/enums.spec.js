@@ -1,19 +1,21 @@
+/* eslint-env mocha */
+
 'use strict'
 
-const tape = require('tape')
-const protobuf = require('../')
+const { expect } = require('aegir/utils/chai')
+const protobuf = require('../src')
 const messages = protobuf(require('./test.proto'))
 
-tape('enums', function (t) {
-  const e = messages.FOO
+describe('enums', () => {
+  it('should encode and decode enums', () => {
+    const e = messages.FOO
 
-  t.same(e, { A: 1, B: 2 }, 'enum is defined')
-  t.end()
-})
+    expect(e).to.deep.equal({ A: 1, B: 2 })
+  })
 
-tape('hex enums', function (t) {
-  const e = messages.FOO_HEX
+  it('should encode and decode hex enums', () => {
+    const e = messages.FOO_HEX
 
-  t.same(e, { A: 1, B: 2 }, 'enum is defined using hex')
-  t.end()
+    expect(e).to.deep.equal({ A: 1, B: 2 })
+  })
 })

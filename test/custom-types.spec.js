@@ -1,27 +1,55 @@
+/* eslint-env mocha */
+
 'use strict'
 
-const tape = require('tape')
+const { expect } = require('aegir/utils/chai')
 const protobuf = require('../src')
 const CustomType = protobuf(require('./test.proto')).CustomType
 
-tape('custom types encode + decode', function (t) {
-  var b1 = CustomType.encode({
-    req: {
-      num: 5,
-      payload: Uint8Array.from([])
-    }
+describe('custom types', () => {
+  it('should encode and decode custom types', () => {
+    var b1 = CustomType.encode({
+      req: {
+        num: 5,
+        payload: Uint8Array.from([])
+      },
+      opt: {
+        num: 6,
+        payload: Uint8Array.from([])
+      }
+    })
+
+    var o1 = CustomType.decode(b1)
+
+    expect(o1).to.deep.equal({
+      req: {
+        num: 5,
+        payload: Uint8Array.from([])
+      },
+      opt: {
+        num: 6,
+        payload: Uint8Array.from([])
+      }
+    })
   })
 
-  var o1 = CustomType.decode(b1)
+  it('should encode and decode custom types with optional fields', () => {
+    var b1 = CustomType.encode({
+      req: {
+        num: 5,
+        payload: Uint8Array.from([])
+      }
+    })
 
-  t.same(o1, {
-    req: {
-      num: 5,
-      payload: Uint8Array.from([])
-    },
-    opt: null
+    var o1 = CustomType.decode(b1)
+
+    expect(o1).to.deep.equal({
+      req: {
+        num: 5,
+        payload: Uint8Array.from([])
+      },
+      opt: null
+    })
+    expect(o1.hasOpt()).to.be.false()
   })
-  t.notOk(o1.hasOpt())
-
-  t.end()
 })
