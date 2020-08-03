@@ -13,7 +13,8 @@ describe('integers', () => {
       sint64: 2,
       int32: 3,
       uint32: 4,
-      int64: 5
+      int64: 5,
+      fixed32: 6
     })
 
     const o1 = Integers.decode(b1)
@@ -23,7 +24,8 @@ describe('integers', () => {
       sint64: 2,
       int32: 3,
       uint32: 4,
-      int64: 5
+      int64: 5,
+      fixed32: 6
     })
   })
 
@@ -33,7 +35,8 @@ describe('integers', () => {
       sint64: -2,
       int32: -3,
       uint32: 0,
-      int64: -1 * Math.pow(2, 52) - 5
+      int64: -1 * Math.pow(2, 52) - 5,
+      fixed32: 0
     })
 
     const o1 = Integers.decode(b1)
@@ -43,7 +46,8 @@ describe('integers', () => {
       sint64: -2,
       int32: -3,
       uint32: 0,
-      int64: -1 * Math.pow(2, 52) - 5
+      int64: -1 * Math.pow(2, 52) - 5,
+      fixed32: 0
     })
   })
 

@@ -7,12 +7,12 @@ function fixed32EncodingLength (val) {
 }
 
 function fixed32Encode (val, buffer, dataView, offset) {
-  dataView.setUInt32(offset, val, true)
+  dataView.setUint32(offset, val, true)
   fixed32Encode.bytes = 4
 }
 
 function fixed32Decode (buffer, dataView, offset) {
-  const val = dataView.getUInt32(offset, true)
+  const val = dataView.getUint32(offset, true)
   fixed32Decode.bytes = 4
 
   return val
