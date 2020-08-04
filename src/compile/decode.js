@@ -1,8 +1,8 @@
 /* eslint max-depth: 1 */
 'use strict'
 
-var varint = require('varint')
-var defined = require('./utils').defined
+const varint = require('varint')
+const defined = require('./utils').defined
 
 function toSentenceCase (string) {
   return `${string.substring(0, 1).toUpperCase()}${string.substring(1)}`
@@ -60,18 +60,18 @@ function addPropertyAccessors (obj, name, value, defaultValue) {
 }
 
 function compileDecode (m, resolve, enc) {
-  var requiredFields = []
-  var fields = {}
-  var oneofFields = []
-  var vals = []
+  const requiredFields = []
+  const fields = {}
+  const oneofFields = []
+  const vals = []
 
   for (var i = 0; i < enc.length; i++) {
-    var field = m.fields[i]
+    const field = m.fields[i]
 
     fields[field.tag] = i
 
-    var def = field.options && field.options.default
-    var resolved = resolve(field.type, m.id, false)
+    const def = field.options && field.options.default
+    const resolved = resolve(field.type, m.id, false)
     vals[i] = [def, resolved && resolved.values]
 
     m.fields[i].packed = field.repeated && field.options && field.options.packed && field.options.packed !== 'false'
@@ -85,12 +85,12 @@ function compileDecode (m, resolve, enc) {
     }
   }
 
-  function decodeField (e, field, obj, buf, offset, i) {
-    var name = field.name
+  function decodeField (e, field, obj, buf, dataView, offset, i) {
+    const name = field.name
 
     if (field.oneof) {
       // clear already defined oneof fields
-      var props = Object.keys(obj)
+      const props = Object.keys(obj)
       for (var j = 0; j < props.length; j++) {
         if (oneofFields.indexOf(props[j]) > -1) {
           const sentenceCase = toSentenceCase(props[j])
@@ -106,10 +106,10 @@ function compileDecode (m, resolve, enc) {
     let value
 
     if (e.message) {
-      var len = varint.decode(buf, offset)
+      const len = varint.decode(buf, offset)
       offset += varint.decode.bytes
 
-      var decoded = e.decode(buf, offset, offset + len)
+      const decoded = e.decode(buf, dataView, offset, offset + len)
 
       if (field.map) {
         value = obj[name] || {}
@@ -123,19 +123,20 @@ function compileDecode (m, resolve, enc) {
     } else {
       if (field.repeated) {
         value = obj[name] || []
-        value.push(e.decode(buf, offset))
+        value.push(e.decode(buf, dataView, offset))
       } else {
-        value = e.decode(buf, offset)
+        value = e.decode(buf, dataView, offset)
       }
     }
 
     addPropertyAccessors(obj, name, value)
 
     offset += e.decode.bytes
+
     return offset
   }
 
-  return function decode (buf, offset, end) {
+  return function decode (buf, view, offset, end) {
     if (offset == null) {
       offset = 0
     }
@@ -146,6 +147,10 @@ function compileDecode (m, resolve, enc) {
 
     if (!(end <= buf.length && offset <= buf.length)) {
       throw new Error('Decoded message is not valid')
+    }
+
+    if (!view) {
+      view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
     }
 
     var oldOffset = offset
@@ -223,7 +228,7 @@ function compileDecode (m, resolve, enc) {
       var i = fields[tag]
 
       if (i == null) {
-        offset = skip(prefix & 7, buf, offset)
+        offset = skip(prefix & 7, buf, view, offset)
         continue
       }
 
@@ -236,16 +241,16 @@ function compileDecode (m, resolve, enc) {
         packedEnd += offset
 
         while (offset < packedEnd) {
-          offset = decodeField(e, field, obj, buf, offset, i)
+          offset = decodeField(e, field, obj, buf, view, offset, i)
         }
       } else {
-        offset = decodeField(e, field, obj, buf, offset, i)
+        offset = decodeField(e, field, obj, buf, view, offset, i)
       }
     }
   }
 }
 
-var skip = function (type, buffer, offset) {
+var skip = function (type, buffer, view, offset) {
   switch (type) {
     case 0:
       varint.decode(buffer, offset)

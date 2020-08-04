@@ -33,6 +33,7 @@ message Integers {
   optional int32 int32 = 3;
   optional uint32 uint32 = 4;
   optional int64 int64 = 5;
+  optional fixed32 fixed32 = 6;
 }
 
 message Float {

@@ -8,26 +8,27 @@
     "url": "https://github.com/ipfs/protons"
   },
   "dependencies": {
-    "buffer": "^5.5.0",
     "protocol-buffers-schema": "^3.3.1",
     "signed-varint": "^2.0.1",
+    "uint8arrays": "^1.0.0",
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "ipfs-utils": "^2.3.0",
-    "aegir": "^21.4.0",
+    "aegir": "^25.0.0",
     "benchmark": "^2.1.4",
     "protocol-buffers": "^4.1.0",
     "protons": "^1.0.0",
     "tape": "^4.8.0"
   },
   "scripts": {
-    "test": "tape test/*.js",
-    "build": "aegir build",
+    "test": "aegir test",
+    "test:browser": "aegir test --target browser",
+    "test:node": "aegir test --target node",
     "lint": "aegir lint",
-    "release": "aegir release --test=false",
-    "release-minor": "aegir release --type minor --test=false",
-    "release-major": "aegir release --type major --test=false",
+    "release": "aegir release",
+    "release-minor": "aegir release --type minor",
+    "release-major": "aegir release --type major",
+    "build": "aegir build",
     "bench": "node bench"
   },
   "bugs": {

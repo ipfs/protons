@@ -1,7 +1,6 @@
 'use strict'
 
 var schema = require('protocol-buffers-schema')
-const { Buffer } = require('buffer')
 var compile = require('./compile')
 
 var flatten = function (values) {
@@ -17,7 +16,7 @@ module.exports = function (proto, opts) {
   if (!opts) opts = {}
   if (!proto) throw new Error('Pass in a .proto string or a protobuf-schema parsed object')
 
-  var sch = (typeof proto === 'object' && !Buffer.isBuffer(proto)) ? proto : schema.parse(proto)
+  var sch = (typeof proto === 'object' && !(proto instanceof Uint8Array)) ? proto : schema.parse(proto)
 
   // to not make toString,toJSON enumarable we make a fire-and-forget prototype
   var Messages = function () {
