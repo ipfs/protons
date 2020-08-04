@@ -1,3 +1,18 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/ipfs/protons/compare/v1.2.1...v2.0.0) (2020-08-04)
+
+
+### Bug Fixes
+
+* replace node buffers with uint8arrays ([#14](https://github.com/ipfs/protons/issues/14)) ([d3547cb](https://github.com/ipfs/protons/commit/d3547cb))
+
+
+### BREAKING CHANGES
+
+* - Byte arrays returned from this module will now be UintArrays and not Node Buffers
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/ipfs/protons/compare/v1.2.0...v1.2.1) (2020-06-24)
 
