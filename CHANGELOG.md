@@ -1,3 +1,13 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/ipfs/protons/compare/v2.0.0...v2.0.1) (2021-04-16)
+
+
+### Bug Fixes
+
+* update uint8arrays ([#15](https://github.com/ipfs/protons/issues/15)) ([8a9dbf9](https://github.com/ipfs/protons/commit/8a9dbf9))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/ipfs/protons/compare/v1.2.1...v2.0.0) (2020-08-04)
 
