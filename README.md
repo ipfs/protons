@@ -1,3 +1,5 @@
+⛔️ DEPRECATED: This module is no longer maintained <!-- omit in toc -->
+
 # protons <!-- omit in toc -->
 
 [![Dependency Status](https://david-dm.org/ipfs/protons.svg?style=flat-square)](https://david-dm.org/ipfs/protons)
