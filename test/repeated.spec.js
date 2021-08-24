@@ -5,7 +5,7 @@
 const { expect } = require('aegir/utils/chai')
 const protobuf = require('../src')
 const Repeated = protobuf(require('./test.proto')).Repeated
-const uint8ArrayFromString = require('uint8arrays/from-string')
+const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
 
 describe('repeated', () => {
   it('should encode repeated fields', () => {

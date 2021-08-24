@@ -12,7 +12,7 @@ const proto = require('./bench.proto')
 const messages = protobuf(proto)
 const messagesBuf = protons(proto)
 const messagesNpm = protonsNpm(proto)
-const uint8ArrayFromString = require('uint8arrays/from-string')
+const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
 
 const EXAMPLE = {
   foo: 'hello',

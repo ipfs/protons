@@ -4,7 +4,7 @@
 
 const { expect } = require('aegir/utils/chai')
 const protobuf = require('../src')
-const uint8ArrayFromString = require('uint8arrays/from-string')
+const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
 
 const Nested = protobuf(require('./test.proto')).Nested
 
