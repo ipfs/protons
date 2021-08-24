@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Protocol Buffers for Node.js without compiliation",
   "leadMaintainer": "Alex Potsides <alex@achingbrain.net>",
   "repository": {
@@ -60,9 +60,9 @@
     "Mathias Buus <mathiasbuus@gmail.com>",
     "achingbrain <alex@achingbrain.net>",
     "dignifiedquire <dignifiedquire@gmail.com>",
-    "Young Hahn <young@mapbox.com>",
     "David Dias <daviddias.p@gmail.com>",
     "Hector Sanjuan <code@hector.link>",
+    "Young Hahn <young@mapbox.com>",
     "Mo Kamioner <mkamioner@gmail.com>",
     "tcme <hi@this-connect.me>",
     "Eduardo Sorribas <eduardo@sorribas.org>",
