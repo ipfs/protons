@@ -14,11 +14,12 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^25.0.0",
+    "aegir": "^25.1.0",
     "benchmark": "^2.1.4",
     "protocol-buffers": "^4.1.0",
     "protons": "^1.0.0",
-    "tape": "^4.8.0"
+    "tape": "^4.8.0",
+    "util": "^0.12.4"
   },
   "scripts": {
     "test": "aegir test",
