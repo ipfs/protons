@@ -57,8 +57,7 @@ export const unsigned = {
     return 10
   },
 
-  encode (value: number, buf: Uint8ArrayList | Uint8Array) {
-    let offset = 0
+  encode (value: number, buf: Uint8ArrayList | Uint8Array, offset: number): number {
     const access = accessor(buf)
 
     while (value >= INT) {
@@ -72,9 +71,11 @@ export const unsigned = {
     }
 
     access.set(offset, value | 0)
+
+    return offset + 1
   },
 
-  decode (buf: Uint8ArrayList | Uint8Array, offset: number = 0) {
+  decode (buf: Uint8ArrayList | Uint8Array, offset: number) {
     const access = accessor(buf)
     let value = 4294967295 // optimizer type-hint, tends to deopt otherwise (?!)
 
@@ -125,9 +126,8 @@ export const signed = {
     return unsigned.encodingLength(value)
   },
 
-  encode (value: number, buf: Uint8ArrayList | Uint8Array) {
+  encode (value: number, buf: Uint8ArrayList | Uint8Array, offset: number): number {
     if (value < 0) {
-      let offset = 0
       const access = accessor(buf)
       const bits = LongBits.fromNumber(value)
 
@@ -144,13 +144,13 @@ export const signed = {
 
       access.set(offset++, bits.lo)
 
-      return
+      return offset
     }
 
-    unsigned.encode(value, buf)
+    return unsigned.encode(value, buf, offset)
   },
 
-  decode (data: Uint8ArrayList | Uint8Array, offset = 0) {
+  decode (data: Uint8ArrayList | Uint8Array, offset: number) {
     return unsigned.decode(data, offset) | 0
   }
 }
@@ -161,12 +161,12 @@ export const zigzag = {
     return unsigned.encodingLength(value)
   },
 
-  encode (value: number, buf: Uint8ArrayList | Uint8Array, offset = 0) {
+  encode (value: number, buf: Uint8ArrayList | Uint8Array, offset: number): number {
     value = (value << 1 ^ value >> 31) >>> 0
-    return unsigned.encode(value, buf)
+    return unsigned.encode(value, buf, offset)
   },
 
-  decode (data: Uint8ArrayList | Uint8Array, offset = 0) {
+  decode (data: Uint8ArrayList | Uint8Array, offset: number) {
     const value = unsigned.decode(data, offset)
     return value >>> 1 ^ -(value & 1) | 0
   }

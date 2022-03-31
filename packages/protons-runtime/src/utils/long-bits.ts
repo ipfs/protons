@@ -47,7 +47,7 @@ export class LongBits {
     return new LongBits(hi, lo)
   }
 
-  toBytes (buf: Uint8ArrayList | Uint8Array, offset = 0) {
+  write (buf: Uint8ArrayList | Uint8Array, offset = 0): number {
     const access = accessor(buf)
 
     while (this.hi > 0) {
@@ -62,6 +62,8 @@ export class LongBits {
     }
 
     access.set(offset++, this.lo)
+
+    return offset
   }
 
   static fromBigInt (value: bigint) {

@@ -10,14 +10,11 @@ export function enumeration <T> (e: T): Codec<T> {
     return unsigned.encodingLength(index)
   }
 
-  const encode: EncodeFunction<string> = function enumEncode (val) {
+  const encode: EncodeFunction<string> = function enumEncode (val, buf, offset) {
     const keys = Object.keys(e)
     const index = keys.indexOf(val)
-    const buf = new Uint8Array(unsigned.encodingLength(index))
 
-    unsigned.encode(index, buf)
-
-    return buf
+    return unsigned.encode(index, buf, offset)
   }
 
   const decode: DecodeFunction<string> = function enumDecode (buf, offset) {

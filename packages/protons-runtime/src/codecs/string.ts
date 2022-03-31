@@ -2,20 +2,18 @@ import { unsigned } from '../utils/varint.js'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { DecodeFunction, EncodeFunction, createCodec, EncodingLengthFunction, CODEC_TYPES } from './codec.js'
-import { Uint8ArrayList } from 'uint8arraylist'
 
 const encodingLength: EncodingLengthFunction<string> = function stringEncodingLength (val) {
   const len = uint8ArrayFromString(val).byteLength
-  return unsigned.encodingLength(len) + len
+  return unsigned.encodingLength(len) + val.length
 }
 
-const encode: EncodeFunction<string> = function stringEncode (val) {
+const encode: EncodeFunction<string> = function stringEncode (val, buf, offset) {
   const asBuf = uint8ArrayFromString(val)
-  const prefix = new Uint8Array(unsigned.encodingLength(asBuf.byteLength))
+  offset = unsigned.encode(asBuf.length, buf, offset)
+  buf.write(asBuf, offset)
 
-  unsigned.encode(asBuf.length, prefix)
-
-  return new Uint8ArrayList(prefix, asBuf)
+  return offset + asBuf.byteLength
 }
 
 const decode: DecodeFunction<string> = function stringDecode (buf, offset) {

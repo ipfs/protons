@@ -14,19 +14,20 @@ export const unsigned = {
     return i + 1
   },
 
-  encode (value: bigint, buf: Uint8ArrayList | Uint8Array) {
+  encode (value: bigint, buf: Uint8ArrayList | Uint8Array, offset: number): number {
     const access = accessor(buf)
 
-    let offset = 0
     while (LIMIT < value) {
       access.set(offset++, Number(value & LIMIT) | 0x80)
       value >>= 7n
     }
 
     access.set(offset, Number(value))
+
+    return offset + 1
   },
 
-  decode (buf: Uint8ArrayList | Uint8Array, offset = 0) {
+  decode (buf: Uint8ArrayList | Uint8Array, offset = 0): bigint {
     return LongBits.fromBytes(buf, offset).toBigInt(true)
   }
 }
@@ -40,14 +41,12 @@ export const signed = {
     return unsigned.encodingLength(value)
   },
 
-  encode (value: bigint, buf: Uint8ArrayList | Uint8Array, offset = 0) {
+  encode (value: bigint, buf: Uint8ArrayList | Uint8Array, offset: number): number {
     if (value < 0n) {
-      LongBits.fromBigInt(value).toBytes(buf, offset)
-
-      return
+      return LongBits.fromBigInt(value).write(buf, offset)
     }
 
-    return unsigned.encode(value, buf)
+    return unsigned.encode(value, buf, offset)
   },
 
   decode (buf: Uint8ArrayList | Uint8Array, offset = 0) {
@@ -60,8 +59,8 @@ export const zigzag = {
     return unsigned.encodingLength(value >= 0 ? value * 2n : value * -2n - 1n)
   },
 
-  encode (value: bigint, buf: Uint8ArrayList | Uint8Array, offset = 0) {
-    LongBits.fromBigInt(value).zzEncode().toBytes(buf, offset)
+  encode (value: bigint, buf: Uint8ArrayList | Uint8Array, offset: number): number {
+    return LongBits.fromBigInt(value).zzEncode().write(buf, offset)
   },
 
   decode (buf: Uint8ArrayList | Uint8Array, offset = 0) {

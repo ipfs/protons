@@ -5,11 +5,8 @@ const encodingLength: EncodingLengthFunction<number> = function int32EncodingLen
   return signed.encodingLength(val)
 }
 
-const encode: EncodeFunction<number> = function int32Encode (val) {
-  const buf = new Uint8Array(encodingLength(val))
-  signed.encode(val, buf)
-
-  return buf
+const encode: EncodeFunction<number> = function int32Encode (val, buf, offset) {
+  return signed.encode(val, buf, offset)
 }
 
 const decode: DecodeFunction<number> = function int32Decode (buf, offset) {
