@@ -1,83 +1,45 @@
 {
   "name": "protons",
-  "version": "2.0.3",
-  "description": "Protocol Buffers for Node.js without compiliation",
-  "leadMaintainer": "Alex Potsides <alex@achingbrain.net>",
+  "version": "1.0.0",
+  "description": "Protobuf to ts transpiler",
+  "license": "Apache-2.0 OR MIT",
+  "homepage": "https://github.com/ipfs/protons#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ipfs/protons"
-  },
-  "dependencies": {
-    "protocol-buffers-schema": "^3.3.1",
-    "signed-varint": "^2.0.1",
-    "uint8arrays": "^3.0.0",
-    "varint": "^5.0.0"
-  },
-  "devDependencies": {
-    "aegir": "^25.1.0",
-    "benchmark": "^2.1.4",
-    "protocol-buffers": "^4.1.0",
-    "protons": "^1.0.0",
-    "tape": "^4.8.0",
-    "util": "^0.12.4"
-  },
-  "scripts": {
-    "test": "aegir test",
-    "test:browser": "aegir test --target browser",
-    "test:node": "aegir test --target node",
-    "lint": "aegir lint",
-    "release": "aegir release",
-    "release-minor": "aegir release --type minor",
-    "release-major": "aegir release --type major",
-    "build": "aegir build",
-    "bench": "node bench"
+    "url": "git+https://github.com/ipfs/protons.git"
   },
   "bugs": {
     "url": "https://github.com/ipfs/protons/issues"
   },
-  "homepage": "https://github.com/ipfs/protons",
-  "main": "src/index.js",
-  "directories": {
-    "test": "test"
-  },
   "keywords": [
-    "protobuf",
-    "protocol",
-    "buffers",
-    "protocolbuffers",
-    "encode",
-    "decode",
-    "google",
-    "serialize",
-    "parse",
-    "levelup",
-    "encodings",
-    "encoding"
+    "interface",
+    "libp2p"
   ],
-  "author": "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
-  "license": "MIT",
-  "contributors": [
-    "Mathias Buus <mathiasbuus@gmail.com>",
-    "achingbrain <alex@achingbrain.net>",
-    "dignifiedquire <dignifiedquire@gmail.com>",
-    "David Dias <daviddias.p@gmail.com>",
-    "Hector Sanjuan <code@hector.link>",
-    "Young Hahn <young@mapbox.com>",
-    "Mo Kamioner <mkamioner@gmail.com>",
-    "tcme <hi@this-connect.me>",
-    "Eduardo Sorribas <eduardo@sorribas.org>",
-    "Hugo Dias <hugomrdias@gmail.com>",
-    "Lars-Magnus Skog <ralphtheninja@riseup.net>",
-    "Patrick Pfeiffer <patrick@buzzle.at>",
-    "Kevin Ennis <kennis84@gmail.com>",
-    "Elijah Insua <tmpvar@gmail.com>",
-    "Astro <astro@spaceboyz.net>",
-    "Andreas Madsen <amwebdk@gmail.com>",
-    "Sergii Shutovskyi <sergii.shutovskyi@trademob.com>",
-    "Steven Allen <steven@stebalien.com>",
-    "David Bruant <bruant.d@gmail.com>",
-    "Irakli Gozalishvili <contact@gozala.io>",
-    "João Antunes <j.goncalo.antunes@gmail.com>",
-    "Brendan Ward <bcward@consbio.org>"
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "private": true,
+  "scripts": {
+    "reset": "lerna run clean && rimraf ./node_modules ./package-lock.json packages/*/node_modules packages/*/package-lock.json packages/*/dist",
+    "test": "lerna run --concurrency 1 test -- --",
+    "test:node": "lerna run --concurrency 1 test:node -- --",
+    "test:chrome": "lerna run --concurrency 1 test:chrome -- --",
+    "test:chrome-webworker": "lerna --concurrency 1 run test:chrome-webworker -- --",
+    "test:firefox": "lerna run --concurrency 1 test:firefox -- --",
+    "test:firefox-webworker": "lerna run --concurrency 1 test:firefox-webworker -- --",
+    "test:electron-main": "lerna run --concurrency 1 test:electron-main -- --",
+    "test:electron-renderer": "lerna run --concurrency 1 test:electron-renderer -- --",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "dep-check": "lerna run dep-check",
+    "release": "lerna run release --concurrency 1"
+  },
+  "dependencies": {
+    "lerna": "^4.0.0",
+    "rimraf": "^3.0.2"
+  },
+  "workspaces": [
+    "packages/*"
   ]
 }

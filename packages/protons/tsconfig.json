@@ -1,0 +1,18 @@
+{
+  "extends": "aegir/src/config/tsconfig.aegir.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "emitDeclarationOnly": false,
+    "module": "ES2020"
+  },
+  "include": [
+    "bin",
+    "src",
+    "test"
+  ],
+  "references": [
+    {
+      "path": "../protons-runtime"
+    }
+  ]
+}
