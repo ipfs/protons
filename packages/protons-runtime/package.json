@@ -143,13 +143,10 @@
     "release": "semantic-release -e semantic-release-monorepo"
   },
   "dependencies": {
-    "big-varint": "^0.1.3",
     "uint8arraylist": "^1.4.0",
-    "varint": "^6.0.0"
+    "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
-    "@types/varint": "^6.0.0",
-    "aegir": "^36.1.3",
-    "pbjs": "^0.0.14"
+    "aegir": "^36.1.3"
   }
 }
