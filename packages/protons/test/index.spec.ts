@@ -6,7 +6,9 @@ import pbjs from 'pbjs'
 import { Basic } from './fixtures/basic.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
 import fs from 'fs'
-import Long from 'long'
+import protobufjs from 'protobufjs'
+
+const Long = protobufjs.util.Long
 
 function longifyBigInts (obj: any) {
   const output = {
@@ -15,6 +17,7 @@ function longifyBigInts (obj: any) {
 
   for (const key of Object.keys(output)) {
     if (typeof output[key] === 'bigint') {
+      // @ts-expect-error exported types are incomplete
       output[key] = Long.fromString(`${output[key].toString()}`)
     }
   }
