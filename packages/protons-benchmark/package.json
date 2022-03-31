@@ -1,0 +1,79 @@
+{
+  "name": "protons-benchmark",
+  "version": "0.0.0",
+  "description": "Protobuf to ts transpiler",
+  "license": "Apache-2.0 OR MIT",
+  "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons-benchmark#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipfs/protons.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ipfs/protons/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "type": "module",
+  "types": "./dist/src/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*",
+        "dist/*",
+        "dist/src/*",
+        "dist/src/*/index"
+      ],
+      "src/*": [
+        "*",
+        "dist/*",
+        "dist/src/*",
+        "dist/src/*/index"
+      ]
+    }
+  },
+  "files": [
+    "src",
+    "dist/src",
+    "!dist/test",
+    "!**/*.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./status": {
+      "import": "./dist/src/status.js",
+      "types": "./dist/src/status.d.ts"
+    }
+  },
+  "eslintConfig": {
+    "extends": "ipfs",
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "ignorePatterns": [
+      "src/protobufjs/*.ts"
+    ]
+  },
+  "scripts": {
+    "lint": "aegir lint",
+    "dep-check": "aegir dep-check dist/src/**/*.js dist/test/**/*.js",
+    "build": "tsc && cp src/protobufjs/bench.js dist/src/protobufjs",
+    "prestart": "npm run build",
+    "start": "node dist/src/index.js"
+  },
+  "dependencies": {
+    "benny": "^3.7.1",
+    "pbjs": "^0.0.14",
+    "protobufjs": "^6.11.2",
+    "protons": "^2.0.0",
+    "protons-runtime": "^0.0.0"
+  },
+  "devDependencies": {
+    "aegir": "^36.1.3"
+  },
+  "private": true
+}

@@ -1,14 +1,13 @@
-# protons
+# protons-runtime <!-- omit in toc -->
 
-> `.proto` to `.ts` transpiler
+> Shared components that turn values to bytes and back again
 
-Transpiles `.proto` files to `.ts` - uses `Uint8Array` for `byte` fields and `BigInt` for `int64`/`uint64` and `sint64`.
+Contains shared code to reduce code duplication between modules transpiled by protons.
 
-## Packages
+## Table of contents  <!-- omit in toc -->
 
-* [`/packages/protons`](./packages/protons) The transpiler
-* [`/packages/protons-benchmark`](./packages/protons-benchmark) A benchmark suite
-* [`/packages/protons-runtime`](./packages/protons-runtime) Shared components that turn values to bytes and back again
+- [Contribute](#contribute)
+- [License](#license)
 
 ## Contribute
 
