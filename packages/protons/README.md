@@ -4,11 +4,12 @@
 
 ## Table of contents <!-- omit in toc -->
 
+- [Install](#install)
 - [Usage](#usage)
 - [Contribute](#contribute)
 - [License](#license)
 
-## Install
+## Install
 
 To use this project, add `protons` as a development dependency and `protons-runtime` as a runtime dependency.
 
