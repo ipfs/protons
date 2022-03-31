@@ -1,3 +1,11 @@
+## [protons-v3.0.1](https://github.com/ipfs/protons/compare/protons-v3.0.0...protons-v3.0.1) (2022-03-31)
+
+
+### Trivial Changes
+
+* remove long dep ([#22](https://github.com/ipfs/protons/issues/22)) ([8795507](https://github.com/ipfs/protons/commit/879550710b846f2448db646ba69e5938bbad8aa0))
+* update readme to remove breaking character ([#21](https://github.com/ipfs/protons/issues/21)) ([023c29b](https://github.com/ipfs/protons/commit/023c29bf1839794e9daaa890b3780e3c70612ea4))
+
 ## [protons-v3.0.0](https://github.com/ipfs/protons/compare/protons-v2.0.3...protons-v3.0.0) (2022-03-31)
 
 
