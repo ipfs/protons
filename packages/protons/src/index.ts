@@ -131,14 +131,16 @@ function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef): string {
     return `
 export enum ${messageDef.name} {
   ${
-    Object.entries(messageDef.values).map(([enumValueName, enumValue]) => {
+    Object.keys(messageDef.values).map(enumValueName => {
       return `${enumValueName} = '${enumValueName}'`
     }).join(',\n  ').trim()
   }
 }
 
 export namespace ${messageDef.name} {
-  export const codec = enumeration<typeof ${messageDef.name}>(${messageDef.name})
+  export const codec = () => {
+    return enumeration<typeof ${messageDef.name}>(${messageDef.name})
+  }
 }
 `
   }
@@ -173,8 +175,9 @@ export interface ${messageDef.name} {
 }
 
 export namespace ${messageDef.name} {${nested}
-  export const codec = message<${messageDef.name}>({
-    ${Object.entries(fields)
+  export const codec = () => {
+    return message<${messageDef.name}>({
+      ${Object.entries(fields)
       .map(([name, fieldDef]) => {
         let codec = encoders[fieldDef.type]
 
@@ -188,21 +191,22 @@ export namespace ${messageDef.name} {${nested}
           }
 
           const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
-          codec = `${typeName}.codec`
+          codec = `${typeName}.codec()`
         } else {
           moduleDef.imports.add(codec)
         }
 
         return `${fieldDef.id}: { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
-    }).join(',\n    ')}
-  })
+    }).join(',\n      ')}
+    })
+  }
 
   export const encode = (obj: ${messageDef.name}): Uint8Array => {
-    return encodeMessage(obj, ${messageDef.name}.codec)
+    return encodeMessage(obj, ${messageDef.name}.codec())
   }
 
   export const decode = (buf: Uint8Array): ${messageDef.name} => {
-    return decodeMessage(buf, ${messageDef.name}.codec)
+    return decodeMessage(buf, ${messageDef.name}.codec())
   }
 }
 `

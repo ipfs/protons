@@ -1,5 +1,6 @@
 /*eslint-disable*/
 // @ts-nocheck
+
 import $protobuf from "protobufjs/minimal.js";
 
 // Common aliases

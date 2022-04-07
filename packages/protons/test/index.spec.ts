@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
-import { expect } from 'aegir/utils/chai.js'
+import { expect } from 'aegir/chai'
 import pbjs from 'pbjs'
 import { Basic } from './fixtures/basic.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'

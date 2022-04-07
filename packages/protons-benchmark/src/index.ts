@@ -1,6 +1,6 @@
 
 import benny from 'benny'
-import { expect } from 'aegir/utils/chai.js'
+import { expect } from 'aegir/chai'
 import { Test as ProtonsTest } from './protons/bench.js'
 import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
