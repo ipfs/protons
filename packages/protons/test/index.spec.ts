@@ -7,6 +7,7 @@ import { Basic } from './fixtures/basic.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
 import fs from 'fs'
 import protobufjs from 'protobufjs'
+import { Peer } from './fixtures/peer.js'
 
 const Long = protobufjs.util.Long
 
@@ -135,5 +136,28 @@ describe('encode', () => {
 
     expect(AllTheTypes.decode(encoded)).to.deep.equal(allTheTypes)
     expect(AllTheTypes.decode(pbjsBuf)).to.deep.equal(allTheTypes)
+  })
+
+  it('decodes multiple sub messages', () => {
+    const peer: Peer = {
+      protocols: ['protocol1', 'protocol2'],
+      metadata: [],
+      addresses: [{
+        multiaddr: Uint8Array.from([4, 127, 0, 0, 1, 6, 31, 64]),
+        isCertified: false
+      }, {
+        multiaddr: Uint8Array.from([4, 20, 0, 0, 1, 6, 31, 65]),
+        isCertified: false
+      }]
+    }
+
+    const schema = pbjs.parseSchema(fs.readFileSync('./test/fixtures/peer.proto', 'utf-8')).compile()
+    const pbjsBuf = schema.encodePeer(peer)
+
+    const encoded = Peer.encode(peer)
+    expect(encoded).to.equalBytes(pbjsBuf)
+
+    expect(Peer.decode(encoded)).to.deep.equal(peer)
+    expect(Peer.decode(pbjsBuf)).to.deep.equal(peer)
   })
 })
