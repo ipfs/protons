@@ -1,3 +1,10 @@
+## [protons-runtime-v1.0.2](https://github.com/ipfs/protons/compare/protons-runtime-v1.0.1...protons-runtime-v1.0.2) (2022-04-08)
+
+
+### Trivial Changes
+
+* update readme ([#27](https://github.com/ipfs/protons/issues/27)) ([0ccb1a3](https://github.com/ipfs/protons/commit/0ccb1a36766e620eed2fb65973ff2d6c7854caf9))
+
 ## [protons-runtime-v1.0.1](https://github.com/ipfs/protons/compare/protons-runtime-v1.0.0...protons-runtime-v1.0.1) (2022-04-08)
 
 
