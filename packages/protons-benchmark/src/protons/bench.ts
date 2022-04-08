@@ -8,16 +8,18 @@ export interface Foo {
 }
 
 export namespace Foo {
-  export const codec = message<Foo>({
-    1: { name: 'baz', codec: uint32 }
-  })
+  export const codec = () => {
+    return message<Foo>({
+      1: { name: 'baz', codec: uint32 }
+    })
+  }
 
   export const encode = (obj: Foo): Uint8Array => {
-    return encodeMessage(obj, Foo.codec)
+    return encodeMessage(obj, Foo.codec())
   }
 
   export const decode = (buf: Uint8Array): Foo => {
-    return decodeMessage(buf, Foo.codec)
+    return decodeMessage(buf, Foo.codec())
   }
 }
 
@@ -26,16 +28,18 @@ export interface Bar {
 }
 
 export namespace Bar {
-  export const codec = message<Bar>({
-    1: { name: 'tmp', codec: Foo.codec }
-  })
+  export const codec = () => {
+    return message<Bar>({
+      1: { name: 'tmp', codec: Foo.codec() }
+    })
+  }
 
   export const encode = (obj: Bar): Uint8Array => {
-    return encodeMessage(obj, Bar.codec)
+    return encodeMessage(obj, Bar.codec())
   }
 
   export const decode = (buf: Uint8Array): Bar => {
-    return decodeMessage(buf, Bar.codec)
+    return decodeMessage(buf, Bar.codec())
   }
 }
 
@@ -45,7 +49,9 @@ export enum FOO {
 }
 
 export namespace FOO {
-  export const codec = enumeration<typeof FOO>(FOO)
+  export const codec = () => {
+    return enumeration<typeof FOO>(FOO)
+  }
 }
 
 export interface Yo {
@@ -53,16 +59,18 @@ export interface Yo {
 }
 
 export namespace Yo {
-  export const codec = message<Yo>({
-    1: { name: 'lol', codec: FOO.codec, repeats: true }
-  })
+  export const codec = () => {
+    return message<Yo>({
+      1: { name: 'lol', codec: FOO.codec(), repeats: true }
+    })
+  }
 
   export const encode = (obj: Yo): Uint8Array => {
-    return encodeMessage(obj, Yo.codec)
+    return encodeMessage(obj, Yo.codec())
   }
 
   export const decode = (buf: Uint8Array): Yo => {
-    return decodeMessage(buf, Yo.codec)
+    return decodeMessage(buf, Yo.codec())
   }
 }
 
@@ -72,17 +80,19 @@ export interface Lol {
 }
 
 export namespace Lol {
-  export const codec = message<Lol>({
-    1: { name: 'lol', codec: string },
-    2: { name: 'b', codec: Bar.codec }
-  })
+  export const codec = () => {
+    return message<Lol>({
+      1: { name: 'lol', codec: string },
+      2: { name: 'b', codec: Bar.codec() }
+    })
+  }
 
   export const encode = (obj: Lol): Uint8Array => {
-    return encodeMessage(obj, Lol.codec)
+    return encodeMessage(obj, Lol.codec())
   }
 
   export const decode = (buf: Uint8Array): Lol => {
-    return decodeMessage(buf, Lol.codec)
+    return decodeMessage(buf, Lol.codec())
   }
 }
 
@@ -94,18 +104,20 @@ export interface Test {
 }
 
 export namespace Test {
-  export const codec = message<Test>({
-    6: { name: 'meh', codec: Lol.codec },
-    3: { name: 'hello', codec: uint32 },
-    1: { name: 'foo', codec: string },
-    7: { name: 'payload', codec: bytes }
-  })
+  export const codec = () => {
+    return message<Test>({
+      6: { name: 'meh', codec: Lol.codec() },
+      3: { name: 'hello', codec: uint32 },
+      1: { name: 'foo', codec: string },
+      7: { name: 'payload', codec: bytes }
+    })
+  }
 
   export const encode = (obj: Test): Uint8Array => {
-    return encodeMessage(obj, Test.codec)
+    return encodeMessage(obj, Test.codec())
   }
 
   export const decode = (buf: Uint8Array): Test => {
-    return decodeMessage(buf, Test.codec)
+    return decodeMessage(buf, Test.codec())
   }
 }

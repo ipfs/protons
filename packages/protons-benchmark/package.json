@@ -59,9 +59,10 @@
     ]
   },
   "scripts": {
+    "clean": "aegir clean",
     "lint": "aegir lint",
     "dep-check": "aegir dep-check",
-    "build": "aegir build && cp src/protobufjs/bench.js dist/src/protobufjs",
+    "build": "aegir build && cp -R src/protobufjs dist/src/protobufjs",
     "prestart": "npm run build",
     "start": "node dist/src/index.js"
   },
