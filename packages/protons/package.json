@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons#readme",
@@ -152,7 +152,7 @@
     "protobufjs": "^6.11.2"
   },
   "devDependencies": {
-     "aegir": "^37.0.5",
+    "aegir": "^37.0.5",
     "pbjs": "^0.0.14",
     "protons-runtime": "^1.0.0"
   }

@@ -1,3 +1,15 @@
+## [protons-v3.0.2](https://github.com/ipfs/protons/compare/protons-v3.0.1...protons-v3.0.2) (2022-04-08)
+
+
+### Bug Fixes
+
+* update aegir, make codec creation dynamic ([#26](https://github.com/ipfs/protons/issues/26)) ([ecc46cc](https://github.com/ipfs/protons/commit/ecc46ccad90696c4d5cda6b2cb1db723770577d0))
+
+
+### Trivial Changes
+
+* update readme ([#27](https://github.com/ipfs/protons/issues/27)) ([0ccb1a3](https://github.com/ipfs/protons/commit/0ccb1a36766e620eed2fb65973ff2d6c7854caf9))
+
 ## [protons-v3.0.1](https://github.com/ipfs/protons/compare/protons-v3.0.0...protons-v3.0.1) (2022-03-31)
 
 
