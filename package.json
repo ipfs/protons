@@ -33,7 +33,7 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "dep-check": "lerna run dep-check",
-    "release": "lerna run release --concurrency 1"
+    "release": "lerna run release --concurrency 1 -- --"
   },
   "dependencies": {
     "lerna": "^4.0.0",

@@ -64,12 +64,10 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
   const decode: DecodeFunction<T> = function messageDecode (buffer, offset) {
     const length = unsigned.decode(buffer, offset)
     offset += unsigned.encodingLength(length)
-
+    const end = offset + length
     const fields: any = {}
 
-    while (offset < buffer.length) {
-      // console.info('start offset', offset)
-
+    while (offset < end) {
       const key = unsigned.decode(buffer, offset)
       offset += unsigned.encodingLength(key)
 
@@ -78,10 +76,7 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       const fieldDef = fieldDefs[fieldNumber]
       let fieldLength = 0
 
-      // console.info('fieldNumber', fieldNumber, 'wireType', wireType, 'offset', offset)
-
       if (wireType === CODEC_TYPES.VARINT) {
-        // console.info('decode varint')
         if (fieldDef != null) {
           // use the codec if it is available as this could be a bigint
           const value = fieldDef.codec.decode(buffer, offset)
@@ -91,14 +86,11 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
           fieldLength = unsigned.encodingLength(value)
         }
       } else if (wireType === CODEC_TYPES.BIT64) {
-        // console.info('decode 64bit')
         fieldLength = 8
       } else if (wireType === CODEC_TYPES.LENGTH_DELIMITED) {
-        // console.info('decode length delimited')
         const valueLength = unsigned.decode(buffer, offset)
         fieldLength = valueLength + unsigned.encodingLength(valueLength)
       } else if (wireType === CODEC_TYPES.BIT32) {
-        // console.info('decode 32 bit')
         fieldLength = 4
       } else if (wireType === CODEC_TYPES.START_GROUP) {
         throw new Error('Unsupported wire type START_GROUP')
@@ -106,10 +98,7 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
         throw new Error('Unsupported wire type END_GROUP')
       }
 
-      // console.info('fieldLength', fieldLength)
-
       if (fieldDef != null) {
-        // console.info('decode', fieldDef.codec.name, fieldDef.name, 'at offset', offset)
         const value = fieldDef.codec.decode(buffer, offset)
 
         if (fieldDef.repeats === true) {
@@ -121,8 +110,6 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
         } else {
           fields[fieldDef.name] = value
         }
-
-        // console.info('decoded', value)
       }
 
       offset += fieldLength
