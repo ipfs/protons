@@ -1,5 +1,7 @@
 # protons <!-- omit in toc -->
 
+[![test & maybe release](https://github.com/ipfs/protons/actions/workflows/js-test-and-release.yml/badge.svg)](https://github.com/ipfs/protons/actions/workflows/js-test-and-release.yml)
+
 > Generate typescript from .proto files
 
 ## Table of contents <!-- omit in toc -->

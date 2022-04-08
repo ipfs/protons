@@ -1,5 +1,7 @@
 # protons-runtime <!-- omit in toc -->
 
+[![test & maybe release](https://github.com/ipfs/protons/actions/workflows/js-test-and-release.yml/badge.svg)](https://github.com/ipfs/protons/actions/workflows/js-test-and-release.yml)
+
 > Shared components that turn values to bytes and back again
 
 Contains shared code to reduce code duplication between modules transpiled by protons.

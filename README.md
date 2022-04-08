@@ -1,5 +1,7 @@
 # protons
 
+[![test & maybe release](https://github.com/ipfs/protons/actions/workflows/js-test-and-release.yml/badge.svg)](https://github.com/ipfs/protons/actions/workflows/js-test-and-release.yml)
+
 > `.proto` to `.ts` transpiler
 
 Transpiles `.proto` files to `.ts` - uses `Uint8Array` for `byte` fields and `BigInt` for `int64`/`uint64` and `sint64`.
