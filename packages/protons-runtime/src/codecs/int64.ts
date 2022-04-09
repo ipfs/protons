@@ -5,11 +5,8 @@ const encodingLength: EncodingLengthFunction<bigint> = function int64EncodingLen
   return signed.encodingLength(val)
 }
 
-const encode: EncodeFunction<bigint> = function int64Encode (val) {
-  const buf = new Uint8Array(encodingLength(val))
-  signed.encode(val, buf)
-
-  return buf
+const encode: EncodeFunction<bigint> = function int64Encode (val, buf, offset) {
+  return signed.encode(val, buf, offset)
 }
 
 const decode: DecodeFunction<bigint> = function int64Decode (buf, offset) {

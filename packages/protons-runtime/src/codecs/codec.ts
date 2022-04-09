@@ -11,7 +11,7 @@ export enum CODEC_TYPES {
 }
 
 export interface EncodeFunction<T> {
-  (value: T): Uint8Array | Uint8ArrayList
+  (value: T, buf: Uint8ArrayList, offset: number): number
 }
 
 export interface DecodeFunction<T> {

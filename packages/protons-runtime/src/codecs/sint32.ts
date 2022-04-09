@@ -5,12 +5,8 @@ const encodingLength: EncodingLengthFunction<number> = function sint32EncodingLe
   return zigzag.encodingLength(val)
 }
 
-const encode: EncodeFunction<number> = function svarintEncode (val) {
-  const buf = new Uint8Array(encodingLength(val))
-
-  zigzag.encode(val, buf)
-
-  return buf
+const encode: EncodeFunction<number> = function svarintEncode (val, buf, offset) {
+  return zigzag.encode(val, buf, offset)
 }
 
 const decode: DecodeFunction<number> = function svarintDecode (buf, offset) {

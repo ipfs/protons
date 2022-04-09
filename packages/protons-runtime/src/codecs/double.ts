@@ -1,15 +1,13 @@
-import { Uint8ArrayList } from 'uint8arraylist'
 import { DecodeFunction, EncodeFunction, createCodec, EncodingLengthFunction, CODEC_TYPES } from './codec.js'
 
 const encodingLength: EncodingLengthFunction<number> = function doubleEncodingLength () {
   return 8
 }
 
-const encode: EncodeFunction<number> = function doubleEncode (val) {
-  const buf = new Uint8ArrayList(new Uint8Array(encodingLength(val)))
-  buf.setFloat64(0, val, true)
+const encode: EncodeFunction<number> = function doubleEncode (val, buf, offset) {
+  buf.setFloat64(offset, val, true)
 
-  return buf
+  return offset + encodingLength(val)
 }
 
 const decode: DecodeFunction<number> = function doubleDecode (buf, offset) {
