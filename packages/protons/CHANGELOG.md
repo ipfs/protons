@@ -1,3 +1,10 @@
+## [protons-v3.0.3](https://github.com/ipfs/protons/compare/protons-v3.0.2...protons-v3.0.3) (2022-04-10)
+
+
+### Bug Fixes
+
+* remove redundant defs and declare codec return type ([#28](https://github.com/ipfs/protons/issues/28)) ([c3ea5ec](https://github.com/ipfs/protons/commit/c3ea5ec9101e37d8ac0437eb22ac0b4eeeb14eb7))
+
 ## [protons-v3.0.2](https://github.com/ipfs/protons/compare/protons-v3.0.1...protons-v3.0.2) (2022-04-08)
 
 
