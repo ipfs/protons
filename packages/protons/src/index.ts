@@ -141,8 +141,7 @@ export namespace ${messageDef.name} {
   export const codec = () => {
     return enumeration<typeof ${messageDef.name}>(${messageDef.name})
   }
-}
-`
+}`.trim()
   }
 
   let nested = ''
@@ -151,11 +150,10 @@ export namespace ${messageDef.name} {
     nested = '\n'
     nested += Object.values(messageDef.nested)
       .map(def => compileMessage(def, moduleDef).trim())
-      .join('\n')
+      .join('\n\n')
       .split('\n')
       .map(line => line.trim() === '' ? '' : `  ${line}`)
       .join('\n')
-    nested += '\n'
   }
 
   const fields = messageDef.fields ?? {}
@@ -164,18 +162,26 @@ export namespace ${messageDef.name} {
   moduleDef.imports.add('encodeMessage')
   moduleDef.imports.add('decodeMessage')
   moduleDef.imports.add('message')
+  moduleDef.importedTypes.add('Codec')
 
-  return `
+  const interfaceFields = defineFields(fields, messageDef, moduleDef)
+    .join('\n  ')
+    .trim()
+
+  let interfaceDef = ''
+  let interfaceCodecDef = ''
+
+  if (interfaceFields !== '') {
+    interfaceDef = `
 export interface ${messageDef.name} {
   ${
     defineFields(fields, messageDef, moduleDef)
       .join('\n  ')
       .trim()
   }
-}
-
-export namespace ${messageDef.name} {${nested}
-  export const codec = () => {
+}`
+    interfaceCodecDef = `
+  export const codec = (): Codec<${messageDef.name}> => {
     return message<${messageDef.name}>({
       ${Object.entries(fields)
       .map(([name, fieldDef]) => {
@@ -207,13 +213,21 @@ export namespace ${messageDef.name} {${nested}
 
   export const decode = (buf: Uint8Array): ${messageDef.name} => {
     return decodeMessage(buf, ${messageDef.name}.codec())
+  }`
   }
+
+  return `
+${interfaceDef}
+
+export namespace ${messageDef.name} {
+  ${`${nested}${nested !== '' && interfaceCodecDef !== '' ? '\n' : ''}${interfaceCodecDef}`.trim()}
 }
-`
+`.trimStart()
 }
 
 interface ModuleDef {
   imports: Set<string>
+  importedTypes: Set<string>
   types: Set<string>
   compiled: string[]
   globals: Record<string, ClassDef>
@@ -222,6 +236,7 @@ interface ModuleDef {
 function defineModule (def: ClassDef): ModuleDef {
   const moduleDef: ModuleDef = {
     imports: new Set(),
+    importedTypes: new Set(),
     types: new Set(),
     compiled: [],
     globals: {}
@@ -273,14 +288,27 @@ export async function generate (source: string, flags: any) {
   const def = JSON.parse(json)
   const moduleDef = defineModule(def)
 
-  const content = `
-/* eslint-disable import/export */
-/* eslint-disable @typescript-eslint/no-namespace */
+  let lines = [
+    '/* eslint-disable import/export */',
+    '/* eslint-disable @typescript-eslint/no-namespace */',
+    ''
+  ]
 
-import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'
+  if (moduleDef.imports.size > 0) {
+    lines.push(`import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'`)
+  }
 
-${moduleDef.compiled.map(str => str.trim()).join('\n\n').trim()}
-`.trim()
+  if (moduleDef.importedTypes.size > 0) {
+    lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
+  }
+
+  lines = [
+    ...lines,
+    '',
+    ...moduleDef.compiled
+  ]
+
+  const content = lines.join('\n').trim()
 
   await fs.writeFile(pathWithExtension(source, '.ts'), content + '\n')
 }

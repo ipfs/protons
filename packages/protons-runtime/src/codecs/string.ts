@@ -1,7 +1,8 @@
 import { unsigned } from '../utils/varint.js'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
-import { DecodeFunction, EncodeFunction, createCodec, EncodingLengthFunction, CODEC_TYPES } from './codec.js'
+import { createCodec, CODEC_TYPES } from '../codec.js'
+import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 import { Uint8ArrayList } from 'uint8arraylist'
 
 const encodingLength: EncodingLengthFunction<string> = function stringEncodingLength (val) {

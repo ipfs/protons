@@ -1,5 +1,6 @@
 import { unsigned } from '../utils/big-varint.js'
-import { DecodeFunction, EncodeFunction, createCodec, EncodingLengthFunction, CODEC_TYPES } from './codec.js'
+import { createCodec, CODEC_TYPES } from '../codec.js'
+import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
 const encodingLength: EncodingLengthFunction<bigint> = function uint64EncodingLength (val) {
   return unsigned.encodingLength(val)

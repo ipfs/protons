@@ -1,7 +1,8 @@
 import { unsigned } from '../utils/varint.js'
-import type { FieldDef, FieldDefs } from '../index.js'
-import { DecodeFunction, EncodeFunction, createCodec, EncodingLengthFunction, Codec, CODEC_TYPES } from './codec.js'
+import { createCodec, CODEC_TYPES } from '../codec.js'
+import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
 import { Uint8ArrayList } from 'uint8arraylist'
+import type { FieldDefs, FieldDef } from '../index.js'
 
 export interface Factory<A, T> {
   new (obj: A): T
