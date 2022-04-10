@@ -1,6 +1,7 @@
 
 import { unsigned } from '../utils/varint.js'
-import { DecodeFunction, EncodeFunction, createCodec, EncodingLengthFunction, Codec, CODEC_TYPES } from './codec.js'
+import { createCodec, CODEC_TYPES } from '../codec.js'
+import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
 
 export function enumeration <T> (e: T): Codec<T> {
   const encodingLength: EncodingLengthFunction<string> = function enumEncodingLength (val: string) {

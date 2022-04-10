@@ -1,4 +1,4 @@
-import type { Codec } from './codecs/codec.js'
+import type { Codec } from './codec.js'
 import { unsigned } from './utils/varint.js'
 
 export function encodeMessage <T> (message: T, codec: Codec<T>) {

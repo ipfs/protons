@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import { encodeMessage, decodeMessage, message, bytes, string, enumeration, int32 } from 'protons-runtime'
+import type { Codec } from 'protons-runtime'
 
 export interface Record {
   key?: Uint8Array
@@ -12,20 +13,22 @@ export interface Record {
 }
 
 export namespace Record {
-  export const codec = message<Record>({
-    1: { name: 'key', codec: bytes, optional: true },
-    2: { name: 'value', codec: bytes, optional: true },
-    3: { name: 'author', codec: bytes, optional: true },
-    4: { name: 'signature', codec: bytes, optional: true },
-    5: { name: 'timeReceived', codec: string, optional: true }
-  })
+  export const codec = (): Codec<Record> => {
+    return message<Record>({
+      1: { name: 'key', codec: bytes, optional: true },
+      2: { name: 'value', codec: bytes, optional: true },
+      3: { name: 'author', codec: bytes, optional: true },
+      4: { name: 'signature', codec: bytes, optional: true },
+      5: { name: 'timeReceived', codec: string, optional: true }
+    })
+  }
 
   export const encode = (obj: Record): Uint8Array => {
-    return encodeMessage(obj, Record.codec)
+    return encodeMessage(obj, Record.codec())
   }
 
   export const decode = (buf: Uint8Array): Record => {
-    return decodeMessage(buf, Record.codec)
+    return decodeMessage(buf, Record.codec())
   }
 }
 
@@ -49,8 +52,11 @@ export namespace Message {
   }
 
   export namespace MessageType {
-    export const codec = enumeration<typeof MessageType>(MessageType)
+    export const codec = () => {
+      return enumeration<typeof MessageType>(MessageType)
+    }
   }
+
   export enum ConnectionType {
     NOT_CONNECTED = 'NOT_CONNECTED',
     CONNECTED = 'CONNECTED',
@@ -59,8 +65,11 @@ export namespace Message {
   }
 
   export namespace ConnectionType {
-    export const codec = enumeration<typeof ConnectionType>(ConnectionType)
+    export const codec = () => {
+      return enumeration<typeof ConnectionType>(ConnectionType)
+    }
   }
+
   export interface Peer {
     id?: Uint8Array
     addrs: Uint8Array[]
@@ -68,35 +77,39 @@ export namespace Message {
   }
 
   export namespace Peer {
-    export const codec = message<Peer>({
-      1: { name: 'id', codec: bytes, optional: true },
-      2: { name: 'addrs', codec: bytes, repeats: true },
-      3: { name: 'connection', codec: Message.ConnectionType.codec, optional: true }
-    })
+    export const codec = (): Codec<Peer> => {
+      return message<Peer>({
+        1: { name: 'id', codec: bytes, optional: true },
+        2: { name: 'addrs', codec: bytes, repeats: true },
+        3: { name: 'connection', codec: Message.ConnectionType.codec(), optional: true }
+      })
+    }
 
     export const encode = (obj: Peer): Uint8Array => {
-      return encodeMessage(obj, Peer.codec)
+      return encodeMessage(obj, Peer.codec())
     }
 
     export const decode = (buf: Uint8Array): Peer => {
-      return decodeMessage(buf, Peer.codec)
+      return decodeMessage(buf, Peer.codec())
     }
   }
 
-  export const codec = message<Message>({
-    1: { name: 'type', codec: Message.MessageType.codec, optional: true },
-    10: { name: 'clusterLevelRaw', codec: int32, optional: true },
-    2: { name: 'key', codec: bytes, optional: true },
-    3: { name: 'record', codec: bytes, optional: true },
-    8: { name: 'closerPeers', codec: Message.Peer.codec, repeats: true },
-    9: { name: 'providerPeers', codec: Message.Peer.codec, repeats: true }
-  })
+  export const codec = (): Codec<Message> => {
+    return message<Message>({
+      1: { name: 'type', codec: Message.MessageType.codec(), optional: true },
+      10: { name: 'clusterLevelRaw', codec: int32, optional: true },
+      2: { name: 'key', codec: bytes, optional: true },
+      3: { name: 'record', codec: bytes, optional: true },
+      8: { name: 'closerPeers', codec: Message.Peer.codec(), repeats: true },
+      9: { name: 'providerPeers', codec: Message.Peer.codec(), repeats: true }
+    })
+  }
 
   export const encode = (obj: Message): Uint8Array => {
-    return encodeMessage(obj, Message.codec)
+    return encodeMessage(obj, Message.codec())
   }
 
   export const decode = (buf: Uint8Array): Message => {
-    return decodeMessage(buf, Message.codec)
+    return decodeMessage(buf, Message.codec())
   }
 }

@@ -1,4 +1,4 @@
-import type { Codec } from './codecs/codec.js'
+import type { Codec } from './codec.js'
 
 export interface FieldDef {
   name: string
@@ -35,3 +35,4 @@ export { sint64 } from './codecs/sint64.js'
 export { string } from './codecs/string.js'
 export { uint32 } from './codecs/uint32.js'
 export { uint64 } from './codecs/uint64.js'
+export type { Codec } from './codec.js'

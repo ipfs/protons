@@ -6,13 +6,13 @@ import { generate } from '../src/index.js'
 async function main () {
   const cli = meow(`
   Usage
-    $ protons source
+    $ protons source...
 
   Options
-    --output, -o  Path to a directory to write transpiled typescript files into
+    --output, -o Path to a directory to write transpiled typescript files into
 
   Examples
-    $ protons ./path/to/file.proto
+    $ protons ./path/to/file.proto ./path/to/other/file.proto
 `, {
     importMeta: import.meta,
     flags: {

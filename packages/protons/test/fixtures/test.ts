@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import { enumeration, encodeMessage, decodeMessage, message, string, bool, int32, int64, uint32, uint64, sint32, sint64, double, float, bytes, fixed32, fixed64, sfixed32, sfixed64 } from 'protons-runtime'
+import type { Codec } from 'protons-runtime'
 
 export enum AnEnum {
   HERP = 'HERP',
@@ -9,24 +10,27 @@ export enum AnEnum {
 }
 
 export namespace AnEnum {
-  export const codec = enumeration<typeof AnEnum>(AnEnum)
+  export const codec = () => {
+    return enumeration<typeof AnEnum>(AnEnum)
+  }
 }
-
 export interface SubMessage {
   foo: string
 }
 
 export namespace SubMessage {
-  export const codec = message<SubMessage>({
-    1: { name: 'foo', codec: string }
-  })
+  export const codec = (): Codec<SubMessage> => {
+    return message<SubMessage>({
+      1: { name: 'foo', codec: string }
+    })
+  }
 
   export const encode = (obj: SubMessage): Uint8Array => {
-    return encodeMessage(obj, SubMessage.codec)
+    return encodeMessage(obj, SubMessage.codec())
   }
 
   export const decode = (buf: Uint8Array): SubMessage => {
-    return decodeMessage(buf, SubMessage.codec)
+    return decodeMessage(buf, SubMessage.codec())
   }
 }
 
@@ -52,32 +56,34 @@ export interface AllTheTypes {
 }
 
 export namespace AllTheTypes {
-  export const codec = message<AllTheTypes>({
-    1: { name: 'field1', codec: bool, optional: true },
-    2: { name: 'field2', codec: int32, optional: true },
-    3: { name: 'field3', codec: int64, optional: true },
-    4: { name: 'field4', codec: uint32, optional: true },
-    5: { name: 'field5', codec: uint64, optional: true },
-    6: { name: 'field6', codec: sint32, optional: true },
-    7: { name: 'field7', codec: sint64, optional: true },
-    8: { name: 'field8', codec: double, optional: true },
-    9: { name: 'field9', codec: float, optional: true },
-    10: { name: 'field10', codec: string, optional: true },
-    11: { name: 'field11', codec: bytes, optional: true },
-    12: { name: 'field12', codec: AnEnum.codec, optional: true },
-    13: { name: 'field13', codec: SubMessage.codec, optional: true },
-    14: { name: 'field14', codec: string, repeats: true },
-    15: { name: 'field15', codec: fixed32, optional: true },
-    16: { name: 'field16', codec: fixed64, optional: true },
-    17: { name: 'field17', codec: sfixed32, optional: true },
-    18: { name: 'field18', codec: sfixed64, optional: true }
-  })
+  export const codec = (): Codec<AllTheTypes> => {
+    return message<AllTheTypes>({
+      1: { name: 'field1', codec: bool, optional: true },
+      2: { name: 'field2', codec: int32, optional: true },
+      3: { name: 'field3', codec: int64, optional: true },
+      4: { name: 'field4', codec: uint32, optional: true },
+      5: { name: 'field5', codec: uint64, optional: true },
+      6: { name: 'field6', codec: sint32, optional: true },
+      7: { name: 'field7', codec: sint64, optional: true },
+      8: { name: 'field8', codec: double, optional: true },
+      9: { name: 'field9', codec: float, optional: true },
+      10: { name: 'field10', codec: string, optional: true },
+      11: { name: 'field11', codec: bytes, optional: true },
+      12: { name: 'field12', codec: AnEnum.codec(), optional: true },
+      13: { name: 'field13', codec: SubMessage.codec(), optional: true },
+      14: { name: 'field14', codec: string, repeats: true },
+      15: { name: 'field15', codec: fixed32, optional: true },
+      16: { name: 'field16', codec: fixed64, optional: true },
+      17: { name: 'field17', codec: sfixed32, optional: true },
+      18: { name: 'field18', codec: sfixed64, optional: true }
+    })
+  }
 
   export const encode = (obj: AllTheTypes): Uint8Array => {
-    return encodeMessage(obj, AllTheTypes.codec)
+    return encodeMessage(obj, AllTheTypes.codec())
   }
 
   export const decode = (buf: Uint8Array): AllTheTypes => {
-    return decodeMessage(buf, AllTheTypes.codec)
+    return decodeMessage(buf, AllTheTypes.codec())
   }
 }

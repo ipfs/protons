@@ -24,13 +24,13 @@ export interface EncodingLengthFunction<T> {
 
 export interface Codec<T> {
   name: string
-  type: number
+  type: CODEC_TYPES
   encode: EncodeFunction<T>
   decode: DecodeFunction<T>
   encodingLength: EncodingLengthFunction<T>
 }
 
-export function createCodec <T> (name: string, type: number, encode: EncodeFunction<T>, decode: DecodeFunction<T>, encodingLength: EncodingLengthFunction<T>): Codec<T> {
+export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>, encodingLength: EncodingLengthFunction<T>): Codec<T> {
   return {
     name,
     type,
