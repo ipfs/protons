@@ -1,3 +1,10 @@
+## [protons-v3.0.4](https://github.com/ipfs/protons/compare/protons-v3.0.3...protons-v3.0.4) (2022-05-10)
+
+
+### Bug Fixes
+
+* encode enum values ([#30](https://github.com/ipfs/protons/issues/30)) ([676c01d](https://github.com/ipfs/protons/commit/676c01dae7ff5b4d3985113573079ba605d83ef6))
+
 ## [protons-v3.0.3](https://github.com/ipfs/protons/compare/protons-v3.0.2...protons-v3.0.3) (2022-04-10)
 
 
