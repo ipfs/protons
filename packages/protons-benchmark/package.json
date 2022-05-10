@@ -67,14 +67,12 @@
     "start": "node dist/src/index.js"
   },
   "dependencies": {
+    "aegir": "^37.0.5",
     "benny": "^3.7.1",
     "pbjs": "^0.0.14",
     "protobufjs": "^6.11.2",
     "protons": "^2.0.0",
     "protons-runtime": "^0.0.0"
-  },
-  "devDependencies": {
-    "aegir": "^37.0.5"
   },
   "private": true
 }
