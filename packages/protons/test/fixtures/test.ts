@@ -9,9 +9,14 @@ export enum AnEnum {
   DERP = 'DERP'
 }
 
+enum __AnEnumValues {
+  HERP = 0,
+  DERP = 1
+}
+
 export namespace AnEnum {
   export const codec = () => {
-    return enumeration<typeof AnEnum>(AnEnum)
+    return enumeration<typeof AnEnum>(__AnEnumValues)
   }
 }
 export interface SubMessage {
