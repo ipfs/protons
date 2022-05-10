@@ -6,8 +6,9 @@ import pbjs from 'pbjs'
 import { Basic } from './fixtures/basic.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
 import fs from 'fs'
-import protobufjs from 'protobufjs'
+import protobufjs, { Type as PBType } from 'protobufjs'
 import { Peer } from './fixtures/peer.js'
+import { CircuitRelay } from './fixtures/circuit.js'
 
 const Long = protobufjs.util.Long
 
@@ -159,5 +160,25 @@ describe('encode', () => {
 
     expect(Peer.decode(encoded)).to.deep.equal(peer)
     expect(Peer.decode(pbjsBuf)).to.deep.equal(peer)
+  })
+
+  it('decodes enums with values that are not 0-n', () => {
+    const message: CircuitRelay = {
+      type: CircuitRelay.Type.STOP,
+      code: CircuitRelay.Status.HOP_NO_CONN_TO_DST
+    }
+
+    const root = protobufjs.loadSync('./test/fixtures/circuit.proto')
+    // @ts-expect-error
+    const PbCircuitRelay = root.nested.CircuitRelay as PBType
+
+    const pbufJsBuf = PbCircuitRelay.encode(PbCircuitRelay.fromObject(message)).finish()
+
+    const encoded = CircuitRelay.encode(message)
+
+    expect(encoded).to.equalBytes(pbufJsBuf)
+
+    expect(CircuitRelay.decode(encoded)).to.deep.equal(message)
+    expect(CircuitRelay.decode(pbufJsBuf)).to.deep.equal(message)
   })
 })

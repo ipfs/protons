@@ -51,9 +51,18 @@ export namespace Message {
     PING = 'PING'
   }
 
+  enum __MessageTypeValues {
+    PUT_VALUE = 0,
+    GET_VALUE = 1,
+    ADD_PROVIDER = 2,
+    GET_PROVIDERS = 3,
+    FIND_NODE = 4,
+    PING = 5
+  }
+
   export namespace MessageType {
     export const codec = () => {
-      return enumeration<typeof MessageType>(MessageType)
+      return enumeration<typeof MessageType>(__MessageTypeValues)
     }
   }
 
@@ -64,9 +73,16 @@ export namespace Message {
     CANNOT_CONNECT = 'CANNOT_CONNECT'
   }
 
+  enum __ConnectionTypeValues {
+    NOT_CONNECTED = 0,
+    CONNECTED = 1,
+    CAN_CONNECT = 2,
+    CANNOT_CONNECT = 3
+  }
+
   export namespace ConnectionType {
     export const codec = () => {
-      return enumeration<typeof ConnectionType>(ConnectionType)
+      return enumeration<typeof ConnectionType>(__ConnectionTypeValues)
     }
   }
 

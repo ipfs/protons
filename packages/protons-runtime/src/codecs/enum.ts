@@ -3,33 +3,43 @@ import { unsigned } from '../utils/varint.js'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
 
-export function enumeration <T> (e: T): Codec<T> {
-  const encodingLength: EncodingLengthFunction<string> = function enumEncodingLength (val: string) {
-    const keys = Object.keys(e)
-    const index = keys.indexOf(val)
+export function enumeration <T> (v: any): Codec<T> {
+  function findValue (val: string | number): number {
+    if (v[val.toString()] == null) {
+      throw new Error('Invalid enum value')
+    }
 
-    return unsigned.encodingLength(index)
+    if (typeof val === 'number') {
+      return val
+    }
+
+    return v[val]
   }
 
-  const encode: EncodeFunction<string> = function enumEncode (val) {
-    const keys = Object.keys(e)
-    const index = keys.indexOf(val)
-    const buf = new Uint8Array(unsigned.encodingLength(index))
+  const encodingLength: EncodingLengthFunction<number | string> = function enumEncodingLength (val) {
+    return unsigned.encodingLength(findValue(val))
+  }
 
-    unsigned.encode(index, buf)
+  const encode: EncodeFunction<number | string> = function enumEncode (val) {
+    const enumValue = findValue(val)
+
+    const buf = new Uint8Array(unsigned.encodingLength(enumValue))
+    unsigned.encode(enumValue, buf)
 
     return buf
   }
 
-  const decode: DecodeFunction<string> = function enumDecode (buf, offset) {
-    const index = unsigned.decode(buf, offset)
-    const keys = Object.keys(e)
+  const decode: DecodeFunction<number | string> = function enumDecode (buf, offset) {
+    const value = unsigned.decode(buf, offset)
+    const strValue = value.toString()
 
-    if (keys[index] == null) {
-      throw new Error('Could not find enum key for value')
+    // Use the reverse mapping to look up the enum key for the stored value
+    // https://www.typescriptlang.org/docs/handbook/enums.html#reverse-mappings
+    if (v[strValue] == null) {
+      throw new Error('Invalid enum value')
     }
 
-    return keys[index]
+    return v[strValue]
   }
 
   // @ts-expect-error yeah yeah

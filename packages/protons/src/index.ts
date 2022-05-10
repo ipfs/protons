@@ -131,15 +131,23 @@ function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef): string {
     return `
 export enum ${messageDef.name} {
   ${
-    Object.keys(messageDef.values).map(enumValueName => {
-      return `${enumValueName} = '${enumValueName}'`
+    Object.keys(messageDef.values).map(name => {
+      return `${name} = '${name}'`
+    }).join(',\n  ').trim()
+  }
+}
+
+enum __${messageDef.name}Values {
+  ${
+    Object.entries(messageDef.values).map(([name, value]) => {
+      return `${name} = ${value}`
     }).join(',\n  ').trim()
   }
 }
 
 export namespace ${messageDef.name} {
   export const codec = () => {
-    return enumeration<typeof ${messageDef.name}>(${messageDef.name})
+    return enumeration<typeof ${messageDef.name}>(__${messageDef.name}Values)
   }
 }`.trim()
   }

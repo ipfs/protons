@@ -30,9 +30,22 @@ export namespace Request {
     PEERSTORE = 'PEERSTORE'
   }
 
+  enum __TypeValues {
+    IDENTIFY = 0,
+    CONNECT = 1,
+    STREAM_OPEN = 2,
+    STREAM_HANDLER = 3,
+    DHT = 4,
+    LIST_PEERS = 5,
+    CONNMANAGER = 6,
+    DISCONNECT = 7,
+    PUBSUB = 8,
+    PEERSTORE = 9
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
@@ -76,9 +89,14 @@ export namespace Response {
     ERROR = 'ERROR'
   }
 
+  enum __TypeValues {
+    OK = 0,
+    ERROR = 1
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
@@ -263,9 +281,21 @@ export namespace DHTRequest {
     PROVIDE = 'PROVIDE'
   }
 
+  enum __TypeValues {
+    FIND_PEER = 0,
+    FIND_PEERS_CONNECTED_TO_PEER = 1,
+    FIND_PROVIDERS = 2,
+    GET_CLOSEST_PEERS = 3,
+    GET_PUBLIC_KEY = 4,
+    GET_VALUE = 5,
+    SEARCH_VALUE = 6,
+    PUT_VALUE = 7,
+    PROVIDE = 8
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
@@ -303,9 +333,15 @@ export namespace DHTResponse {
     END = 'END'
   }
 
+  enum __TypeValues {
+    BEGIN = 0,
+    VALUE = 1,
+    END = 2
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
@@ -362,9 +398,15 @@ export namespace ConnManagerRequest {
     TRIM = 'TRIM'
   }
 
+  enum __TypeValues {
+    TAG_PEER = 0,
+    UNTAG_PEER = 1,
+    TRIM = 2
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
@@ -420,9 +462,16 @@ export namespace PSRequest {
     SUBSCRIBE = 'SUBSCRIBE'
   }
 
+  enum __TypeValues {
+    GET_TOPICS = 0,
+    LIST_PEERS = 1,
+    PUBLISH = 2,
+    SUBSCRIBE = 3
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
@@ -507,9 +556,14 @@ export namespace PeerstoreRequest {
     GET_PEER_INFO = 'GET_PEER_INFO'
   }
 
+  enum __TypeValues {
+    GET_PROTOCOLS = 1,
+    GET_PEER_INFO = 2
+  }
+
   export namespace Type {
     export const codec = () => {
-      return enumeration<typeof Type>(Type)
+      return enumeration<typeof Type>(__TypeValues)
     }
   }
 
