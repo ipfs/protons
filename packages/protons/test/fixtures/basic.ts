@@ -3,6 +3,7 @@
 
 import { encodeMessage, decodeMessage, message, string, int32 } from 'protons-runtime'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Basic {
   foo: string
@@ -17,11 +18,11 @@ export namespace Basic {
     })
   }
 
-  export const encode = (obj: Basic): Uint8Array => {
+  export const encode = (obj: Basic): Uint8ArrayList => {
     return encodeMessage(obj, Basic.codec())
   }
 
-  export const decode = (buf: Uint8Array): Basic => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Basic => {
     return decodeMessage(buf, Basic.codec())
   }
 }

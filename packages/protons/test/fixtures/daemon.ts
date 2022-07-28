@@ -3,6 +3,7 @@
 
 import { enumeration, encodeMessage, decodeMessage, message, bytes, int64, string, int32 } from 'protons-runtime'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Request {
   type: Request.Type
@@ -63,11 +64,11 @@ export namespace Request {
     })
   }
 
-  export const encode = (obj: Request): Uint8Array => {
+  export const encode = (obj: Request): Uint8ArrayList => {
     return encodeMessage(obj, Request.codec())
   }
 
-  export const decode = (buf: Uint8Array): Request => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Request => {
     return decodeMessage(buf, Request.codec())
   }
 }
@@ -113,11 +114,11 @@ export namespace Response {
     })
   }
 
-  export const encode = (obj: Response): Uint8Array => {
+  export const encode = (obj: Response): Uint8ArrayList => {
     return encodeMessage(obj, Response.codec())
   }
 
-  export const decode = (buf: Uint8Array): Response => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Response => {
     return decodeMessage(buf, Response.codec())
   }
 }
@@ -135,11 +136,11 @@ export namespace IdentifyResponse {
     })
   }
 
-  export const encode = (obj: IdentifyResponse): Uint8Array => {
+  export const encode = (obj: IdentifyResponse): Uint8ArrayList => {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array): IdentifyResponse => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): IdentifyResponse => {
     return decodeMessage(buf, IdentifyResponse.codec())
   }
 }
@@ -159,11 +160,11 @@ export namespace ConnectRequest {
     })
   }
 
-  export const encode = (obj: ConnectRequest): Uint8Array => {
+  export const encode = (obj: ConnectRequest): Uint8ArrayList => {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): ConnectRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): ConnectRequest => {
     return decodeMessage(buf, ConnectRequest.codec())
   }
 }
@@ -183,11 +184,11 @@ export namespace StreamOpenRequest {
     })
   }
 
-  export const encode = (obj: StreamOpenRequest): Uint8Array => {
+  export const encode = (obj: StreamOpenRequest): Uint8ArrayList => {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): StreamOpenRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): StreamOpenRequest => {
     return decodeMessage(buf, StreamOpenRequest.codec())
   }
 }
@@ -205,11 +206,11 @@ export namespace StreamHandlerRequest {
     })
   }
 
-  export const encode = (obj: StreamHandlerRequest): Uint8Array => {
+  export const encode = (obj: StreamHandlerRequest): Uint8ArrayList => {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): StreamHandlerRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): StreamHandlerRequest => {
     return decodeMessage(buf, StreamHandlerRequest.codec())
   }
 }
@@ -225,11 +226,11 @@ export namespace ErrorResponse {
     })
   }
 
-  export const encode = (obj: ErrorResponse): Uint8Array => {
+  export const encode = (obj: ErrorResponse): Uint8ArrayList => {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array): ErrorResponse => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): ErrorResponse => {
     return decodeMessage(buf, ErrorResponse.codec())
   }
 }
@@ -249,11 +250,11 @@ export namespace StreamInfo {
     })
   }
 
-  export const encode = (obj: StreamInfo): Uint8Array => {
+  export const encode = (obj: StreamInfo): Uint8ArrayList => {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
-  export const decode = (buf: Uint8Array): StreamInfo => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): StreamInfo => {
     return decodeMessage(buf, StreamInfo.codec())
   }
 }
@@ -311,11 +312,11 @@ export namespace DHTRequest {
     })
   }
 
-  export const encode = (obj: DHTRequest): Uint8Array => {
+  export const encode = (obj: DHTRequest): Uint8ArrayList => {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): DHTRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): DHTRequest => {
     return decodeMessage(buf, DHTRequest.codec())
   }
 }
@@ -353,11 +354,11 @@ export namespace DHTResponse {
     })
   }
 
-  export const encode = (obj: DHTResponse): Uint8Array => {
+  export const encode = (obj: DHTResponse): Uint8ArrayList => {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array): DHTResponse => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): DHTResponse => {
     return decodeMessage(buf, DHTResponse.codec())
   }
 }
@@ -375,11 +376,11 @@ export namespace PeerInfo {
     })
   }
 
-  export const encode = (obj: PeerInfo): Uint8Array => {
+  export const encode = (obj: PeerInfo): Uint8ArrayList => {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
-  export const decode = (buf: Uint8Array): PeerInfo => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): PeerInfo => {
     return decodeMessage(buf, PeerInfo.codec())
   }
 }
@@ -419,11 +420,11 @@ export namespace ConnManagerRequest {
     })
   }
 
-  export const encode = (obj: ConnManagerRequest): Uint8Array => {
+  export const encode = (obj: ConnManagerRequest): Uint8ArrayList => {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): ConnManagerRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): ConnManagerRequest => {
     return decodeMessage(buf, ConnManagerRequest.codec())
   }
 }
@@ -439,11 +440,11 @@ export namespace DisconnectRequest {
     })
   }
 
-  export const encode = (obj: DisconnectRequest): Uint8Array => {
+  export const encode = (obj: DisconnectRequest): Uint8ArrayList => {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): DisconnectRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): DisconnectRequest => {
     return decodeMessage(buf, DisconnectRequest.codec())
   }
 }
@@ -483,11 +484,11 @@ export namespace PSRequest {
     })
   }
 
-  export const encode = (obj: PSRequest): Uint8Array => {
+  export const encode = (obj: PSRequest): Uint8ArrayList => {
     return encodeMessage(obj, PSRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): PSRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): PSRequest => {
     return decodeMessage(buf, PSRequest.codec())
   }
 }
@@ -513,11 +514,11 @@ export namespace PSMessage {
     })
   }
 
-  export const encode = (obj: PSMessage): Uint8Array => {
+  export const encode = (obj: PSMessage): Uint8ArrayList => {
     return encodeMessage(obj, PSMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array): PSMessage => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): PSMessage => {
     return decodeMessage(buf, PSMessage.codec())
   }
 }
@@ -535,11 +536,11 @@ export namespace PSResponse {
     })
   }
 
-  export const encode = (obj: PSResponse): Uint8Array => {
+  export const encode = (obj: PSResponse): Uint8ArrayList => {
     return encodeMessage(obj, PSResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array): PSResponse => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): PSResponse => {
     return decodeMessage(buf, PSResponse.codec())
   }
 }
@@ -575,11 +576,11 @@ export namespace PeerstoreRequest {
     })
   }
 
-  export const encode = (obj: PeerstoreRequest): Uint8Array => {
+  export const encode = (obj: PeerstoreRequest): Uint8ArrayList => {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array): PeerstoreRequest => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): PeerstoreRequest => {
     return decodeMessage(buf, PeerstoreRequest.codec())
   }
 }
@@ -597,11 +598,11 @@ export namespace PeerstoreResponse {
     })
   }
 
-  export const encode = (obj: PeerstoreResponse): Uint8Array => {
+  export const encode = (obj: PeerstoreResponse): Uint8ArrayList => {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array): PeerstoreResponse => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): PeerstoreResponse => {
     return decodeMessage(buf, PeerstoreResponse.codec())
   }
 }

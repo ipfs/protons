@@ -3,6 +3,7 @@
 
 import { enumeration, encodeMessage, decodeMessage, message, string, bool, int32, int64, uint32, uint64, sint32, sint64, double, float, bytes, fixed32, fixed64, sfixed32, sfixed64 } from 'protons-runtime'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum AnEnum {
   HERP = 'HERP',
@@ -30,11 +31,11 @@ export namespace SubMessage {
     })
   }
 
-  export const encode = (obj: SubMessage): Uint8Array => {
+  export const encode = (obj: SubMessage): Uint8ArrayList => {
     return encodeMessage(obj, SubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array): SubMessage => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): SubMessage => {
     return decodeMessage(buf, SubMessage.codec())
   }
 }
@@ -84,11 +85,11 @@ export namespace AllTheTypes {
     })
   }
 
-  export const encode = (obj: AllTheTypes): Uint8Array => {
+  export const encode = (obj: AllTheTypes): Uint8ArrayList => {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 
-  export const decode = (buf: Uint8Array): AllTheTypes => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): AllTheTypes => {
     return decodeMessage(buf, AllTheTypes.codec())
   }
 }

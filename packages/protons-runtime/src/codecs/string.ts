@@ -23,7 +23,7 @@ const decode: DecodeFunction<string> = function stringDecode (buf, offset) {
   const strLen = unsigned.decode(buf, offset)
   offset += unsigned.encodingLength(strLen)
 
-  return uint8ArrayToString(buf.slice(offset, offset + strLen))
+  return uint8ArrayToString(buf.subarray(offset, offset + strLen))
 }
 
 export const string = createCodec('string', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength)

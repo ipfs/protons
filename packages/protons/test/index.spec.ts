@@ -39,7 +39,7 @@ describe('encode', () => {
     const schema = pbjs.parseSchema(fs.readFileSync('./test/fixtures/basic.proto', 'utf-8')).compile()
     const pbjsBuf = schema.encodeBasic(basic)
 
-    const encoded = Basic.encode(basic)
+    const encoded = Basic.encode(basic).subarray()
     expect(encoded).to.equalBytes(pbjsBuf)
 
     const decoded = Basic.decode(encoded)
@@ -76,7 +76,7 @@ describe('encode', () => {
     const schema = pbjs.parseSchema(fs.readFileSync('./test/fixtures/test.proto', 'utf-8')).compile()
     const pbjsBuf = schema.encodeAllTheTypes(longifyBigInts(allTheTypes))
 
-    const encoded = AllTheTypes.encode(allTheTypes)
+    const encoded = AllTheTypes.encode(allTheTypes).subarray()
     expect(encoded).to.equalBytes(pbjsBuf)
 
     expect(AllTheTypes.decode(encoded)).to.deep.equal(allTheTypes)
@@ -104,7 +104,7 @@ describe('encode', () => {
     const schema = pbjs.parseSchema(fs.readFileSync('./test/fixtures/test.proto', 'utf-8')).compile()
     const pbjsBuf = schema.encodeAllTheTypes(longifyBigInts(allTheTypes))
 
-    const encoded = AllTheTypes.encode(allTheTypes)
+    const encoded = AllTheTypes.encode(allTheTypes).subarray()
     expect(encoded).to.equalBytes(pbjsBuf)
 
     expect(AllTheTypes.decode(encoded)).to.deep.equal(allTheTypes)
@@ -132,7 +132,7 @@ describe('encode', () => {
     const schema = pbjs.parseSchema(fs.readFileSync('./test/fixtures/test.proto', 'utf-8')).compile()
     const pbjsBuf = schema.encodeAllTheTypes(longifyBigInts(allTheTypes))
 
-    const encoded = AllTheTypes.encode(allTheTypes)
+    const encoded = AllTheTypes.encode(allTheTypes).subarray()
     expect(encoded).to.equalBytes(pbjsBuf)
 
     expect(AllTheTypes.decode(encoded)).to.deep.equal(allTheTypes)
@@ -155,7 +155,7 @@ describe('encode', () => {
     const schema = pbjs.parseSchema(fs.readFileSync('./test/fixtures/peer.proto', 'utf-8')).compile()
     const pbjsBuf = schema.encodePeer(peer)
 
-    const encoded = Peer.encode(peer)
+    const encoded = Peer.encode(peer).subarray()
     expect(encoded).to.equalBytes(pbjsBuf)
 
     expect(Peer.decode(encoded)).to.deep.equal(peer)
@@ -174,7 +174,7 @@ describe('encode', () => {
 
     const pbufJsBuf = PbCircuitRelay.encode(PbCircuitRelay.fromObject(message)).finish()
 
-    const encoded = CircuitRelay.encode(message)
+    const encoded = CircuitRelay.encode(message).subarray()
 
     expect(encoded).to.equalBytes(pbufJsBuf)
 
