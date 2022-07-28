@@ -3,8 +3,9 @@ import path from 'path'
 import { promisify } from 'util'
 import fs from 'fs/promises'
 
-function pathWithExtension (input: string, extension: string) {
-  return path.join(path.dirname(input), path.basename(input).split('.').slice(0, -1).join('.') + extension)
+function pathWithExtension (input: string, extension: string, outputDir?: string) {
+  const output = outputDir ?? path.dirname(input)
+  return path.join(output, path.basename(input).split('.').slice(0, -1).join('.') + extension)
 }
 
 const types: Record<string, string> = {
@@ -285,7 +286,11 @@ function defineModule (def: ClassDef): ModuleDef {
   return moduleDef
 }
 
-export async function generate (source: string, flags: any) {
+interface Flags {
+  output?: string
+}
+
+export async function generate (source: string, flags: Flags) {
   // convert .protobuf to .json
   const json = await promisify(pbjs)(['-t', 'json', source])
 
@@ -318,5 +323,5 @@ export async function generate (source: string, flags: any) {
 
   const content = lines.join('\n').trim()
 
-  await fs.writeFile(pathWithExtension(source, '.ts'), content + '\n')
+  await fs.writeFile(pathWithExtension(source, '.ts', flags.output), content + '\n')
 }
