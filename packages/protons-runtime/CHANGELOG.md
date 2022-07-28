@@ -1,3 +1,14 @@
+## [protons-runtime-v2.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v1.0.4...protons-runtime-v2.0.0) (2022-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Uses Uint8ArrayList v2
+
+### Features
+
+* support no-copy serialization ([#54](https://github.com/ipfs/protons/issues/54)) ([caa0d71](https://github.com/ipfs/protons/commit/caa0d71b60367f2f3551688ad09fd695840e0852))
+
 ## [protons-runtime-v1.0.4](https://github.com/ipfs/protons/compare/protons-runtime-v1.0.3...protons-runtime-v1.0.4) (2022-05-10)
 
 
