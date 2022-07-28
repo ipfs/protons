@@ -1,3 +1,24 @@
+## [protons-v4.0.0](https://github.com/ipfs/protons/compare/protons-v3.0.5...protons-v4.0.0) (2022-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Uses Uint8ArrayList v2
+
+### Features
+
+* support no-copy serialization ([#54](https://github.com/ipfs/protons/issues/54)) ([caa0d71](https://github.com/ipfs/protons/commit/caa0d71b60367f2f3551688ad09fd695840e0852))
+
+
+### Bug Fixes
+
+* update project config ([3199131](https://github.com/ipfs/protons/commit/3199131f1f199bcb57fcf1e7aba4ca0b6d9207db))
+
+
+### Trivial Changes
+
+* update sibling dependencies [skip ci] ([c9291e0](https://github.com/ipfs/protons/commit/c9291e03b3b6a12140a5aa62a30bd94eac559fad))
+
 ## [protons-v3.0.5](https://github.com/ipfs/protons/compare/protons-v3.0.4...protons-v3.0.5) (2022-07-28)
 
 
