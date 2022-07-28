@@ -215,11 +215,11 @@ export interface ${messageDef.name} {
     })
   }
 
-  export const encode = (obj: ${messageDef.name}): Uint8Array => {
+  export const encode = (obj: ${messageDef.name}): Uint8ArrayList => {
     return encodeMessage(obj, ${messageDef.name}.codec())
   }
 
-  export const decode = (buf: Uint8Array): ${messageDef.name} => {
+  export const decode = (buf: Uint8Array | Uint8ArrayList): ${messageDef.name} => {
     return decodeMessage(buf, ${messageDef.name}.codec())
   }`
   }
@@ -308,6 +308,10 @@ export async function generate (source: string, flags: any) {
 
   if (moduleDef.importedTypes.size > 0) {
     lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
+  }
+
+  if (moduleDef.imports.has('encodeMessage')) {
+    lines.push("import type { Uint8ArrayList } from 'uint8arraylist'")
   }
 
   lines = [

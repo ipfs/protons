@@ -154,6 +154,7 @@
   "devDependencies": {
     "aegir": "^37.0.5",
     "pbjs": "^0.0.14",
-    "protons-runtime": "^1.0.0"
+    "protons-runtime": "^1.0.0",
+    "uint8arraylist": "^2.0.0"
   }
 }

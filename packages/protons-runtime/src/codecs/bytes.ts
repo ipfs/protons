@@ -21,7 +21,7 @@ const decode: DecodeFunction<Uint8Array> = function bytesDecode (buf, offset) {
   const byteLength = unsigned.decode(buf, offset)
   offset += unsigned.encodingLength(byteLength)
 
-  return buf.slice(offset, offset + byteLength)
+  return buf.subarray(offset, offset + byteLength)
 }
 
 export const bytes = createCodec('bytes', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength)
