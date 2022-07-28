@@ -1,3 +1,10 @@
+## [protons-runtime-v2.0.1](https://github.com/ipfs/protons/compare/protons-runtime-v2.0.0...protons-runtime-v2.0.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* update project config ([3199131](https://github.com/ipfs/protons/commit/3199131f1f199bcb57fcf1e7aba4ca0b6d9207db))
+
 ## [protons-runtime-v2.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v1.0.4...protons-runtime-v2.0.0) (2022-07-28)
 
 
