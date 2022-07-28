@@ -1,3 +1,10 @@
+## [protons-v3.0.5](https://github.com/ipfs/protons/compare/protons-v3.0.4...protons-v3.0.5) (2022-07-28)
+
+
+### Bug Fixes
+
+* use CLI flag `--output` ([#46](https://github.com/ipfs/protons/issues/46)) ([58dc0ba](https://github.com/ipfs/protons/commit/58dc0baed9fdf4ea65f0df8fde0875cc5f210c50))
+
 ## [protons-v3.0.4](https://github.com/ipfs/protons/compare/protons-v3.0.3...protons-v3.0.4) (2022-05-10)
 
 
