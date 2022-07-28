@@ -70,7 +70,7 @@
     "aegir": "^37.0.5",
     "benny": "^3.7.1",
     "pbjs": "^0.0.14",
-    "protobufjs": "^6.11.2",
+    "protobufjs": "^7.0.0",
     "protons": "^4.0.0",
     "protons-runtime": "^2.0.0"
   },
