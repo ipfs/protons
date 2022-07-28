@@ -44,12 +44,12 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/src/index.js",
-      "types": "./dist/src/index.d.ts"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
     },
     "./status": {
-      "import": "./dist/src/status.js",
-      "types": "./dist/src/status.d.ts"
+      "types": "./dist/src/status.d.ts",
+      "import": "./dist/src/status.js"
     }
   },
   "eslintConfig": {
@@ -85,15 +85,15 @@
               "release": "patch"
             },
             {
-              "type": "chore",
-              "release": "patch"
-            },
-            {
               "type": "docs",
               "release": "patch"
             },
             {
               "type": "test",
+              "release": "patch"
+            },
+            {
+              "type": "deps",
               "release": "patch"
             },
             {
@@ -123,7 +123,11 @@
               },
               {
                 "type": "docs",
-                "section": "Trivial Changes"
+                "section": "Documentation"
+              },
+              {
+                "type": "deps",
+                "section": "Dependencies"
               },
               {
                 "type": "test",
