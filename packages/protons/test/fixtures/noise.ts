@@ -18,7 +18,7 @@ export namespace pb {
         1: { name: 'identityKey', codec: bytes },
         2: { name: 'identitySig', codec: bytes },
         3: { name: 'data', codec: bytes }
-      })
+      }, false)
     }
 
     export const encode = (obj: NoiseHandshakePayload): Uint8ArrayList => {

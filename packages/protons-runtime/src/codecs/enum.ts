@@ -1,6 +1,6 @@
 
 import { unsigned } from 'uint8-varint'
-import { createCodec, CODEC_TYPES } from '../codec.js'
+import { createCodec, CODEC_TYPES, DefaultValueFunction, IsDefaultValueFunction } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
 import { allocUnsafe } from '../utils/alloc.js'
 
@@ -43,6 +43,14 @@ export function enumeration <T> (v: any): Codec<T> {
     return v[strValue]
   }
 
+  const defaultValue: DefaultValueFunction<number | string> = function defaultValue () {
+    return Object.values(v)[0] as (string | number)
+  }
+
+  const isDefaultValue: IsDefaultValueFunction<number| string> = function isDefaultValue (val) {
+    return val === defaultValue()
+  }
+
   // @ts-expect-error yeah yeah
-  return createCodec('enum', CODEC_TYPES.VARINT, encode, decode, encodingLength)
+  return createCodec('enum', CODEC_TYPES.VARINT, encode, decode, encodingLength, defaultValue, isDefaultValue)
 }

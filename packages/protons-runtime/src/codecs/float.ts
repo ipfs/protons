@@ -1,5 +1,5 @@
 import { Uint8ArrayList } from 'uint8arraylist'
-import { createCodec, CODEC_TYPES } from '../codec.js'
+import { createCodec, CODEC_TYPES, DefaultValueFunction, IsDefaultValueFunction } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
 const encodingLength: EncodingLengthFunction<number> = function floatEncodingLength () {
@@ -17,4 +17,8 @@ const decode: DecodeFunction<number> = function floatDecode (buf, offset) {
   return buf.getFloat32(offset, true)
 }
 
-export const float = createCodec('float', CODEC_TYPES.BIT32, encode, decode, encodingLength)
+const defaultValue: DefaultValueFunction<number> = () => 0
+
+const isDefaultValue: IsDefaultValueFunction<number> = (val) => val === defaultValue()
+
+export const float = createCodec('float', CODEC_TYPES.BIT32, encode, decode, encodingLength, defaultValue, isDefaultValue)

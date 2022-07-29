@@ -1,5 +1,5 @@
 import { unsigned } from 'uint8-varint'
-import { createCodec, CODEC_TYPES } from '../codec.js'
+import { createCodec, CODEC_TYPES, DefaultValueFunction, IsDefaultValueFunction } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
 const encodingLength: EncodingLengthFunction<number> = function uint32EncodingLength (val) {
@@ -18,4 +18,8 @@ const decode: DecodeFunction<number> = function uint32Decode (buf, offset) {
   // return value > 2147483647 ? value - 4294967296 : value
 }
 
-export const uint32 = createCodec('uint32', CODEC_TYPES.VARINT, encode, decode, encodingLength)
+const defaultValue: DefaultValueFunction<number> = () => 0
+
+const isDefaultValue: IsDefaultValueFunction<number> = (val) => val === defaultValue()
+
+export const uint32 = createCodec('uint32', CODEC_TYPES.VARINT, encode, decode, encodingLength, defaultValue, isDefaultValue)

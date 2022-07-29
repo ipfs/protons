@@ -87,7 +87,7 @@ export namespace CircuitRelay {
       return message<Peer>({
         1: { name: 'id', codec: bytes },
         2: { name: 'addrs', codec: bytes, repeats: true }
-      })
+      }, false)
     }
 
     export const encode = (obj: Peer): Uint8ArrayList => {
@@ -105,7 +105,7 @@ export namespace CircuitRelay {
       2: { name: 'srcPeer', codec: CircuitRelay.Peer.codec(), optional: true },
       3: { name: 'dstPeer', codec: CircuitRelay.Peer.codec(), optional: true },
       4: { name: 'code', codec: CircuitRelay.Status.codec(), optional: true }
-    })
+    }, false)
   }
 
   export const encode = (obj: CircuitRelay): Uint8ArrayList => {

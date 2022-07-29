@@ -15,7 +15,7 @@ export namespace Basic {
     return message<Basic>({
       1: { name: 'foo', codec: string, optional: true },
       2: { name: 'num', codec: int32 }
-    })
+    }, false)
   }
 
   export const encode = (obj: Basic): Uint8ArrayList => {

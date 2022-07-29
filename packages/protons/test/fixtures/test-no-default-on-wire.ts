@@ -28,7 +28,7 @@ export namespace SubMessage {
   export const codec = (): Codec<SubMessage> => {
     return message<SubMessage>({
       1: { name: 'foo', codec: string }
-    }, false)
+    }, true)
   }
 
   export const encode = (obj: SubMessage): Uint8ArrayList => {
@@ -40,7 +40,7 @@ export namespace SubMessage {
   }
 }
 
-export interface AllTheTypes {
+export interface AllTheTypesNoDefaultOnWire {
   field1?: boolean
   field2?: number
   field3?: bigint
@@ -61,9 +61,9 @@ export interface AllTheTypes {
   field18?: bigint
 }
 
-export namespace AllTheTypes {
-  export const codec = (): Codec<AllTheTypes> => {
-    return message<AllTheTypes>({
+export namespace AllTheTypesNoDefaultOnWire {
+  export const codec = (): Codec<AllTheTypesNoDefaultOnWire> => {
+    return message<AllTheTypesNoDefaultOnWire>({
       1: { name: 'field1', codec: bool, optional: true },
       2: { name: 'field2', codec: int32, optional: true },
       3: { name: 'field3', codec: int64, optional: true },
@@ -82,14 +82,14 @@ export namespace AllTheTypes {
       16: { name: 'field16', codec: fixed64, optional: true },
       17: { name: 'field17', codec: sfixed32, optional: true },
       18: { name: 'field18', codec: sfixed64, optional: true }
-    }, false)
+    }, true)
   }
 
-  export const encode = (obj: AllTheTypes): Uint8ArrayList => {
-    return encodeMessage(obj, AllTheTypes.codec())
+  export const encode = (obj: AllTheTypesNoDefaultOnWire): Uint8ArrayList => {
+    return encodeMessage(obj, AllTheTypesNoDefaultOnWire.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): AllTheTypes => {
-    return decodeMessage(buf, AllTheTypes.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList): AllTheTypesNoDefaultOnWire => {
+    return decodeMessage(buf, AllTheTypesNoDefaultOnWire.codec())
   }
 }

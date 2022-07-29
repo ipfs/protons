@@ -10,6 +10,7 @@ async function main () {
 
   Options
     --output, -o Path to a directory to write transpiled typescript files into
+    --no-default-on-wire Do not encode default values over the wire, decode absent fields as default values 
 
   Examples
     $ protons ./path/to/file.proto ./path/to/other/file.proto
@@ -19,6 +20,10 @@ async function main () {
       output: {
         type: 'string',
         alias: 'o'
+      },
+      defaultOnWire: {
+        type: 'boolean',
+        default: true
       }
     }
   })

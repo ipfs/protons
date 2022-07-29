@@ -125,7 +125,7 @@ function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef,
   })
 }
 
-function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef): string {
+function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef, noDefaultOnWire: boolean): string {
   if (isEnumDef(messageDef)) {
     moduleDef.imports.add('enumeration')
 
@@ -158,7 +158,7 @@ export namespace ${messageDef.name} {
   if (messageDef.nested != null) {
     nested = '\n'
     nested += Object.values(messageDef.nested)
-      .map(def => compileMessage(def, moduleDef).trim())
+      .map(def => compileMessage(def, moduleDef, noDefaultOnWire).trim())
       .join('\n\n')
       .split('\n')
       .map(line => line.trim() === '' ? '' : `  ${line}`)
@@ -213,7 +213,7 @@ export interface ${messageDef.name} {
 
         return `${fieldDef.id}: { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
     }).join(',\n      ')}
-    })
+    }, ${noDefaultOnWire ? 'true' : 'false'})
   }
 
   export const encode = (obj: ${messageDef.name}): Uint8ArrayList => {
@@ -242,7 +242,7 @@ interface ModuleDef {
   globals: Record<string, ClassDef>
 }
 
-function defineModule (def: ClassDef): ModuleDef {
+function defineModule (def: ClassDef, noDefaultOnWire: boolean): ModuleDef {
   const moduleDef: ModuleDef = {
     imports: new Set(),
     importedTypes: new Set(),
@@ -280,7 +280,7 @@ function defineModule (def: ClassDef): ModuleDef {
   for (const className of Object.keys(defs)) {
     const classDef = defs[className]
 
-    moduleDef.compiled.push(compileMessage(classDef, moduleDef))
+    moduleDef.compiled.push(compileMessage(classDef, moduleDef, noDefaultOnWire))
   }
 
   return moduleDef
@@ -288,6 +288,7 @@ function defineModule (def: ClassDef): ModuleDef {
 
 interface Flags {
   output?: string
+  defaultOnWire: boolean
 }
 
 export async function generate (source: string, flags: Flags) {
@@ -299,7 +300,7 @@ export async function generate (source: string, flags: Flags) {
   }
 
   const def = JSON.parse(json)
-  const moduleDef = defineModule(def)
+  const moduleDef = defineModule(def, !flags.defaultOnWire)
 
   let lines = [
     '/* eslint-disable import/export */',

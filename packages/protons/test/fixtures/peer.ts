@@ -21,7 +21,7 @@ export namespace Peer {
       3: { name: 'metadata', codec: Metadata.codec(), repeats: true },
       4: { name: 'pubKey', codec: bytes, optional: true },
       5: { name: 'peerRecordEnvelope', codec: bytes, optional: true }
-    })
+    }, false)
   }
 
   export const encode = (obj: Peer): Uint8ArrayList => {
@@ -43,7 +43,7 @@ export namespace Address {
     return message<Address>({
       1: { name: 'multiaddr', codec: bytes },
       2: { name: 'isCertified', codec: bool, optional: true }
-    })
+    }, false)
   }
 
   export const encode = (obj: Address): Uint8ArrayList => {
@@ -65,7 +65,7 @@ export namespace Metadata {
     return message<Metadata>({
       1: { name: 'key', codec: string },
       2: { name: 'value', codec: bytes }
-    })
+    }, false)
   }
 
   export const encode = (obj: Metadata): Uint8ArrayList => {

@@ -13,7 +13,7 @@ export namespace Foo {
   export const codec = (): Codec<Foo> => {
     return message<Foo>({
       1: { name: 'baz', codec: uint32 }
-    })
+    }, false)
   }
 
   export const encode = (obj: Foo): Uint8ArrayList => {
@@ -33,7 +33,7 @@ export namespace Bar {
   export const codec = (): Codec<Bar> => {
     return message<Bar>({
       1: { name: 'tmp', codec: Foo.codec() }
-    })
+    }, false)
   }
 
   export const encode = (obj: Bar): Uint8ArrayList => {
@@ -68,7 +68,7 @@ export namespace Yo {
   export const codec = (): Codec<Yo> => {
     return message<Yo>({
       1: { name: 'lol', codec: FOO.codec(), repeats: true }
-    })
+    }, false)
   }
 
   export const encode = (obj: Yo): Uint8ArrayList => {
@@ -90,7 +90,7 @@ export namespace Lol {
     return message<Lol>({
       1: { name: 'lol', codec: string },
       2: { name: 'b', codec: Bar.codec() }
-    })
+    }, false)
   }
 
   export const encode = (obj: Lol): Uint8ArrayList => {
@@ -116,7 +116,7 @@ export namespace Test {
       3: { name: 'hello', codec: uint32 },
       1: { name: 'foo', codec: string },
       7: { name: 'payload', codec: bytes }
-    })
+    }, false)
   }
 
   export const encode = (obj: Test): Uint8ArrayList => {

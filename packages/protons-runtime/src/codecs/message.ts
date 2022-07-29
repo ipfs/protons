@@ -1,20 +1,29 @@
 import { unsigned } from 'uint8-varint'
-import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
+import type {
+  Codec,
+  DecodeFunction,
+  DefaultValueFunction,
+  EncodeFunction,
+  EncodingLengthFunction,
+  IsDefaultValueFunction
+} from '../codec.js'
+import { CODEC_TYPES, createCodec } from '../codec.js'
 import { Uint8ArrayList } from 'uint8arraylist'
-import type { FieldDefs, FieldDef } from '../index.js'
+import type { FieldDef, FieldDefs } from '../index.js'
 import { allocUnsafe } from '../utils/alloc.js'
 
 export interface Factory<A, T> {
   new (obj: A): T
 }
 
-export function message <T> (fieldDefs: FieldDefs): Codec<T> {
+export function message <T> (fieldDefs: FieldDefs, noDefaultOnWire: boolean): Codec<T> {
   const encodingLength: EncodingLengthFunction<T> = function messageEncodingLength (val: Record<string, any>) {
     let length = 0
 
     for (const fieldDef of Object.values(fieldDefs)) {
-      length += fieldDef.codec.encodingLength(val[fieldDef.name])
+      if (!noDefaultOnWire || !fieldDef.codec.isDefaultValue(val[fieldDef.name])) {
+        length += fieldDef.codec.encodingLength(val[fieldDef.name])
+      }
     }
 
     return unsigned.encodingLength(length) + length
@@ -30,6 +39,10 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
         }
 
         throw new Error(`Non optional field "${fieldDef.name}" was ${value === null ? 'null' : 'undefined'}`)
+      }
+
+      if (noDefaultOnWire && fieldDef.codec.isDefaultValue(value)) {
+        return
       }
 
       const key = (fieldNumber << 3) | fieldDef.codec.type
@@ -116,15 +129,43 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       offset += fieldLength
     }
 
-    // make sure repeated fields have an array if not set
     for (const fieldDef of Object.values(fieldDefs)) {
+      // make sure repeated fields have an array if not set
       if (fieldDef.repeats === true && fields[fieldDef.name] == null) {
         fields[fieldDef.name] = []
+      } else if (noDefaultOnWire && fields[fieldDef.name] == null) {
+        // apply default values if not set
+        fields[fieldDef.name] = fieldDef.codec.defaultValue()
       }
     }
 
     return fields
   }
 
-  return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength)
+  // Need to initialized sub messages as default value.
+  const defaultValue: DefaultValueFunction<T> = function defaultValue () {
+    const defaultValue: any = {}
+
+    for (const fieldDef of Object.values(fieldDefs)) {
+      if (fieldDef.codec.type === CODEC_TYPES.LENGTH_DELIMITED) {
+        defaultValue[fieldDef.name] = fieldDef.codec.defaultValue()
+      }
+    }
+
+    return defaultValue
+  }
+
+  const isDefaultValue: IsDefaultValueFunction<T> = function isDefaultValue (val) {
+    for (const fieldDef of Object.values(fieldDefs)) {
+      // @ts-expect-error
+      const fieldValue = val[fieldDef.name]
+
+      if (!fieldDef.codec.isDefaultValue(fieldValue)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength, defaultValue, isDefaultValue)
 }

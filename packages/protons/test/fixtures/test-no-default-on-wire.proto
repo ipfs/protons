@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+enum AnEnum {
+  HERP = 0;
+  DERP = 1;
+}
+
+message SubMessage {
+  string foo = 1;
+}
+
+message AllTheTypesNoDefaultOnWire {
+  optional bool field1 = 1;
+  optional int32 field2 = 2;
+  optional int64 field3 = 3;
+  optional uint32 field4 = 4;
+  optional uint64 field5 = 5;
+  optional sint32 field6 = 6;
+  optional sint64 field7 = 7;
+  optional double field8 = 8;
+  optional float field9 = 9;
+  optional string field10 = 10;
+  optional bytes field11 = 11;
+  optional AnEnum field12 = 12;
+  optional SubMessage field13 = 13;
+  repeated string field14 = 14;
+  optional fixed32 field15 = 15;
+  optional fixed64 field16 = 16;
+  optional sfixed32 field17 = 17;
+  optional sfixed64 field18 = 18;
+}

@@ -1,7 +1,7 @@
 import { unsigned } from 'uint8-varint'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
-import { createCodec, CODEC_TYPES } from '../codec.js'
+import { createCodec, CODEC_TYPES, DefaultValueFunction, IsDefaultValueFunction } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 import { Uint8ArrayList } from 'uint8arraylist'
 
@@ -26,4 +26,8 @@ const decode: DecodeFunction<string> = function stringDecode (buf, offset) {
   return uint8ArrayToString(buf.subarray(offset, offset + strLen))
 }
 
-export const string = createCodec('string', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength)
+const defaultValue: DefaultValueFunction<string> = () => ''
+
+const isDefaultValue: IsDefaultValueFunction<string> = (val) => val === defaultValue()
+
+export const string = createCodec('string', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength, defaultValue, isDefaultValue)

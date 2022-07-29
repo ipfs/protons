@@ -21,7 +21,7 @@ export namespace Record {
       3: { name: 'author', codec: bytes, optional: true },
       4: { name: 'signature', codec: bytes, optional: true },
       5: { name: 'timeReceived', codec: string, optional: true }
-    })
+    }, false)
   }
 
   export const encode = (obj: Record): Uint8ArrayList => {
@@ -99,7 +99,7 @@ export namespace Message {
         1: { name: 'id', codec: bytes, optional: true },
         2: { name: 'addrs', codec: bytes, repeats: true },
         3: { name: 'connection', codec: Message.ConnectionType.codec(), optional: true }
-      })
+      }, false)
     }
 
     export const encode = (obj: Peer): Uint8ArrayList => {
@@ -119,7 +119,7 @@ export namespace Message {
       3: { name: 'record', codec: bytes, optional: true },
       8: { name: 'closerPeers', codec: Message.Peer.codec(), repeats: true },
       9: { name: 'providerPeers', codec: Message.Peer.codec(), repeats: true }
-    })
+    }, false)
   }
 
   export const encode = (obj: Message): Uint8ArrayList => {
