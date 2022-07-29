@@ -189,8 +189,9 @@ export interface ${messageDef.name} {
   }
 }`
     interfaceCodecDef = `
+  let _codec: Codec<${messageDef.name}>
   export const codec = (): Codec<${messageDef.name}> => {
-    return message<${messageDef.name}>({
+    if (!_codec) _codec = message<${messageDef.name}>({
       ${Object.entries(fields)
       .map(([name, fieldDef]) => {
         let codec = encoders[fieldDef.type]
@@ -213,6 +214,7 @@ export interface ${messageDef.name} {
         return `${fieldDef.id}: { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
     }).join(',\n      ')}
     })
+    return _codec
   }
 
   export const encode = (obj: ${messageDef.name}): Uint8Array => {
