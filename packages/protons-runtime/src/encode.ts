@@ -1,6 +1,6 @@
 import { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from './codec.js'
-import { unsigned } from './utils/varint.js'
+import { unsigned } from 'uint8-varint'
 
 export function encodeMessage <T> (message: T, codec: Codec<T>): Uint8ArrayList {
   // unwrap root message

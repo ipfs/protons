@@ -1,4 +1,4 @@
-import { unsigned } from '../utils/varint.js'
+import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
@@ -9,11 +9,7 @@ const encodingLength: EncodingLengthFunction<number> = function uint32EncodingLe
 const encode: EncodeFunction<number> = function uint32Encode (val) {
   // val = val < 0 ? val + 4294967296 : val
 
-  const buf = new Uint8Array(encodingLength(val))
-
-  unsigned.encode(val, buf)
-
-  return buf
+  return unsigned.encode(val)
 }
 
 const decode: DecodeFunction<number> = function uint32Decode (buf, offset) {

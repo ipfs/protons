@@ -1,16 +1,19 @@
-import { signed } from '../utils/big-varint.js'
+import { signed } from 'uint8-varint/big'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
 const encodingLength: EncodingLengthFunction<bigint> = function int64EncodingLength (val) {
+  if (val < 0n) {
+    return 10 // 10 bytes per spec - https://developers.google.com/protocol-buffers/docs/encoding#signed-ints
+  }
+
   return signed.encodingLength(val)
 }
 
 const encode: EncodeFunction<bigint> = function int64Encode (val) {
   const buf = new Uint8Array(encodingLength(val))
-  signed.encode(val, buf)
 
-  return buf
+  return signed.encode(val, buf)
 }
 
 const decode: DecodeFunction<bigint> = function int64Decode (buf, offset) {

@@ -1,6 +1,6 @@
 
 import { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from '../utils/varint.js'
+import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
@@ -10,11 +10,10 @@ const encodingLength: EncodingLengthFunction<Uint8Array> = function bytesEncodin
 }
 
 const encode: EncodeFunction<Uint8Array> = function bytesEncode (val) {
-  const prefix = new Uint8Array(unsigned.encodingLength(val.byteLength))
-
-  unsigned.encode(val.byteLength, prefix)
-
-  return new Uint8ArrayList(prefix, val)
+  return new Uint8ArrayList(
+    unsigned.encode(val.byteLength),
+    val
+  )
 }
 
 const decode: DecodeFunction<Uint8Array> = function bytesDecode (buf, offset) {
