@@ -1,8 +1,9 @@
-import { unsigned } from '../utils/varint.js'
+import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
 import { Uint8ArrayList } from 'uint8arraylist'
 import type { FieldDefs, FieldDef } from '../index.js'
+import { allocUnsafe } from '../utils/alloc.js'
 
 export interface Factory<A, T> {
   new (obj: A): T
@@ -32,7 +33,7 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       }
 
       const key = (fieldNumber << 3) | fieldDef.codec.type
-      const prefix = new Uint8Array(unsigned.encodingLength(key))
+      const prefix = allocUnsafe(unsigned.encodingLength(key))
       unsigned.encode(key, prefix)
       const encoded = fieldDef.codec.encode(value)
 
@@ -56,8 +57,7 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       }
     }
 
-    const prefix = new Uint8Array(unsigned.encodingLength(bytes.length))
-    unsigned.encode(bytes.length, prefix)
+    const prefix = unsigned.encode(bytes.length)
 
     return new Uint8ArrayList(prefix, bytes)
   }

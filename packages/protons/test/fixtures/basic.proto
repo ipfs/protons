@@ -1,3 +1,5 @@
+syntax = "proto3";
+
 message Basic {
   optional string foo = 1;
   required int32 num = 2;

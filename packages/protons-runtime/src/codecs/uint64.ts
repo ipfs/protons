@@ -1,4 +1,4 @@
-import { unsigned } from '../utils/big-varint.js'
+import { unsigned } from 'uint8-varint/big'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
 
@@ -7,11 +7,7 @@ const encodingLength: EncodingLengthFunction<bigint> = function uint64EncodingLe
 }
 
 const encode: EncodeFunction<bigint> = function uint64Encode (val) {
-  const buf = new Uint8Array(unsigned.encodingLength(val))
-
-  unsigned.encode(val, buf)
-
-  return buf
+  return unsigned.encode(val)
 }
 
 const decode: DecodeFunction<bigint> = function uint64Decode (buf, offset) {
