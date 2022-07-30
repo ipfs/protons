@@ -1,3 +1,10 @@
+## [protons-runtime-v2.0.2](https://github.com/ipfs/protons/compare/protons-runtime-v2.0.1...protons-runtime-v2.0.2) (2022-07-30)
+
+
+### Bug Fixes
+
+* use uint8-varint, byte-accesor and longbits modules ([#56](https://github.com/ipfs/protons/issues/56)) ([66d72f5](https://github.com/ipfs/protons/commit/66d72f50ca3733b97efa5155d3cdcb33ec531d4a))
+
 ## [protons-runtime-v2.0.1](https://github.com/ipfs/protons/compare/protons-runtime-v2.0.0...protons-runtime-v2.0.1) (2022-07-28)
 
 
