@@ -1,3 +1,10 @@
+## [protons-v4.0.1](https://github.com/ipfs/protons/compare/protons-v4.0.0...protons-v4.0.1) (2022-07-30)
+
+
+### Bug Fixes
+
+* use uint8-varint, byte-accesor and longbits modules ([#56](https://github.com/ipfs/protons/issues/56)) ([66d72f5](https://github.com/ipfs/protons/commit/66d72f50ca3733b97efa5155d3cdcb33ec531d4a))
+
 ## [protons-v4.0.0](https://github.com/ipfs/protons/compare/protons-v3.0.5...protons-v4.0.0) (2022-07-28)
 
 
