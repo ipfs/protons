@@ -191,30 +191,34 @@ export interface ${messageDef.name} {
 }`
     interfaceCodecDef = `
   let _codec: Codec<${messageDef.name}>
+
   export const codec = (): Codec<${messageDef.name}> => {
-    if (!_codec) _codec = message<${messageDef.name}>({
-      ${Object.entries(fields)
-      .map(([name, fieldDef]) => {
-        let codec = encoders[fieldDef.type]
+    if (_codec == null) {
+      _codec = message<${messageDef.name}>({
+        ${Object.entries(fields)
+          .map(([name, fieldDef]) => {
+            let codec = encoders[fieldDef.type]
 
-        if (codec == null) {
-          const def = findDef(fieldDef.type, messageDef, moduleDef)
+            if (codec == null) {
+              const def = findDef(fieldDef.type, messageDef, moduleDef)
 
-          if (isEnumDef(def)) {
-            moduleDef.imports.add('enumeration')
-          } else {
-            moduleDef.imports.add('message')
-          }
+              if (isEnumDef(def)) {
+                moduleDef.imports.add('enumeration')
+              } else {
+                moduleDef.imports.add('message')
+              }
 
-          const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
-          codec = `${typeName}.codec()`
-        } else {
-          moduleDef.imports.add(codec)
-        }
+              const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+              codec = `${typeName}.codec()`
+            } else {
+              moduleDef.imports.add(codec)
+            }
 
         return `${fieldDef.id}: { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
-    }).join(',\n      ')}
-    })
+    }).join(',\n        ')}
+      })
+    }
+
     return _codec
   }
 

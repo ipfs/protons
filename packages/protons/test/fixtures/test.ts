@@ -25,10 +25,16 @@ export interface SubMessage {
 }
 
 export namespace SubMessage {
+  let _codec: Codec<SubMessage>
+
   export const codec = (): Codec<SubMessage> => {
-    return message<SubMessage>({
-      1: { name: 'foo', codec: string }
-    })
+    if (_codec == null) {
+      _codec = message<SubMessage>({
+        1: { name: 'foo', codec: string }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: SubMessage): Uint8ArrayList => {
@@ -62,27 +68,33 @@ export interface AllTheTypes {
 }
 
 export namespace AllTheTypes {
+  let _codec: Codec<AllTheTypes>
+
   export const codec = (): Codec<AllTheTypes> => {
-    return message<AllTheTypes>({
-      1: { name: 'field1', codec: bool, optional: true },
-      2: { name: 'field2', codec: int32, optional: true },
-      3: { name: 'field3', codec: int64, optional: true },
-      4: { name: 'field4', codec: uint32, optional: true },
-      5: { name: 'field5', codec: uint64, optional: true },
-      6: { name: 'field6', codec: sint32, optional: true },
-      7: { name: 'field7', codec: sint64, optional: true },
-      8: { name: 'field8', codec: double, optional: true },
-      9: { name: 'field9', codec: float, optional: true },
-      10: { name: 'field10', codec: string, optional: true },
-      11: { name: 'field11', codec: bytes, optional: true },
-      12: { name: 'field12', codec: AnEnum.codec(), optional: true },
-      13: { name: 'field13', codec: SubMessage.codec(), optional: true },
-      14: { name: 'field14', codec: string, repeats: true },
-      15: { name: 'field15', codec: fixed32, optional: true },
-      16: { name: 'field16', codec: fixed64, optional: true },
-      17: { name: 'field17', codec: sfixed32, optional: true },
-      18: { name: 'field18', codec: sfixed64, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<AllTheTypes>({
+        1: { name: 'field1', codec: bool, optional: true },
+        2: { name: 'field2', codec: int32, optional: true },
+        3: { name: 'field3', codec: int64, optional: true },
+        4: { name: 'field4', codec: uint32, optional: true },
+        5: { name: 'field5', codec: uint64, optional: true },
+        6: { name: 'field6', codec: sint32, optional: true },
+        7: { name: 'field7', codec: sint64, optional: true },
+        8: { name: 'field8', codec: double, optional: true },
+        9: { name: 'field9', codec: float, optional: true },
+        10: { name: 'field10', codec: string, optional: true },
+        11: { name: 'field11', codec: bytes, optional: true },
+        12: { name: 'field12', codec: AnEnum.codec(), optional: true },
+        13: { name: 'field13', codec: SubMessage.codec(), optional: true },
+        14: { name: 'field14', codec: string, repeats: true },
+        15: { name: 'field15', codec: fixed32, optional: true },
+        16: { name: 'field16', codec: fixed64, optional: true },
+        17: { name: 'field17', codec: sfixed32, optional: true },
+        18: { name: 'field18', codec: sfixed64, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: AllTheTypes): Uint8ArrayList => {

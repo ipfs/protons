@@ -11,11 +11,17 @@ export interface Basic {
 }
 
 export namespace Basic {
+  let _codec: Codec<Basic>
+
   export const codec = (): Codec<Basic> => {
-    return message<Basic>({
-      1: { name: 'foo', codec: string, optional: true },
-      2: { name: 'num', codec: int32 }
-    })
+    if (_codec == null) {
+      _codec = message<Basic>({
+        1: { name: 'foo', codec: string, optional: true },
+        2: { name: 'num', codec: int32 }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Basic): Uint8ArrayList => {

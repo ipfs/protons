@@ -13,12 +13,18 @@ export namespace pb {
   }
 
   export namespace NoiseHandshakePayload {
+    let _codec: Codec<NoiseHandshakePayload>
+
     export const codec = (): Codec<NoiseHandshakePayload> => {
-      return message<NoiseHandshakePayload>({
-        1: { name: 'identityKey', codec: bytes },
-        2: { name: 'identitySig', codec: bytes },
-        3: { name: 'data', codec: bytes }
-      })
+      if (_codec == null) {
+        _codec = message<NoiseHandshakePayload>({
+          1: { name: 'identityKey', codec: bytes },
+          2: { name: 'identitySig', codec: bytes },
+          3: { name: 'data', codec: bytes }
+        })
+      }
+
+      return _codec
     }
 
     export const encode = (obj: NoiseHandshakePayload): Uint8ArrayList => {
