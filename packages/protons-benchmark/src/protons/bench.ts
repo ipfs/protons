@@ -10,10 +10,16 @@ export interface Foo {
 }
 
 export namespace Foo {
+  let _codec: Codec<Foo>
+
   export const codec = (): Codec<Foo> => {
-    return message<Foo>({
-      1: { name: 'baz', codec: uint32 }
-    })
+    if (_codec == null) {
+      _codec = message<Foo>({
+        1: { name: 'baz', codec: uint32 }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Foo): Uint8ArrayList => {
@@ -30,10 +36,16 @@ export interface Bar {
 }
 
 export namespace Bar {
+  let _codec: Codec<Bar>
+
   export const codec = (): Codec<Bar> => {
-    return message<Bar>({
-      1: { name: 'tmp', codec: Foo.codec() }
-    })
+    if (_codec == null) {
+      _codec = message<Bar>({
+        1: { name: 'tmp', codec: Foo.codec() }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Bar): Uint8ArrayList => {
@@ -65,10 +77,16 @@ export interface Yo {
 }
 
 export namespace Yo {
+  let _codec: Codec<Yo>
+
   export const codec = (): Codec<Yo> => {
-    return message<Yo>({
-      1: { name: 'lol', codec: FOO.codec(), repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<Yo>({
+        1: { name: 'lol', codec: FOO.codec(), repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Yo): Uint8ArrayList => {
@@ -86,11 +104,17 @@ export interface Lol {
 }
 
 export namespace Lol {
+  let _codec: Codec<Lol>
+
   export const codec = (): Codec<Lol> => {
-    return message<Lol>({
-      1: { name: 'lol', codec: string },
-      2: { name: 'b', codec: Bar.codec() }
-    })
+    if (_codec == null) {
+      _codec = message<Lol>({
+        1: { name: 'lol', codec: string },
+        2: { name: 'b', codec: Bar.codec() }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Lol): Uint8ArrayList => {
@@ -110,13 +134,19 @@ export interface Test {
 }
 
 export namespace Test {
+  let _codec: Codec<Test>
+
   export const codec = (): Codec<Test> => {
-    return message<Test>({
-      6: { name: 'meh', codec: Lol.codec() },
-      3: { name: 'hello', codec: uint32 },
-      1: { name: 'foo', codec: string },
-      7: { name: 'payload', codec: bytes }
-    })
+    if (_codec == null) {
+      _codec = message<Test>({
+        6: { name: 'meh', codec: Lol.codec() },
+        3: { name: 'hello', codec: uint32 },
+        1: { name: 'foo', codec: string },
+        7: { name: 'payload', codec: bytes }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Test): Uint8ArrayList => {

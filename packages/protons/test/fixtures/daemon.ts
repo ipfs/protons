@@ -50,18 +50,24 @@ export namespace Request {
     }
   }
 
+  let _codec: Codec<Request>
+
   export const codec = (): Codec<Request> => {
-    return message<Request>({
-      1: { name: 'type', codec: Request.Type.codec() },
-      2: { name: 'connect', codec: ConnectRequest.codec(), optional: true },
-      3: { name: 'streamOpen', codec: StreamOpenRequest.codec(), optional: true },
-      4: { name: 'streamHandler', codec: StreamHandlerRequest.codec(), optional: true },
-      5: { name: 'dht', codec: DHTRequest.codec(), optional: true },
-      6: { name: 'connManager', codec: ConnManagerRequest.codec(), optional: true },
-      7: { name: 'disconnect', codec: DisconnectRequest.codec(), optional: true },
-      8: { name: 'pubsub', codec: PSRequest.codec(), optional: true },
-      9: { name: 'peerStore', codec: PeerstoreRequest.codec(), optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<Request>({
+        1: { name: 'type', codec: Request.Type.codec() },
+        2: { name: 'connect', codec: ConnectRequest.codec(), optional: true },
+        3: { name: 'streamOpen', codec: StreamOpenRequest.codec(), optional: true },
+        4: { name: 'streamHandler', codec: StreamHandlerRequest.codec(), optional: true },
+        5: { name: 'dht', codec: DHTRequest.codec(), optional: true },
+        6: { name: 'connManager', codec: ConnManagerRequest.codec(), optional: true },
+        7: { name: 'disconnect', codec: DisconnectRequest.codec(), optional: true },
+        8: { name: 'pubsub', codec: PSRequest.codec(), optional: true },
+        9: { name: 'peerStore', codec: PeerstoreRequest.codec(), optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Request): Uint8ArrayList => {
@@ -101,17 +107,23 @@ export namespace Response {
     }
   }
 
+  let _codec: Codec<Response>
+
   export const codec = (): Codec<Response> => {
-    return message<Response>({
-      1: { name: 'type', codec: Response.Type.codec() },
-      2: { name: 'error', codec: ErrorResponse.codec(), optional: true },
-      3: { name: 'streamInfo', codec: StreamInfo.codec(), optional: true },
-      4: { name: 'identify', codec: IdentifyResponse.codec(), optional: true },
-      5: { name: 'dht', codec: DHTResponse.codec(), optional: true },
-      6: { name: 'peers', codec: PeerInfo.codec(), repeats: true },
-      7: { name: 'pubsub', codec: PSResponse.codec(), optional: true },
-      8: { name: 'peerStore', codec: PeerstoreResponse.codec(), optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<Response>({
+        1: { name: 'type', codec: Response.Type.codec() },
+        2: { name: 'error', codec: ErrorResponse.codec(), optional: true },
+        3: { name: 'streamInfo', codec: StreamInfo.codec(), optional: true },
+        4: { name: 'identify', codec: IdentifyResponse.codec(), optional: true },
+        5: { name: 'dht', codec: DHTResponse.codec(), optional: true },
+        6: { name: 'peers', codec: PeerInfo.codec(), repeats: true },
+        7: { name: 'pubsub', codec: PSResponse.codec(), optional: true },
+        8: { name: 'peerStore', codec: PeerstoreResponse.codec(), optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Response): Uint8ArrayList => {
@@ -129,11 +141,17 @@ export interface IdentifyResponse {
 }
 
 export namespace IdentifyResponse {
+  let _codec: Codec<IdentifyResponse>
+
   export const codec = (): Codec<IdentifyResponse> => {
-    return message<IdentifyResponse>({
-      1: { name: 'id', codec: bytes },
-      2: { name: 'addrs', codec: bytes, repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<IdentifyResponse>({
+        1: { name: 'id', codec: bytes },
+        2: { name: 'addrs', codec: bytes, repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: IdentifyResponse): Uint8ArrayList => {
@@ -152,12 +170,18 @@ export interface ConnectRequest {
 }
 
 export namespace ConnectRequest {
+  let _codec: Codec<ConnectRequest>
+
   export const codec = (): Codec<ConnectRequest> => {
-    return message<ConnectRequest>({
-      1: { name: 'peer', codec: bytes },
-      2: { name: 'addrs', codec: bytes, repeats: true },
-      3: { name: 'timeout', codec: int64, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<ConnectRequest>({
+        1: { name: 'peer', codec: bytes },
+        2: { name: 'addrs', codec: bytes, repeats: true },
+        3: { name: 'timeout', codec: int64, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: ConnectRequest): Uint8ArrayList => {
@@ -176,12 +200,18 @@ export interface StreamOpenRequest {
 }
 
 export namespace StreamOpenRequest {
+  let _codec: Codec<StreamOpenRequest>
+
   export const codec = (): Codec<StreamOpenRequest> => {
-    return message<StreamOpenRequest>({
-      1: { name: 'peer', codec: bytes },
-      2: { name: 'proto', codec: string, repeats: true },
-      3: { name: 'timeout', codec: int64, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<StreamOpenRequest>({
+        1: { name: 'peer', codec: bytes },
+        2: { name: 'proto', codec: string, repeats: true },
+        3: { name: 'timeout', codec: int64, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: StreamOpenRequest): Uint8ArrayList => {
@@ -199,11 +229,17 @@ export interface StreamHandlerRequest {
 }
 
 export namespace StreamHandlerRequest {
+  let _codec: Codec<StreamHandlerRequest>
+
   export const codec = (): Codec<StreamHandlerRequest> => {
-    return message<StreamHandlerRequest>({
-      1: { name: 'addr', codec: bytes },
-      2: { name: 'proto', codec: string, repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<StreamHandlerRequest>({
+        1: { name: 'addr', codec: bytes },
+        2: { name: 'proto', codec: string, repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: StreamHandlerRequest): Uint8ArrayList => {
@@ -220,10 +256,16 @@ export interface ErrorResponse {
 }
 
 export namespace ErrorResponse {
+  let _codec: Codec<ErrorResponse>
+
   export const codec = (): Codec<ErrorResponse> => {
-    return message<ErrorResponse>({
-      1: { name: 'msg', codec: string }
-    })
+    if (_codec == null) {
+      _codec = message<ErrorResponse>({
+        1: { name: 'msg', codec: string }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: ErrorResponse): Uint8ArrayList => {
@@ -242,12 +284,18 @@ export interface StreamInfo {
 }
 
 export namespace StreamInfo {
+  let _codec: Codec<StreamInfo>
+
   export const codec = (): Codec<StreamInfo> => {
-    return message<StreamInfo>({
-      1: { name: 'peer', codec: bytes },
-      2: { name: 'addr', codec: bytes },
-      3: { name: 'proto', codec: string }
-    })
+    if (_codec == null) {
+      _codec = message<StreamInfo>({
+        1: { name: 'peer', codec: bytes },
+        2: { name: 'addr', codec: bytes },
+        3: { name: 'proto', codec: string }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: StreamInfo): Uint8ArrayList => {
@@ -300,16 +348,22 @@ export namespace DHTRequest {
     }
   }
 
+  let _codec: Codec<DHTRequest>
+
   export const codec = (): Codec<DHTRequest> => {
-    return message<DHTRequest>({
-      1: { name: 'type', codec: DHTRequest.Type.codec() },
-      2: { name: 'peer', codec: bytes, optional: true },
-      3: { name: 'cid', codec: bytes, optional: true },
-      4: { name: 'key', codec: bytes, optional: true },
-      5: { name: 'value', codec: bytes, optional: true },
-      6: { name: 'count', codec: int32, optional: true },
-      7: { name: 'timeout', codec: int64, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<DHTRequest>({
+        1: { name: 'type', codec: DHTRequest.Type.codec() },
+        2: { name: 'peer', codec: bytes, optional: true },
+        3: { name: 'cid', codec: bytes, optional: true },
+        4: { name: 'key', codec: bytes, optional: true },
+        5: { name: 'value', codec: bytes, optional: true },
+        6: { name: 'count', codec: int32, optional: true },
+        7: { name: 'timeout', codec: int64, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: DHTRequest): Uint8ArrayList => {
@@ -346,12 +400,18 @@ export namespace DHTResponse {
     }
   }
 
+  let _codec: Codec<DHTResponse>
+
   export const codec = (): Codec<DHTResponse> => {
-    return message<DHTResponse>({
-      1: { name: 'type', codec: DHTResponse.Type.codec() },
-      2: { name: 'peer', codec: PeerInfo.codec(), optional: true },
-      3: { name: 'value', codec: bytes, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<DHTResponse>({
+        1: { name: 'type', codec: DHTResponse.Type.codec() },
+        2: { name: 'peer', codec: PeerInfo.codec(), optional: true },
+        3: { name: 'value', codec: bytes, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: DHTResponse): Uint8ArrayList => {
@@ -369,11 +429,17 @@ export interface PeerInfo {
 }
 
 export namespace PeerInfo {
+  let _codec: Codec<PeerInfo>
+
   export const codec = (): Codec<PeerInfo> => {
-    return message<PeerInfo>({
-      1: { name: 'id', codec: bytes },
-      2: { name: 'addrs', codec: bytes, repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<PeerInfo>({
+        1: { name: 'id', codec: bytes },
+        2: { name: 'addrs', codec: bytes, repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: PeerInfo): Uint8ArrayList => {
@@ -411,13 +477,19 @@ export namespace ConnManagerRequest {
     }
   }
 
+  let _codec: Codec<ConnManagerRequest>
+
   export const codec = (): Codec<ConnManagerRequest> => {
-    return message<ConnManagerRequest>({
-      1: { name: 'type', codec: ConnManagerRequest.Type.codec() },
-      2: { name: 'peer', codec: bytes, optional: true },
-      3: { name: 'tag', codec: string, optional: true },
-      4: { name: 'weight', codec: int64, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<ConnManagerRequest>({
+        1: { name: 'type', codec: ConnManagerRequest.Type.codec() },
+        2: { name: 'peer', codec: bytes, optional: true },
+        3: { name: 'tag', codec: string, optional: true },
+        4: { name: 'weight', codec: int64, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: ConnManagerRequest): Uint8ArrayList => {
@@ -434,10 +506,16 @@ export interface DisconnectRequest {
 }
 
 export namespace DisconnectRequest {
+  let _codec: Codec<DisconnectRequest>
+
   export const codec = (): Codec<DisconnectRequest> => {
-    return message<DisconnectRequest>({
-      1: { name: 'peer', codec: bytes }
-    })
+    if (_codec == null) {
+      _codec = message<DisconnectRequest>({
+        1: { name: 'peer', codec: bytes }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: DisconnectRequest): Uint8ArrayList => {
@@ -476,12 +554,18 @@ export namespace PSRequest {
     }
   }
 
+  let _codec: Codec<PSRequest>
+
   export const codec = (): Codec<PSRequest> => {
-    return message<PSRequest>({
-      1: { name: 'type', codec: PSRequest.Type.codec() },
-      2: { name: 'topic', codec: string, optional: true },
-      3: { name: 'data', codec: bytes, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<PSRequest>({
+        1: { name: 'type', codec: PSRequest.Type.codec() },
+        2: { name: 'topic', codec: string, optional: true },
+        3: { name: 'data', codec: bytes, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: PSRequest): Uint8ArrayList => {
@@ -503,15 +587,21 @@ export interface PSMessage {
 }
 
 export namespace PSMessage {
+  let _codec: Codec<PSMessage>
+
   export const codec = (): Codec<PSMessage> => {
-    return message<PSMessage>({
-      1: { name: 'from', codec: bytes, optional: true },
-      2: { name: 'data', codec: bytes, optional: true },
-      3: { name: 'seqno', codec: bytes, optional: true },
-      4: { name: 'topicIDs', codec: string, repeats: true },
-      5: { name: 'signature', codec: bytes, optional: true },
-      6: { name: 'key', codec: bytes, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<PSMessage>({
+        1: { name: 'from', codec: bytes, optional: true },
+        2: { name: 'data', codec: bytes, optional: true },
+        3: { name: 'seqno', codec: bytes, optional: true },
+        4: { name: 'topicIDs', codec: string, repeats: true },
+        5: { name: 'signature', codec: bytes, optional: true },
+        6: { name: 'key', codec: bytes, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: PSMessage): Uint8ArrayList => {
@@ -529,11 +619,17 @@ export interface PSResponse {
 }
 
 export namespace PSResponse {
+  let _codec: Codec<PSResponse>
+
   export const codec = (): Codec<PSResponse> => {
-    return message<PSResponse>({
-      1: { name: 'topics', codec: string, repeats: true },
-      2: { name: 'peerIDs', codec: bytes, repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<PSResponse>({
+        1: { name: 'topics', codec: string, repeats: true },
+        2: { name: 'peerIDs', codec: bytes, repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: PSResponse): Uint8ArrayList => {
@@ -568,12 +664,18 @@ export namespace PeerstoreRequest {
     }
   }
 
+  let _codec: Codec<PeerstoreRequest>
+
   export const codec = (): Codec<PeerstoreRequest> => {
-    return message<PeerstoreRequest>({
-      1: { name: 'type', codec: PeerstoreRequest.Type.codec() },
-      2: { name: 'id', codec: bytes, optional: true },
-      3: { name: 'protos', codec: string, repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<PeerstoreRequest>({
+        1: { name: 'type', codec: PeerstoreRequest.Type.codec() },
+        2: { name: 'id', codec: bytes, optional: true },
+        3: { name: 'protos', codec: string, repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: PeerstoreRequest): Uint8ArrayList => {
@@ -591,11 +693,17 @@ export interface PeerstoreResponse {
 }
 
 export namespace PeerstoreResponse {
+  let _codec: Codec<PeerstoreResponse>
+
   export const codec = (): Codec<PeerstoreResponse> => {
-    return message<PeerstoreResponse>({
-      1: { name: 'peer', codec: PeerInfo.codec(), optional: true },
-      2: { name: 'protos', codec: string, repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<PeerstoreResponse>({
+        1: { name: 'peer', codec: PeerInfo.codec(), optional: true },
+        2: { name: 'protos', codec: string, repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: PeerstoreResponse): Uint8ArrayList => {

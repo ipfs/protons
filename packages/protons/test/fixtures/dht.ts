@@ -14,14 +14,20 @@ export interface Record {
 }
 
 export namespace Record {
+  let _codec: Codec<Record>
+
   export const codec = (): Codec<Record> => {
-    return message<Record>({
-      1: { name: 'key', codec: bytes, optional: true },
-      2: { name: 'value', codec: bytes, optional: true },
-      3: { name: 'author', codec: bytes, optional: true },
-      4: { name: 'signature', codec: bytes, optional: true },
-      5: { name: 'timeReceived', codec: string, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<Record>({
+        1: { name: 'key', codec: bytes, optional: true },
+        2: { name: 'value', codec: bytes, optional: true },
+        3: { name: 'author', codec: bytes, optional: true },
+        4: { name: 'signature', codec: bytes, optional: true },
+        5: { name: 'timeReceived', codec: string, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Record): Uint8ArrayList => {
@@ -94,12 +100,18 @@ export namespace Message {
   }
 
   export namespace Peer {
+    let _codec: Codec<Peer>
+
     export const codec = (): Codec<Peer> => {
-      return message<Peer>({
-        1: { name: 'id', codec: bytes, optional: true },
-        2: { name: 'addrs', codec: bytes, repeats: true },
-        3: { name: 'connection', codec: Message.ConnectionType.codec(), optional: true }
-      })
+      if (_codec == null) {
+        _codec = message<Peer>({
+          1: { name: 'id', codec: bytes, optional: true },
+          2: { name: 'addrs', codec: bytes, repeats: true },
+          3: { name: 'connection', codec: Message.ConnectionType.codec(), optional: true }
+        })
+      }
+
+      return _codec
     }
 
     export const encode = (obj: Peer): Uint8ArrayList => {
@@ -111,15 +123,21 @@ export namespace Message {
     }
   }
 
+  let _codec: Codec<Message>
+
   export const codec = (): Codec<Message> => {
-    return message<Message>({
-      1: { name: 'type', codec: Message.MessageType.codec(), optional: true },
-      10: { name: 'clusterLevelRaw', codec: int32, optional: true },
-      2: { name: 'key', codec: bytes, optional: true },
-      3: { name: 'record', codec: bytes, optional: true },
-      8: { name: 'closerPeers', codec: Message.Peer.codec(), repeats: true },
-      9: { name: 'providerPeers', codec: Message.Peer.codec(), repeats: true }
-    })
+    if (_codec == null) {
+      _codec = message<Message>({
+        1: { name: 'type', codec: Message.MessageType.codec(), optional: true },
+        10: { name: 'clusterLevelRaw', codec: int32, optional: true },
+        2: { name: 'key', codec: bytes, optional: true },
+        3: { name: 'record', codec: bytes, optional: true },
+        8: { name: 'closerPeers', codec: Message.Peer.codec(), repeats: true },
+        9: { name: 'providerPeers', codec: Message.Peer.codec(), repeats: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Message): Uint8ArrayList => {

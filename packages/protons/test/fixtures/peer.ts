@@ -14,14 +14,20 @@ export interface Peer {
 }
 
 export namespace Peer {
+  let _codec: Codec<Peer>
+
   export const codec = (): Codec<Peer> => {
-    return message<Peer>({
-      1: { name: 'addresses', codec: Address.codec(), repeats: true },
-      2: { name: 'protocols', codec: string, repeats: true },
-      3: { name: 'metadata', codec: Metadata.codec(), repeats: true },
-      4: { name: 'pubKey', codec: bytes, optional: true },
-      5: { name: 'peerRecordEnvelope', codec: bytes, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<Peer>({
+        1: { name: 'addresses', codec: Address.codec(), repeats: true },
+        2: { name: 'protocols', codec: string, repeats: true },
+        3: { name: 'metadata', codec: Metadata.codec(), repeats: true },
+        4: { name: 'pubKey', codec: bytes, optional: true },
+        5: { name: 'peerRecordEnvelope', codec: bytes, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Peer): Uint8ArrayList => {
@@ -39,11 +45,17 @@ export interface Address {
 }
 
 export namespace Address {
+  let _codec: Codec<Address>
+
   export const codec = (): Codec<Address> => {
-    return message<Address>({
-      1: { name: 'multiaddr', codec: bytes },
-      2: { name: 'isCertified', codec: bool, optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<Address>({
+        1: { name: 'multiaddr', codec: bytes },
+        2: { name: 'isCertified', codec: bool, optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Address): Uint8ArrayList => {
@@ -61,11 +73,17 @@ export interface Metadata {
 }
 
 export namespace Metadata {
+  let _codec: Codec<Metadata>
+
   export const codec = (): Codec<Metadata> => {
-    return message<Metadata>({
-      1: { name: 'key', codec: string },
-      2: { name: 'value', codec: bytes }
-    })
+    if (_codec == null) {
+      _codec = message<Metadata>({
+        1: { name: 'key', codec: string },
+        2: { name: 'value', codec: bytes }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: Metadata): Uint8ArrayList => {

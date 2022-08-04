@@ -83,11 +83,17 @@ export namespace CircuitRelay {
   }
 
   export namespace Peer {
+    let _codec: Codec<Peer>
+
     export const codec = (): Codec<Peer> => {
-      return message<Peer>({
-        1: { name: 'id', codec: bytes },
-        2: { name: 'addrs', codec: bytes, repeats: true }
-      })
+      if (_codec == null) {
+        _codec = message<Peer>({
+          1: { name: 'id', codec: bytes },
+          2: { name: 'addrs', codec: bytes, repeats: true }
+        })
+      }
+
+      return _codec
     }
 
     export const encode = (obj: Peer): Uint8ArrayList => {
@@ -99,13 +105,19 @@ export namespace CircuitRelay {
     }
   }
 
+  let _codec: Codec<CircuitRelay>
+
   export const codec = (): Codec<CircuitRelay> => {
-    return message<CircuitRelay>({
-      1: { name: 'type', codec: CircuitRelay.Type.codec(), optional: true },
-      2: { name: 'srcPeer', codec: CircuitRelay.Peer.codec(), optional: true },
-      3: { name: 'dstPeer', codec: CircuitRelay.Peer.codec(), optional: true },
-      4: { name: 'code', codec: CircuitRelay.Status.codec(), optional: true }
-    })
+    if (_codec == null) {
+      _codec = message<CircuitRelay>({
+        1: { name: 'type', codec: CircuitRelay.Type.codec(), optional: true },
+        2: { name: 'srcPeer', codec: CircuitRelay.Peer.codec(), optional: true },
+        3: { name: 'dstPeer', codec: CircuitRelay.Peer.codec(), optional: true },
+        4: { name: 'code', codec: CircuitRelay.Status.codec(), optional: true }
+      })
+    }
+
+    return _codec
   }
 
   export const encode = (obj: CircuitRelay): Uint8ArrayList => {
