@@ -1,3 +1,10 @@
+## [protons-v4.0.3](https://github.com/ipfs/protons/compare/protons-v4.0.2...protons-v4.0.3) (2022-08-04)
+
+
+### Bug Fixes
+
+* tidy up formatting of generated code ([#57](https://github.com/ipfs/protons/issues/57)) ([387c9e9](https://github.com/ipfs/protons/commit/387c9e94abf477dbb1553295b7ac3054a82bf2ec))
+
 ## [protons-v4.0.2](https://github.com/ipfs/protons/compare/protons-v4.0.1...protons-v4.0.2) (2022-08-04)
 
 
