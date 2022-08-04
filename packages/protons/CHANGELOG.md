@@ -1,3 +1,10 @@
+## [protons-v4.0.2](https://github.com/ipfs/protons/compare/protons-v4.0.1...protons-v4.0.2) (2022-08-04)
+
+
+### Bug Fixes
+
+* single instance codec ([#55](https://github.com/ipfs/protons/issues/55)) ([66d9387](https://github.com/ipfs/protons/commit/66d9387dc32c79651873b8436391ae30125ec201)), closes [#51](https://github.com/ipfs/protons/issues/51)
+
 ## [protons-v4.0.1](https://github.com/ipfs/protons/compare/protons-v4.0.0...protons-v4.0.1) (2022-07-30)
 
 
