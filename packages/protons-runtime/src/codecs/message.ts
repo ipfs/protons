@@ -1,9 +1,7 @@
 import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
-import { Uint8ArrayList } from 'uint8arraylist'
 import type { FieldDefs, FieldDef } from '../index.js'
-import { allocUnsafe } from '../utils/alloc.js'
 
 export interface Factory<A, T> {
   new (obj: A): T
@@ -21,7 +19,10 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
   }
 
   const encode: EncodeFunction<Record<string, any>> = function messageEncode (val) {
-    const bytes = new Uint8ArrayList()
+    const bufs: Uint8Array[] = [
+      new Uint8Array(0) // will hold length prefix
+    ]
+    let length = 0
 
     function encodeValue (value: any, fieldNumber: number, fieldDef: FieldDef) {
       if (value == null) {
@@ -33,12 +34,12 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       }
 
       const key = (fieldNumber << 3) | fieldDef.codec.type
-      const prefix = allocUnsafe(unsigned.encodingLength(key))
-      unsigned.encode(key, prefix)
+      const prefix = unsigned.encode(key)
       const encoded = fieldDef.codec.encode(value)
 
-      bytes.append(prefix)
-      bytes.append(encoded)
+      bufs.push(prefix, ...encoded.bufs)
+      length += encoded.length
+      length += prefix.byteLength
     }
 
     for (const [fieldNumberStr, fieldDef] of Object.entries(fieldDefs)) {
@@ -57,9 +58,15 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       }
     }
 
-    const prefix = unsigned.encode(bytes.length)
+    const prefix = unsigned.encode(length)
 
-    return new Uint8ArrayList(prefix, bytes)
+    bufs[0] = prefix
+    length += prefix.byteLength
+
+    return {
+      bufs,
+      length
+    }
   }
 
   const decode: DecodeFunction<T> = function messageDecode (buffer, offset) {

@@ -7,7 +7,14 @@ const encodingLength: EncodingLengthFunction<bigint> = function int64EncodingLen
 }
 
 const encode: EncodeFunction<bigint> = function int64Encode (val) {
-  return zigzag.encode(val)
+  const buf = zigzag.encode(val)
+
+  return {
+    bufs: [
+      buf
+    ],
+    length: buf.byteLength
+  }
 }
 
 const decode: DecodeFunction<bigint> = function int64Decode (buf, offset) {

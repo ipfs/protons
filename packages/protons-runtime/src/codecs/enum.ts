@@ -2,7 +2,7 @@
 import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
-import { allocUnsafe } from '../utils/alloc.js'
+import { allocUnsafe } from 'uint8arrays/alloc'
 
 export function enumeration <T> (v: any): Codec<T> {
   function findValue (val: string | number): number {
@@ -27,7 +27,12 @@ export function enumeration <T> (v: any): Codec<T> {
     const buf = allocUnsafe(unsigned.encodingLength(enumValue))
     unsigned.encode(enumValue, buf)
 
-    return buf
+    return {
+      bufs: [
+        buf
+      ],
+      length: buf.byteLength
+    }
   }
 
   const decode: DecodeFunction<number | string> = function enumDecode (buf, offset) {

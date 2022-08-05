@@ -55,7 +55,8 @@
       "sourceType": "module"
     },
     "ignorePatterns": [
-      "src/protobufjs/*.ts"
+      "src/pbjs/*",
+      "src/protobufjs/*"
     ]
   },
   "scripts": {
@@ -67,8 +68,9 @@
     "start": "node dist/src/index.js"
   },
   "dependencies": {
+    "@types/benchmark": "^2.1.1",
     "aegir": "^37.0.5",
-    "benny": "^3.7.1",
+    "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
     "protobufjs": "^6.11.2",
     "protons": "^4.0.0",

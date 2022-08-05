@@ -7,7 +7,14 @@ const encodingLength: EncodingLengthFunction<number> = function sint32EncodingLe
 }
 
 const encode: EncodeFunction<number> = function svarintEncode (val) {
-  return zigzag.encode(val)
+  const buf = zigzag.encode(val)
+
+  return {
+    bufs: [
+      buf
+    ],
+    length: buf.byteLength
+  }
 }
 
 const decode: DecodeFunction<number> = function svarintDecode (buf, offset) {

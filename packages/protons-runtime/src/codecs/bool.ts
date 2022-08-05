@@ -6,7 +6,12 @@ const encodingLength: EncodingLengthFunction<boolean> = function boolEncodingLen
 }
 
 const encode: EncodeFunction<boolean> = function boolEncode (value) {
-  return Uint8Array.from([value ? 1 : 0])
+  return {
+    bufs: [
+      Uint8Array.from([value ? 1 : 0])
+    ],
+    length: 1
+  }
 }
 
 const decode: DecodeFunction<boolean> = function boolDecode (buffer, offset) {

@@ -1,6 +1,7 @@
 import { signed } from 'uint8-varint/big'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
+import { alloc } from 'uint8arrays/alloc'
 
 const encodingLength: EncodingLengthFunction<bigint> = function int64EncodingLength (val) {
   if (val < 0n) {
@@ -11,9 +12,14 @@ const encodingLength: EncodingLengthFunction<bigint> = function int64EncodingLen
 }
 
 const encode: EncodeFunction<bigint> = function int64Encode (val) {
-  const buf = new Uint8Array(encodingLength(val))
+  const buf = signed.encode(val, alloc(encodingLength(val)))
 
-  return signed.encode(val, buf)
+  return {
+    bufs: [
+      buf
+    ],
+    length: buf.byteLength
+  }
 }
 
 const decode: DecodeFunction<bigint> = function int64Decode (buf, offset) {

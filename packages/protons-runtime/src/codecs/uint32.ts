@@ -7,15 +7,18 @@ const encodingLength: EncodingLengthFunction<number> = function uint32EncodingLe
 }
 
 const encode: EncodeFunction<number> = function uint32Encode (val) {
-  // val = val < 0 ? val + 4294967296 : val
+  const buf = unsigned.encode(val)
 
-  return unsigned.encode(val)
+  return {
+    bufs: [
+      buf
+    ],
+    length: buf.byteLength
+  }
 }
 
 const decode: DecodeFunction<number> = function uint32Decode (buf, offset) {
   return unsigned.decode(buf, offset)
-
-  // return value > 2147483647 ? value - 4294967296 : value
 }
 
 export const uint32 = createCodec('uint32', CODEC_TYPES.VARINT, encode, decode, encodingLength)

@@ -7,7 +7,14 @@ const encodingLength: EncodingLengthFunction<bigint> = function uint64EncodingLe
 }
 
 const encode: EncodeFunction<bigint> = function uint64Encode (val) {
-  return unsigned.encode(val)
+  const buf = unsigned.encode(val)
+
+  return {
+    bufs: [
+      buf
+    ],
+    length: buf.byteLength
+  }
 }
 
 const decode: DecodeFunction<bigint> = function uint64Decode (buf, offset) {

@@ -1,8 +1,8 @@
 
-import { Uint8ArrayList } from 'uint8arraylist'
 import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
+import { allocUnsafe } from 'uint8arrays/alloc'
 
 const encodingLength: EncodingLengthFunction<Uint8Array> = function bytesEncodingLength (val) {
   const len = val.byteLength
@@ -10,10 +10,18 @@ const encodingLength: EncodingLengthFunction<Uint8Array> = function bytesEncodin
 }
 
 const encode: EncodeFunction<Uint8Array> = function bytesEncode (val) {
-  return new Uint8ArrayList(
-    unsigned.encode(val.byteLength),
-    val
-  )
+  const lenLen = unsigned.encodingLength(val.byteLength)
+  const buf = allocUnsafe(lenLen + val.byteLength)
+  unsigned.encode(val.byteLength, buf)
+
+  buf.set(val, lenLen)
+
+  return {
+    bufs: [
+      buf
+    ],
+    length: buf.byteLength
+  }
 }
 
 const decode: DecodeFunction<Uint8Array> = function bytesDecode (buf, offset) {

@@ -1,5 +1,11 @@
+/* eslint-disable no-console */
 
-import benny from 'benny'
+/*
+$ node dist/src/index.js
+$ npx playwright-test dist/src/index.js --runner benchmark
+*/
+
+import Benchmark from 'benchmark'
 import { expect } from 'aegir/chai'
 import { Test as ProtonsTest } from './protons/bench.js'
 import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
@@ -27,30 +33,34 @@ function expectDecodedCorrectly (result: any) {
   expect(result).to.have.property('payload').that.equalBytes(message.payload)
 }
 
-void benny.suite(
-  'Encode/Decode',
-
-  benny.add('pbjs', () => {
+new Benchmark.Suite()
+  .add('pbjs', () => {
     const buf = pbjsEncodeTest(message)
     const result = pbjsDecodeTest(buf)
 
     expectDecodedCorrectly(result)
-  }),
-
-  benny.add('protons', () => {
+  })
+  .add('protons', () => {
     const buf = ProtonsTest.encode(message)
     const result = ProtonsTest.decode(buf)
 
     expectDecodedCorrectly(result)
-  }),
-
-  benny.add('protobufjs', () => {
+  })
+  .add('protobufjs', () => {
     const buf = ProtobufjsTest.encode(message).finish()
     const result = ProtobufjsTest.decode(buf)
 
     expectDecodedCorrectly(result)
-  }),
-
-  benny.cycle(),
-  benny.complete()
-)
+  })
+  .on('error', (err: Error) => {
+    console.error(err)
+  })
+  .on('cycle', (event: any) => {
+    console.info(String(event.target))
+  })
+  .on('complete', function () {
+    // @ts-expect-error types are wrong
+    console.info(`Fastest is ${this.filter('fastest').map('name')}`) // eslint-disable-line @typescript-eslint/restrict-template-expressions
+  })
+  // run async
+  .run({ async: true })
