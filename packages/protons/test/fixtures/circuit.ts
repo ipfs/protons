@@ -1,9 +1,8 @@
 /* eslint-disable import/export */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { enumeration, encodeMessage, decodeMessage, message, bytes } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from 'uint8-varint'
 import type { Codec } from 'protons-runtime'
 
 export interface CircuitRelay {
@@ -88,60 +87,70 @@ export namespace CircuitRelay {
 
     export const codec = (): Codec<Peer> => {
       if (_codec == null) {
-        _codec = message<Peer>((obj, opts = {}) => {
-          const bufs: Uint8Array[] = []
-
+        _codec = message<Peer>((obj, writer, opts = {}) => {
           if (opts.lengthDelimited !== false) {
-            // will hold length prefix
-            bufs.push(new Uint8Array(0))
+            writer.fork()
           }
 
-          let length = 0
-
-          const $id = obj.id
-          if ($id != null) {
-            const prefixField1 = Uint8Array.from([10])
-            const encodedField1 = bytes.encode($id)
-            bufs.push(prefixField1, ...encodedField1.bufs)
-            length += prefixField1.byteLength + encodedField1.length
+          if (obj.id != null) {
+            writer.uint32(10)
+            writer.bytes(obj.id)
+          } else {
+            throw new Error('Protocol error: required field "id" was not found in object')
           }
 
-          const $addrs = obj.addrs
-          if ($addrs != null) {
-            for (const value of $addrs) {
-              const prefixField2 = Uint8Array.from([18])
-              const encodedField2 = bytes.encode(value)
-              bufs.push(prefixField2, ...encodedField2.bufs)
-              length += prefixField2.byteLength + encodedField2.length
+          if (obj.addrs != null) {
+            for (const value of obj.addrs) {
+              writer.uint32(18)
+              writer.bytes(value)
             }
+          } else {
+            throw new Error('Protocol error: required field "addrs" was not found in object')
           }
 
           if (opts.lengthDelimited !== false) {
-            const prefix = unsigned.encode(length)
+            writer.ldelim()
+          }
+        }, (reader, length) => {
+          const obj: any = {}
 
-            bufs[0] = prefix
-            length += prefix.byteLength
+          const end = length == null ? reader.len : reader.pos + length
 
-            return {
-              bufs,
-              length
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1:
+                obj.id = reader.bytes()
+                break
+              case 2:
+                obj.addrs = obj.addrs ?? []
+                obj.addrs.push(reader.bytes())
+                break
+              default:
+                reader.skipType(tag & 7)
+                break
             }
           }
 
-          return {
-            bufs,
-            length
+          obj.addrs = obj.addrs ?? []
+
+          if (obj.id == null) {
+            throw new Error('Protocol error: value for required field "id" was not found in protobuf')
           }
-        }, {
-          '1': { name: 'id', codec: bytes },
-          '2': { name: 'addrs', codec: bytes, repeats: true }
+
+          if (obj.addrs == null) {
+            throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
+          }
+
+          return obj
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Peer): Uint8ArrayList => {
+    export const encode = (obj: Peer): Uint8Array => {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -154,76 +163,69 @@ export namespace CircuitRelay {
 
   export const codec = (): Codec<CircuitRelay> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<CircuitRelay>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = CircuitRelay.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          CircuitRelay.Type.codec().encode(obj.type, writer)
         }
 
-        const $srcPeer = obj.srcPeer
-        if ($srcPeer != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = CircuitRelay.Peer.codec().encode($srcPeer)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.srcPeer != null) {
+          writer.uint32(18)
+          CircuitRelay.Peer.codec().encode(obj.srcPeer, writer)
         }
 
-        const $dstPeer = obj.dstPeer
-        if ($dstPeer != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = CircuitRelay.Peer.codec().encode($dstPeer)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.dstPeer != null) {
+          writer.uint32(26)
+          CircuitRelay.Peer.codec().encode(obj.dstPeer, writer)
         }
 
-        const $code = obj.code
-        if ($code != null) {
-          const prefixField4 = Uint8Array.from([32])
-          const encodedField4 = CircuitRelay.Status.codec().encode($code)
-          bufs.push(prefixField4, ...encodedField4.bufs)
-          length += prefixField4.byteLength + encodedField4.length
+        if (obj.code != null) {
+          writer.uint32(32)
+          CircuitRelay.Status.codec().encode(obj.code, writer)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = CircuitRelay.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.srcPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32())
+              break
+            case 3:
+              obj.dstPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32())
+              break
+            case 4:
+              obj.code = CircuitRelay.Status.codec().decode(reader)
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
-        }
-      }, {
-        '1': { name: 'type', codec: CircuitRelay.Type.codec(), optional: true },
-        '2': { name: 'srcPeer', codec: CircuitRelay.Peer.codec(), optional: true },
-        '3': { name: 'dstPeer', codec: CircuitRelay.Peer.codec(), optional: true },
-        '4': { name: 'code', codec: CircuitRelay.Status.codec(), optional: true }
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: CircuitRelay): Uint8ArrayList => {
+  export const encode = (obj: CircuitRelay): Uint8Array => {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 

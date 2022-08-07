@@ -1,13 +1,12 @@
 /* eslint-disable import/export */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { encodeMessage, decodeMessage, message, uint32, enumeration, string, bytes } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message, enumeration } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from 'uint8-varint'
 import type { Codec } from 'protons-runtime'
 
 export interface Foo {
-  baz: number
+  baz?: number
 }
 
 export namespace Foo {
@@ -15,49 +14,45 @@ export namespace Foo {
 
   export const codec = (): Codec<Foo> => {
     if (_codec == null) {
-      _codec = message<Foo>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Foo>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $baz = obj.baz
-        if ($baz != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = uint32.encode($baz)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.baz != null) {
+          writer.uint32(8)
+          writer.uint32(obj.baz)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.baz = reader.uint32()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
-        }
-      }, {
-        '1': { name: 'baz', codec: uint32 }
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Foo): Uint8ArrayList => {
+  export const encode = (obj: Foo): Uint8Array => {
     return encodeMessage(obj, Foo.codec())
   }
 
@@ -67,7 +62,7 @@ export namespace Foo {
 }
 
 export interface Bar {
-  tmp: Foo
+  tmp?: Foo
 }
 
 export namespace Bar {
@@ -75,49 +70,45 @@ export namespace Bar {
 
   export const codec = (): Codec<Bar> => {
     if (_codec == null) {
-      _codec = message<Bar>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Bar>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $tmp = obj.tmp
-        if ($tmp != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = Foo.codec().encode($tmp)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.tmp != null) {
+          writer.uint32(10)
+          Foo.codec().encode(obj.tmp, writer)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.tmp = Foo.codec().decode(reader, reader.uint32())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
-        }
-      }, {
-        '1': { name: 'tmp', codec: Foo.codec() }
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Bar): Uint8ArrayList => {
+  export const encode = (obj: Bar): Uint8Array => {
     return encodeMessage(obj, Bar.codec())
   }
 
@@ -150,51 +141,56 @@ export namespace Yo {
 
   export const codec = (): Codec<Yo> => {
     if (_codec == null) {
-      _codec = message<Yo>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Yo>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $lol = obj.lol
-        if ($lol != null) {
-          for (const value of $lol) {
-            const prefixField1 = Uint8Array.from([8])
-            const encodedField1 = FOO.codec().encode(value)
-            bufs.push(prefixField1, ...encodedField1.bufs)
-            length += prefixField1.byteLength + encodedField1.length
+        if (obj.lol != null) {
+          for (const value of obj.lol) {
+            writer.uint32(8)
+            FOO.codec().encode(value, writer)
           }
+        } else {
+          throw new Error('Protocol error: required field "lol" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.lol = obj.lol ?? []
+              obj.lol.push(FOO.codec().decode(reader))
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.lol = obj.lol ?? []
+
+        if (obj.lol == null) {
+          throw new Error('Protocol error: value for required field "lol" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'lol', codec: FOO.codec(), repeats: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Yo): Uint8ArrayList => {
+  export const encode = (obj: Yo): Uint8Array => {
     return encodeMessage(obj, Yo.codec())
   }
 
@@ -204,7 +200,7 @@ export namespace Yo {
 }
 
 export interface Lol {
-  lol: string
+  lol?: string
   b: Bar
 }
 
@@ -213,58 +209,59 @@ export namespace Lol {
 
   export const codec = (): Codec<Lol> => {
     if (_codec == null) {
-      _codec = message<Lol>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Lol>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $lol = obj.lol
-        if ($lol != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = string.encode($lol)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.lol != null) {
+          writer.uint32(10)
+          writer.string(obj.lol)
         }
 
-        const $b = obj.b
-        if ($b != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = Bar.codec().encode($b)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.b != null) {
+          writer.uint32(18)
+          Bar.codec().encode(obj.b, writer)
+        } else {
+          throw new Error('Protocol error: required field "b" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.lol = reader.string()
+              break
+            case 2:
+              obj.b = Bar.codec().decode(reader, reader.uint32())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.b == null) {
+          throw new Error('Protocol error: value for required field "b" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'lol', codec: string },
-        '2': { name: 'b', codec: Bar.codec() }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Lol): Uint8ArrayList => {
+  export const encode = (obj: Lol): Uint8Array => {
     return encodeMessage(obj, Lol.codec())
   }
 
@@ -274,10 +271,10 @@ export namespace Lol {
 }
 
 export interface Test {
-  meh: Lol
-  hello: number
-  foo: string
-  payload: Uint8Array
+  meh?: Lol
+  hello?: number
+  foo?: string
+  payload?: Uint8Array
 }
 
 export namespace Test {
@@ -285,76 +282,69 @@ export namespace Test {
 
   export const codec = (): Codec<Test> => {
     if (_codec == null) {
-      _codec = message<Test>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Test>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $meh = obj.meh
-        if ($meh != null) {
-          const prefixField6 = Uint8Array.from([50])
-          const encodedField6 = Lol.codec().encode($meh)
-          bufs.push(prefixField6, ...encodedField6.bufs)
-          length += prefixField6.byteLength + encodedField6.length
+        if (obj.meh != null) {
+          writer.uint32(50)
+          Lol.codec().encode(obj.meh, writer)
         }
 
-        const $hello = obj.hello
-        if ($hello != null) {
-          const prefixField3 = Uint8Array.from([24])
-          const encodedField3 = uint32.encode($hello)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.hello != null) {
+          writer.uint32(24)
+          writer.uint32(obj.hello)
         }
 
-        const $foo = obj.foo
-        if ($foo != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = string.encode($foo)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.foo != null) {
+          writer.uint32(10)
+          writer.string(obj.foo)
         }
 
-        const $payload = obj.payload
-        if ($payload != null) {
-          const prefixField7 = Uint8Array.from([58])
-          const encodedField7 = bytes.encode($payload)
-          bufs.push(prefixField7, ...encodedField7.bufs)
-          length += prefixField7.byteLength + encodedField7.length
+        if (obj.payload != null) {
+          writer.uint32(58)
+          writer.bytes(obj.payload)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 6:
+              obj.meh = Lol.codec().decode(reader, reader.uint32())
+              break
+            case 3:
+              obj.hello = reader.uint32()
+              break
+            case 1:
+              obj.foo = reader.string()
+              break
+            case 7:
+              obj.payload = reader.bytes()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
-        }
-      }, {
-        '6': { name: 'meh', codec: Lol.codec() },
-        '3': { name: 'hello', codec: uint32 },
-        '1': { name: 'foo', codec: string },
-        '7': { name: 'payload', codec: bytes }
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Test): Uint8ArrayList => {
+  export const encode = (obj: Test): Uint8Array => {
     return encodeMessage(obj, Test.codec())
   }
 

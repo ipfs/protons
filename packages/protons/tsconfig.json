@@ -9,7 +9,8 @@
     "test"
   ],
   "exclude": [
-    "test/fixtures/*.pbjs.ts"
+    "test/fixtures/*.pbjs.ts",
+    "test/fixtures/*.protobuf.js"
   ],
   "references": [
     {

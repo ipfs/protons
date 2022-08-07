@@ -1,9 +1,8 @@
 /* eslint-disable import/export */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { encodeMessage, decodeMessage, message, bytes } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from 'uint8-varint'
 import type { Codec } from 'protons-runtime'
 
 export namespace pb {
@@ -18,67 +17,79 @@ export namespace pb {
 
     export const codec = (): Codec<NoiseHandshakePayload> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload>((obj, opts = {}) => {
-          const bufs: Uint8Array[] = []
-
+        _codec = message<NoiseHandshakePayload>((obj, writer, opts = {}) => {
           if (opts.lengthDelimited !== false) {
-            // will hold length prefix
-            bufs.push(new Uint8Array(0))
+            writer.fork()
           }
 
-          let length = 0
-
-          const $identityKey = obj.identityKey
-          if ($identityKey != null) {
-            const prefixField1 = Uint8Array.from([10])
-            const encodedField1 = bytes.encode($identityKey)
-            bufs.push(prefixField1, ...encodedField1.bufs)
-            length += prefixField1.byteLength + encodedField1.length
+          if (obj.identityKey != null) {
+            writer.uint32(10)
+            writer.bytes(obj.identityKey)
+          } else {
+            throw new Error('Protocol error: required field "identityKey" was not found in object')
           }
 
-          const $identitySig = obj.identitySig
-          if ($identitySig != null) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = bytes.encode($identitySig)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+          if (obj.identitySig != null) {
+            writer.uint32(18)
+            writer.bytes(obj.identitySig)
+          } else {
+            throw new Error('Protocol error: required field "identitySig" was not found in object')
           }
 
-          const $data = obj.data
-          if ($data != null) {
-            const prefixField3 = Uint8Array.from([26])
-            const encodedField3 = bytes.encode($data)
-            bufs.push(prefixField3, ...encodedField3.bufs)
-            length += prefixField3.byteLength + encodedField3.length
+          if (obj.data != null) {
+            writer.uint32(26)
+            writer.bytes(obj.data)
+          } else {
+            throw new Error('Protocol error: required field "data" was not found in object')
           }
 
           if (opts.lengthDelimited !== false) {
-            const prefix = unsigned.encode(length)
+            writer.ldelim()
+          }
+        }, (reader, length) => {
+          const obj: any = {}
 
-            bufs[0] = prefix
-            length += prefix.byteLength
+          const end = length == null ? reader.len : reader.pos + length
 
-            return {
-              bufs,
-              length
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1:
+                obj.identityKey = reader.bytes()
+                break
+              case 2:
+                obj.identitySig = reader.bytes()
+                break
+              case 3:
+                obj.data = reader.bytes()
+                break
+              default:
+                reader.skipType(tag & 7)
+                break
             }
           }
 
-          return {
-            bufs,
-            length
+          if (obj.identityKey == null) {
+            throw new Error('Protocol error: value for required field "identityKey" was not found in protobuf')
           }
-        }, {
-          '1': { name: 'identityKey', codec: bytes },
-          '2': { name: 'identitySig', codec: bytes },
-          '3': { name: 'data', codec: bytes }
+
+          if (obj.identitySig == null) {
+            throw new Error('Protocol error: value for required field "identitySig" was not found in protobuf')
+          }
+
+          if (obj.data == null) {
+            throw new Error('Protocol error: value for required field "data" was not found in protobuf')
+          }
+
+          return obj
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: NoiseHandshakePayload): Uint8ArrayList => {
+    export const encode = (obj: NoiseHandshakePayload): Uint8Array => {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 

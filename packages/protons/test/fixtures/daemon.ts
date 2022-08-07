@@ -1,9 +1,8 @@
 /* eslint-disable import/export */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { enumeration, encodeMessage, decodeMessage, message, bytes, int64, string, int32 } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from 'uint8-varint'
 import type { Codec } from 'protons-runtime'
 
 export interface Request {
@@ -55,121 +54,115 @@ export namespace Request {
 
   export const codec = (): Codec<Request> => {
     if (_codec == null) {
-      _codec = message<Request>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Request>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = Request.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          Request.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $connect = obj.connect
-        if ($connect != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = ConnectRequest.codec().encode($connect)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.connect != null) {
+          writer.uint32(18)
+          ConnectRequest.codec().encode(obj.connect, writer)
         }
 
-        const $streamOpen = obj.streamOpen
-        if ($streamOpen != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = StreamOpenRequest.codec().encode($streamOpen)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.streamOpen != null) {
+          writer.uint32(26)
+          StreamOpenRequest.codec().encode(obj.streamOpen, writer)
         }
 
-        const $streamHandler = obj.streamHandler
-        if ($streamHandler != null) {
-          const prefixField4 = Uint8Array.from([34])
-          const encodedField4 = StreamHandlerRequest.codec().encode($streamHandler)
-          bufs.push(prefixField4, ...encodedField4.bufs)
-          length += prefixField4.byteLength + encodedField4.length
+        if (obj.streamHandler != null) {
+          writer.uint32(34)
+          StreamHandlerRequest.codec().encode(obj.streamHandler, writer)
         }
 
-        const $dht = obj.dht
-        if ($dht != null) {
-          const prefixField5 = Uint8Array.from([42])
-          const encodedField5 = DHTRequest.codec().encode($dht)
-          bufs.push(prefixField5, ...encodedField5.bufs)
-          length += prefixField5.byteLength + encodedField5.length
+        if (obj.dht != null) {
+          writer.uint32(42)
+          DHTRequest.codec().encode(obj.dht, writer)
         }
 
-        const $connManager = obj.connManager
-        if ($connManager != null) {
-          const prefixField6 = Uint8Array.from([50])
-          const encodedField6 = ConnManagerRequest.codec().encode($connManager)
-          bufs.push(prefixField6, ...encodedField6.bufs)
-          length += prefixField6.byteLength + encodedField6.length
+        if (obj.connManager != null) {
+          writer.uint32(50)
+          ConnManagerRequest.codec().encode(obj.connManager, writer)
         }
 
-        const $disconnect = obj.disconnect
-        if ($disconnect != null) {
-          const prefixField7 = Uint8Array.from([58])
-          const encodedField7 = DisconnectRequest.codec().encode($disconnect)
-          bufs.push(prefixField7, ...encodedField7.bufs)
-          length += prefixField7.byteLength + encodedField7.length
+        if (obj.disconnect != null) {
+          writer.uint32(58)
+          DisconnectRequest.codec().encode(obj.disconnect, writer)
         }
 
-        const $pubsub = obj.pubsub
-        if ($pubsub != null) {
-          const prefixField8 = Uint8Array.from([66])
-          const encodedField8 = PSRequest.codec().encode($pubsub)
-          bufs.push(prefixField8, ...encodedField8.bufs)
-          length += prefixField8.byteLength + encodedField8.length
+        if (obj.pubsub != null) {
+          writer.uint32(66)
+          PSRequest.codec().encode(obj.pubsub, writer)
         }
 
-        const $peerStore = obj.peerStore
-        if ($peerStore != null) {
-          const prefixField9 = Uint8Array.from([74])
-          const encodedField9 = PeerstoreRequest.codec().encode($peerStore)
-          bufs.push(prefixField9, ...encodedField9.bufs)
-          length += prefixField9.byteLength + encodedField9.length
+        if (obj.peerStore != null) {
+          writer.uint32(74)
+          PeerstoreRequest.codec().encode(obj.peerStore, writer)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = Request.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.connect = ConnectRequest.codec().decode(reader, reader.uint32())
+              break
+            case 3:
+              obj.streamOpen = StreamOpenRequest.codec().decode(reader, reader.uint32())
+              break
+            case 4:
+              obj.streamHandler = StreamHandlerRequest.codec().decode(reader, reader.uint32())
+              break
+            case 5:
+              obj.dht = DHTRequest.codec().decode(reader, reader.uint32())
+              break
+            case 6:
+              obj.connManager = ConnManagerRequest.codec().decode(reader, reader.uint32())
+              break
+            case 7:
+              obj.disconnect = DisconnectRequest.codec().decode(reader, reader.uint32())
+              break
+            case 8:
+              obj.pubsub = PSRequest.codec().decode(reader, reader.uint32())
+              break
+            case 9:
+              obj.peerStore = PeerstoreRequest.codec().decode(reader, reader.uint32())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: Request.Type.codec() },
-        '2': { name: 'connect', codec: ConnectRequest.codec(), optional: true },
-        '3': { name: 'streamOpen', codec: StreamOpenRequest.codec(), optional: true },
-        '4': { name: 'streamHandler', codec: StreamHandlerRequest.codec(), optional: true },
-        '5': { name: 'dht', codec: DHTRequest.codec(), optional: true },
-        '6': { name: 'connManager', codec: ConnManagerRequest.codec(), optional: true },
-        '7': { name: 'disconnect', codec: DisconnectRequest.codec(), optional: true },
-        '8': { name: 'pubsub', codec: PSRequest.codec(), optional: true },
-        '9': { name: 'peerStore', codec: PeerstoreRequest.codec(), optional: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Request): Uint8ArrayList => {
+  export const encode = (obj: Request): Uint8Array => {
     return encodeMessage(obj, Request.codec())
   }
 
@@ -210,114 +203,118 @@ export namespace Response {
 
   export const codec = (): Codec<Response> => {
     if (_codec == null) {
-      _codec = message<Response>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Response>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = Response.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          Response.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $error = obj.error
-        if ($error != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = ErrorResponse.codec().encode($error)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.error != null) {
+          writer.uint32(18)
+          ErrorResponse.codec().encode(obj.error, writer)
         }
 
-        const $streamInfo = obj.streamInfo
-        if ($streamInfo != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = StreamInfo.codec().encode($streamInfo)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.streamInfo != null) {
+          writer.uint32(26)
+          StreamInfo.codec().encode(obj.streamInfo, writer)
         }
 
-        const $identify = obj.identify
-        if ($identify != null) {
-          const prefixField4 = Uint8Array.from([34])
-          const encodedField4 = IdentifyResponse.codec().encode($identify)
-          bufs.push(prefixField4, ...encodedField4.bufs)
-          length += prefixField4.byteLength + encodedField4.length
+        if (obj.identify != null) {
+          writer.uint32(34)
+          IdentifyResponse.codec().encode(obj.identify, writer)
         }
 
-        const $dht = obj.dht
-        if ($dht != null) {
-          const prefixField5 = Uint8Array.from([42])
-          const encodedField5 = DHTResponse.codec().encode($dht)
-          bufs.push(prefixField5, ...encodedField5.bufs)
-          length += prefixField5.byteLength + encodedField5.length
+        if (obj.dht != null) {
+          writer.uint32(42)
+          DHTResponse.codec().encode(obj.dht, writer)
         }
 
-        const $peers = obj.peers
-        if ($peers != null) {
-          for (const value of $peers) {
-            const prefixField6 = Uint8Array.from([50])
-            const encodedField6 = PeerInfo.codec().encode(value)
-            bufs.push(prefixField6, ...encodedField6.bufs)
-            length += prefixField6.byteLength + encodedField6.length
+        if (obj.peers != null) {
+          for (const value of obj.peers) {
+            writer.uint32(50)
+            PeerInfo.codec().encode(value, writer)
           }
+        } else {
+          throw new Error('Protocol error: required field "peers" was not found in object')
         }
 
-        const $pubsub = obj.pubsub
-        if ($pubsub != null) {
-          const prefixField7 = Uint8Array.from([58])
-          const encodedField7 = PSResponse.codec().encode($pubsub)
-          bufs.push(prefixField7, ...encodedField7.bufs)
-          length += prefixField7.byteLength + encodedField7.length
+        if (obj.pubsub != null) {
+          writer.uint32(58)
+          PSResponse.codec().encode(obj.pubsub, writer)
         }
 
-        const $peerStore = obj.peerStore
-        if ($peerStore != null) {
-          const prefixField8 = Uint8Array.from([66])
-          const encodedField8 = PeerstoreResponse.codec().encode($peerStore)
-          bufs.push(prefixField8, ...encodedField8.bufs)
-          length += prefixField8.byteLength + encodedField8.length
+        if (obj.peerStore != null) {
+          writer.uint32(66)
+          PeerstoreResponse.codec().encode(obj.peerStore, writer)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = Response.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.error = ErrorResponse.codec().decode(reader, reader.uint32())
+              break
+            case 3:
+              obj.streamInfo = StreamInfo.codec().decode(reader, reader.uint32())
+              break
+            case 4:
+              obj.identify = IdentifyResponse.codec().decode(reader, reader.uint32())
+              break
+            case 5:
+              obj.dht = DHTResponse.codec().decode(reader, reader.uint32())
+              break
+            case 6:
+              obj.peers = obj.peers ?? []
+              obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32()))
+              break
+            case 7:
+              obj.pubsub = PSResponse.codec().decode(reader, reader.uint32())
+              break
+            case 8:
+              obj.peerStore = PeerstoreResponse.codec().decode(reader, reader.uint32())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.peers = obj.peers ?? []
+
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: Response.Type.codec() },
-        '2': { name: 'error', codec: ErrorResponse.codec(), optional: true },
-        '3': { name: 'streamInfo', codec: StreamInfo.codec(), optional: true },
-        '4': { name: 'identify', codec: IdentifyResponse.codec(), optional: true },
-        '5': { name: 'dht', codec: DHTResponse.codec(), optional: true },
-        '6': { name: 'peers', codec: PeerInfo.codec(), repeats: true },
-        '7': { name: 'pubsub', codec: PSResponse.codec(), optional: true },
-        '8': { name: 'peerStore', codec: PeerstoreResponse.codec(), optional: true }
+
+        if (obj.peers == null) {
+          throw new Error('Protocol error: value for required field "peers" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Response): Uint8ArrayList => {
+  export const encode = (obj: Response): Uint8Array => {
     return encodeMessage(obj, Response.codec())
   }
 
@@ -336,60 +333,70 @@ export namespace IdentifyResponse {
 
   export const codec = (): Codec<IdentifyResponse> => {
     if (_codec == null) {
-      _codec = message<IdentifyResponse>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<IdentifyResponse>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $id = obj.id
-        if ($id != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($id)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.id != null) {
+          writer.uint32(10)
+          writer.bytes(obj.id)
+        } else {
+          throw new Error('Protocol error: required field "id" was not found in object')
         }
 
-        const $addrs = obj.addrs
-        if ($addrs != null) {
-          for (const value of $addrs) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = bytes.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.addrs != null) {
+          for (const value of obj.addrs) {
+            writer.uint32(18)
+            writer.bytes(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "addrs" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.id = reader.bytes()
+              break
+            case 2:
+              obj.addrs = obj.addrs ?? []
+              obj.addrs.push(reader.bytes())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.addrs = obj.addrs ?? []
+
+        if (obj.id == null) {
+          throw new Error('Protocol error: value for required field "id" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'id', codec: bytes },
-        '2': { name: 'addrs', codec: bytes, repeats: true }
+
+        if (obj.addrs == null) {
+          throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: IdentifyResponse): Uint8ArrayList => {
+  export const encode = (obj: IdentifyResponse): Uint8Array => {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
@@ -409,69 +416,78 @@ export namespace ConnectRequest {
 
   export const codec = (): Codec<ConnectRequest> => {
     if (_codec == null) {
-      _codec = message<ConnectRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<ConnectRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($peer)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.peer != null) {
+          writer.uint32(10)
+          writer.bytes(obj.peer)
+        } else {
+          throw new Error('Protocol error: required field "peer" was not found in object')
         }
 
-        const $addrs = obj.addrs
-        if ($addrs != null) {
-          for (const value of $addrs) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = bytes.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.addrs != null) {
+          for (const value of obj.addrs) {
+            writer.uint32(18)
+            writer.bytes(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "addrs" was not found in object')
         }
 
-        const $timeout = obj.timeout
-        if ($timeout != null) {
-          const prefixField3 = Uint8Array.from([24])
-          const encodedField3 = int64.encode($timeout)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.timeout != null) {
+          writer.uint32(24)
+          writer.int64(obj.timeout)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.peer = reader.bytes()
+              break
+            case 2:
+              obj.addrs = obj.addrs ?? []
+              obj.addrs.push(reader.bytes())
+              break
+            case 3:
+              obj.timeout = reader.int64()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.addrs = obj.addrs ?? []
+
+        if (obj.peer == null) {
+          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'peer', codec: bytes },
-        '2': { name: 'addrs', codec: bytes, repeats: true },
-        '3': { name: 'timeout', codec: int64, optional: true }
+
+        if (obj.addrs == null) {
+          throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: ConnectRequest): Uint8ArrayList => {
+  export const encode = (obj: ConnectRequest): Uint8Array => {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
@@ -491,69 +507,78 @@ export namespace StreamOpenRequest {
 
   export const codec = (): Codec<StreamOpenRequest> => {
     if (_codec == null) {
-      _codec = message<StreamOpenRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<StreamOpenRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($peer)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.peer != null) {
+          writer.uint32(10)
+          writer.bytes(obj.peer)
+        } else {
+          throw new Error('Protocol error: required field "peer" was not found in object')
         }
 
-        const $proto = obj.proto
-        if ($proto != null) {
-          for (const value of $proto) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = string.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.proto != null) {
+          for (const value of obj.proto) {
+            writer.uint32(18)
+            writer.string(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "proto" was not found in object')
         }
 
-        const $timeout = obj.timeout
-        if ($timeout != null) {
-          const prefixField3 = Uint8Array.from([24])
-          const encodedField3 = int64.encode($timeout)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.timeout != null) {
+          writer.uint32(24)
+          writer.int64(obj.timeout)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.peer = reader.bytes()
+              break
+            case 2:
+              obj.proto = obj.proto ?? []
+              obj.proto.push(reader.string())
+              break
+            case 3:
+              obj.timeout = reader.int64()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.proto = obj.proto ?? []
+
+        if (obj.peer == null) {
+          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'peer', codec: bytes },
-        '2': { name: 'proto', codec: string, repeats: true },
-        '3': { name: 'timeout', codec: int64, optional: true }
+
+        if (obj.proto == null) {
+          throw new Error('Protocol error: value for required field "proto" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: StreamOpenRequest): Uint8ArrayList => {
+  export const encode = (obj: StreamOpenRequest): Uint8Array => {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
@@ -572,60 +597,70 @@ export namespace StreamHandlerRequest {
 
   export const codec = (): Codec<StreamHandlerRequest> => {
     if (_codec == null) {
-      _codec = message<StreamHandlerRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<StreamHandlerRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $addr = obj.addr
-        if ($addr != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($addr)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.addr != null) {
+          writer.uint32(10)
+          writer.bytes(obj.addr)
+        } else {
+          throw new Error('Protocol error: required field "addr" was not found in object')
         }
 
-        const $proto = obj.proto
-        if ($proto != null) {
-          for (const value of $proto) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = string.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.proto != null) {
+          for (const value of obj.proto) {
+            writer.uint32(18)
+            writer.string(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "proto" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.addr = reader.bytes()
+              break
+            case 2:
+              obj.proto = obj.proto ?? []
+              obj.proto.push(reader.string())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.proto = obj.proto ?? []
+
+        if (obj.addr == null) {
+          throw new Error('Protocol error: value for required field "addr" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'addr', codec: bytes },
-        '2': { name: 'proto', codec: string, repeats: true }
+
+        if (obj.proto == null) {
+          throw new Error('Protocol error: value for required field "proto" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: StreamHandlerRequest): Uint8ArrayList => {
+  export const encode = (obj: StreamHandlerRequest): Uint8Array => {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
@@ -643,49 +678,51 @@ export namespace ErrorResponse {
 
   export const codec = (): Codec<ErrorResponse> => {
     if (_codec == null) {
-      _codec = message<ErrorResponse>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<ErrorResponse>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $msg = obj.msg
-        if ($msg != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = string.encode($msg)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.msg != null) {
+          writer.uint32(10)
+          writer.string(obj.msg)
+        } else {
+          throw new Error('Protocol error: required field "msg" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.msg = reader.string()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.msg == null) {
+          throw new Error('Protocol error: value for required field "msg" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'msg', codec: string }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: ErrorResponse): Uint8ArrayList => {
+  export const encode = (obj: ErrorResponse): Uint8Array => {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
@@ -705,67 +742,79 @@ export namespace StreamInfo {
 
   export const codec = (): Codec<StreamInfo> => {
     if (_codec == null) {
-      _codec = message<StreamInfo>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<StreamInfo>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($peer)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.peer != null) {
+          writer.uint32(10)
+          writer.bytes(obj.peer)
+        } else {
+          throw new Error('Protocol error: required field "peer" was not found in object')
         }
 
-        const $addr = obj.addr
-        if ($addr != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = bytes.encode($addr)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.addr != null) {
+          writer.uint32(18)
+          writer.bytes(obj.addr)
+        } else {
+          throw new Error('Protocol error: required field "addr" was not found in object')
         }
 
-        const $proto = obj.proto
-        if ($proto != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = string.encode($proto)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.proto != null) {
+          writer.uint32(26)
+          writer.string(obj.proto)
+        } else {
+          throw new Error('Protocol error: required field "proto" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.peer = reader.bytes()
+              break
+            case 2:
+              obj.addr = reader.bytes()
+              break
+            case 3:
+              obj.proto = reader.string()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.peer == null) {
+          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'peer', codec: bytes },
-        '2': { name: 'addr', codec: bytes },
-        '3': { name: 'proto', codec: string }
+
+        if (obj.addr == null) {
+          throw new Error('Protocol error: value for required field "addr" was not found in protobuf')
+        }
+
+        if (obj.proto == null) {
+          throw new Error('Protocol error: value for required field "proto" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: StreamInfo): Uint8ArrayList => {
+  export const encode = (obj: StreamInfo): Uint8Array => {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
@@ -819,103 +868,99 @@ export namespace DHTRequest {
 
   export const codec = (): Codec<DHTRequest> => {
     if (_codec == null) {
-      _codec = message<DHTRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<DHTRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = DHTRequest.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          DHTRequest.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = bytes.encode($peer)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.peer != null) {
+          writer.uint32(18)
+          writer.bytes(obj.peer)
         }
 
-        const $cid = obj.cid
-        if ($cid != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = bytes.encode($cid)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.cid != null) {
+          writer.uint32(26)
+          writer.bytes(obj.cid)
         }
 
-        const $key = obj.key
-        if ($key != null) {
-          const prefixField4 = Uint8Array.from([34])
-          const encodedField4 = bytes.encode($key)
-          bufs.push(prefixField4, ...encodedField4.bufs)
-          length += prefixField4.byteLength + encodedField4.length
+        if (obj.key != null) {
+          writer.uint32(34)
+          writer.bytes(obj.key)
         }
 
-        const $value = obj.value
-        if ($value != null) {
-          const prefixField5 = Uint8Array.from([42])
-          const encodedField5 = bytes.encode($value)
-          bufs.push(prefixField5, ...encodedField5.bufs)
-          length += prefixField5.byteLength + encodedField5.length
+        if (obj.value != null) {
+          writer.uint32(42)
+          writer.bytes(obj.value)
         }
 
-        const $count = obj.count
-        if ($count != null) {
-          const prefixField6 = Uint8Array.from([48])
-          const encodedField6 = int32.encode($count)
-          bufs.push(prefixField6, ...encodedField6.bufs)
-          length += prefixField6.byteLength + encodedField6.length
+        if (obj.count != null) {
+          writer.uint32(48)
+          writer.int32(obj.count)
         }
 
-        const $timeout = obj.timeout
-        if ($timeout != null) {
-          const prefixField7 = Uint8Array.from([56])
-          const encodedField7 = int64.encode($timeout)
-          bufs.push(prefixField7, ...encodedField7.bufs)
-          length += prefixField7.byteLength + encodedField7.length
+        if (obj.timeout != null) {
+          writer.uint32(56)
+          writer.int64(obj.timeout)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = DHTRequest.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.peer = reader.bytes()
+              break
+            case 3:
+              obj.cid = reader.bytes()
+              break
+            case 4:
+              obj.key = reader.bytes()
+              break
+            case 5:
+              obj.value = reader.bytes()
+              break
+            case 6:
+              obj.count = reader.int32()
+              break
+            case 7:
+              obj.timeout = reader.int64()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: DHTRequest.Type.codec() },
-        '2': { name: 'peer', codec: bytes, optional: true },
-        '3': { name: 'cid', codec: bytes, optional: true },
-        '4': { name: 'key', codec: bytes, optional: true },
-        '5': { name: 'value', codec: bytes, optional: true },
-        '6': { name: 'count', codec: int32, optional: true },
-        '7': { name: 'timeout', codec: int64, optional: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: DHTRequest): Uint8ArrayList => {
+  export const encode = (obj: DHTRequest): Uint8Array => {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
@@ -953,67 +998,67 @@ export namespace DHTResponse {
 
   export const codec = (): Codec<DHTResponse> => {
     if (_codec == null) {
-      _codec = message<DHTResponse>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<DHTResponse>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = DHTResponse.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          DHTResponse.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = PeerInfo.codec().encode($peer)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.peer != null) {
+          writer.uint32(18)
+          PeerInfo.codec().encode(obj.peer, writer)
         }
 
-        const $value = obj.value
-        if ($value != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = bytes.encode($value)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.value != null) {
+          writer.uint32(26)
+          writer.bytes(obj.value)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = DHTResponse.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
+              break
+            case 3:
+              obj.value = reader.bytes()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: DHTResponse.Type.codec() },
-        '2': { name: 'peer', codec: PeerInfo.codec(), optional: true },
-        '3': { name: 'value', codec: bytes, optional: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: DHTResponse): Uint8ArrayList => {
+  export const encode = (obj: DHTResponse): Uint8Array => {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
@@ -1032,60 +1077,70 @@ export namespace PeerInfo {
 
   export const codec = (): Codec<PeerInfo> => {
     if (_codec == null) {
-      _codec = message<PeerInfo>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<PeerInfo>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $id = obj.id
-        if ($id != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($id)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.id != null) {
+          writer.uint32(10)
+          writer.bytes(obj.id)
+        } else {
+          throw new Error('Protocol error: required field "id" was not found in object')
         }
 
-        const $addrs = obj.addrs
-        if ($addrs != null) {
-          for (const value of $addrs) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = bytes.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.addrs != null) {
+          for (const value of obj.addrs) {
+            writer.uint32(18)
+            writer.bytes(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "addrs" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.id = reader.bytes()
+              break
+            case 2:
+              obj.addrs = obj.addrs ?? []
+              obj.addrs.push(reader.bytes())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.addrs = obj.addrs ?? []
+
+        if (obj.id == null) {
+          throw new Error('Protocol error: value for required field "id" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'id', codec: bytes },
-        '2': { name: 'addrs', codec: bytes, repeats: true }
+
+        if (obj.addrs == null) {
+          throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: PeerInfo): Uint8ArrayList => {
+  export const encode = (obj: PeerInfo): Uint8Array => {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
@@ -1124,76 +1179,75 @@ export namespace ConnManagerRequest {
 
   export const codec = (): Codec<ConnManagerRequest> => {
     if (_codec == null) {
-      _codec = message<ConnManagerRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<ConnManagerRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = ConnManagerRequest.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          ConnManagerRequest.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = bytes.encode($peer)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.peer != null) {
+          writer.uint32(18)
+          writer.bytes(obj.peer)
         }
 
-        const $tag = obj.tag
-        if ($tag != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = string.encode($tag)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.tag != null) {
+          writer.uint32(26)
+          writer.string(obj.tag)
         }
 
-        const $weight = obj.weight
-        if ($weight != null) {
-          const prefixField4 = Uint8Array.from([32])
-          const encodedField4 = int64.encode($weight)
-          bufs.push(prefixField4, ...encodedField4.bufs)
-          length += prefixField4.byteLength + encodedField4.length
+        if (obj.weight != null) {
+          writer.uint32(32)
+          writer.int64(obj.weight)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = ConnManagerRequest.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.peer = reader.bytes()
+              break
+            case 3:
+              obj.tag = reader.string()
+              break
+            case 4:
+              obj.weight = reader.int64()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: ConnManagerRequest.Type.codec() },
-        '2': { name: 'peer', codec: bytes, optional: true },
-        '3': { name: 'tag', codec: string, optional: true },
-        '4': { name: 'weight', codec: int64, optional: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: ConnManagerRequest): Uint8ArrayList => {
+  export const encode = (obj: ConnManagerRequest): Uint8Array => {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
@@ -1211,49 +1265,51 @@ export namespace DisconnectRequest {
 
   export const codec = (): Codec<DisconnectRequest> => {
     if (_codec == null) {
-      _codec = message<DisconnectRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<DisconnectRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($peer)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.peer != null) {
+          writer.uint32(10)
+          writer.bytes(obj.peer)
+        } else {
+          throw new Error('Protocol error: required field "peer" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.peer = reader.bytes()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.peer == null) {
+          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'peer', codec: bytes }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: DisconnectRequest): Uint8ArrayList => {
+  export const encode = (obj: DisconnectRequest): Uint8Array => {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
@@ -1293,67 +1349,67 @@ export namespace PSRequest {
 
   export const codec = (): Codec<PSRequest> => {
     if (_codec == null) {
-      _codec = message<PSRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<PSRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = PSRequest.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          PSRequest.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $topic = obj.topic
-        if ($topic != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = string.encode($topic)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.topic != null) {
+          writer.uint32(18)
+          writer.string(obj.topic)
         }
 
-        const $data = obj.data
-        if ($data != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = bytes.encode($data)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.data != null) {
+          writer.uint32(26)
+          writer.bytes(obj.data)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = PSRequest.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.topic = reader.string()
+              break
+            case 3:
+              obj.data = reader.bytes()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: PSRequest.Type.codec() },
-        '2': { name: 'topic', codec: string, optional: true },
-        '3': { name: 'data', codec: bytes, optional: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: PSRequest): Uint8ArrayList => {
+  export const encode = (obj: PSRequest): Uint8Array => {
     return encodeMessage(obj, PSRequest.codec())
   }
 
@@ -1376,96 +1432,96 @@ export namespace PSMessage {
 
   export const codec = (): Codec<PSMessage> => {
     if (_codec == null) {
-      _codec = message<PSMessage>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<PSMessage>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $from = obj.from
-        if ($from != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = bytes.encode($from)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.from != null) {
+          writer.uint32(10)
+          writer.bytes(obj.from)
         }
 
-        const $data = obj.data
-        if ($data != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = bytes.encode($data)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.data != null) {
+          writer.uint32(18)
+          writer.bytes(obj.data)
         }
 
-        const $seqno = obj.seqno
-        if ($seqno != null) {
-          const prefixField3 = Uint8Array.from([26])
-          const encodedField3 = bytes.encode($seqno)
-          bufs.push(prefixField3, ...encodedField3.bufs)
-          length += prefixField3.byteLength + encodedField3.length
+        if (obj.seqno != null) {
+          writer.uint32(26)
+          writer.bytes(obj.seqno)
         }
 
-        const $topicIDs = obj.topicIDs
-        if ($topicIDs != null) {
-          for (const value of $topicIDs) {
-            const prefixField4 = Uint8Array.from([34])
-            const encodedField4 = string.encode(value)
-            bufs.push(prefixField4, ...encodedField4.bufs)
-            length += prefixField4.byteLength + encodedField4.length
+        if (obj.topicIDs != null) {
+          for (const value of obj.topicIDs) {
+            writer.uint32(34)
+            writer.string(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "topicIDs" was not found in object')
         }
 
-        const $signature = obj.signature
-        if ($signature != null) {
-          const prefixField5 = Uint8Array.from([42])
-          const encodedField5 = bytes.encode($signature)
-          bufs.push(prefixField5, ...encodedField5.bufs)
-          length += prefixField5.byteLength + encodedField5.length
+        if (obj.signature != null) {
+          writer.uint32(42)
+          writer.bytes(obj.signature)
         }
 
-        const $key = obj.key
-        if ($key != null) {
-          const prefixField6 = Uint8Array.from([50])
-          const encodedField6 = bytes.encode($key)
-          bufs.push(prefixField6, ...encodedField6.bufs)
-          length += prefixField6.byteLength + encodedField6.length
+        if (obj.key != null) {
+          writer.uint32(50)
+          writer.bytes(obj.key)
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.from = reader.bytes()
+              break
+            case 2:
+              obj.data = reader.bytes()
+              break
+            case 3:
+              obj.seqno = reader.bytes()
+              break
+            case 4:
+              obj.topicIDs = obj.topicIDs ?? []
+              obj.topicIDs.push(reader.string())
+              break
+            case 5:
+              obj.signature = reader.bytes()
+              break
+            case 6:
+              obj.key = reader.bytes()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.topicIDs = obj.topicIDs ?? []
+
+        if (obj.topicIDs == null) {
+          throw new Error('Protocol error: value for required field "topicIDs" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'from', codec: bytes, optional: true },
-        '2': { name: 'data', codec: bytes, optional: true },
-        '3': { name: 'seqno', codec: bytes, optional: true },
-        '4': { name: 'topicIDs', codec: string, repeats: true },
-        '5': { name: 'signature', codec: bytes, optional: true },
-        '6': { name: 'key', codec: bytes, optional: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: PSMessage): Uint8ArrayList => {
+  export const encode = (obj: PSMessage): Uint8Array => {
     return encodeMessage(obj, PSMessage.codec())
   }
 
@@ -1484,62 +1540,74 @@ export namespace PSResponse {
 
   export const codec = (): Codec<PSResponse> => {
     if (_codec == null) {
-      _codec = message<PSResponse>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<PSResponse>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $topics = obj.topics
-        if ($topics != null) {
-          for (const value of $topics) {
-            const prefixField1 = Uint8Array.from([10])
-            const encodedField1 = string.encode(value)
-            bufs.push(prefixField1, ...encodedField1.bufs)
-            length += prefixField1.byteLength + encodedField1.length
+        if (obj.topics != null) {
+          for (const value of obj.topics) {
+            writer.uint32(10)
+            writer.string(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "topics" was not found in object')
         }
 
-        const $peerIDs = obj.peerIDs
-        if ($peerIDs != null) {
-          for (const value of $peerIDs) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = bytes.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.peerIDs != null) {
+          for (const value of obj.peerIDs) {
+            writer.uint32(18)
+            writer.bytes(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "peerIDs" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.topics = obj.topics ?? []
+              obj.topics.push(reader.string())
+              break
+            case 2:
+              obj.peerIDs = obj.peerIDs ?? []
+              obj.peerIDs.push(reader.bytes())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.topics = obj.topics ?? []
+        obj.peerIDs = obj.peerIDs ?? []
+
+        if (obj.topics == null) {
+          throw new Error('Protocol error: value for required field "topics" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'topics', codec: string, repeats: true },
-        '2': { name: 'peerIDs', codec: bytes, repeats: true }
+
+        if (obj.peerIDs == null) {
+          throw new Error('Protocol error: value for required field "peerIDs" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: PSResponse): Uint8ArrayList => {
+  export const encode = (obj: PSResponse): Uint8Array => {
     return encodeMessage(obj, PSResponse.codec())
   }
 
@@ -1575,69 +1643,78 @@ export namespace PeerstoreRequest {
 
   export const codec = (): Codec<PeerstoreRequest> => {
     if (_codec == null) {
-      _codec = message<PeerstoreRequest>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<PeerstoreRequest>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $type = obj.type
-        if ($type != null) {
-          const prefixField1 = Uint8Array.from([8])
-          const encodedField1 = PeerstoreRequest.Type.codec().encode($type)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.type != null) {
+          writer.uint32(8)
+          PeerstoreRequest.Type.codec().encode(obj.type, writer)
+        } else {
+          throw new Error('Protocol error: required field "type" was not found in object')
         }
 
-        const $id = obj.id
-        if ($id != null) {
-          const prefixField2 = Uint8Array.from([18])
-          const encodedField2 = bytes.encode($id)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.id != null) {
+          writer.uint32(18)
+          writer.bytes(obj.id)
         }
 
-        const $protos = obj.protos
-        if ($protos != null) {
-          for (const value of $protos) {
-            const prefixField3 = Uint8Array.from([26])
-            const encodedField3 = string.encode(value)
-            bufs.push(prefixField3, ...encodedField3.bufs)
-            length += prefixField3.byteLength + encodedField3.length
+        if (obj.protos != null) {
+          for (const value of obj.protos) {
+            writer.uint32(26)
+            writer.string(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "protos" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.type = PeerstoreRequest.Type.codec().decode(reader)
+              break
+            case 2:
+              obj.id = reader.bytes()
+              break
+            case 3:
+              obj.protos = obj.protos ?? []
+              obj.protos.push(reader.string())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.protos = obj.protos ?? []
+
+        if (obj.type == null) {
+          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'type', codec: PeerstoreRequest.Type.codec() },
-        '2': { name: 'id', codec: bytes, optional: true },
-        '3': { name: 'protos', codec: string, repeats: true }
+
+        if (obj.protos == null) {
+          throw new Error('Protocol error: value for required field "protos" was not found in protobuf')
+        }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: PeerstoreRequest): Uint8ArrayList => {
+  export const encode = (obj: PeerstoreRequest): Uint8Array => {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
@@ -1656,60 +1733,64 @@ export namespace PeerstoreResponse {
 
   export const codec = (): Codec<PeerstoreResponse> => {
     if (_codec == null) {
-      _codec = message<PeerstoreResponse>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<PeerstoreResponse>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $peer = obj.peer
-        if ($peer != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = PeerInfo.codec().encode($peer)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.peer != null) {
+          writer.uint32(10)
+          PeerInfo.codec().encode(obj.peer, writer)
         }
 
-        const $protos = obj.protos
-        if ($protos != null) {
-          for (const value of $protos) {
-            const prefixField2 = Uint8Array.from([18])
-            const encodedField2 = string.encode(value)
-            bufs.push(prefixField2, ...encodedField2.bufs)
-            length += prefixField2.byteLength + encodedField2.length
+        if (obj.protos != null) {
+          for (const value of obj.protos) {
+            writer.uint32(18)
+            writer.string(value)
           }
+        } else {
+          throw new Error('Protocol error: required field "protos" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
+              break
+            case 2:
+              obj.protos = obj.protos ?? []
+              obj.protos.push(reader.string())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        obj.protos = obj.protos ?? []
+
+        if (obj.protos == null) {
+          throw new Error('Protocol error: value for required field "protos" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'peer', codec: PeerInfo.codec(), optional: true },
-        '2': { name: 'protos', codec: string, repeats: true }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: PeerstoreResponse): Uint8ArrayList => {
+  export const encode = (obj: PeerstoreResponse): Uint8Array => {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 

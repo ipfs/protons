@@ -1,9 +1,8 @@
 /* eslint-disable import/export */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { encodeMessage, decodeMessage, message, string, int32 } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from 'uint8-varint'
 import type { Codec } from 'protons-runtime'
 
 export interface Basic {
@@ -16,58 +15,59 @@ export namespace Basic {
 
   export const codec = (): Codec<Basic> => {
     if (_codec == null) {
-      _codec = message<Basic>((obj, opts = {}) => {
-        const bufs: Uint8Array[] = []
-
+      _codec = message<Basic>((obj, writer, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          // will hold length prefix
-          bufs.push(new Uint8Array(0))
+          writer.fork()
         }
 
-        let length = 0
-    
-        const $foo = obj.foo
-        if ($foo != null) {
-          const prefixField1 = Uint8Array.from([10])
-          const encodedField1 = string.encode($foo)
-          bufs.push(prefixField1, ...encodedField1.bufs)
-          length += prefixField1.byteLength + encodedField1.length
+        if (obj.foo != null) {
+          writer.uint32(10)
+          writer.string(obj.foo)
         }
 
-        const $num = obj.num
-        if ($num != null) {
-          const prefixField2 = Uint8Array.from([16])
-          const encodedField2 = int32.encode($num)
-          bufs.push(prefixField2, ...encodedField2.bufs)
-          length += prefixField2.byteLength + encodedField2.length
+        if (obj.num != null) {
+          writer.uint32(16)
+          writer.int32(obj.num)
+        } else {
+          throw new Error('Protocol error: required field "num" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          const prefix = unsigned.encode(length)
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
 
-          bufs[0] = prefix
-          length += prefix.byteLength
+        const end = length == null ? reader.len : reader.pos + length
 
-          return {
-            bufs,
-            length
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.foo = reader.string()
+              break
+            case 2:
+              obj.num = reader.int32()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
           }
         }
 
-        return {
-          bufs,
-          length
+        if (obj.num == null) {
+          throw new Error('Protocol error: value for required field "num" was not found in protobuf')
         }
-      }, {
-        '1': { name: 'foo', codec: string, optional: true },
-        '2': { name: 'num', codec: int32 }
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Basic): Uint8ArrayList => {
+  export const encode = (obj: Basic): Uint8Array => {
     return encodeMessage(obj, Basic.codec())
   }
 

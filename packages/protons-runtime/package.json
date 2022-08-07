@@ -148,11 +148,7 @@
     "release": "aegir release"
   },
   "dependencies": {
-    "byte-access": "^1.0.1",
-    "longbits": "^1.1.0",
-    "uint8-varint": "^1.0.2",
-    "uint8arraylist": "^2.3.2",
-    "uint8arrays": "^3.1.0"
+    "uint8arraylist": "^2.3.2"
   },
   "devDependencies": {
     "aegir": "^37.0.5"

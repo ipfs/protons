@@ -10,6 +10,7 @@ import protobufjs, { Type as PBType } from 'protobufjs'
 import { Peer } from './fixtures/peer.js'
 import { CircuitRelay } from './fixtures/circuit.js'
 import long from 'long'
+import { alloc } from 'uint8arrays/alloc'
 
 function longifyBigInts (obj: any) {
   const output = {
@@ -59,7 +60,7 @@ describe('encode', () => {
       field8: 1,
       field9: 1,
       field10: 'hello',
-      field11: Uint8Array.from([1, 2, 3]),
+      field11: alloc(3).map((_, i) => i),
       field12: AnEnum.DERP,
       field13: {
         foo: 'bar'
@@ -121,8 +122,8 @@ describe('encode', () => {
       field8: -2147483647,
       field9: -2147483648,
       field14: [],
-      field15: -2147483647,
-      field16: -9223372036854775807n,
+      field15: 0,
+      field16: 0n,
       field17: -2147483647,
       field18: -9223372036854775807n
     }
