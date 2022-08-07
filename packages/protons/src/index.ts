@@ -194,7 +194,7 @@ export interface ${messageDef.name} {
 
   export const codec = (): Codec<${messageDef.name}> => {
     if (_codec == null) {
-      _codec = message<${messageDef.name}>({
+      _codec = message<${messageDef.name}>([
         ${Object.entries(fields)
           .map(([name, fieldDef]) => {
             let codec = encoders[fieldDef.type]
@@ -214,9 +214,9 @@ export interface ${messageDef.name} {
               moduleDef.imports.add(codec)
             }
 
-        return `${fieldDef.id}: { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
+        return `{ id: ${fieldDef.id}, name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
     }).join(',\n        ')}
-      })
+      ])
     }
 
     return _codec

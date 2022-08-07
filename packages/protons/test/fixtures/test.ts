@@ -29,9 +29,9 @@ export namespace SubMessage {
 
   export const codec = (): Codec<SubMessage> => {
     if (_codec == null) {
-      _codec = message<SubMessage>({
-        1: { name: 'foo', codec: string }
-      })
+      _codec = message<SubMessage>([
+        { id: 1, name: 'foo', codec: string }
+      ])
     }
 
     return _codec
@@ -72,26 +72,26 @@ export namespace AllTheTypes {
 
   export const codec = (): Codec<AllTheTypes> => {
     if (_codec == null) {
-      _codec = message<AllTheTypes>({
-        1: { name: 'field1', codec: bool, optional: true },
-        2: { name: 'field2', codec: int32, optional: true },
-        3: { name: 'field3', codec: int64, optional: true },
-        4: { name: 'field4', codec: uint32, optional: true },
-        5: { name: 'field5', codec: uint64, optional: true },
-        6: { name: 'field6', codec: sint32, optional: true },
-        7: { name: 'field7', codec: sint64, optional: true },
-        8: { name: 'field8', codec: double, optional: true },
-        9: { name: 'field9', codec: float, optional: true },
-        10: { name: 'field10', codec: string, optional: true },
-        11: { name: 'field11', codec: bytes, optional: true },
-        12: { name: 'field12', codec: AnEnum.codec(), optional: true },
-        13: { name: 'field13', codec: SubMessage.codec(), optional: true },
-        14: { name: 'field14', codec: string, repeats: true },
-        15: { name: 'field15', codec: fixed32, optional: true },
-        16: { name: 'field16', codec: fixed64, optional: true },
-        17: { name: 'field17', codec: sfixed32, optional: true },
-        18: { name: 'field18', codec: sfixed64, optional: true }
-      })
+      _codec = message<AllTheTypes>([
+        { id: 1, name: 'field1', codec: bool, optional: true },
+        { id: 2, name: 'field2', codec: int32, optional: true },
+        { id: 3, name: 'field3', codec: int64, optional: true },
+        { id: 4, name: 'field4', codec: uint32, optional: true },
+        { id: 5, name: 'field5', codec: uint64, optional: true },
+        { id: 6, name: 'field6', codec: sint32, optional: true },
+        { id: 7, name: 'field7', codec: sint64, optional: true },
+        { id: 8, name: 'field8', codec: double, optional: true },
+        { id: 9, name: 'field9', codec: float, optional: true },
+        { id: 10, name: 'field10', codec: string, optional: true },
+        { id: 11, name: 'field11', codec: bytes, optional: true },
+        { id: 12, name: 'field12', codec: AnEnum.codec(), optional: true },
+        { id: 13, name: 'field13', codec: SubMessage.codec(), optional: true },
+        { id: 14, name: 'field14', codec: string, repeats: true },
+        { id: 15, name: 'field15', codec: fixed32, optional: true },
+        { id: 16, name: 'field16', codec: fixed64, optional: true },
+        { id: 17, name: 'field17', codec: sfixed32, optional: true },
+        { id: 18, name: 'field18', codec: sfixed64, optional: true }
+      ])
     }
 
     return _codec

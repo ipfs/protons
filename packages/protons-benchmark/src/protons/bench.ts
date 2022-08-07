@@ -14,9 +14,9 @@ export namespace Foo {
 
   export const codec = (): Codec<Foo> => {
     if (_codec == null) {
-      _codec = message<Foo>({
-        1: { name: 'baz', codec: uint32 }
-      })
+      _codec = message<Foo>([
+        { id: 1, name: 'baz', codec: uint32 }
+      ])
     }
 
     return _codec
@@ -40,9 +40,9 @@ export namespace Bar {
 
   export const codec = (): Codec<Bar> => {
     if (_codec == null) {
-      _codec = message<Bar>({
-        1: { name: 'tmp', codec: Foo.codec() }
-      })
+      _codec = message<Bar>([
+        { id: 1, name: 'tmp', codec: Foo.codec() }
+      ])
     }
 
     return _codec
@@ -81,9 +81,9 @@ export namespace Yo {
 
   export const codec = (): Codec<Yo> => {
     if (_codec == null) {
-      _codec = message<Yo>({
-        1: { name: 'lol', codec: FOO.codec(), repeats: true }
-      })
+      _codec = message<Yo>([
+        { id: 1, name: 'lol', codec: FOO.codec(), repeats: true }
+      ])
     }
 
     return _codec
@@ -108,10 +108,10 @@ export namespace Lol {
 
   export const codec = (): Codec<Lol> => {
     if (_codec == null) {
-      _codec = message<Lol>({
-        1: { name: 'lol', codec: string },
-        2: { name: 'b', codec: Bar.codec() }
-      })
+      _codec = message<Lol>([
+        { id: 1, name: 'lol', codec: string },
+        { id: 2, name: 'b', codec: Bar.codec() }
+      ])
     }
 
     return _codec
@@ -138,12 +138,12 @@ export namespace Test {
 
   export const codec = (): Codec<Test> => {
     if (_codec == null) {
-      _codec = message<Test>({
-        6: { name: 'meh', codec: Lol.codec() },
-        3: { name: 'hello', codec: uint32 },
-        1: { name: 'foo', codec: string },
-        7: { name: 'payload', codec: bytes }
-      })
+      _codec = message<Test>([
+        { id: 6, name: 'meh', codec: Lol.codec() },
+        { id: 3, name: 'hello', codec: uint32 },
+        { id: 1, name: 'foo', codec: string },
+        { id: 7, name: 'payload', codec: bytes }
+      ])
     }
 
     return _codec

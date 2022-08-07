@@ -54,17 +54,17 @@ export namespace Request {
 
   export const codec = (): Codec<Request> => {
     if (_codec == null) {
-      _codec = message<Request>({
-        1: { name: 'type', codec: Request.Type.codec() },
-        2: { name: 'connect', codec: ConnectRequest.codec(), optional: true },
-        3: { name: 'streamOpen', codec: StreamOpenRequest.codec(), optional: true },
-        4: { name: 'streamHandler', codec: StreamHandlerRequest.codec(), optional: true },
-        5: { name: 'dht', codec: DHTRequest.codec(), optional: true },
-        6: { name: 'connManager', codec: ConnManagerRequest.codec(), optional: true },
-        7: { name: 'disconnect', codec: DisconnectRequest.codec(), optional: true },
-        8: { name: 'pubsub', codec: PSRequest.codec(), optional: true },
-        9: { name: 'peerStore', codec: PeerstoreRequest.codec(), optional: true }
-      })
+      _codec = message<Request>([
+        { id: 1, name: 'type', codec: Request.Type.codec() },
+        { id: 2, name: 'connect', codec: ConnectRequest.codec(), optional: true },
+        { id: 3, name: 'streamOpen', codec: StreamOpenRequest.codec(), optional: true },
+        { id: 4, name: 'streamHandler', codec: StreamHandlerRequest.codec(), optional: true },
+        { id: 5, name: 'dht', codec: DHTRequest.codec(), optional: true },
+        { id: 6, name: 'connManager', codec: ConnManagerRequest.codec(), optional: true },
+        { id: 7, name: 'disconnect', codec: DisconnectRequest.codec(), optional: true },
+        { id: 8, name: 'pubsub', codec: PSRequest.codec(), optional: true },
+        { id: 9, name: 'peerStore', codec: PeerstoreRequest.codec(), optional: true }
+      ])
     }
 
     return _codec
@@ -111,16 +111,16 @@ export namespace Response {
 
   export const codec = (): Codec<Response> => {
     if (_codec == null) {
-      _codec = message<Response>({
-        1: { name: 'type', codec: Response.Type.codec() },
-        2: { name: 'error', codec: ErrorResponse.codec(), optional: true },
-        3: { name: 'streamInfo', codec: StreamInfo.codec(), optional: true },
-        4: { name: 'identify', codec: IdentifyResponse.codec(), optional: true },
-        5: { name: 'dht', codec: DHTResponse.codec(), optional: true },
-        6: { name: 'peers', codec: PeerInfo.codec(), repeats: true },
-        7: { name: 'pubsub', codec: PSResponse.codec(), optional: true },
-        8: { name: 'peerStore', codec: PeerstoreResponse.codec(), optional: true }
-      })
+      _codec = message<Response>([
+        { id: 1, name: 'type', codec: Response.Type.codec() },
+        { id: 2, name: 'error', codec: ErrorResponse.codec(), optional: true },
+        { id: 3, name: 'streamInfo', codec: StreamInfo.codec(), optional: true },
+        { id: 4, name: 'identify', codec: IdentifyResponse.codec(), optional: true },
+        { id: 5, name: 'dht', codec: DHTResponse.codec(), optional: true },
+        { id: 6, name: 'peers', codec: PeerInfo.codec(), repeats: true },
+        { id: 7, name: 'pubsub', codec: PSResponse.codec(), optional: true },
+        { id: 8, name: 'peerStore', codec: PeerstoreResponse.codec(), optional: true }
+      ])
     }
 
     return _codec
@@ -145,10 +145,10 @@ export namespace IdentifyResponse {
 
   export const codec = (): Codec<IdentifyResponse> => {
     if (_codec == null) {
-      _codec = message<IdentifyResponse>({
-        1: { name: 'id', codec: bytes },
-        2: { name: 'addrs', codec: bytes, repeats: true }
-      })
+      _codec = message<IdentifyResponse>([
+        { id: 1, name: 'id', codec: bytes },
+        { id: 2, name: 'addrs', codec: bytes, repeats: true }
+      ])
     }
 
     return _codec
@@ -174,11 +174,11 @@ export namespace ConnectRequest {
 
   export const codec = (): Codec<ConnectRequest> => {
     if (_codec == null) {
-      _codec = message<ConnectRequest>({
-        1: { name: 'peer', codec: bytes },
-        2: { name: 'addrs', codec: bytes, repeats: true },
-        3: { name: 'timeout', codec: int64, optional: true }
-      })
+      _codec = message<ConnectRequest>([
+        { id: 1, name: 'peer', codec: bytes },
+        { id: 2, name: 'addrs', codec: bytes, repeats: true },
+        { id: 3, name: 'timeout', codec: int64, optional: true }
+      ])
     }
 
     return _codec
@@ -204,11 +204,11 @@ export namespace StreamOpenRequest {
 
   export const codec = (): Codec<StreamOpenRequest> => {
     if (_codec == null) {
-      _codec = message<StreamOpenRequest>({
-        1: { name: 'peer', codec: bytes },
-        2: { name: 'proto', codec: string, repeats: true },
-        3: { name: 'timeout', codec: int64, optional: true }
-      })
+      _codec = message<StreamOpenRequest>([
+        { id: 1, name: 'peer', codec: bytes },
+        { id: 2, name: 'proto', codec: string, repeats: true },
+        { id: 3, name: 'timeout', codec: int64, optional: true }
+      ])
     }
 
     return _codec
@@ -233,10 +233,10 @@ export namespace StreamHandlerRequest {
 
   export const codec = (): Codec<StreamHandlerRequest> => {
     if (_codec == null) {
-      _codec = message<StreamHandlerRequest>({
-        1: { name: 'addr', codec: bytes },
-        2: { name: 'proto', codec: string, repeats: true }
-      })
+      _codec = message<StreamHandlerRequest>([
+        { id: 1, name: 'addr', codec: bytes },
+        { id: 2, name: 'proto', codec: string, repeats: true }
+      ])
     }
 
     return _codec
@@ -260,9 +260,9 @@ export namespace ErrorResponse {
 
   export const codec = (): Codec<ErrorResponse> => {
     if (_codec == null) {
-      _codec = message<ErrorResponse>({
-        1: { name: 'msg', codec: string }
-      })
+      _codec = message<ErrorResponse>([
+        { id: 1, name: 'msg', codec: string }
+      ])
     }
 
     return _codec
@@ -288,11 +288,11 @@ export namespace StreamInfo {
 
   export const codec = (): Codec<StreamInfo> => {
     if (_codec == null) {
-      _codec = message<StreamInfo>({
-        1: { name: 'peer', codec: bytes },
-        2: { name: 'addr', codec: bytes },
-        3: { name: 'proto', codec: string }
-      })
+      _codec = message<StreamInfo>([
+        { id: 1, name: 'peer', codec: bytes },
+        { id: 2, name: 'addr', codec: bytes },
+        { id: 3, name: 'proto', codec: string }
+      ])
     }
 
     return _codec
@@ -352,15 +352,15 @@ export namespace DHTRequest {
 
   export const codec = (): Codec<DHTRequest> => {
     if (_codec == null) {
-      _codec = message<DHTRequest>({
-        1: { name: 'type', codec: DHTRequest.Type.codec() },
-        2: { name: 'peer', codec: bytes, optional: true },
-        3: { name: 'cid', codec: bytes, optional: true },
-        4: { name: 'key', codec: bytes, optional: true },
-        5: { name: 'value', codec: bytes, optional: true },
-        6: { name: 'count', codec: int32, optional: true },
-        7: { name: 'timeout', codec: int64, optional: true }
-      })
+      _codec = message<DHTRequest>([
+        { id: 1, name: 'type', codec: DHTRequest.Type.codec() },
+        { id: 2, name: 'peer', codec: bytes, optional: true },
+        { id: 3, name: 'cid', codec: bytes, optional: true },
+        { id: 4, name: 'key', codec: bytes, optional: true },
+        { id: 5, name: 'value', codec: bytes, optional: true },
+        { id: 6, name: 'count', codec: int32, optional: true },
+        { id: 7, name: 'timeout', codec: int64, optional: true }
+      ])
     }
 
     return _codec
@@ -404,11 +404,11 @@ export namespace DHTResponse {
 
   export const codec = (): Codec<DHTResponse> => {
     if (_codec == null) {
-      _codec = message<DHTResponse>({
-        1: { name: 'type', codec: DHTResponse.Type.codec() },
-        2: { name: 'peer', codec: PeerInfo.codec(), optional: true },
-        3: { name: 'value', codec: bytes, optional: true }
-      })
+      _codec = message<DHTResponse>([
+        { id: 1, name: 'type', codec: DHTResponse.Type.codec() },
+        { id: 2, name: 'peer', codec: PeerInfo.codec(), optional: true },
+        { id: 3, name: 'value', codec: bytes, optional: true }
+      ])
     }
 
     return _codec
@@ -433,10 +433,10 @@ export namespace PeerInfo {
 
   export const codec = (): Codec<PeerInfo> => {
     if (_codec == null) {
-      _codec = message<PeerInfo>({
-        1: { name: 'id', codec: bytes },
-        2: { name: 'addrs', codec: bytes, repeats: true }
-      })
+      _codec = message<PeerInfo>([
+        { id: 1, name: 'id', codec: bytes },
+        { id: 2, name: 'addrs', codec: bytes, repeats: true }
+      ])
     }
 
     return _codec
@@ -481,12 +481,12 @@ export namespace ConnManagerRequest {
 
   export const codec = (): Codec<ConnManagerRequest> => {
     if (_codec == null) {
-      _codec = message<ConnManagerRequest>({
-        1: { name: 'type', codec: ConnManagerRequest.Type.codec() },
-        2: { name: 'peer', codec: bytes, optional: true },
-        3: { name: 'tag', codec: string, optional: true },
-        4: { name: 'weight', codec: int64, optional: true }
-      })
+      _codec = message<ConnManagerRequest>([
+        { id: 1, name: 'type', codec: ConnManagerRequest.Type.codec() },
+        { id: 2, name: 'peer', codec: bytes, optional: true },
+        { id: 3, name: 'tag', codec: string, optional: true },
+        { id: 4, name: 'weight', codec: int64, optional: true }
+      ])
     }
 
     return _codec
@@ -510,9 +510,9 @@ export namespace DisconnectRequest {
 
   export const codec = (): Codec<DisconnectRequest> => {
     if (_codec == null) {
-      _codec = message<DisconnectRequest>({
-        1: { name: 'peer', codec: bytes }
-      })
+      _codec = message<DisconnectRequest>([
+        { id: 1, name: 'peer', codec: bytes }
+      ])
     }
 
     return _codec
@@ -558,11 +558,11 @@ export namespace PSRequest {
 
   export const codec = (): Codec<PSRequest> => {
     if (_codec == null) {
-      _codec = message<PSRequest>({
-        1: { name: 'type', codec: PSRequest.Type.codec() },
-        2: { name: 'topic', codec: string, optional: true },
-        3: { name: 'data', codec: bytes, optional: true }
-      })
+      _codec = message<PSRequest>([
+        { id: 1, name: 'type', codec: PSRequest.Type.codec() },
+        { id: 2, name: 'topic', codec: string, optional: true },
+        { id: 3, name: 'data', codec: bytes, optional: true }
+      ])
     }
 
     return _codec
@@ -591,14 +591,14 @@ export namespace PSMessage {
 
   export const codec = (): Codec<PSMessage> => {
     if (_codec == null) {
-      _codec = message<PSMessage>({
-        1: { name: 'from', codec: bytes, optional: true },
-        2: { name: 'data', codec: bytes, optional: true },
-        3: { name: 'seqno', codec: bytes, optional: true },
-        4: { name: 'topicIDs', codec: string, repeats: true },
-        5: { name: 'signature', codec: bytes, optional: true },
-        6: { name: 'key', codec: bytes, optional: true }
-      })
+      _codec = message<PSMessage>([
+        { id: 1, name: 'from', codec: bytes, optional: true },
+        { id: 2, name: 'data', codec: bytes, optional: true },
+        { id: 3, name: 'seqno', codec: bytes, optional: true },
+        { id: 4, name: 'topicIDs', codec: string, repeats: true },
+        { id: 5, name: 'signature', codec: bytes, optional: true },
+        { id: 6, name: 'key', codec: bytes, optional: true }
+      ])
     }
 
     return _codec
@@ -623,10 +623,10 @@ export namespace PSResponse {
 
   export const codec = (): Codec<PSResponse> => {
     if (_codec == null) {
-      _codec = message<PSResponse>({
-        1: { name: 'topics', codec: string, repeats: true },
-        2: { name: 'peerIDs', codec: bytes, repeats: true }
-      })
+      _codec = message<PSResponse>([
+        { id: 1, name: 'topics', codec: string, repeats: true },
+        { id: 2, name: 'peerIDs', codec: bytes, repeats: true }
+      ])
     }
 
     return _codec
@@ -668,11 +668,11 @@ export namespace PeerstoreRequest {
 
   export const codec = (): Codec<PeerstoreRequest> => {
     if (_codec == null) {
-      _codec = message<PeerstoreRequest>({
-        1: { name: 'type', codec: PeerstoreRequest.Type.codec() },
-        2: { name: 'id', codec: bytes, optional: true },
-        3: { name: 'protos', codec: string, repeats: true }
-      })
+      _codec = message<PeerstoreRequest>([
+        { id: 1, name: 'type', codec: PeerstoreRequest.Type.codec() },
+        { id: 2, name: 'id', codec: bytes, optional: true },
+        { id: 3, name: 'protos', codec: string, repeats: true }
+      ])
     }
 
     return _codec
@@ -697,10 +697,10 @@ export namespace PeerstoreResponse {
 
   export const codec = (): Codec<PeerstoreResponse> => {
     if (_codec == null) {
-      _codec = message<PeerstoreResponse>({
-        1: { name: 'peer', codec: PeerInfo.codec(), optional: true },
-        2: { name: 'protos', codec: string, repeats: true }
-      })
+      _codec = message<PeerstoreResponse>([
+        { id: 1, name: 'peer', codec: PeerInfo.codec(), optional: true },
+        { id: 2, name: 'protos', codec: string, repeats: true }
+      ])
     }
 
     return _codec

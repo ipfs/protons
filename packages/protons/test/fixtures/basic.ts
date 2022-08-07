@@ -15,10 +15,10 @@ export namespace Basic {
 
   export const codec = (): Codec<Basic> => {
     if (_codec == null) {
-      _codec = message<Basic>({
-        1: { name: 'foo', codec: string, optional: true },
-        2: { name: 'num', codec: int32 }
-      })
+      _codec = message<Basic>([
+        { id: 1, name: 'foo', codec: string, optional: true },
+        { id: 2, name: 'num', codec: int32 }
+      ])
     }
 
     return _codec

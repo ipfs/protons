@@ -17,11 +17,11 @@ export namespace pb {
 
     export const codec = (): Codec<NoiseHandshakePayload> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload>({
-          1: { name: 'identityKey', codec: bytes },
-          2: { name: 'identitySig', codec: bytes },
-          3: { name: 'data', codec: bytes }
-        })
+        _codec = message<NoiseHandshakePayload>([
+          { id: 1, name: 'identityKey', codec: bytes },
+          { id: 2, name: 'identitySig', codec: bytes },
+          { id: 3, name: 'data', codec: bytes }
+        ])
       }
 
       return _codec

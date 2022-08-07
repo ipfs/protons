@@ -1,17 +1,25 @@
 import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
-import type { FieldDefs, FieldDef } from '../index.js'
+import type { FieldDef } from '../index.js'
 
 export interface Factory<A, T> {
   new (obj: A): T
 }
 
-export function message <T> (fieldDefs: FieldDefs): Codec<T> {
+export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
+  // create a id => FieldDef mapping for quick access
+  const fieldDefLookup: Record<number, FieldDef> = {}
+  for (const def of fieldDefs) {
+    fieldDefLookup[def.id] = def
+  }
+
   const encodingLength: EncodingLengthFunction<T> = function messageEncodingLength (val: Record<string, any>) {
     let length = 0
 
-    for (const fieldDef of Object.values(fieldDefs)) {
+    for (let i = 0; i < fieldDefs.length; i++) {
+      const fieldDef = fieldDefs[i]
+
       length += fieldDef.codec.encodingLength(val[fieldDef.name])
     }
 
@@ -42,8 +50,8 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
       length += prefix.byteLength
     }
 
-    for (const [fieldNumberStr, fieldDef] of Object.entries(fieldDefs)) {
-      const fieldNumber = parseInt(fieldNumberStr)
+    for (let i = 0; i < fieldDefs.length; i++) {
+      const fieldDef = fieldDefs[i]
 
       if (fieldDef.repeats === true) {
         if (!Array.isArray(val[fieldDef.name])) {
@@ -51,10 +59,10 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
         }
 
         for (const value of val[fieldDef.name]) {
-          encodeValue(value, fieldNumber, fieldDef)
+          encodeValue(value, fieldDef.id, fieldDef)
         }
       } else {
-        encodeValue(val[fieldDef.name], fieldNumber, fieldDef)
+        encodeValue(val[fieldDef.name], fieldDef.id, fieldDef)
       }
     }
 
@@ -81,7 +89,7 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
 
       const wireType = key & 0x7
       const fieldNumber = key >> 3
-      const fieldDef = fieldDefs[fieldNumber]
+      const fieldDef = fieldDefLookup[fieldNumber]
       let fieldLength = 0
 
       if (wireType === CODEC_TYPES.VARINT) {
@@ -124,7 +132,9 @@ export function message <T> (fieldDefs: FieldDefs): Codec<T> {
     }
 
     // make sure repeated fields have an array if not set
-    for (const fieldDef of Object.values(fieldDefs)) {
+    for (let i = 0; i < fieldDefs.length; i++) {
+      const fieldDef = fieldDefs[i]
+
       if (fieldDef.repeats === true && fields[fieldDef.name] == null) {
         fields[fieldDef.name] = []
       }

@@ -18,13 +18,13 @@ export namespace Record {
 
   export const codec = (): Codec<Record> => {
     if (_codec == null) {
-      _codec = message<Record>({
-        1: { name: 'key', codec: bytes, optional: true },
-        2: { name: 'value', codec: bytes, optional: true },
-        3: { name: 'author', codec: bytes, optional: true },
-        4: { name: 'signature', codec: bytes, optional: true },
-        5: { name: 'timeReceived', codec: string, optional: true }
-      })
+      _codec = message<Record>([
+        { id: 1, name: 'key', codec: bytes, optional: true },
+        { id: 2, name: 'value', codec: bytes, optional: true },
+        { id: 3, name: 'author', codec: bytes, optional: true },
+        { id: 4, name: 'signature', codec: bytes, optional: true },
+        { id: 5, name: 'timeReceived', codec: string, optional: true }
+      ])
     }
 
     return _codec
@@ -104,11 +104,11 @@ export namespace Message {
 
     export const codec = (): Codec<Peer> => {
       if (_codec == null) {
-        _codec = message<Peer>({
-          1: { name: 'id', codec: bytes, optional: true },
-          2: { name: 'addrs', codec: bytes, repeats: true },
-          3: { name: 'connection', codec: Message.ConnectionType.codec(), optional: true }
-        })
+        _codec = message<Peer>([
+          { id: 1, name: 'id', codec: bytes, optional: true },
+          { id: 2, name: 'addrs', codec: bytes, repeats: true },
+          { id: 3, name: 'connection', codec: Message.ConnectionType.codec(), optional: true }
+        ])
       }
 
       return _codec
@@ -127,14 +127,14 @@ export namespace Message {
 
   export const codec = (): Codec<Message> => {
     if (_codec == null) {
-      _codec = message<Message>({
-        1: { name: 'type', codec: Message.MessageType.codec(), optional: true },
-        10: { name: 'clusterLevelRaw', codec: int32, optional: true },
-        2: { name: 'key', codec: bytes, optional: true },
-        3: { name: 'record', codec: bytes, optional: true },
-        8: { name: 'closerPeers', codec: Message.Peer.codec(), repeats: true },
-        9: { name: 'providerPeers', codec: Message.Peer.codec(), repeats: true }
-      })
+      _codec = message<Message>([
+        { id: 1, name: 'type', codec: Message.MessageType.codec(), optional: true },
+        { id: 10, name: 'clusterLevelRaw', codec: int32, optional: true },
+        { id: 2, name: 'key', codec: bytes, optional: true },
+        { id: 3, name: 'record', codec: bytes, optional: true },
+        { id: 8, name: 'closerPeers', codec: Message.Peer.codec(), repeats: true },
+        { id: 9, name: 'providerPeers', codec: Message.Peer.codec(), repeats: true }
+      ])
     }
 
     return _codec

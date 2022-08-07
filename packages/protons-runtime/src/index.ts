@@ -1,14 +1,13 @@
 import type { Codec } from './codec.js'
 
 export interface FieldDef {
+  id: number,
   name: string
   codec: Codec<any>
   optional?: true
   repeats?: true
   packed?: true
 }
-
-export type FieldDefs = Record<number, FieldDef>
 
 export {
   decodeMessage

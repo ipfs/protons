@@ -87,10 +87,10 @@ export namespace CircuitRelay {
 
     export const codec = (): Codec<Peer> => {
       if (_codec == null) {
-        _codec = message<Peer>({
-          1: { name: 'id', codec: bytes },
-          2: { name: 'addrs', codec: bytes, repeats: true }
-        })
+        _codec = message<Peer>([
+          { id: 1, name: 'id', codec: bytes },
+          { id: 2, name: 'addrs', codec: bytes, repeats: true }
+        ])
       }
 
       return _codec
@@ -109,12 +109,12 @@ export namespace CircuitRelay {
 
   export const codec = (): Codec<CircuitRelay> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay>({
-        1: { name: 'type', codec: CircuitRelay.Type.codec(), optional: true },
-        2: { name: 'srcPeer', codec: CircuitRelay.Peer.codec(), optional: true },
-        3: { name: 'dstPeer', codec: CircuitRelay.Peer.codec(), optional: true },
-        4: { name: 'code', codec: CircuitRelay.Status.codec(), optional: true }
-      })
+      _codec = message<CircuitRelay>([
+        { id: 1, name: 'type', codec: CircuitRelay.Type.codec(), optional: true },
+        { id: 2, name: 'srcPeer', codec: CircuitRelay.Peer.codec(), optional: true },
+        { id: 3, name: 'dstPeer', codec: CircuitRelay.Peer.codec(), optional: true },
+        { id: 4, name: 'code', codec: CircuitRelay.Status.codec(), optional: true }
+      ])
     }
 
     return _codec

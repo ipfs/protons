@@ -18,13 +18,13 @@ export namespace Peer {
 
   export const codec = (): Codec<Peer> => {
     if (_codec == null) {
-      _codec = message<Peer>({
-        1: { name: 'addresses', codec: Address.codec(), repeats: true },
-        2: { name: 'protocols', codec: string, repeats: true },
-        3: { name: 'metadata', codec: Metadata.codec(), repeats: true },
-        4: { name: 'pubKey', codec: bytes, optional: true },
-        5: { name: 'peerRecordEnvelope', codec: bytes, optional: true }
-      })
+      _codec = message<Peer>([
+        { id: 1, name: 'addresses', codec: Address.codec(), repeats: true },
+        { id: 2, name: 'protocols', codec: string, repeats: true },
+        { id: 3, name: 'metadata', codec: Metadata.codec(), repeats: true },
+        { id: 4, name: 'pubKey', codec: bytes, optional: true },
+        { id: 5, name: 'peerRecordEnvelope', codec: bytes, optional: true }
+      ])
     }
 
     return _codec
@@ -49,10 +49,10 @@ export namespace Address {
 
   export const codec = (): Codec<Address> => {
     if (_codec == null) {
-      _codec = message<Address>({
-        1: { name: 'multiaddr', codec: bytes },
-        2: { name: 'isCertified', codec: bool, optional: true }
-      })
+      _codec = message<Address>([
+        { id: 1, name: 'multiaddr', codec: bytes },
+        { id: 2, name: 'isCertified', codec: bool, optional: true }
+      ])
     }
 
     return _codec
@@ -77,10 +77,10 @@ export namespace Metadata {
 
   export const codec = (): Codec<Metadata> => {
     if (_codec == null) {
-      _codec = message<Metadata>({
-        1: { name: 'key', codec: string },
-        2: { name: 'value', codec: bytes }
-      })
+      _codec = message<Metadata>([
+        { id: 1, name: 'key', codec: string },
+        { id: 2, name: 'value', codec: bytes }
+      ])
     }
 
     return _codec
