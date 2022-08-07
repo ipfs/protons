@@ -9,8 +9,7 @@ import fs from 'fs'
 import protobufjs, { Type as PBType } from 'protobufjs'
 import { Peer } from './fixtures/peer.js'
 import { CircuitRelay } from './fixtures/circuit.js'
-
-const Long = protobufjs.util.Long
+import long from 'long'
 
 function longifyBigInts (obj: any) {
   const output = {
@@ -19,8 +18,7 @@ function longifyBigInts (obj: any) {
 
   for (const key of Object.keys(output)) {
     if (typeof output[key] === 'bigint') {
-      // @ts-expect-error exported types are incomplete
-      output[key] = Long.fromString(`${output[key].toString()}`)
+      output[key] = long.fromString(`${output[key].toString()}`)
     }
   }
 
