@@ -1,7 +1,7 @@
 
 import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
+import type { DecodeFunction, EncodeFunction, Codec } from '../codec.js'
 import { allocUnsafe } from 'uint8arrays/alloc'
 
 export function enumeration <T> (v: any): Codec<T> {
@@ -15,10 +15,6 @@ export function enumeration <T> (v: any): Codec<T> {
     }
 
     return v[val]
-  }
-
-  const encodingLength: EncodingLengthFunction<number | string> = function enumEncodingLength (val) {
-    return unsigned.encodingLength(findValue(val))
   }
 
   const encode: EncodeFunction<number | string> = function enumEncode (val) {
@@ -45,9 +41,12 @@ export function enumeration <T> (v: any): Codec<T> {
       throw new Error('Invalid enum value')
     }
 
-    return v[strValue]
+    return {
+      value: v[strValue],
+      length: unsigned.encodingLength(value)
+    }
   }
 
   // @ts-expect-error yeah yeah
-  return createCodec('enum', CODEC_TYPES.VARINT, encode, decode, encodingLength)
+  return createCodec('enum', CODEC_TYPES.VARINT, encode, decode)
 }

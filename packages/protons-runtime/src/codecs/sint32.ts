@@ -1,8 +1,8 @@
 import { zigzag } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
+import type { DecodeFunction, EncodeFunction } from '../codec.js'
 
-const encodingLength: EncodingLengthFunction<number> = function sint32EncodingLength (val) {
+function sint32EncodingLength (val: number) {
   return zigzag.encodingLength(val)
 }
 
@@ -18,7 +18,12 @@ const encode: EncodeFunction<number> = function svarintEncode (val) {
 }
 
 const decode: DecodeFunction<number> = function svarintDecode (buf, offset) {
-  return zigzag.decode(buf, offset)
+  const value = zigzag.decode(buf, offset)
+
+  return {
+    value,
+    length: sint32EncodingLength(value)
+  }
 }
 
-export const sint32 = createCodec('sint32', CODEC_TYPES.VARINT, encode, decode, encodingLength)
+export const sint32 = createCodec('sint32', CODEC_TYPES.VARINT, encode, decode)

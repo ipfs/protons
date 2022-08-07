@@ -8,5 +8,5 @@ export function decodeMessage <T> (buf: Uint8Array | Uint8ArrayList, codec: Code
   const prefix = allocUnsafe(unsigned.encodingLength(buf.byteLength))
   unsigned.encode(buf.byteLength, prefix)
 
-  return codec.decode(new Uint8ArrayList(prefix, buf), 0)
+  return codec.decode(new Uint8ArrayList(prefix, buf), 0).value
 }

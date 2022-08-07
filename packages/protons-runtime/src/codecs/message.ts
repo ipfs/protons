@@ -1,6 +1,6 @@
 import { unsigned } from 'uint8-varint'
 import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, EncodingLengthFunction, Codec } from '../codec.js'
+import type { DecodeFunction, EncodeFunction, Codec } from '../codec.js'
 import type { FieldDef } from '../index.js'
 
 export interface Factory<A, T> {
@@ -12,18 +12,6 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
   const fieldDefLookup: Record<number, FieldDef> = {}
   for (const def of fieldDefs) {
     fieldDefLookup[def.id] = def
-  }
-
-  const encodingLength: EncodingLengthFunction<T> = function messageEncodingLength (val: Record<string, any>) {
-    let length = 0
-
-    for (let i = 0; i < fieldDefs.length; i++) {
-      const fieldDef = fieldDefs[i]
-
-      length += fieldDef.codec.encodingLength(val[fieldDef.name])
-    }
-
-    return unsigned.encodingLength(length) + length
   }
 
   const encode: EncodeFunction<Record<string, any>> = function messageEncode (val) {
@@ -79,7 +67,8 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
 
   const decode: DecodeFunction<T> = function messageDecode (buffer, offset) {
     const length = unsigned.decode(buffer, offset)
-    offset += unsigned.encodingLength(length)
+    const lengthLength = unsigned.encodingLength(length)
+    offset += lengthLength
     const end = offset + length
     const fields: any = {}
 
@@ -91,12 +80,14 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
       const fieldNumber = key >> 3
       const fieldDef = fieldDefLookup[fieldNumber]
       let fieldLength = 0
+      let value
 
       if (wireType === CODEC_TYPES.VARINT) {
         if (fieldDef != null) {
           // use the codec if it is available as this could be a bigint
-          const value = fieldDef.codec.decode(buffer, offset)
-          fieldLength = fieldDef.codec.encodingLength(value)
+          const decoded = fieldDef.codec.decode(buffer, offset)
+          fieldLength = decoded.length
+          value = decoded.value
         } else {
           const value = unsigned.decode(buffer, offset)
           fieldLength = unsigned.encodingLength(value)
@@ -115,7 +106,10 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
       }
 
       if (fieldDef != null) {
-        const value = fieldDef.codec.decode(buffer, offset)
+        if (value == null) {
+          const decoded = fieldDef.codec.decode(buffer, offset)
+          value = decoded.value
+        }
 
         if (fieldDef.repeats === true) {
           if (fields[fieldDef.name] == null) {
@@ -140,8 +134,11 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
       }
     }
 
-    return fields
+    return {
+      value: fields,
+      length: lengthLength + length
+    }
   }
 
-  return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, encodingLength)
+  return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode)
 }

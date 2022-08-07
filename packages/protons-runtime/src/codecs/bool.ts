@@ -1,9 +1,5 @@
 import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
-
-const encodingLength: EncodingLengthFunction<boolean> = function boolEncodingLength () {
-  return 1
-}
+import type { DecodeFunction, EncodeFunction } from '../codec.js'
 
 const encode: EncodeFunction<boolean> = function boolEncode (value) {
   return {
@@ -15,7 +11,10 @@ const encode: EncodeFunction<boolean> = function boolEncode (value) {
 }
 
 const decode: DecodeFunction<boolean> = function boolDecode (buffer, offset) {
-  return buffer.get(offset) > 0
+  return {
+    value: buffer.get(offset) > 0,
+    length: 1
+  }
 }
 
-export const bool = createCodec('bool', CODEC_TYPES.VARINT, encode, decode, encodingLength)
+export const bool = createCodec('bool', CODEC_TYPES.VARINT, encode, decode)

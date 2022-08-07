@@ -15,11 +15,7 @@ export interface EncodeFunction<T> {
 }
 
 export interface DecodeFunction<T> {
-  (buf: Uint8ArrayList, offset: number): T
-}
-
-export interface EncodingLengthFunction<T> {
-  (value: T): number
+  (buf: Uint8ArrayList, offset: number): { value: T, length: number }
 }
 
 export interface Codec<T> {
@@ -27,15 +23,13 @@ export interface Codec<T> {
   type: CODEC_TYPES
   encode: EncodeFunction<T>
   decode: DecodeFunction<T>
-  encodingLength: EncodingLengthFunction<T>
 }
 
-export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>, encodingLength: EncodingLengthFunction<T>): Codec<T> {
+export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>): Codec<T> {
   return {
     name,
     type,
     encode,
-    decode,
-    encodingLength
+    decode
   }
 }

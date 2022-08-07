@@ -1,7 +1,7 @@
 import type { Codec } from './codec.js'
 
 export interface FieldDef {
-  id: number,
+  id: number
   name: string
   codec: Codec<any>
   optional?: true

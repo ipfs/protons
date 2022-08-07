@@ -1,10 +1,6 @@
 import { zigzag } from 'uint8-varint/big'
 import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, EncodingLengthFunction } from '../codec.js'
-
-const encodingLength: EncodingLengthFunction<bigint> = function int64EncodingLength (val) {
-  return zigzag.encodingLength(val)
-}
+import type { DecodeFunction, EncodeFunction } from '../codec.js'
 
 const encode: EncodeFunction<bigint> = function int64Encode (val) {
   const buf = zigzag.encode(val)
@@ -18,7 +14,12 @@ const encode: EncodeFunction<bigint> = function int64Encode (val) {
 }
 
 const decode: DecodeFunction<bigint> = function int64Decode (buf, offset) {
-  return zigzag.decode(buf, offset)
+  const value = zigzag.decode(buf, offset)
+
+  return {
+    value,
+    length: zigzag.encodingLength(value)
+  }
 }
 
-export const sint64 = createCodec('sint64', CODEC_TYPES.VARINT, encode, decode, encodingLength)
+export const sint64 = createCodec('sint64', CODEC_TYPES.VARINT, encode, decode)
