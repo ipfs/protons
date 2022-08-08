@@ -14,12 +14,22 @@ export interface EncodeOptions {
   lengthDelimited?: boolean
 }
 
+export interface EncodeResult {
+  bufs: Uint8Array[]
+  length: number
+}
+
 export interface EncodeFunction<T> {
-  (value: T, opts?: EncodeOptions): { bufs: Uint8Array[], length: number }
+  (value: T, opts?: EncodeOptions): EncodeResult
+}
+
+export interface DecodeResult<T> {
+  value: T
+  length: number
 }
 
 export interface DecodeFunction<T> {
-  (buf: Uint8ArrayList, offset: number): { value: T, length: number }
+  (buf: Uint8ArrayList, offset: number): DecodeResult<T>
 }
 
 export interface Codec<T> {
