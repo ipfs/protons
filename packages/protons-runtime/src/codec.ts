@@ -10,8 +10,12 @@ export enum CODEC_TYPES {
   BIT32
 }
 
+export interface EncodeOptions {
+  lengthDelimited?: boolean
+}
+
 export interface EncodeFunction<T> {
-  (value: T): { bufs: Uint8Array[], length: number }
+  (value: T, opts?: EncodeOptions): { bufs: Uint8Array[], length: number }
 }
 
 export interface DecodeFunction<T> {

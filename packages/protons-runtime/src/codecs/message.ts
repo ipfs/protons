@@ -14,10 +14,14 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
     fieldDefLookup[def.id] = def
   }
 
-  const encode: EncodeFunction<Record<string, any>> = function messageEncode (val) {
-    const bufs: Uint8Array[] = [
-      new Uint8Array(0) // will hold length prefix
-    ]
+  const encode: EncodeFunction<Record<string, any>> = function messageEncode (val, opts = {}) {
+    const bufs: Uint8Array[] = []
+
+    if (opts.lengthDelimited === true) {
+      // will hold length prefix
+      bufs.push(new Uint8Array(0))
+    }
+
     let length = 0
 
     function encodeValue (value: any, fieldNumber: number, fieldDef: FieldDef) {
@@ -54,10 +58,17 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
       }
     }
 
-    const prefix = unsigned.encode(length)
+    if (opts.lengthDelimited === true) {
+      const prefix = unsigned.encode(length)
 
-    bufs[0] = prefix
-    length += prefix.byteLength
+      bufs[0] = prefix
+      length += prefix.byteLength
+
+      return {
+        bufs,
+        length
+      }
+    }
 
     return {
       bufs,
