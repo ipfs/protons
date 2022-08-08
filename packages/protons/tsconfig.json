@@ -8,6 +8,9 @@
     "src",
     "test"
   ],
+  "exclude": [
+    "test/fixtures/*.pbjs.ts"
+  ],
   "references": [
     {
       "path": "../protons-runtime"

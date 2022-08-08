@@ -1,12 +1,90 @@
 import { unsigned } from 'uint8-varint'
-import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, Codec } from '../codec.js'
+import { createCodec, CODEC_TYPES, EncodeResult, EncodeOptions } from '../codec.js'
+import type { DecodeFunction, Codec } from '../codec.js'
 import type { FieldDef } from '../index.js'
 
 export interface Factory<A, T> {
   new (obj: A): T
 }
 
+export function message <T> (encode: (obj: T, opts?: EncodeOptions) => EncodeResult, fieldDefs: Record<string, FieldDef>): Codec<T> {
+  const decode: DecodeFunction<T> = function messageDecode (buffer, offset) {
+    const length = unsigned.decode(buffer, offset)
+    const lengthLength = unsigned.encodingLength(length)
+    offset += lengthLength
+    const end = offset + length
+    const fields: any = {}
+
+    while (offset < end) {
+      const key = unsigned.decode(buffer, offset)
+      offset += unsigned.encodingLength(key)
+
+      const wireType = key & 0x7
+      const fieldNumber = key >> 3
+      const fieldDef = fieldDefs[fieldNumber.toString()]
+      let fieldLength = 0
+      let value
+
+      if (wireType === CODEC_TYPES.VARINT) {
+        if (fieldDef != null) {
+          // use the codec if it is available as this could be a bigint
+          const decoded = fieldDef.codec.decode(buffer, offset)
+          fieldLength = decoded.length
+          value = decoded.value
+        } else {
+          const value = unsigned.decode(buffer, offset)
+          fieldLength = unsigned.encodingLength(value)
+        }
+      } else if (wireType === CODEC_TYPES.BIT64) {
+        fieldLength = 8
+      } else if (wireType === CODEC_TYPES.LENGTH_DELIMITED) {
+        const valueLength = unsigned.decode(buffer, offset)
+        fieldLength = valueLength + unsigned.encodingLength(valueLength)
+      } else if (wireType === CODEC_TYPES.BIT32) {
+        fieldLength = 4
+      } else if (wireType === CODEC_TYPES.START_GROUP) {
+        throw new Error('Unsupported wire type START_GROUP')
+      } else if (wireType === CODEC_TYPES.END_GROUP) {
+        throw new Error('Unsupported wire type END_GROUP')
+      }
+
+      if (fieldDef != null) {
+        if (value == null) {
+          const decoded = fieldDef.codec.decode(buffer, offset)
+          value = decoded.value
+        }
+
+        if (fieldDef.repeats === true) {
+          if (fields[fieldDef.name] == null) {
+            fields[fieldDef.name] = []
+          }
+
+          fields[fieldDef.name].push(value)
+        } else {
+          fields[fieldDef.name] = value
+        }
+      }
+
+      offset += fieldLength
+    }
+
+    // make sure repeated fields have an array if not set
+    for (const fieldDef of Object.values(fieldDefs)) {
+      if (fieldDef.repeats === true && fields[fieldDef.name] == null) {
+        fields[fieldDef.name] = []
+      }
+    }
+
+    return {
+      value: fields,
+      length: lengthLength + length
+    }
+  }
+
+  return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode)
+}
+
+/*
 export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
   // create a id => FieldDef mapping for quick access
   const fieldDefLookup: Record<number, FieldDef> = {}
@@ -153,3 +231,4 @@ export function message <T> (fieldDefs: FieldDef[]): Codec<T> {
 
   return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode)
 }
+*/

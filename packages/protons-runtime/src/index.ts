@@ -1,7 +1,6 @@
 import type { Codec } from './codec.js'
 
 export interface FieldDef {
-  id: number
   name: string
   codec: Codec<any>
   optional?: true
@@ -34,4 +33,4 @@ export { sint64 } from './codecs/sint64.js'
 export { string } from './codecs/string.js'
 export { uint32 } from './codecs/uint32.js'
 export { uint64 } from './codecs/uint64.js'
-export type { Codec } from './codec.js'
+export type { Codec, EncodeOptions } from './codec.js'

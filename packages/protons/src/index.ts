@@ -2,6 +2,16 @@ import { main as pbjs } from 'protobufjs/cli/pbjs.js'
 import path from 'path'
 import { promisify } from 'util'
 import fs from 'fs/promises'
+import { unsigned } from 'uint8-varint'
+
+export enum CODEC_TYPES {
+  VARINT = 0,
+  BIT64,
+  LENGTH_DELIMITED,
+  START_GROUP,
+  END_GROUP,
+  BIT32
+}
 
 function pathWithExtension (input: string, extension: string, outputDir?: string) {
   const output = outputDir ?? path.dirname(input)
@@ -72,20 +82,40 @@ function findDef (typeName: string, classDef: MessageDef, moduleDef: ModuleDef):
 
 const encoders: Record<string, string> = {
   bool: 'bool',
-  double: 'double',
   bytes: 'bytes',
+  double: 'double',
   fixed32: 'fixed32',
   fixed64: 'fixed64',
   float: 'float',
   int32: 'int32',
   int64: 'int64',
+  sfixed32: 'sfixed32',
+  sfixed64: 'sfixed64',
   sint32: 'sint32',
   sint64: 'sint64',
   string: 'string',
   uint32: 'uint32',
-  uint64: 'uint64',
-  sfixed32: 'sfixed32',
-  sfixed64: 'sfixed64'
+  uint64: 'uint64'
+}
+
+const codecTypes: Record<string, CODEC_TYPES> = {
+  bool: CODEC_TYPES.VARINT,
+  bytes: CODEC_TYPES.LENGTH_DELIMITED,
+  double: CODEC_TYPES.BIT64,
+  enum: CODEC_TYPES.VARINT,
+  fixed32: CODEC_TYPES.BIT32,
+  fixed64: CODEC_TYPES.BIT64,
+  float: CODEC_TYPES.BIT32,
+  int32: CODEC_TYPES.VARINT,
+  int64: CODEC_TYPES.VARINT,
+  message: CODEC_TYPES.LENGTH_DELIMITED,
+  sfixed32: CODEC_TYPES.BIT32,
+  sfixed64: CODEC_TYPES.BIT64,
+  sint32: CODEC_TYPES.VARINT,
+  sint64: CODEC_TYPES.VARINT,
+  string: CODEC_TYPES.LENGTH_DELIMITED,
+  uint32: CODEC_TYPES.VARINT,
+  uint64: CODEC_TYPES.VARINT
 }
 
 interface ClassDef {
@@ -148,7 +178,7 @@ enum __${messageDef.name}Values {
 
 export namespace ${messageDef.name} {
   export const codec = () => {
-    return enumeration<typeof ${messageDef.name}>(__${messageDef.name}Values)
+    return enumeration<${messageDef.name}>(__${messageDef.name}Values)
   }
 }`.trim()
   }
@@ -194,7 +224,77 @@ export interface ${messageDef.name} {
 
   export const codec = (): Codec<${messageDef.name}> => {
     if (_codec == null) {
-      _codec = message<${messageDef.name}>([
+      _codec = message<${messageDef.name}>((obj, opts = {}) => {
+        const bufs: Uint8Array[] = []
+
+        if (opts.lengthDelimited !== false) {
+          // will hold length prefix
+          bufs.push(new Uint8Array(0))
+        }
+
+        let length = 0
+    ${Object.entries(fields)
+          .map(([name, fieldDef]) => {
+            let codec = encoders[fieldDef.type]
+            let type: string = fieldDef.type
+
+            if (codec == null) {
+              const def = findDef(fieldDef.type, messageDef, moduleDef)
+
+              if (isEnumDef(def)) {
+                moduleDef.imports.add('enumeration')
+                type = 'enum'
+              } else {
+                moduleDef.imports.add('message')
+                type = 'message'
+              }
+
+              const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+              codec = `${typeName}.codec()`
+            } else {
+              moduleDef.imports.add(codec)
+            }
+
+            if (fieldDef.rule === 'repeated') {
+              return `
+        const $${name} = obj.${name}
+        if ($${name} != null) {
+          for (const value of $${name}) {
+            const prefixField${fieldDef.id} = Uint8Array.from([${unsigned.encode((fieldDef.id << 3) | codecTypes[type]).join(', ')}])
+            const encodedField${fieldDef.id} = ${codec}.encode(value)
+            bufs.push(prefixField${fieldDef.id}, ...encodedField${fieldDef.id}.bufs)
+            length += prefixField${fieldDef.id}.byteLength + encodedField${fieldDef.id}.length
+          }
+        }`
+            }
+
+            return `
+        const $${name} = obj.${name}
+        if ($${name} != null) {
+          const prefixField${fieldDef.id} = Uint8Array.from([${unsigned.encode((fieldDef.id << 3) | codecTypes[type]).join(', ')}])
+          const encodedField${fieldDef.id} = ${codec}.encode($${name})
+          bufs.push(prefixField${fieldDef.id}, ...encodedField${fieldDef.id}.bufs)
+          length += prefixField${fieldDef.id}.byteLength + encodedField${fieldDef.id}.length
+        }`
+          }).join('\n')}
+
+        if (opts.lengthDelimited !== false) {
+          const prefix = unsigned.encode(length)
+
+          bufs[0] = prefix
+          length += prefix.byteLength
+
+          return {
+            bufs,
+            length
+          }
+        }
+
+        return {
+          bufs,
+          length
+        }
+      }, {
         ${Object.entries(fields)
           .map(([name, fieldDef]) => {
             let codec = encoders[fieldDef.type]
@@ -214,9 +314,9 @@ export interface ${messageDef.name} {
               moduleDef.imports.add(codec)
             }
 
-        return `{ id: ${fieldDef.id}, name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
+        return `'${fieldDef.id}': { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
     }).join(',\n        ')}
-      ])
+      })
     }
 
     return _codec
@@ -317,12 +417,13 @@ export async function generate (source: string, flags: Flags) {
     lines.push(`import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'`)
   }
 
-  if (moduleDef.importedTypes.size > 0) {
-    lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
-  }
-
   if (moduleDef.imports.has('encodeMessage')) {
     lines.push("import type { Uint8ArrayList } from 'uint8arraylist'")
+    lines.push("import { unsigned } from 'uint8-varint'")
+  }
+
+  if (moduleDef.importedTypes.size > 0) {
+    lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
   }
 
   lines = [
