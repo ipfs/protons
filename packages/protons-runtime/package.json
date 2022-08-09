@@ -148,6 +148,7 @@
     "release": "aegir release"
   },
   "dependencies": {
+    "protobufjs": "^7.0.0",
     "uint8arraylist": "^2.3.2"
   },
   "devDependencies": {
