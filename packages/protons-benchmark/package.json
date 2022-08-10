@@ -74,7 +74,7 @@
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
     "protons": "^4.0.0",
-    "protons-runtime": "^2.0.0",
+    "protons-runtime": "^3.0.0",
     "uint8arrays": "^3.1.0"
   },
   "private": true
