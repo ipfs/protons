@@ -1,3 +1,10 @@
+## [protons-runtime-v3.0.1](https://github.com/ipfs/protons/compare/protons-runtime-v3.0.0...protons-runtime-v3.0.1) (2022-08-10)
+
+
+### Bug Fixes
+
+* add uint8arraylist peer dep ([#61](https://github.com/ipfs/protons/issues/61)) ([eb16e86](https://github.com/ipfs/protons/commit/eb16e8690f28435c198d5f0facf5514f2d6574a3)), closes [#59](https://github.com/ipfs/protons/issues/59)
+
 ## [protons-runtime-v3.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v2.0.2...protons-runtime-v3.0.0) (2022-08-10)
 
 
