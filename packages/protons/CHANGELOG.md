@@ -1,3 +1,19 @@
+## [protons-v5.0.0](https://github.com/ipfs/protons/compare/protons-v4.0.3...protons-v5.0.0) (2022-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* the exported types of `protons-runtime` have changed and protobuf encoders/decoders will need to be regenerated
+
+### Bug Fixes
+
+* increase encoding/decoding performance ([#58](https://github.com/ipfs/protons/issues/58)) ([9987b97](https://github.com/ipfs/protons/commit/9987b97cc6910dd67152c3a9c0941ae0ab0a8b9a))
+
+
+### Trivial Changes
+
+* update sibling deps ([7568283](https://github.com/ipfs/protons/commit/756828339bc1ad3fae784b28d7d218bbc55c3518))
+
 ## [protons-v4.0.3](https://github.com/ipfs/protons/compare/protons-v4.0.2...protons-v4.0.3) (2022-08-04)
 
 
