@@ -1,4 +1,4 @@
-import type { Uint8ArrayList } from 'uint8arraylist'
+import type { Writer, Reader } from './index.js'
 
 // https://developers.google.com/protocol-buffers/docs/encoding#structure
 export enum CODEC_TYPES {
@@ -10,16 +10,16 @@ export enum CODEC_TYPES {
   BIT32
 }
 
+export interface EncodeOptions {
+  lengthDelimited?: boolean
+}
+
 export interface EncodeFunction<T> {
-  (value: T): Uint8Array | Uint8ArrayList
+  (value: T, writer: Writer, opts?: EncodeOptions): void
 }
 
 export interface DecodeFunction<T> {
-  (buf: Uint8ArrayList, offset: number): T
-}
-
-export interface EncodingLengthFunction<T> {
-  (value: T): number
+  (reader: Reader, length?: number): T
 }
 
 export interface Codec<T> {
@@ -27,15 +27,13 @@ export interface Codec<T> {
   type: CODEC_TYPES
   encode: EncodeFunction<T>
   decode: DecodeFunction<T>
-  encodingLength: EncodingLengthFunction<T>
 }
 
-export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>, encodingLength: EncodingLengthFunction<T>): Codec<T> {
+export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>): Codec<T> {
   return {
     name,
     type,
     encode,
-    decode,
-    encodingLength
+    decode
   }
 }

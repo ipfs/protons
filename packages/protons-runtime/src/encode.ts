@@ -1,15 +1,28 @@
-import { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from './codec.js'
-import { unsigned } from 'uint8-varint'
+import pb from 'protobufjs'
 
-export function encodeMessage <T> (message: T, codec: Codec<T>): Uint8ArrayList {
-  // unwrap root message
-  const encoded = codec.encode(message)
-  const skip = unsigned.encodingLength(unsigned.decode(encoded))
+const Writer = pb.Writer
 
-  if (encoded instanceof Uint8Array) {
-    return new Uint8ArrayList(encoded.subarray(skip))
+// monkey patch the writer to add native bigint support
+const methods = [
+  'uint64', 'int64', 'sint64', 'fixed64', 'sfixed64'
+]
+methods.forEach(method => {
+  // @ts-expect-error
+  const original = Writer.prototype[method]
+  // @ts-expect-error
+  Writer.prototype[method] = function (val: bigint): pb.Writer {
+    return original.call(this, val.toString())
   }
+})
 
-  return encoded.sublist(skip)
+export function encodeMessage <T> (message: T, codec: Codec<T>): Uint8Array {
+  const w = Writer.create()
+
+  // @ts-expect-error
+  codec.encode(message, w, {
+    lengthDelimited: false
+  })
+
+  return w.finish()
 }

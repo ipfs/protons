@@ -1,7 +1,16 @@
-import { main as pbjs } from 'protobufjs/cli/pbjs.js'
+import { main as pbjs } from 'protobufjs-cli/pbjs.js'
 import path from 'path'
 import { promisify } from 'util'
 import fs from 'fs/promises'
+
+export enum CODEC_TYPES {
+  VARINT = 0,
+  BIT64,
+  LENGTH_DELIMITED,
+  START_GROUP,
+  END_GROUP,
+  BIT32
+}
 
 function pathWithExtension (input: string, extension: string, outputDir?: string) {
   const output = outputDir ?? path.dirname(input)
@@ -9,21 +18,59 @@ function pathWithExtension (input: string, extension: string, outputDir?: string
 }
 
 const types: Record<string, string> = {
+  bool: 'boolean',
+  bytes: 'Uint8Array',
   double: 'number',
+  fixed32: 'number',
+  fixed64: 'bigint',
   float: 'number',
   int32: 'number',
   int64: 'bigint',
-  uint32: 'number',
-  uint64: 'bigint',
-  sint32: 'number',
-  sint64: 'bigint',
-  fixed32: 'number',
-  fixed64: 'bigint',
   sfixed32: 'number',
   sfixed64: 'bigint',
-  bool: 'boolean',
+  sint32: 'number',
+  sint64: 'bigint',
   string: 'string',
-  bytes: 'Uint8Array'
+  uint32: 'number',
+  uint64: 'bigint'
+}
+
+const encoderGenerators: Record<string, (val: string) => string> = {
+  bool: (val) => `writer.bool(${val})`,
+  bytes: (val) => `writer.bytes(${val})`,
+  double: (val) => `writer.double(${val})`,
+  // enumeration: (val) => `writer.double(${val})`,
+  fixed32: (val) => `writer.fixed32(${val})`,
+  fixed64: (val) => `writer.fixed64(${val})`,
+  float: (val) => `writer.float(${val})`,
+  int32: (val) => `writer.int32(${val})`,
+  int64: (val) => `writer.int64(${val})`,
+  sfixed32: (val) => `writer.sfixed32(${val})`,
+  sfixed64: (val) => `writer.sfixed64(${val})`,
+  sint32: (val) => `writer.sint32(${val})`,
+  sint64: (val) => `writer.sint64(${val})`,
+  string: (val) => `writer.string(${val})`,
+  uint32: (val) => `writer.uint32(${val})`,
+  uint64: (val) => `writer.uint64(${val})`
+}
+
+const decoderGenerators: Record<string, () => string> = {
+  bool: () => 'reader.bool()',
+  bytes: () => 'reader.bytes()',
+  double: () => 'reader.double()',
+  // enumeration: () => `writer.double(${val})`,
+  fixed32: () => 'reader.fixed32()',
+  fixed64: () => 'reader.fixed64()',
+  float: () => 'reader.float()',
+  int32: () => 'reader.int32()',
+  int64: () => 'reader.int64()',
+  sfixed32: () => 'reader.sfixed32()',
+  sfixed64: () => 'reader.sfixed64()',
+  sint32: () => 'reader.sint32()',
+  sint64: () => 'reader.sint64()',
+  string: () => 'reader.string()',
+  uint32: () => 'reader.uint32()',
+  uint64: () => 'reader.uint64()'
 }
 
 function findTypeName (typeName: string, classDef: MessageDef, moduleDef: ModuleDef): string {
@@ -72,20 +119,40 @@ function findDef (typeName: string, classDef: MessageDef, moduleDef: ModuleDef):
 
 const encoders: Record<string, string> = {
   bool: 'bool',
-  double: 'double',
   bytes: 'bytes',
+  double: 'double',
   fixed32: 'fixed32',
   fixed64: 'fixed64',
   float: 'float',
   int32: 'int32',
   int64: 'int64',
+  sfixed32: 'sfixed32',
+  sfixed64: 'sfixed64',
   sint32: 'sint32',
   sint64: 'sint64',
   string: 'string',
   uint32: 'uint32',
-  uint64: 'uint64',
-  sfixed32: 'sfixed32',
-  sfixed64: 'sfixed64'
+  uint64: 'uint64'
+}
+
+const codecTypes: Record<string, CODEC_TYPES> = {
+  bool: CODEC_TYPES.VARINT,
+  bytes: CODEC_TYPES.LENGTH_DELIMITED,
+  double: CODEC_TYPES.BIT64,
+  enum: CODEC_TYPES.VARINT,
+  fixed32: CODEC_TYPES.BIT32,
+  fixed64: CODEC_TYPES.BIT64,
+  float: CODEC_TYPES.BIT32,
+  int32: CODEC_TYPES.VARINT,
+  int64: CODEC_TYPES.VARINT,
+  message: CODEC_TYPES.LENGTH_DELIMITED,
+  sfixed32: CODEC_TYPES.BIT32,
+  sfixed64: CODEC_TYPES.BIT64,
+  sint32: CODEC_TYPES.VARINT,
+  sint64: CODEC_TYPES.VARINT,
+  string: CODEC_TYPES.LENGTH_DELIMITED,
+  uint32: CODEC_TYPES.VARINT,
+  uint64: CODEC_TYPES.VARINT
 }
 
 interface ClassDef {
@@ -114,14 +181,13 @@ interface FieldDef {
   id: number
   options?: Record<string, any>
   rule: string
+  optional: boolean
+  repeated: boolean
 }
 
 function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef) {
   return Object.entries(fields).map(([fieldName, fieldDef]) => {
-    const isArray = fieldDef.rule === 'repeated'
-    const isOptional = !isArray && fieldDef.options?.proto3_optional === true
-
-    return `${fieldName}${isOptional ? '?' : ''}: ${findTypeName(fieldDef.type, messageDef, moduleDef)}${isArray ? '[]' : ''}`
+    return `${fieldName}${fieldDef.optional ? '?' : ''}: ${findTypeName(fieldDef.type, messageDef, moduleDef)}${fieldDef.repeated ? '[]' : ''}`
   })
 }
 
@@ -148,7 +214,7 @@ enum __${messageDef.name}Values {
 
 export namespace ${messageDef.name} {
   export const codec = () => {
-    return enumeration<typeof ${messageDef.name}>(__${messageDef.name}Values)
+    return enumeration<${messageDef.name}>(__${messageDef.name}Values)
   }
 }`.trim()
   }
@@ -189,40 +255,132 @@ export interface ${messageDef.name} {
       .trim()
   }
 }`
+
+    const ensureArrayProps = Object.entries(fields)
+      .map(([name, fieldDef]) => {
+        // make sure repeated fields have an array if not set
+        if (fieldDef.rule === 'repeated') {
+          return `        obj.${name} = obj.${name} ?? []`
+        }
+
+        return ''
+      }).filter(Boolean).join('\n')
+
+    const ensureRequiredFields = Object.entries(fields)
+      .map(([name, fieldDef]) => {
+        // make sure required fields are set
+        if (!fieldDef.optional) {
+          return `
+        if (obj.${name} == null) {
+          throw new Error('Protocol error: value for required field "${name}" was not found in protobuf')
+        }`
+        }
+
+        return ''
+      }).filter(Boolean).join('\n')
+
     interfaceCodecDef = `
   let _codec: Codec<${messageDef.name}>
 
   export const codec = (): Codec<${messageDef.name}> => {
     if (_codec == null) {
-      _codec = message<${messageDef.name}>({
-        ${Object.entries(fields)
-          .map(([name, fieldDef]) => {
-            let codec = encoders[fieldDef.type]
+      _codec = message<${messageDef.name}>((obj, writer, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          writer.fork()
+        }
+${Object.entries(fields)
+      .map(([name, fieldDef]) => {
+        let codec: string = encoders[fieldDef.type]
+        let type: string = fieldDef.type
 
-            if (codec == null) {
-              const def = findDef(fieldDef.type, messageDef, moduleDef)
+        if (codec == null) {
+          const def = findDef(fieldDef.type, messageDef, moduleDef)
 
-              if (isEnumDef(def)) {
-                moduleDef.imports.add('enumeration')
-              } else {
-                moduleDef.imports.add('message')
-              }
+          if (isEnumDef(def)) {
+            moduleDef.imports.add('enumeration')
+            type = 'enum'
+          } else {
+            moduleDef.imports.add('message')
+            type = 'message'
+          }
 
-              const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
-              codec = `${typeName}.codec()`
-            } else {
-              moduleDef.imports.add(codec)
-            }
+          const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+          codec = `${typeName}.codec()`
+        }
 
-        return `${fieldDef.id}: { name: '${name}', codec: ${codec}${fieldDef.options?.proto3_optional === true ? ', optional: true' : ''}${fieldDef.rule === 'repeated' ? ', repeats: true' : ''} }`
-    }).join(',\n        ')}
+        return `
+        if (obj.${name} != null) {${
+            fieldDef.rule === 'repeated'
+? `
+          for (const value of obj.${name}) {
+            writer.uint32(${(fieldDef.id << 3) | codecTypes[type]})
+            ${encoderGenerators[type] == null ? `${codec}.encode(value, writer)` : encoderGenerators[type]('value')}
+          }`
+: `
+          writer.uint32(${(fieldDef.id << 3) | codecTypes[type]})
+          ${encoderGenerators[type] == null ? `${codec}.encode(obj.${name}, writer)` : encoderGenerators[type](`obj.${name}`)}`
+        }
+        }${fieldDef.optional
+? ''
+: ` else {
+          throw new Error('Protocol error: required field "${name}" was not found in object')
+        }`}`
+}).join('\n')}
+
+        if (opts.lengthDelimited !== false) {
+          writer.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            ${Object.entries(fields)
+              .map(([name, fieldDef]) => {
+                let codec: string = encoders[fieldDef.type]
+                let type: string = fieldDef.type
+
+                if (codec == null) {
+                  const def = findDef(fieldDef.type, messageDef, moduleDef)
+
+                  if (isEnumDef(def)) {
+                    moduleDef.imports.add('enumeration')
+                    type = 'enum'
+                  } else {
+                    moduleDef.imports.add('message')
+                    type = 'message'
+                  }
+
+                  const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+                  codec = `${typeName}.codec()`
+                }
+
+                return `case ${fieldDef.id}:${fieldDef.rule === 'repeated'
+? `
+              obj.${name} = obj.${name} ?? []
+              obj.${name}.push(${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()})`
+: `
+              obj.${name} = ${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`}
+              break`
+              }).join('\n            ')}
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
+        }${ensureArrayProps !== '' ? `\n\n${ensureArrayProps}` : ''}${ensureRequiredFields !== '' ? `\n${ensureRequiredFields}` : ''}
+
+        return obj
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: ${messageDef.name}): Uint8ArrayList => {
+  export const encode = (obj: ${messageDef.name}): Uint8Array => {
     return encodeMessage(obj, ${messageDef.name}.codec())
   }
 
@@ -275,6 +433,13 @@ function defineModule (def: ClassDef): ModuleDef {
         defineMessage(classDef.nested, classDef)
       }
 
+      if (classDef.fields != null) {
+        for (const name of Object.keys(classDef.fields)) {
+          classDef.fields[name].repeated = classDef.fields[name].rule === 'repeated'
+          classDef.fields[name].optional = !classDef.fields[name].repeated && classDef.fields[name].options?.proto3_optional === true
+        }
+      }
+
       if (parent == null) {
         moduleDef.globals[className] = classDef
       }
@@ -317,12 +482,12 @@ export async function generate (source: string, flags: Flags) {
     lines.push(`import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'`)
   }
 
-  if (moduleDef.importedTypes.size > 0) {
-    lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
-  }
-
   if (moduleDef.imports.has('encodeMessage')) {
     lines.push("import type { Uint8ArrayList } from 'uint8arraylist'")
+  }
+
+  if (moduleDef.importedTypes.size > 0) {
+    lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
   }
 
   lines = [
