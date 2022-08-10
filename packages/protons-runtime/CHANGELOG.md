@@ -1,3 +1,14 @@
+## [protons-runtime-v3.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v2.0.2...protons-runtime-v3.0.0) (2022-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* the exported types of `protons-runtime` have changed and protobuf encoders/decoders will need to be regenerated
+
+### Bug Fixes
+
+* increase encoding/decoding performance ([#58](https://github.com/ipfs/protons/issues/58)) ([9987b97](https://github.com/ipfs/protons/commit/9987b97cc6910dd67152c3a9c0941ae0ab0a8b9a))
+
 ## [protons-runtime-v2.0.2](https://github.com/ipfs/protons/compare/protons-runtime-v2.0.1...protons-runtime-v2.0.2) (2022-07-30)
 
 
