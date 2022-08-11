@@ -1,3 +1,10 @@
+## [protons-v5.1.0](https://github.com/ipfs/protons/compare/protons-v5.0.0...protons-v5.1.0) (2022-08-11)
+
+
+### Features
+
+* define default types during decode ([#62](https://github.com/ipfs/protons/issues/62)) ([6453809](https://github.com/ipfs/protons/commit/64538091f7339f285ab6efbb0e18054970e00f33)), closes [#43](https://github.com/ipfs/protons/issues/43)
+
 ## [protons-v5.0.0](https://github.com/ipfs/protons/compare/protons-v4.0.3...protons-v5.0.0) (2022-08-10)
 
 
