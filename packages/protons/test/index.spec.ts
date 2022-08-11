@@ -192,4 +192,11 @@ describe('encode', () => {
     // foo is optional
     expect(decoded).to.not.have.property('foo')
   })
+
+  it('supports default fields', () => {
+    const decoded = Basic.decode(Uint8Array.from([]))
+
+    // num is required
+    expect(decoded).to.have.property('num', 0)
+  })
 })
