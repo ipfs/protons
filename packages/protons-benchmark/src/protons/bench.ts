@@ -226,7 +226,7 @@ export namespace Lol {
         }
       }, (reader, length) => {
         const obj: any = {
-          b: null
+          b: undefined
         }
 
         const end = length == null ? reader.len : reader.pos + length

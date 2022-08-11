@@ -174,7 +174,7 @@ function createDefaultObject (fields: Record<string, FieldDef>, messageDef: Mess
 
           defaultValue = `${def.name}.${val[0]}`
         } else {
-          defaultValue = 'null'
+          defaultValue = 'undefined'
         }
       }
 
