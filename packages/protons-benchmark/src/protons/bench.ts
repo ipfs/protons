@@ -28,7 +28,7 @@ export namespace Foo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Foo = {}
+        const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -84,7 +84,7 @@ export namespace Bar {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Bar = {}
+        const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -159,7 +159,7 @@ export namespace Yo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Yo = {
+        const obj: any = {
           lol: []
         }
 
@@ -225,7 +225,7 @@ export namespace Lol {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Lol = {
+        const obj: any = {
           b: null
         }
 
@@ -308,7 +308,7 @@ export namespace Test {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Test = {}
+        const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
 

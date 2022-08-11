@@ -52,7 +52,7 @@ export namespace Record {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Record = {}
+        const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -190,7 +190,7 @@ export namespace Message {
             writer.ldelim()
           }
         }, (reader, length) => {
-          const obj: Peer = {
+          const obj: any = {
             addrs: []
           }
 
@@ -282,7 +282,7 @@ export namespace Message {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Message = {
+        const obj: any = {
           closerPeers: [],
           providerPeers: []
         }

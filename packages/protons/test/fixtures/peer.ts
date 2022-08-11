@@ -64,7 +64,7 @@ export namespace Peer {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Peer = {
+        const obj: any = {
           addresses: [],
           protocols: [],
           metadata: []
@@ -144,7 +144,7 @@ export namespace Address {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Address = {
+        const obj: any = {
           multiaddr: new Uint8Array(0)
         }
 
@@ -219,7 +219,7 @@ export namespace Metadata {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Metadata = {
+        const obj: any = {
           key: '',
           value: new Uint8Array(0)
         }

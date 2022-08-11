@@ -112,7 +112,7 @@ export namespace CircuitRelay {
             writer.ldelim()
           }
         }, (reader, length) => {
-          const obj: Peer = {
+          const obj: any = {
             id: new Uint8Array(0),
             addrs: []
           }
@@ -188,7 +188,7 @@ export namespace CircuitRelay {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: CircuitRelay = {}
+        const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
 

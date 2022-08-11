@@ -110,7 +110,7 @@ export namespace Request {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Request = {
+        const obj: any = {
           type: Type.IDENTIFY
         }
 
@@ -260,7 +260,7 @@ export namespace Response {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: Response = {
+        const obj: any = {
           type: Type.OK,
           peers: []
         }
@@ -356,7 +356,7 @@ export namespace IdentifyResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: IdentifyResponse = {
+        const obj: any = {
           id: new Uint8Array(0),
           addrs: []
         }
@@ -440,7 +440,7 @@ export namespace ConnectRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: ConnectRequest = {
+        const obj: any = {
           peer: new Uint8Array(0),
           addrs: []
         }
@@ -527,7 +527,7 @@ export namespace StreamOpenRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: StreamOpenRequest = {
+        const obj: any = {
           peer: new Uint8Array(0),
           proto: []
         }
@@ -608,7 +608,7 @@ export namespace StreamHandlerRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: StreamHandlerRequest = {
+        const obj: any = {
           addr: new Uint8Array(0),
           proto: []
         }
@@ -676,7 +676,7 @@ export namespace ErrorResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: ErrorResponse = {
+        const obj: any = {
           msg: ''
         }
 
@@ -756,7 +756,7 @@ export namespace StreamInfo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: StreamInfo = {
+        const obj: any = {
           peer: new Uint8Array(0),
           addr: new Uint8Array(0),
           proto: ''
@@ -902,7 +902,7 @@ export namespace DHTRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: DHTRequest = {
+        const obj: any = {
           type: Type.FIND_PEER
         }
 
@@ -1014,7 +1014,7 @@ export namespace DHTResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: DHTResponse = {
+        const obj: any = {
           type: Type.BEGIN
         }
 
@@ -1094,7 +1094,7 @@ export namespace PeerInfo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: PeerInfo = {
+        const obj: any = {
           id: new Uint8Array(0),
           addrs: []
         }
@@ -1198,7 +1198,7 @@ export namespace ConnManagerRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: ConnManagerRequest = {
+        const obj: any = {
           type: Type.TAG_PEER
         }
 
@@ -1271,7 +1271,7 @@ export namespace DisconnectRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: DisconnectRequest = {
+        const obj: any = {
           peer: new Uint8Array(0)
         }
 
@@ -1367,7 +1367,7 @@ export namespace PSRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: PSRequest = {
+        const obj: any = {
           type: Type.GET_TOPICS
         }
 
@@ -1469,7 +1469,7 @@ export namespace PSMessage {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: PSMessage = {
+        const obj: any = {
           topicIDs: []
         }
 
@@ -1556,7 +1556,7 @@ export namespace PSResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: PSResponse = {
+        const obj: any = {
           topics: [],
           peerIDs: []
         }
@@ -1652,7 +1652,7 @@ export namespace PeerstoreRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: PeerstoreRequest = {
+        const obj: any = {
           type: Type.GET_PROTOCOLS,
           protos: []
         }
@@ -1731,7 +1731,7 @@ export namespace PeerstoreResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: PeerstoreResponse = {
+        const obj: any = {
           protos: []
         }
 

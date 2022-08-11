@@ -406,7 +406,7 @@ ${Object.entries(fields)
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: ${messageDef.name} = {${createDefaultObject(fields, messageDef, moduleDef)}}
+        const obj: any = {${createDefaultObject(fields, messageDef, moduleDef)}}
 
         const end = length == null ? reader.len : reader.pos + length
 

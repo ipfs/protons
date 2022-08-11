@@ -45,7 +45,7 @@ export namespace SubMessage {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: SubMessage = {
+        const obj: any = {
           foo: ''
         }
 
@@ -213,7 +213,7 @@ export namespace AllTheTypes {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: AllTheTypes = {
+        const obj: any = {
           field14: []
         }
 

@@ -47,7 +47,7 @@ export namespace pb {
             writer.ldelim()
           }
         }, (reader, length) => {
-          const obj: NoiseHandshakePayload = {
+          const obj: any = {
             identityKey: new Uint8Array(0),
             identitySig: new Uint8Array(0),
             data: new Uint8Array(0)
