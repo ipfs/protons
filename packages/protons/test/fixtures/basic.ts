@@ -36,7 +36,9 @@ export namespace Basic {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          num: 0
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 

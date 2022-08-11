@@ -159,7 +159,9 @@ export namespace Yo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          lol: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -168,19 +170,12 @@ export namespace Yo {
 
           switch (tag >>> 3) {
             case 1:
-              obj.lol = obj.lol ?? []
               obj.lol.push(FOO.codec().decode(reader))
               break
             default:
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.lol = obj.lol ?? []
-
-        if (obj.lol == null) {
-          throw new Error('Protocol error: value for required field "lol" was not found in protobuf')
         }
 
         return obj
@@ -230,7 +225,9 @@ export namespace Lol {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          b: undefined
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 

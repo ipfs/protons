@@ -110,7 +110,9 @@ export namespace Request {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.IDENTIFY
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -258,7 +260,10 @@ export namespace Response {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.OK,
+          peers: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -282,7 +287,6 @@ export namespace Response {
               obj.dht = DHTResponse.codec().decode(reader, reader.uint32())
               break
             case 6:
-              obj.peers = obj.peers ?? []
               obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32()))
               break
             case 7:
@@ -297,14 +301,8 @@ export namespace Response {
           }
         }
 
-        obj.peers = obj.peers ?? []
-
         if (obj.type == null) {
           throw new Error('Protocol error: value for required field "type" was not found in protobuf')
-        }
-
-        if (obj.peers == null) {
-          throw new Error('Protocol error: value for required field "peers" was not found in protobuf')
         }
 
         return obj
@@ -358,7 +356,10 @@ export namespace IdentifyResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          id: new Uint8Array(0),
+          addrs: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -370,7 +371,6 @@ export namespace IdentifyResponse {
               obj.id = reader.bytes()
               break
             case 2:
-              obj.addrs = obj.addrs ?? []
               obj.addrs.push(reader.bytes())
               break
             default:
@@ -379,14 +379,8 @@ export namespace IdentifyResponse {
           }
         }
 
-        obj.addrs = obj.addrs ?? []
-
         if (obj.id == null) {
           throw new Error('Protocol error: value for required field "id" was not found in protobuf')
-        }
-
-        if (obj.addrs == null) {
-          throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
         }
 
         return obj
@@ -446,7 +440,10 @@ export namespace ConnectRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          peer: new Uint8Array(0),
+          addrs: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -458,7 +455,6 @@ export namespace ConnectRequest {
               obj.peer = reader.bytes()
               break
             case 2:
-              obj.addrs = obj.addrs ?? []
               obj.addrs.push(reader.bytes())
               break
             case 3:
@@ -470,14 +466,8 @@ export namespace ConnectRequest {
           }
         }
 
-        obj.addrs = obj.addrs ?? []
-
         if (obj.peer == null) {
           throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
-        }
-
-        if (obj.addrs == null) {
-          throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
         }
 
         return obj
@@ -537,7 +527,10 @@ export namespace StreamOpenRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          peer: new Uint8Array(0),
+          proto: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -549,7 +542,6 @@ export namespace StreamOpenRequest {
               obj.peer = reader.bytes()
               break
             case 2:
-              obj.proto = obj.proto ?? []
               obj.proto.push(reader.string())
               break
             case 3:
@@ -561,14 +553,8 @@ export namespace StreamOpenRequest {
           }
         }
 
-        obj.proto = obj.proto ?? []
-
         if (obj.peer == null) {
           throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
-        }
-
-        if (obj.proto == null) {
-          throw new Error('Protocol error: value for required field "proto" was not found in protobuf')
         }
 
         return obj
@@ -622,7 +608,10 @@ export namespace StreamHandlerRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          addr: new Uint8Array(0),
+          proto: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -634,7 +623,6 @@ export namespace StreamHandlerRequest {
               obj.addr = reader.bytes()
               break
             case 2:
-              obj.proto = obj.proto ?? []
               obj.proto.push(reader.string())
               break
             default:
@@ -643,14 +631,8 @@ export namespace StreamHandlerRequest {
           }
         }
 
-        obj.proto = obj.proto ?? []
-
         if (obj.addr == null) {
           throw new Error('Protocol error: value for required field "addr" was not found in protobuf')
-        }
-
-        if (obj.proto == null) {
-          throw new Error('Protocol error: value for required field "proto" was not found in protobuf')
         }
 
         return obj
@@ -694,7 +676,9 @@ export namespace ErrorResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          msg: ''
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -772,7 +756,11 @@ export namespace StreamInfo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          peer: new Uint8Array(0),
+          addr: new Uint8Array(0),
+          proto: ''
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -914,7 +902,9 @@ export namespace DHTRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.FIND_PEER
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1024,7 +1014,9 @@ export namespace DHTResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.BEGIN
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1102,7 +1094,10 @@ export namespace PeerInfo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          id: new Uint8Array(0),
+          addrs: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1114,7 +1109,6 @@ export namespace PeerInfo {
               obj.id = reader.bytes()
               break
             case 2:
-              obj.addrs = obj.addrs ?? []
               obj.addrs.push(reader.bytes())
               break
             default:
@@ -1123,14 +1117,8 @@ export namespace PeerInfo {
           }
         }
 
-        obj.addrs = obj.addrs ?? []
-
         if (obj.id == null) {
           throw new Error('Protocol error: value for required field "id" was not found in protobuf')
-        }
-
-        if (obj.addrs == null) {
-          throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
         }
 
         return obj
@@ -1210,7 +1198,9 @@ export namespace ConnManagerRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.TAG_PEER
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1281,7 +1271,9 @@ export namespace DisconnectRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          peer: new Uint8Array(0)
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1375,7 +1367,9 @@ export namespace PSRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.GET_TOPICS
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1475,7 +1469,9 @@ export namespace PSMessage {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          topicIDs: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1493,7 +1489,6 @@ export namespace PSMessage {
               obj.seqno = reader.bytes()
               break
             case 4:
-              obj.topicIDs = obj.topicIDs ?? []
               obj.topicIDs.push(reader.string())
               break
             case 5:
@@ -1506,12 +1501,6 @@ export namespace PSMessage {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.topicIDs = obj.topicIDs ?? []
-
-        if (obj.topicIDs == null) {
-          throw new Error('Protocol error: value for required field "topicIDs" was not found in protobuf')
         }
 
         return obj
@@ -1567,7 +1556,10 @@ export namespace PSResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          topics: [],
+          peerIDs: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1576,28 +1568,15 @@ export namespace PSResponse {
 
           switch (tag >>> 3) {
             case 1:
-              obj.topics = obj.topics ?? []
               obj.topics.push(reader.string())
               break
             case 2:
-              obj.peerIDs = obj.peerIDs ?? []
               obj.peerIDs.push(reader.bytes())
               break
             default:
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.topics = obj.topics ?? []
-        obj.peerIDs = obj.peerIDs ?? []
-
-        if (obj.topics == null) {
-          throw new Error('Protocol error: value for required field "topics" was not found in protobuf')
-        }
-
-        if (obj.peerIDs == null) {
-          throw new Error('Protocol error: value for required field "peerIDs" was not found in protobuf')
         }
 
         return obj
@@ -1673,7 +1652,10 @@ export namespace PeerstoreRequest {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          type: Type.GET_PROTOCOLS,
+          protos: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1688,7 +1670,6 @@ export namespace PeerstoreRequest {
               obj.id = reader.bytes()
               break
             case 3:
-              obj.protos = obj.protos ?? []
               obj.protos.push(reader.string())
               break
             default:
@@ -1697,14 +1678,8 @@ export namespace PeerstoreRequest {
           }
         }
 
-        obj.protos = obj.protos ?? []
-
         if (obj.type == null) {
           throw new Error('Protocol error: value for required field "type" was not found in protobuf')
-        }
-
-        if (obj.protos == null) {
-          throw new Error('Protocol error: value for required field "protos" was not found in protobuf')
         }
 
         return obj
@@ -1756,7 +1731,9 @@ export namespace PeerstoreResponse {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          protos: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -1768,19 +1745,12 @@ export namespace PeerstoreResponse {
               obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
               break
             case 2:
-              obj.protos = obj.protos ?? []
               obj.protos.push(reader.string())
               break
             default:
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.protos = obj.protos ?? []
-
-        if (obj.protos == null) {
-          throw new Error('Protocol error: value for required field "protos" was not found in protobuf')
         }
 
         return obj

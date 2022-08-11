@@ -112,7 +112,10 @@ export namespace CircuitRelay {
             writer.ldelim()
           }
         }, (reader, length) => {
-          const obj: any = {}
+          const obj: any = {
+            id: new Uint8Array(0),
+            addrs: []
+          }
 
           const end = length == null ? reader.len : reader.pos + length
 
@@ -124,7 +127,6 @@ export namespace CircuitRelay {
                 obj.id = reader.bytes()
                 break
               case 2:
-                obj.addrs = obj.addrs ?? []
                 obj.addrs.push(reader.bytes())
                 break
               default:
@@ -133,14 +135,8 @@ export namespace CircuitRelay {
             }
           }
 
-          obj.addrs = obj.addrs ?? []
-
           if (obj.id == null) {
             throw new Error('Protocol error: value for required field "id" was not found in protobuf')
-          }
-
-          if (obj.addrs == null) {
-            throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
           }
 
           return obj
