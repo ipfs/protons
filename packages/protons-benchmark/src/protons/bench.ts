@@ -28,7 +28,7 @@ export namespace Foo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Foo = {}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -84,7 +84,7 @@ export namespace Bar {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Bar = {}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -159,7 +159,9 @@ export namespace Yo {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Yo = {
+          lol: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -168,19 +170,12 @@ export namespace Yo {
 
           switch (tag >>> 3) {
             case 1:
-              obj.lol = obj.lol ?? []
               obj.lol.push(FOO.codec().decode(reader))
               break
             default:
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.lol = obj.lol ?? []
-
-        if (obj.lol == null) {
-          throw new Error('Protocol error: value for required field "lol" was not found in protobuf')
         }
 
         return obj
@@ -230,7 +225,9 @@ export namespace Lol {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Lol = {
+          b: null
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -311,7 +308,7 @@ export namespace Test {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Test = {}
 
         const end = length == null ? reader.len : reader.pos + length
 

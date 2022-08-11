@@ -45,7 +45,9 @@ export namespace SubMessage {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: SubMessage = {
+          foo: ''
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -211,7 +213,9 @@ export namespace AllTheTypes {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: AllTheTypes = {
+          field14: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -259,7 +263,6 @@ export namespace AllTheTypes {
               obj.field13 = SubMessage.codec().decode(reader, reader.uint32())
               break
             case 14:
-              obj.field14 = obj.field14 ?? []
               obj.field14.push(reader.string())
               break
             case 15:
@@ -278,12 +281,6 @@ export namespace AllTheTypes {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.field14 = obj.field14 ?? []
-
-        if (obj.field14 == null) {
-          throw new Error('Protocol error: value for required field "field14" was not found in protobuf')
         }
 
         return obj

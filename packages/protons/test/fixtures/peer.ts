@@ -64,7 +64,11 @@ export namespace Peer {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Peer = {
+          addresses: [],
+          protocols: [],
+          metadata: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -73,15 +77,12 @@ export namespace Peer {
 
           switch (tag >>> 3) {
             case 1:
-              obj.addresses = obj.addresses ?? []
               obj.addresses.push(Address.codec().decode(reader, reader.uint32()))
               break
             case 2:
-              obj.protocols = obj.protocols ?? []
               obj.protocols.push(reader.string())
               break
             case 3:
-              obj.metadata = obj.metadata ?? []
               obj.metadata.push(Metadata.codec().decode(reader, reader.uint32()))
               break
             case 4:
@@ -94,22 +95,6 @@ export namespace Peer {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.addresses = obj.addresses ?? []
-        obj.protocols = obj.protocols ?? []
-        obj.metadata = obj.metadata ?? []
-
-        if (obj.addresses == null) {
-          throw new Error('Protocol error: value for required field "addresses" was not found in protobuf')
-        }
-
-        if (obj.protocols == null) {
-          throw new Error('Protocol error: value for required field "protocols" was not found in protobuf')
-        }
-
-        if (obj.metadata == null) {
-          throw new Error('Protocol error: value for required field "metadata" was not found in protobuf')
         }
 
         return obj
@@ -159,7 +144,9 @@ export namespace Address {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Address = {
+          multiaddr: new Uint8Array(0)
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -232,7 +219,10 @@ export namespace Metadata {
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: Metadata = {
+          key: '',
+          value: new Uint8Array(0)
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 

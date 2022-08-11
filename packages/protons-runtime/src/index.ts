@@ -180,12 +180,12 @@ export interface Reader {
   double: () => number
 
   /**
-   * Reads a sequence of bytes preceeded by its length as a varint
+   * Reads a sequence of bytes preceded by its length as a varint
    */
-  bytes: () => number
+  bytes: () => Uint8Array
 
   /**
-   * Reads a string preceeded by its byte length as a varint
+   * Reads a string preceded by its byte length as a varint
    */
   string: () => string
 

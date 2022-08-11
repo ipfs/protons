@@ -180,4 +180,16 @@ describe('encode', () => {
     expect(CircuitRelay.decode(encoded)).to.deep.equal(message)
     expect(CircuitRelay.decode(pbufJsBuf)).to.deep.equal(message)
   })
+
+  it('supports optional fields', () => {
+    const obj: Basic = {
+      num: 5
+    }
+
+    const encoded = Basic.encode(obj)
+    const decoded = Basic.decode(encoded)
+
+    // foo is optional
+    expect(decoded).to.not.have.property('foo')
+  })
 })

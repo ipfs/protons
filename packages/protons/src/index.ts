@@ -73,6 +73,25 @@ const decoderGenerators: Record<string, () => string> = {
   uint64: () => 'reader.uint64()'
 }
 
+const defaultValueGenerators: Record<string, () => string> = {
+  bool: () => 'false',
+  bytes: () => 'new Uint8Array(0)',
+  double: () => '0',
+  // enumeration: () => `writer.double(${val})`,
+  fixed32: () => '0',
+  fixed64: () => '0n',
+  float: () => '0',
+  int32: () => '0',
+  int64: () => '0n',
+  sfixed32: () => '0',
+  sfixed64: () => '0n',
+  sint32: () => '0',
+  sint64: () => '0n',
+  string: () => "''",
+  uint32: () => '0',
+  uint64: () => '0n'
+}
+
 function findTypeName (typeName: string, classDef: MessageDef, moduleDef: ModuleDef): string {
   if (types[typeName] != null) {
     return types[typeName]
@@ -115,6 +134,65 @@ function findDef (typeName: string, classDef: MessageDef, moduleDef: ModuleDef):
   }
 
   throw new Error(`Could not resolve type name "${typeName}"`)
+}
+
+function createDefaultObject (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef): string {
+  const output = Object.entries(fields)
+    .map(([name, fieldDef]) => {
+      if (fieldDef.repeated) {
+        return `${name}: []`
+      }
+
+      if (fieldDef.optional) {
+        return ''
+      }
+
+      const type: string = fieldDef.type
+      let defaultValue
+
+      if (defaultValueGenerators[type] != null) {
+        defaultValue = defaultValueGenerators[type]()
+      } else {
+        const def = findDef(fieldDef.type, messageDef, moduleDef)
+
+        if (isEnumDef(def)) {
+          // select lowest-value enum - should be 0 but it's not guaranteed
+          const val = Object.entries(def.values)
+            .sort((a, b) => {
+              if (a[1] < b[1]) {
+                return 1
+              }
+
+              if (a[1] > b[1]) {
+                return -1
+              }
+
+              return 0
+            })
+            .pop()
+
+          if (val == null) {
+            throw new Error(`Could not find default enum value for ${def.fullName}`)
+          }
+
+          defaultValue = `${def.name}.${val[0]}`
+        } else {
+          defaultValue = 'null'
+        }
+      }
+
+      return `${name}: ${defaultValue}`
+    })
+    .filter(Boolean)
+    .join(',\n          ')
+
+  if (output !== '') {
+    return `
+          ${output}
+        `
+  }
+
+  return ''
 }
 
 const encoders: Record<string, string> = {
@@ -259,7 +337,7 @@ export interface ${messageDef.name} {
     const ensureArrayProps = Object.entries(fields)
       .map(([name, fieldDef]) => {
         // make sure repeated fields have an array if not set
-        if (fieldDef.rule === 'repeated') {
+        if (fieldDef.optional && fieldDef.rule === 'repeated') {
           return `        obj.${name} = obj.${name} ?? []`
         }
 
@@ -269,7 +347,7 @@ export interface ${messageDef.name} {
     const ensureRequiredFields = Object.entries(fields)
       .map(([name, fieldDef]) => {
         // make sure required fields are set
-        if (!fieldDef.optional) {
+        if (!fieldDef.optional && !fieldDef.repeated) {
           return `
         if (obj.${name} == null) {
           throw new Error('Protocol error: value for required field "${name}" was not found in protobuf')
@@ -331,7 +409,7 @@ ${Object.entries(fields)
           writer.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: ${messageDef.name} = {${createDefaultObject(fields, messageDef, moduleDef)}}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -360,8 +438,10 @@ ${Object.entries(fields)
                 }
 
                 return `case ${fieldDef.id}:${fieldDef.rule === 'repeated'
+? `${fieldDef.optional
 ? `
-              obj.${name} = obj.${name} ?? []
+              obj.${name} = obj.${name} ?? []`
+: ''}
               obj.${name}.push(${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()})`
 : `
               obj.${name} = ${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`}
