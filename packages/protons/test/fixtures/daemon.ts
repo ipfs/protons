@@ -1,7 +1,9 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -54,60 +56,130 @@ export namespace Request {
 
   export const codec = (): Codec<Request> => {
     if (_codec == null) {
-      _codec = message<Request>((obj, writer, opts = {}) => {
+      _codec = message<Request>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          Request.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          Request.Type.codec().encode(obj.type, w)
         }
 
         if (obj.connect != null) {
-          writer.uint32(18)
-          ConnectRequest.codec().encode(obj.connect, writer)
+          const mw = writer()
+          ConnectRequest.codec().encode(obj.connect, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(18)
+            w.bytes(buf)
+          }
         }
 
         if (obj.streamOpen != null) {
-          writer.uint32(26)
-          StreamOpenRequest.codec().encode(obj.streamOpen, writer)
+          const mw = writer()
+          StreamOpenRequest.codec().encode(obj.streamOpen, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(26)
+            w.bytes(buf)
+          }
         }
 
         if (obj.streamHandler != null) {
-          writer.uint32(34)
-          StreamHandlerRequest.codec().encode(obj.streamHandler, writer)
+          const mw = writer()
+          StreamHandlerRequest.codec().encode(obj.streamHandler, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(34)
+            w.bytes(buf)
+          }
         }
 
         if (obj.dht != null) {
-          writer.uint32(42)
-          DHTRequest.codec().encode(obj.dht, writer)
+          const mw = writer()
+          DHTRequest.codec().encode(obj.dht, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(42)
+            w.bytes(buf)
+          }
         }
 
         if (obj.connManager != null) {
-          writer.uint32(50)
-          ConnManagerRequest.codec().encode(obj.connManager, writer)
+          const mw = writer()
+          ConnManagerRequest.codec().encode(obj.connManager, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(50)
+            w.bytes(buf)
+          }
         }
 
         if (obj.disconnect != null) {
-          writer.uint32(58)
-          DisconnectRequest.codec().encode(obj.disconnect, writer)
+          const mw = writer()
+          DisconnectRequest.codec().encode(obj.disconnect, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(58)
+            w.bytes(buf)
+          }
         }
 
         if (obj.pubsub != null) {
-          writer.uint32(66)
-          PSRequest.codec().encode(obj.pubsub, writer)
+          const mw = writer()
+          PSRequest.codec().encode(obj.pubsub, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(66)
+            w.bytes(buf)
+          }
         }
 
         if (obj.peerStore != null) {
-          writer.uint32(74)
-          PeerstoreRequest.codec().encode(obj.peerStore, writer)
+          const mw = writer()
+          PeerstoreRequest.codec().encode(obj.peerStore, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(74)
+            w.bytes(buf)
+          }
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -151,10 +223,6 @@ export namespace Request {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
 
         return obj
@@ -205,59 +273,116 @@ export namespace Response {
 
   export const codec = (): Codec<Response> => {
     if (_codec == null) {
-      _codec = message<Response>((obj, writer, opts = {}) => {
+      _codec = message<Response>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          Response.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          Response.Type.codec().encode(obj.type, w)
         }
 
         if (obj.error != null) {
-          writer.uint32(18)
-          ErrorResponse.codec().encode(obj.error, writer)
+          const mw = writer()
+          ErrorResponse.codec().encode(obj.error, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(18)
+            w.bytes(buf)
+          }
         }
 
         if (obj.streamInfo != null) {
-          writer.uint32(26)
-          StreamInfo.codec().encode(obj.streamInfo, writer)
+          const mw = writer()
+          StreamInfo.codec().encode(obj.streamInfo, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(26)
+            w.bytes(buf)
+          }
         }
 
         if (obj.identify != null) {
-          writer.uint32(34)
-          IdentifyResponse.codec().encode(obj.identify, writer)
+          const mw = writer()
+          IdentifyResponse.codec().encode(obj.identify, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(34)
+            w.bytes(buf)
+          }
         }
 
         if (obj.dht != null) {
-          writer.uint32(42)
-          DHTResponse.codec().encode(obj.dht, writer)
+          const mw = writer()
+          DHTResponse.codec().encode(obj.dht, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(42)
+            w.bytes(buf)
+          }
         }
 
         if (obj.peers != null) {
           for (const value of obj.peers) {
-            writer.uint32(50)
-            PeerInfo.codec().encode(value, writer)
+            const mw = writer()
+            PeerInfo.codec().encode(value, mw, {
+              lengthDelimited: false,
+              writeDefaults: true
+            })
+            const buf = mw.finish()
+
+            w.uint32(50)
+            w.bytes(buf)
           }
-        } else {
-          throw new Error('Protocol error: required field "peers" was not found in object')
         }
 
         if (obj.pubsub != null) {
-          writer.uint32(58)
-          PSResponse.codec().encode(obj.pubsub, writer)
+          const mw = writer()
+          PSResponse.codec().encode(obj.pubsub, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(58)
+            w.bytes(buf)
+          }
         }
 
         if (obj.peerStore != null) {
-          writer.uint32(66)
-          PeerstoreResponse.codec().encode(obj.peerStore, writer)
+          const mw = writer()
+          PeerstoreResponse.codec().encode(obj.peerStore, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(66)
+            w.bytes(buf)
+          }
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -301,10 +426,6 @@ export namespace Response {
           }
         }
 
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -331,29 +452,25 @@ export namespace IdentifyResponse {
 
   export const codec = (): Codec<IdentifyResponse> => {
     if (_codec == null) {
-      _codec = message<IdentifyResponse>((obj, writer, opts = {}) => {
+      _codec = message<IdentifyResponse>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.id != null) {
-          writer.uint32(10)
-          writer.bytes(obj.id)
-        } else {
-          throw new Error('Protocol error: required field "id" was not found in object')
+        if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.id)
         }
 
         if (obj.addrs != null) {
           for (const value of obj.addrs) {
-            writer.uint32(18)
-            writer.bytes(value)
+            w.uint32(18)
+            w.bytes(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "addrs" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -377,10 +494,6 @@ export namespace IdentifyResponse {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.id == null) {
-          throw new Error('Protocol error: value for required field "id" was not found in protobuf')
         }
 
         return obj
@@ -410,34 +523,30 @@ export namespace ConnectRequest {
 
   export const codec = (): Codec<ConnectRequest> => {
     if (_codec == null) {
-      _codec = message<ConnectRequest>((obj, writer, opts = {}) => {
+      _codec = message<ConnectRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.peer != null) {
-          writer.uint32(10)
-          writer.bytes(obj.peer)
-        } else {
-          throw new Error('Protocol error: required field "peer" was not found in object')
+        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.peer)
         }
 
         if (obj.addrs != null) {
           for (const value of obj.addrs) {
-            writer.uint32(18)
-            writer.bytes(value)
+            w.uint32(18)
+            w.bytes(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "addrs" was not found in object')
         }
 
         if (obj.timeout != null) {
-          writer.uint32(24)
-          writer.int64(obj.timeout)
+          w.uint32(24)
+          w.int64(obj.timeout)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -464,10 +573,6 @@ export namespace ConnectRequest {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.peer == null) {
-          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
         }
 
         return obj
@@ -497,34 +602,30 @@ export namespace StreamOpenRequest {
 
   export const codec = (): Codec<StreamOpenRequest> => {
     if (_codec == null) {
-      _codec = message<StreamOpenRequest>((obj, writer, opts = {}) => {
+      _codec = message<StreamOpenRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.peer != null) {
-          writer.uint32(10)
-          writer.bytes(obj.peer)
-        } else {
-          throw new Error('Protocol error: required field "peer" was not found in object')
+        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.peer)
         }
 
         if (obj.proto != null) {
           for (const value of obj.proto) {
-            writer.uint32(18)
-            writer.string(value)
+            w.uint32(18)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "proto" was not found in object')
         }
 
         if (obj.timeout != null) {
-          writer.uint32(24)
-          writer.int64(obj.timeout)
+          w.uint32(24)
+          w.int64(obj.timeout)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -553,10 +654,6 @@ export namespace StreamOpenRequest {
           }
         }
 
-        if (obj.peer == null) {
-          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -583,29 +680,25 @@ export namespace StreamHandlerRequest {
 
   export const codec = (): Codec<StreamHandlerRequest> => {
     if (_codec == null) {
-      _codec = message<StreamHandlerRequest>((obj, writer, opts = {}) => {
+      _codec = message<StreamHandlerRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.addr != null) {
-          writer.uint32(10)
-          writer.bytes(obj.addr)
-        } else {
-          throw new Error('Protocol error: required field "addr" was not found in object')
+        if (opts.writeDefaults === true || (obj.addr != null && obj.addr.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.addr)
         }
 
         if (obj.proto != null) {
           for (const value of obj.proto) {
-            writer.uint32(18)
-            writer.string(value)
+            w.uint32(18)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "proto" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -629,10 +722,6 @@ export namespace StreamHandlerRequest {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.addr == null) {
-          throw new Error('Protocol error: value for required field "addr" was not found in protobuf')
         }
 
         return obj
@@ -660,20 +749,18 @@ export namespace ErrorResponse {
 
   export const codec = (): Codec<ErrorResponse> => {
     if (_codec == null) {
-      _codec = message<ErrorResponse>((obj, writer, opts = {}) => {
+      _codec = message<ErrorResponse>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.msg != null) {
-          writer.uint32(10)
-          writer.string(obj.msg)
-        } else {
-          throw new Error('Protocol error: required field "msg" was not found in object')
+        if (opts.writeDefaults === true || obj.msg !== '') {
+          w.uint32(10)
+          w.string(obj.msg)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -693,10 +780,6 @@ export namespace ErrorResponse {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.msg == null) {
-          throw new Error('Protocol error: value for required field "msg" was not found in protobuf')
         }
 
         return obj
@@ -726,34 +809,28 @@ export namespace StreamInfo {
 
   export const codec = (): Codec<StreamInfo> => {
     if (_codec == null) {
-      _codec = message<StreamInfo>((obj, writer, opts = {}) => {
+      _codec = message<StreamInfo>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.peer != null) {
-          writer.uint32(10)
-          writer.bytes(obj.peer)
-        } else {
-          throw new Error('Protocol error: required field "peer" was not found in object')
+        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.peer)
         }
 
-        if (obj.addr != null) {
-          writer.uint32(18)
-          writer.bytes(obj.addr)
-        } else {
-          throw new Error('Protocol error: required field "addr" was not found in object')
+        if (opts.writeDefaults === true || (obj.addr != null && obj.addr.byteLength > 0)) {
+          w.uint32(18)
+          w.bytes(obj.addr)
         }
 
-        if (obj.proto != null) {
-          writer.uint32(26)
-          writer.string(obj.proto)
-        } else {
-          throw new Error('Protocol error: required field "proto" was not found in object')
+        if (opts.writeDefaults === true || obj.proto !== '') {
+          w.uint32(26)
+          w.string(obj.proto)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -781,18 +858,6 @@ export namespace StreamInfo {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.peer == null) {
-          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
-        }
-
-        if (obj.addr == null) {
-          throw new Error('Protocol error: value for required field "addr" was not found in protobuf')
-        }
-
-        if (obj.proto == null) {
-          throw new Error('Protocol error: value for required field "proto" was not found in protobuf')
         }
 
         return obj
@@ -856,50 +921,48 @@ export namespace DHTRequest {
 
   export const codec = (): Codec<DHTRequest> => {
     if (_codec == null) {
-      _codec = message<DHTRequest>((obj, writer, opts = {}) => {
+      _codec = message<DHTRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          DHTRequest.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          DHTRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.peer != null) {
-          writer.uint32(18)
-          writer.bytes(obj.peer)
+          w.uint32(18)
+          w.bytes(obj.peer)
         }
 
         if (obj.cid != null) {
-          writer.uint32(26)
-          writer.bytes(obj.cid)
+          w.uint32(26)
+          w.bytes(obj.cid)
         }
 
         if (obj.key != null) {
-          writer.uint32(34)
-          writer.bytes(obj.key)
+          w.uint32(34)
+          w.bytes(obj.key)
         }
 
         if (obj.value != null) {
-          writer.uint32(42)
-          writer.bytes(obj.value)
+          w.uint32(42)
+          w.bytes(obj.value)
         }
 
         if (obj.count != null) {
-          writer.uint32(48)
-          writer.int32(obj.count)
+          w.uint32(48)
+          w.int32(obj.count)
         }
 
         if (obj.timeout != null) {
-          writer.uint32(56)
-          writer.int64(obj.timeout)
+          w.uint32(56)
+          w.int64(obj.timeout)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -937,10 +1000,6 @@ export namespace DHTRequest {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
 
         return obj
@@ -988,30 +1047,37 @@ export namespace DHTResponse {
 
   export const codec = (): Codec<DHTResponse> => {
     if (_codec == null) {
-      _codec = message<DHTResponse>((obj, writer, opts = {}) => {
+      _codec = message<DHTResponse>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          DHTResponse.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          DHTResponse.Type.codec().encode(obj.type, w)
         }
 
         if (obj.peer != null) {
-          writer.uint32(18)
-          PeerInfo.codec().encode(obj.peer, writer)
+          const mw = writer()
+          PeerInfo.codec().encode(obj.peer, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(18)
+            w.bytes(buf)
+          }
         }
 
         if (obj.value != null) {
-          writer.uint32(26)
-          writer.bytes(obj.value)
+          w.uint32(26)
+          w.bytes(obj.value)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1037,10 +1103,6 @@ export namespace DHTResponse {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
 
         return obj
@@ -1069,29 +1131,25 @@ export namespace PeerInfo {
 
   export const codec = (): Codec<PeerInfo> => {
     if (_codec == null) {
-      _codec = message<PeerInfo>((obj, writer, opts = {}) => {
+      _codec = message<PeerInfo>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.id != null) {
-          writer.uint32(10)
-          writer.bytes(obj.id)
-        } else {
-          throw new Error('Protocol error: required field "id" was not found in object')
+        if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.id)
         }
 
         if (obj.addrs != null) {
           for (const value of obj.addrs) {
-            writer.uint32(18)
-            writer.bytes(value)
+            w.uint32(18)
+            w.bytes(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "addrs" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1115,10 +1173,6 @@ export namespace PeerInfo {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.id == null) {
-          throw new Error('Protocol error: value for required field "id" was not found in protobuf')
         }
 
         return obj
@@ -1167,35 +1221,33 @@ export namespace ConnManagerRequest {
 
   export const codec = (): Codec<ConnManagerRequest> => {
     if (_codec == null) {
-      _codec = message<ConnManagerRequest>((obj, writer, opts = {}) => {
+      _codec = message<ConnManagerRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          ConnManagerRequest.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          ConnManagerRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.peer != null) {
-          writer.uint32(18)
-          writer.bytes(obj.peer)
+          w.uint32(18)
+          w.bytes(obj.peer)
         }
 
         if (obj.tag != null) {
-          writer.uint32(26)
-          writer.string(obj.tag)
+          w.uint32(26)
+          w.string(obj.tag)
         }
 
         if (obj.weight != null) {
-          writer.uint32(32)
-          writer.int64(obj.weight)
+          w.uint32(32)
+          w.int64(obj.weight)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1226,10 +1278,6 @@ export namespace ConnManagerRequest {
           }
         }
 
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -1255,20 +1303,18 @@ export namespace DisconnectRequest {
 
   export const codec = (): Codec<DisconnectRequest> => {
     if (_codec == null) {
-      _codec = message<DisconnectRequest>((obj, writer, opts = {}) => {
+      _codec = message<DisconnectRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.peer != null) {
-          writer.uint32(10)
-          writer.bytes(obj.peer)
-        } else {
-          throw new Error('Protocol error: required field "peer" was not found in object')
+        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.peer)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1288,10 +1334,6 @@ export namespace DisconnectRequest {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.peer == null) {
-          throw new Error('Protocol error: value for required field "peer" was not found in protobuf')
         }
 
         return obj
@@ -1341,30 +1383,28 @@ export namespace PSRequest {
 
   export const codec = (): Codec<PSRequest> => {
     if (_codec == null) {
-      _codec = message<PSRequest>((obj, writer, opts = {}) => {
+      _codec = message<PSRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          PSRequest.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          PSRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.topic != null) {
-          writer.uint32(18)
-          writer.string(obj.topic)
+          w.uint32(18)
+          w.string(obj.topic)
         }
 
         if (obj.data != null) {
-          writer.uint32(26)
-          writer.bytes(obj.data)
+          w.uint32(26)
+          w.bytes(obj.data)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1390,10 +1430,6 @@ export namespace PSRequest {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
 
         return obj
@@ -1426,47 +1462,45 @@ export namespace PSMessage {
 
   export const codec = (): Codec<PSMessage> => {
     if (_codec == null) {
-      _codec = message<PSMessage>((obj, writer, opts = {}) => {
+      _codec = message<PSMessage>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.from != null) {
-          writer.uint32(10)
-          writer.bytes(obj.from)
+          w.uint32(10)
+          w.bytes(obj.from)
         }
 
         if (obj.data != null) {
-          writer.uint32(18)
-          writer.bytes(obj.data)
+          w.uint32(18)
+          w.bytes(obj.data)
         }
 
         if (obj.seqno != null) {
-          writer.uint32(26)
-          writer.bytes(obj.seqno)
+          w.uint32(26)
+          w.bytes(obj.seqno)
         }
 
         if (obj.topicIDs != null) {
           for (const value of obj.topicIDs) {
-            writer.uint32(34)
-            writer.string(value)
+            w.uint32(34)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "topicIDs" was not found in object')
         }
 
         if (obj.signature != null) {
-          writer.uint32(42)
-          writer.bytes(obj.signature)
+          w.uint32(42)
+          w.bytes(obj.signature)
         }
 
         if (obj.key != null) {
-          writer.uint32(50)
-          writer.bytes(obj.key)
+          w.uint32(50)
+          w.bytes(obj.key)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1529,31 +1563,27 @@ export namespace PSResponse {
 
   export const codec = (): Codec<PSResponse> => {
     if (_codec == null) {
-      _codec = message<PSResponse>((obj, writer, opts = {}) => {
+      _codec = message<PSResponse>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.topics != null) {
           for (const value of obj.topics) {
-            writer.uint32(10)
-            writer.string(value)
+            w.uint32(10)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "topics" was not found in object')
         }
 
         if (obj.peerIDs != null) {
           for (const value of obj.peerIDs) {
-            writer.uint32(18)
-            writer.bytes(value)
+            w.uint32(18)
+            w.bytes(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "peerIDs" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -1603,11 +1633,13 @@ export interface PeerstoreRequest {
 
 export namespace PeerstoreRequest {
   export enum Type {
+    INVALID = 'INVALID',
     GET_PROTOCOLS = 'GET_PROTOCOLS',
     GET_PEER_INFO = 'GET_PEER_INFO'
   }
 
   enum __TypeValues {
+    INVALID = 0,
     GET_PROTOCOLS = 1,
     GET_PEER_INFO = 2
   }
@@ -1622,38 +1654,34 @@ export namespace PeerstoreRequest {
 
   export const codec = (): Codec<PeerstoreRequest> => {
     if (_codec == null) {
-      _codec = message<PeerstoreRequest>((obj, writer, opts = {}) => {
+      _codec = message<PeerstoreRequest>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.type != null) {
-          writer.uint32(8)
-          PeerstoreRequest.Type.codec().encode(obj.type, writer)
-        } else {
-          throw new Error('Protocol error: required field "type" was not found in object')
+        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+          w.uint32(8)
+          PeerstoreRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.id != null) {
-          writer.uint32(18)
-          writer.bytes(obj.id)
+          w.uint32(18)
+          w.bytes(obj.id)
         }
 
         if (obj.protos != null) {
           for (const value of obj.protos) {
-            writer.uint32(26)
-            writer.string(value)
+            w.uint32(26)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "protos" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
-          type: Type.GET_PROTOCOLS,
+          type: Type.INVALID,
           protos: []
         }
 
@@ -1676,10 +1704,6 @@ export namespace PeerstoreRequest {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.type == null) {
-          throw new Error('Protocol error: value for required field "type" was not found in protobuf')
         }
 
         return obj
@@ -1708,27 +1732,34 @@ export namespace PeerstoreResponse {
 
   export const codec = (): Codec<PeerstoreResponse> => {
     if (_codec == null) {
-      _codec = message<PeerstoreResponse>((obj, writer, opts = {}) => {
+      _codec = message<PeerstoreResponse>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.peer != null) {
-          writer.uint32(10)
-          PeerInfo.codec().encode(obj.peer, writer)
+          const mw = writer()
+          PeerInfo.codec().encode(obj.peer, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(10)
+            w.bytes(buf)
+          }
         }
 
         if (obj.protos != null) {
           for (const value of obj.protos) {
-            writer.uint32(18)
-            writer.string(value)
+            w.uint32(18)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "protos" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {

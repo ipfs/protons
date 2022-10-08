@@ -1,5 +1,7 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -17,34 +19,28 @@ export namespace pb {
 
     export const codec = (): Codec<NoiseHandshakePayload> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload>((obj, writer, opts = {}) => {
+        _codec = message<NoiseHandshakePayload>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
-            writer.fork()
+            w.fork()
           }
 
-          if (obj.identityKey != null) {
-            writer.uint32(10)
-            writer.bytes(obj.identityKey)
-          } else {
-            throw new Error('Protocol error: required field "identityKey" was not found in object')
+          if (opts.writeDefaults === true || (obj.identityKey != null && obj.identityKey.byteLength > 0)) {
+            w.uint32(10)
+            w.bytes(obj.identityKey)
           }
 
-          if (obj.identitySig != null) {
-            writer.uint32(18)
-            writer.bytes(obj.identitySig)
-          } else {
-            throw new Error('Protocol error: required field "identitySig" was not found in object')
+          if (opts.writeDefaults === true || (obj.identitySig != null && obj.identitySig.byteLength > 0)) {
+            w.uint32(18)
+            w.bytes(obj.identitySig)
           }
 
-          if (obj.data != null) {
-            writer.uint32(26)
-            writer.bytes(obj.data)
-          } else {
-            throw new Error('Protocol error: required field "data" was not found in object')
+          if (opts.writeDefaults === true || (obj.data != null && obj.data.byteLength > 0)) {
+            w.uint32(26)
+            w.bytes(obj.data)
           }
 
           if (opts.lengthDelimited !== false) {
-            writer.ldelim()
+            w.ldelim()
           }
         }, (reader, length) => {
           const obj: any = {
@@ -72,18 +68,6 @@ export namespace pb {
                 reader.skipType(tag & 7)
                 break
             }
-          }
-
-          if (obj.identityKey == null) {
-            throw new Error('Protocol error: value for required field "identityKey" was not found in protobuf')
-          }
-
-          if (obj.identitySig == null) {
-            throw new Error('Protocol error: value for required field "identitySig" was not found in protobuf')
-          }
-
-          if (obj.data == null) {
-            throw new Error('Protocol error: value for required field "data" was not found in protobuf')
           }
 
           return obj

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+enum OptionalEnum {
+  NO_VALUE = 0;
+  VALUE_1 = 1;
+  VALUE_2 = 2;
+}
+
+message OptionalSubMessage {
+  optional string foo = 1;
+  optional int32 bar = 2;
+}
+
+message Optional {
+  optional double double = 1;
+  optional float float = 2;
+  optional int32 int32 = 3;
+  optional int64 int64 = 4;
+  optional uint32 uint32 = 5;
+  optional uint64 uint64 = 6;
+  optional sint32 sint32 = 7;
+  optional sint64 sint64 = 8;
+  optional fixed32 fixed32 = 9;
+  optional fixed64 fixed64 = 10;
+  optional sfixed32 sfixed32 = 11;
+  optional sfixed64 sfixed64 = 12;
+  optional bool bool = 13;
+  optional string string = 14;
+  optional bytes bytes = 15;
+  optional OptionalEnum enum = 16;
+  optional OptionalSubMessage subMessage = 17;
+}

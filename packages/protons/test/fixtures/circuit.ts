@@ -1,7 +1,9 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -87,29 +89,25 @@ export namespace CircuitRelay {
 
     export const codec = (): Codec<Peer> => {
       if (_codec == null) {
-        _codec = message<Peer>((obj, writer, opts = {}) => {
+        _codec = message<Peer>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
-            writer.fork()
+            w.fork()
           }
 
-          if (obj.id != null) {
-            writer.uint32(10)
-            writer.bytes(obj.id)
-          } else {
-            throw new Error('Protocol error: required field "id" was not found in object')
+          if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
+            w.uint32(10)
+            w.bytes(obj.id)
           }
 
           if (obj.addrs != null) {
             for (const value of obj.addrs) {
-              writer.uint32(18)
-              writer.bytes(value)
+              w.uint32(18)
+              w.bytes(value)
             }
-          } else {
-            throw new Error('Protocol error: required field "addrs" was not found in object')
           }
 
           if (opts.lengthDelimited !== false) {
-            writer.ldelim()
+            w.ldelim()
           }
         }, (reader, length) => {
           const obj: any = {
@@ -135,10 +133,6 @@ export namespace CircuitRelay {
             }
           }
 
-          if (obj.id == null) {
-            throw new Error('Protocol error: value for required field "id" was not found in protobuf')
-          }
-
           return obj
         })
       }
@@ -159,33 +153,51 @@ export namespace CircuitRelay {
 
   export const codec = (): Codec<CircuitRelay> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay>((obj, writer, opts = {}) => {
+      _codec = message<CircuitRelay>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.type != null) {
-          writer.uint32(8)
-          CircuitRelay.Type.codec().encode(obj.type, writer)
+          w.uint32(8)
+          CircuitRelay.Type.codec().encode(obj.type, w)
         }
 
         if (obj.srcPeer != null) {
-          writer.uint32(18)
-          CircuitRelay.Peer.codec().encode(obj.srcPeer, writer)
+          const mw = writer()
+          CircuitRelay.Peer.codec().encode(obj.srcPeer, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(18)
+            w.bytes(buf)
+          }
         }
 
         if (obj.dstPeer != null) {
-          writer.uint32(26)
-          CircuitRelay.Peer.codec().encode(obj.dstPeer, writer)
+          const mw = writer()
+          CircuitRelay.Peer.codec().encode(obj.dstPeer, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(26)
+            w.bytes(buf)
+          }
         }
 
         if (obj.code != null) {
-          writer.uint32(32)
-          CircuitRelay.Status.codec().encode(obj.code, writer)
+          w.uint32(32)
+          CircuitRelay.Status.codec().encode(obj.code, w)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {}

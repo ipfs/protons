@@ -36,21 +36,21 @@ const types: Record<string, string> = {
 }
 
 const encoderGenerators: Record<string, (val: string) => string> = {
-  bool: (val) => `writer.bool(${val})`,
-  bytes: (val) => `writer.bytes(${val})`,
-  double: (val) => `writer.double(${val})`,
-  fixed32: (val) => `writer.fixed32(${val})`,
-  fixed64: (val) => `writer.fixed64(${val})`,
-  float: (val) => `writer.float(${val})`,
-  int32: (val) => `writer.int32(${val})`,
-  int64: (val) => `writer.int64(${val})`,
-  sfixed32: (val) => `writer.sfixed32(${val})`,
-  sfixed64: (val) => `writer.sfixed64(${val})`,
-  sint32: (val) => `writer.sint32(${val})`,
-  sint64: (val) => `writer.sint64(${val})`,
-  string: (val) => `writer.string(${val})`,
-  uint32: (val) => `writer.uint32(${val})`,
-  uint64: (val) => `writer.uint64(${val})`
+  bool: (val) => `w.bool(${val})`,
+  bytes: (val) => `w.bytes(${val})`,
+  double: (val) => `w.double(${val})`,
+  fixed32: (val) => `w.fixed32(${val})`,
+  fixed64: (val) => `w.fixed64(${val})`,
+  float: (val) => `w.float(${val})`,
+  int32: (val) => `w.int32(${val})`,
+  int64: (val) => `w.int64(${val})`,
+  sfixed32: (val) => `w.sfixed32(${val})`,
+  sfixed64: (val) => `w.sfixed64(${val})`,
+  sint32: (val) => `w.sint32(${val})`,
+  sint64: (val) => `w.sint64(${val})`,
+  string: (val) => `w.string(${val})`,
+  uint32: (val) => `w.uint32(${val})`,
+  uint64: (val) => `w.uint64(${val})`
 }
 
 const decoderGenerators: Record<string, () => string> = {
@@ -87,6 +87,24 @@ const defaultValueGenerators: Record<string, () => string> = {
   string: () => "''",
   uint32: () => '0',
   uint64: () => '0n'
+}
+
+const defaultValueTestGenerators: Record<string, (field: string) => string> = {
+  bool: (field) => `${field} !== false`,
+  bytes: (field) => `(${field} != null && ${field}.byteLength > 0)`,
+  double: (field) => `${field} !== 0`,
+  fixed32: (field) => `${field} !== 0`,
+  fixed64: (field) => `${field} !== 0n`,
+  float: (field) => `${field} !== 0`,
+  int32: (field) => `${field} !== 0`,
+  int64: (field) => `${field} !== 0n`,
+  sfixed32: (field) => `${field} !== 0`,
+  sfixed64: (field) => `${field} !== 0n`,
+  sint32: (field) => `${field} !== 0`,
+  sint64: (field) => `${field} !== 0n`,
+  string: (field) => `${field} !== ''`,
+  uint32: (field) => `${field} !== 0`,
+  uint64: (field) => `${field} !== 0n`
 }
 
 function findTypeName (typeName: string, classDef: MessageDef, moduleDef: ModuleDef): string {
@@ -341,32 +359,20 @@ export interface ${messageDef.name} {
         return ''
       }).filter(Boolean).join('\n')
 
-    const ensureRequiredFields = Object.entries(fields)
-      .map(([name, fieldDef]) => {
-        // make sure required fields are set
-        if (!fieldDef.optional && !fieldDef.repeated) {
-          return `
-        if (obj.${name} == null) {
-          throw new Error('Protocol error: value for required field "${name}" was not found in protobuf')
-        }`
-        }
-
-        return ''
-      }).filter(Boolean).join('\n')
-
     interfaceCodecDef = `
   let _codec: Codec<${messageDef.name}>
 
   export const codec = (): Codec<${messageDef.name}> => {
     if (_codec == null) {
-      _codec = message<${messageDef.name}>((obj, writer, opts = {}) => {
+      _codec = message<${messageDef.name}>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 ${Object.entries(fields)
       .map(([name, fieldDef]) => {
         let codec: string = encoders[fieldDef.type]
         let type: string = fieldDef.type
+        let typeName: string = ''
 
         if (codec == null) {
           const def = findDef(fieldDef.type, messageDef, moduleDef)
@@ -379,31 +385,84 @@ ${Object.entries(fields)
             type = 'message'
           }
 
-          const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+          typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
           codec = `${typeName}.codec()`
         }
 
-        return `
-        if (obj.${name} != null) {${
-            fieldDef.rule === 'repeated'
-? `
-          for (const value of obj.${name}) {
-            writer.uint32(${(fieldDef.id << 3) | codecTypes[type]})
-            ${encoderGenerators[type] == null ? `${codec}.encode(value, writer)` : encoderGenerators[type]('value')}
-          }`
-: `
-          writer.uint32(${(fieldDef.id << 3) | codecTypes[type]})
-          ${encoderGenerators[type] == null ? `${codec}.encode(obj.${name}, writer)` : encoderGenerators[type](`obj.${name}`)}`
+        let valueTest = `obj.${name} != null`
+
+        // proto3 singular fields should only be written out if they are not the default value
+        if (!fieldDef.optional && !fieldDef.repeated) {
+          if (defaultValueTestGenerators[type] != null) {
+            valueTest = `opts.writeDefaults === true || ${defaultValueTestGenerators[type](`obj.${name}`)}`
+          } else if (type === 'enum') {
+            // handle enums
+            valueTest = `opts.writeDefaults === true || (obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0)`
+          }
         }
-        }${fieldDef.optional
-? ''
-: ` else {
-          throw new Error('Protocol error: required field "${name}" was not found in object')
-        }`}`
+
+        function createWriteField (valueVar: string) {
+          const id = (fieldDef.id << 3) | codecTypes[type]
+
+          let writeField = `w.uint32(${id})
+          ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerators[type](valueVar)}`
+
+          if (type === 'message') {
+            // message fields are only written if they have values
+            moduleDef.imports.add('writer')
+
+            writeField = `const mw = writer()
+          ${typeName}.codec().encode(${valueVar}, mw, {
+            lengthDelimited: false,
+            writeDefaults: ${Boolean(fieldDef.repeated).toString()}
+          })
+          const buf = mw.finish()`
+
+            if (fieldDef.repeated) {
+              writeField += `
+
+          w.uint32(${id})
+          w.bytes(buf)`
+            } else {
+              writeField += `
+
+          if (buf.byteLength > 0) {
+            w.uint32(${id})
+            w.bytes(buf)
+          }`
+            }
+          }
+
+          return writeField
+        }
+
+        let writeField = createWriteField(`obj.${name}`)
+
+        if (fieldDef.repeated) {
+          writeField = `
+          for (const value of obj.${name}) {
+          ${
+              createWriteField('value')
+                .split('\n')
+                .map(s => {
+                  const trimmed = s.trim()
+
+                  return trimmed === '' ? trimmed : `  ${s}`
+                })
+                .join('\n')
+            }
+          }
+          `.trim()
+        }
+
+        return `
+        if (${valueTest}) {
+          ${writeField}
+        }`
 }).join('\n')}
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {${createDefaultObject(fields, messageDef, moduleDef)}}
@@ -448,7 +507,7 @@ ${Object.entries(fields)
               reader.skipType(tag & 7)
               break
           }
-        }${ensureArrayProps !== '' ? `\n\n${ensureArrayProps}` : ''}${ensureRequiredFields !== '' ? `\n${ensureRequiredFields}` : ''}
+        }${ensureArrayProps !== '' ? `\n\n${ensureArrayProps}` : ''}
 
         return obj
       })
@@ -551,7 +610,9 @@ export async function generate (source: string, flags: Flags) {
 
   let lines = [
     '/* eslint-disable import/export */',
+    '/* eslint-disable complexity */',
     '/* eslint-disable @typescript-eslint/no-namespace */',
+    '/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */',
     ''
   ]
 
@@ -574,6 +635,7 @@ export async function generate (source: string, flags: Flags) {
   ]
 
   const content = lines.join('\n').trim()
+  const outputPath = pathWithExtension(source, '.ts', flags.output)
 
-  await fs.writeFile(pathWithExtension(source, '.ts', flags.output), content + '\n')
+  await fs.writeFile(outputPath, content + '\n')
 }

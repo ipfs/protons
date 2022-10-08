@@ -1,5 +1,7 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -15,25 +17,23 @@ export namespace Basic {
 
   export const codec = (): Codec<Basic> => {
     if (_codec == null) {
-      _codec = message<Basic>((obj, writer, opts = {}) => {
+      _codec = message<Basic>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.foo != null) {
-          writer.uint32(10)
-          writer.string(obj.foo)
+          w.uint32(10)
+          w.string(obj.foo)
         }
 
-        if (obj.num != null) {
-          writer.uint32(16)
-          writer.int32(obj.num)
-        } else {
-          throw new Error('Protocol error: required field "num" was not found in object')
+        if (opts.writeDefaults === true || obj.num !== 0) {
+          w.uint32(16)
+          w.int32(obj.num)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -56,10 +56,6 @@ export namespace Basic {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.num == null) {
-          throw new Error('Protocol error: value for required field "num" was not found in protobuf')
         }
 
         return obj

@@ -1,0 +1,320 @@
+/* eslint-disable import/export */
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+
+import { enumeration, encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
+import type { Codec } from 'protons-runtime'
+
+export enum SingularEnum {
+  NO_VALUE = 'NO_VALUE',
+  VALUE_1 = 'VALUE_1',
+  VALUE_2 = 'VALUE_2'
+}
+
+enum __SingularEnumValues {
+  NO_VALUE = 0,
+  VALUE_1 = 1,
+  VALUE_2 = 2
+}
+
+export namespace SingularEnum {
+  export const codec = () => {
+    return enumeration<SingularEnum>(__SingularEnumValues)
+  }
+}
+export interface SingularSubMessage {
+  foo: string
+  bar: number
+}
+
+export namespace SingularSubMessage {
+  let _codec: Codec<SingularSubMessage>
+
+  export const codec = (): Codec<SingularSubMessage> => {
+    if (_codec == null) {
+      _codec = message<SingularSubMessage>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (opts.writeDefaults === true || obj.foo !== '') {
+          w.uint32(10)
+          w.string(obj.foo)
+        }
+
+        if (opts.writeDefaults === true || obj.bar !== 0) {
+          w.uint32(16)
+          w.int32(obj.bar)
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {
+          foo: '',
+          bar: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.foo = reader.string()
+              break
+            case 2:
+              obj.bar = reader.int32()
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
+        }
+
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: SingularSubMessage): Uint8Array => {
+    return encodeMessage(obj, SingularSubMessage.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList): SingularSubMessage => {
+    return decodeMessage(buf, SingularSubMessage.codec())
+  }
+}
+
+export interface Singular {
+  double: number
+  float: number
+  int32: number
+  int64: bigint
+  uint32: number
+  uint64: bigint
+  sint32: number
+  sint64: bigint
+  fixed32: number
+  fixed64: bigint
+  sfixed32: number
+  sfixed64: bigint
+  bool: boolean
+  string: string
+  bytes: Uint8Array
+  enum: SingularEnum
+  subMessage: SingularSubMessage
+}
+
+export namespace Singular {
+  let _codec: Codec<Singular>
+
+  export const codec = (): Codec<Singular> => {
+    if (_codec == null) {
+      _codec = message<Singular>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (opts.writeDefaults === true || obj.double !== 0) {
+          w.uint32(9)
+          w.double(obj.double)
+        }
+
+        if (opts.writeDefaults === true || obj.float !== 0) {
+          w.uint32(21)
+          w.float(obj.float)
+        }
+
+        if (opts.writeDefaults === true || obj.int32 !== 0) {
+          w.uint32(24)
+          w.int32(obj.int32)
+        }
+
+        if (opts.writeDefaults === true || obj.int64 !== 0n) {
+          w.uint32(32)
+          w.int64(obj.int64)
+        }
+
+        if (opts.writeDefaults === true || obj.uint32 !== 0) {
+          w.uint32(40)
+          w.uint32(obj.uint32)
+        }
+
+        if (opts.writeDefaults === true || obj.uint64 !== 0n) {
+          w.uint32(48)
+          w.uint64(obj.uint64)
+        }
+
+        if (opts.writeDefaults === true || obj.sint32 !== 0) {
+          w.uint32(56)
+          w.sint32(obj.sint32)
+        }
+
+        if (opts.writeDefaults === true || obj.sint64 !== 0n) {
+          w.uint32(64)
+          w.sint64(obj.sint64)
+        }
+
+        if (opts.writeDefaults === true || obj.fixed32 !== 0) {
+          w.uint32(77)
+          w.fixed32(obj.fixed32)
+        }
+
+        if (opts.writeDefaults === true || obj.fixed64 !== 0n) {
+          w.uint32(81)
+          w.fixed64(obj.fixed64)
+        }
+
+        if (opts.writeDefaults === true || obj.sfixed32 !== 0) {
+          w.uint32(93)
+          w.sfixed32(obj.sfixed32)
+        }
+
+        if (opts.writeDefaults === true || obj.sfixed64 !== 0n) {
+          w.uint32(97)
+          w.sfixed64(obj.sfixed64)
+        }
+
+        if (opts.writeDefaults === true || obj.bool !== false) {
+          w.uint32(104)
+          w.bool(obj.bool)
+        }
+
+        if (opts.writeDefaults === true || obj.string !== '') {
+          w.uint32(114)
+          w.string(obj.string)
+        }
+
+        if (opts.writeDefaults === true || (obj.bytes != null && obj.bytes.byteLength > 0)) {
+          w.uint32(122)
+          w.bytes(obj.bytes)
+        }
+
+        if (opts.writeDefaults === true || (obj.enum != null && __SingularEnumValues[obj.enum] !== 0)) {
+          w.uint32(128)
+          SingularEnum.codec().encode(obj.enum, w)
+        }
+
+        if (obj.subMessage != null) {
+          const mw = writer()
+          SingularSubMessage.codec().encode(obj.subMessage, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(138)
+            w.bytes(buf)
+          }
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {
+          double: 0,
+          float: 0,
+          int32: 0,
+          int64: 0n,
+          uint32: 0,
+          uint64: 0n,
+          sint32: 0,
+          sint64: 0n,
+          fixed32: 0,
+          fixed64: 0n,
+          sfixed32: 0,
+          sfixed64: 0n,
+          bool: false,
+          string: '',
+          bytes: new Uint8Array(0),
+          enum: SingularEnum.NO_VALUE,
+          subMessage: undefined
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1:
+              obj.double = reader.double()
+              break
+            case 2:
+              obj.float = reader.float()
+              break
+            case 3:
+              obj.int32 = reader.int32()
+              break
+            case 4:
+              obj.int64 = reader.int64()
+              break
+            case 5:
+              obj.uint32 = reader.uint32()
+              break
+            case 6:
+              obj.uint64 = reader.uint64()
+              break
+            case 7:
+              obj.sint32 = reader.sint32()
+              break
+            case 8:
+              obj.sint64 = reader.sint64()
+              break
+            case 9:
+              obj.fixed32 = reader.fixed32()
+              break
+            case 10:
+              obj.fixed64 = reader.fixed64()
+              break
+            case 11:
+              obj.sfixed32 = reader.sfixed32()
+              break
+            case 12:
+              obj.sfixed64 = reader.sfixed64()
+              break
+            case 13:
+              obj.bool = reader.bool()
+              break
+            case 14:
+              obj.string = reader.string()
+              break
+            case 15:
+              obj.bytes = reader.bytes()
+              break
+            case 16:
+              obj.enum = SingularEnum.codec().decode(reader)
+              break
+            case 17:
+              obj.subMessage = SingularSubMessage.codec().decode(reader, reader.uint32())
+              break
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
+        }
+
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: Singular): Uint8Array => {
+    return encodeMessage(obj, Singular.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Singular => {
+    return decodeMessage(buf, Singular.codec())
+  }
+}
