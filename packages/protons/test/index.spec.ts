@@ -298,6 +298,11 @@ describe('encode', () => {
     const protobufJsSchema = protobufjs.loadSync('./test/fixtures/optional.proto').lookupType('Optional')
     const protobufJsBuf = protobufJsSchema.encode(protobufJsSchema.fromObject(longifyBigInts(obj))).finish()
     expect(encoded).to.equalBytes(protobufJsBuf)
+
+    expect(Singular.decode(protobufJsBuf)).to.deep.equal(obj)
+    expect(protobufJsSchema.toObject(protobufJsSchema.decode(encoded), {
+      enums: String
+    })).to.deep.equal(obj)
   })
 
   it('writes set optional fields set to default values', () => {
@@ -331,6 +336,11 @@ describe('encode', () => {
     const protobufJsSchema = protobufjs.loadSync('./test/fixtures/optional.proto').lookupType('Optional')
     const protobufJsBuf = protobufJsSchema.encode(protobufJsSchema.fromObject(longifyBigInts(obj))).finish()
     expect(encoded).to.equalBytes(protobufJsBuf)
+
+    expect(Singular.decode(protobufJsBuf)).to.deep.equal(obj)
+    expect(protobufJsSchema.toObject(protobufJsSchema.decode(encoded), {
+      enums: String
+    })).to.deep.equal(obj)
   })
 
   it('does not write singular field values when set to defaults', () => {
@@ -360,10 +370,20 @@ describe('encode', () => {
     const encoded = Singular.encode(obj)
     expect(encoded).to.have.lengthOf(0)
 
+    const protobufJsSchema = protobufjs.loadSync('./test/fixtures/singular.proto').lookupType('Singular')
+    const protobufJsBuf = protobufJsSchema.encode(protobufJsSchema.fromObject(longifyBigInts(obj))).finish()
+
     // Cannot compare bytes - protobuf.js does not implement singular properly - https://github.com/protobufjs/protobuf.js/issues/1468#issuecomment-745177012
-    // const protobufJsSchema = protobufjs.loadSync('./test/fixtures/singular.proto').lookupType('Singular')
-    // const protobufJsBuf = protobufJsSchema.encode(protobufJsSchema.fromObject(longifyBigInts(obj))).finish()
     // expect(encoded).to.equalBytes(protobufJsBuf)
+
+    expect(Singular.decode(protobufJsBuf)).to.deep.equal(obj)
+
+    // protobufs defaults are all messed up
+    // expect(protobufJsSchema.toObject(protobufJsSchema.decode(encoded), {
+    //  enums: String,
+    //  longs: Number,
+    //  defaults: true
+    // })).to.deep.equal(obj)
   })
 
   it('writes singular field values when not set to defaults', () => {
@@ -394,9 +414,15 @@ describe('encode', () => {
     const decoded = Singular.decode(encoded)
     expect(decoded).to.deep.equal(obj)
 
+    const protobufJsSchema = protobufjs.loadSync('./test/fixtures/singular.proto').lookupType('Singular')
+    const protobufJsBuf = protobufJsSchema.encode(protobufJsSchema.fromObject(longifyBigInts(obj))).finish()
+
     // Cannot compare bytes - protobuf.js does not implement singular properly - https://github.com/protobufjs/protobuf.js/issues/1468#issuecomment-745177012
-    // const protobufJsSchema = protobufjs.loadSync('./test/fixtures/singular.proto').lookupType('Singular')
-    // const protobufJsBuf = protobufJsSchema.encode(protobufJsSchema.fromObject(longifyBigInts(obj))).finish()
     // expect(encoded).to.equalBytes(protobufJsBuf)
+
+    expect(Singular.decode(protobufJsBuf)).to.deep.equal(obj)
+    expect(protobufJsSchema.toObject(protobufJsSchema.decode(encoded), {
+      enums: String
+    })).to.deep.equal(obj)
   })
 })
