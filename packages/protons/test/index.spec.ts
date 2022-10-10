@@ -9,7 +9,7 @@ import fs from 'fs'
 import protobufjs, { Type as PBType } from 'protobufjs'
 import { Peer } from './fixtures/peer.js'
 import { CircuitRelay } from './fixtures/circuit.js'
-import long from 'long'
+import Long from 'long'
 import { Optional, OptionalEnum } from './fixtures/optional.js'
 import { Singular, SingularEnum } from './fixtures/singular.js'
 
@@ -20,7 +20,35 @@ function longifyBigInts (obj: any) {
 
   for (const key of Object.keys(output)) {
     if (typeof output[key] === 'bigint') {
-      output[key] = long.fromString(`${output[key].toString()}`)
+      output[key] = Long.fromString(`${output[key].toString()}`)
+    }
+  }
+
+  return output
+}
+
+function bigintifyLongs (obj: any) {
+  const output = {
+    ...obj
+  }
+
+  for (const key of Object.keys(output)) {
+    if (output[key]?.low != null && output[key]?.high != null) {
+      output[key] = BigInt(output[key].toString())
+    }
+  }
+
+  return output
+}
+
+function uint8ArrayifyBytes (obj: any) {
+  const output = {
+    ...obj
+  }
+
+  for (const key of Object.keys(output)) {
+    if (output[key] instanceof Uint8Array) {
+      output[key] = Uint8Array.from(output[key])
     }
   }
 
@@ -359,12 +387,8 @@ describe('encode', () => {
       sfixed64: 0n,
       bool: false,
       string: '',
-      bytes: new Uint8Array(),
-      enum: SingularEnum.NO_VALUE,
-      subMessage: {
-        foo: '',
-        bar: 0
-      }
+      bytes: new Uint8Array(0),
+      enum: SingularEnum.NO_VALUE
     }
 
     const encoded = Singular.encode(obj)
@@ -378,12 +402,13 @@ describe('encode', () => {
 
     expect(Singular.decode(protobufJsBuf)).to.deep.equal(obj)
 
-    // protobufs defaults are all messed up
-    // expect(protobufJsSchema.toObject(protobufJsSchema.decode(encoded), {
-    //  enums: String,
-    //  longs: Number,
-    //  defaults: true
-    // })).to.deep.equal(obj)
+    expect(uint8ArrayifyBytes(bigintifyLongs(protobufJsSchema.toObject(protobufJsSchema.decode(encoded), {
+      enums: String,
+      defaults: true
+    })))).to.deep.equal({
+      ...obj,
+      subMessage: null
+    })
   })
 
   it('writes singular field values when not set to defaults', () => {

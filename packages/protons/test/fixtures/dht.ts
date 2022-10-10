@@ -182,8 +182,17 @@ export namespace Message {
           }
 
           if (obj.connection != null) {
-            w.uint32(24)
-            Message.ConnectionType.codec().encode(obj.connection, w)
+            const mw = writer()
+            Message.ConnectionType.codec().encode(obj.connection, mw, {
+              lengthDelimited: false,
+              writeDefaults: false
+            })
+            const buf = mw.finish()
+
+            if (buf.byteLength > 0) {
+              w.uint32(26)
+              w.bytes(buf)
+            }
           }
 
           if (opts.lengthDelimited !== false) {
@@ -207,7 +216,7 @@ export namespace Message {
                 obj.addrs.push(reader.bytes())
                 break
               case 3:
-                obj.connection = Message.ConnectionType.codec().decode(reader)
+                obj.connection = Message.ConnectionType.codec().decode(reader, reader.uint32())
                 break
               default:
                 reader.skipType(tag & 7)

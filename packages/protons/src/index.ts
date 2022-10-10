@@ -1,3 +1,5 @@
+/* eslint-disable max-depth */
+
 import { main as pbjs } from 'protobufjs-cli/pbjs.js'
 import path from 'path'
 import { promisify } from 'util'
@@ -276,6 +278,8 @@ interface FieldDef {
   rule: string
   optional: boolean
   repeated: boolean
+  message: boolean
+  enum: boolean
 }
 
 function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef) {
@@ -349,16 +353,6 @@ export interface ${messageDef.name} {
   }
 }`
 
-    const ensureArrayProps = Object.entries(fields)
-      .map(([name, fieldDef]) => {
-        // make sure repeated fields have an array if not set
-        if (fieldDef.optional && fieldDef.rule === 'repeated') {
-          return `        obj.${name} = obj.${name} ?? []`
-        }
-
-        return ''
-      }).filter(Boolean).join('\n')
-
     interfaceCodecDef = `
   let _codec: Codec<${messageDef.name}>
 
@@ -375,9 +369,7 @@ ${Object.entries(fields)
         let typeName: string = ''
 
         if (codec == null) {
-          const def = findDef(fieldDef.type, messageDef, moduleDef)
-
-          if (isEnumDef(def)) {
+          if (fieldDef.enum) {
             moduleDef.imports.add('enumeration')
             type = 'enum'
           } else {
@@ -401,7 +393,7 @@ ${Object.entries(fields)
           }
         }
 
-        function createWriteField (valueVar: string) {
+        function createWriteField (valueVar: string): string {
           const id = (fieldDef.id << 3) | codecTypes[type]
 
           let writeField = `w.uint32(${id})
@@ -479,9 +471,7 @@ ${Object.entries(fields)
                 let type: string = fieldDef.type
 
                 if (codec == null) {
-                  const def = findDef(fieldDef.type, messageDef, moduleDef)
-
-                  if (isEnumDef(def)) {
+                  if (fieldDef.enum) {
                     moduleDef.imports.add('enumeration')
                     type = 'enum'
                   } else {
@@ -494,10 +484,7 @@ ${Object.entries(fields)
                 }
 
                 return `case ${fieldDef.id}:${fieldDef.rule === 'repeated'
-? `${fieldDef.optional
 ? `
-              obj.${name} = obj.${name} ?? []`
-: ''}
               obj.${name}.push(${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()})`
 : `
               obj.${name} = ${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`}
@@ -507,7 +494,7 @@ ${Object.entries(fields)
               reader.skipType(tag & 7)
               break
           }
-        }${ensureArrayProps !== '' ? `\n\n${ensureArrayProps}` : ''}
+        }
 
         return obj
       })
@@ -571,8 +558,9 @@ function defineModule (def: ClassDef): ModuleDef {
 
       if (classDef.fields != null) {
         for (const name of Object.keys(classDef.fields)) {
-          classDef.fields[name].repeated = classDef.fields[name].rule === 'repeated'
-          classDef.fields[name].optional = !classDef.fields[name].repeated && classDef.fields[name].options?.proto3_optional === true
+          const fieldDef = classDef.fields[name]
+          fieldDef.repeated = fieldDef.rule === 'repeated'
+          fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
         }
       }
 
@@ -583,6 +571,28 @@ function defineModule (def: ClassDef): ModuleDef {
   }
 
   defineMessage(defs)
+
+  // set enum/message fields now all messages have been defined
+  for (const className of Object.keys(defs)) {
+    const classDef = defs[className]
+
+    if (classDef.fields != null) {
+      for (const name of Object.keys(classDef.fields)) {
+        const fieldDef = classDef.fields[name]
+        if (types[fieldDef.type] == null) {
+          const def = findDef(fieldDef.type, classDef, moduleDef)
+          fieldDef.enum = isEnumDef(def)
+          fieldDef.message = !fieldDef.enum
+
+          if (fieldDef.message && !fieldDef.repeated) {
+            // the default type for a message is unset so they are always optional
+            // https://developers.google.com/protocol-buffers/docs/proto3#default
+            fieldDef.optional = true
+          }
+        }
+      }
+    }
+  }
 
   for (const className of Object.keys(defs)) {
     const classDef = defs[className]

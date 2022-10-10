@@ -109,7 +109,7 @@ export interface Singular {
   string: string
   bytes: Uint8Array
   enum: SingularEnum
-  subMessage: SingularSubMessage
+  subMessage?: SingularSubMessage
 }
 
 export namespace Singular {
@@ -236,8 +236,7 @@ export namespace Singular {
           bool: false,
           string: '',
           bytes: new Uint8Array(0),
-          enum: SingularEnum.NO_VALUE,
-          subMessage: undefined
+          enum: SingularEnum.NO_VALUE
         }
 
         const end = length == null ? reader.len : reader.pos + length
