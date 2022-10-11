@@ -153,7 +153,7 @@
     "release": "aegir release"
   },
   "dependencies": {
-    "meow": "^10.1.2",
+    "meow": "^11.0.0",
     "protobufjs-cli": "^1.0.0"
   },
   "devDependencies": {
