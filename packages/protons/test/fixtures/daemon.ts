@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { enumeration, encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -67,115 +67,59 @@ export namespace Request {
         }
 
         if (obj.connect != null) {
-          const mw = writer()
-          ConnectRequest.codec().encode(obj.connect, mw, {
-            lengthDelimited: false,
+          w.uint32(18)
+          ConnectRequest.codec().encode(obj.connect, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(18)
-            w.bytes(buf)
-          }
         }
 
         if (obj.streamOpen != null) {
-          const mw = writer()
-          StreamOpenRequest.codec().encode(obj.streamOpen, mw, {
-            lengthDelimited: false,
+          w.uint32(26)
+          StreamOpenRequest.codec().encode(obj.streamOpen, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(26)
-            w.bytes(buf)
-          }
         }
 
         if (obj.streamHandler != null) {
-          const mw = writer()
-          StreamHandlerRequest.codec().encode(obj.streamHandler, mw, {
-            lengthDelimited: false,
+          w.uint32(34)
+          StreamHandlerRequest.codec().encode(obj.streamHandler, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(34)
-            w.bytes(buf)
-          }
         }
 
         if (obj.dht != null) {
-          const mw = writer()
-          DHTRequest.codec().encode(obj.dht, mw, {
-            lengthDelimited: false,
+          w.uint32(42)
+          DHTRequest.codec().encode(obj.dht, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(42)
-            w.bytes(buf)
-          }
         }
 
         if (obj.connManager != null) {
-          const mw = writer()
-          ConnManagerRequest.codec().encode(obj.connManager, mw, {
-            lengthDelimited: false,
+          w.uint32(50)
+          ConnManagerRequest.codec().encode(obj.connManager, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(50)
-            w.bytes(buf)
-          }
         }
 
         if (obj.disconnect != null) {
-          const mw = writer()
-          DisconnectRequest.codec().encode(obj.disconnect, mw, {
-            lengthDelimited: false,
+          w.uint32(58)
+          DisconnectRequest.codec().encode(obj.disconnect, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(58)
-            w.bytes(buf)
-          }
         }
 
         if (obj.pubsub != null) {
-          const mw = writer()
-          PSRequest.codec().encode(obj.pubsub, mw, {
-            lengthDelimited: false,
+          w.uint32(66)
+          PSRequest.codec().encode(obj.pubsub, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(66)
-            w.bytes(buf)
-          }
         }
 
         if (obj.peerStore != null) {
-          const mw = writer()
-          PeerstoreRequest.codec().encode(obj.peerStore, mw, {
-            lengthDelimited: false,
+          w.uint32(74)
+          PeerstoreRequest.codec().encode(obj.peerStore, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(74)
-            w.bytes(buf)
-          }
         }
 
         if (opts.lengthDelimited !== false) {
@@ -284,101 +228,54 @@ export namespace Response {
         }
 
         if (obj.error != null) {
-          const mw = writer()
-          ErrorResponse.codec().encode(obj.error, mw, {
-            lengthDelimited: false,
+          w.uint32(18)
+          ErrorResponse.codec().encode(obj.error, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(18)
-            w.bytes(buf)
-          }
         }
 
         if (obj.streamInfo != null) {
-          const mw = writer()
-          StreamInfo.codec().encode(obj.streamInfo, mw, {
-            lengthDelimited: false,
+          w.uint32(26)
+          StreamInfo.codec().encode(obj.streamInfo, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(26)
-            w.bytes(buf)
-          }
         }
 
         if (obj.identify != null) {
-          const mw = writer()
-          IdentifyResponse.codec().encode(obj.identify, mw, {
-            lengthDelimited: false,
+          w.uint32(34)
+          IdentifyResponse.codec().encode(obj.identify, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(34)
-            w.bytes(buf)
-          }
         }
 
         if (obj.dht != null) {
-          const mw = writer()
-          DHTResponse.codec().encode(obj.dht, mw, {
-            lengthDelimited: false,
+          w.uint32(42)
+          DHTResponse.codec().encode(obj.dht, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(42)
-            w.bytes(buf)
-          }
         }
 
         if (obj.peers != null) {
           for (const value of obj.peers) {
-            const mw = writer()
-            PeerInfo.codec().encode(value, mw, {
-              lengthDelimited: false,
+            w.uint32(50)
+            PeerInfo.codec().encode(value, w, {
               writeDefaults: true
             })
-            const buf = mw.finish()
-
-            w.uint32(50)
-            w.bytes(buf)
           }
         }
 
         if (obj.pubsub != null) {
-          const mw = writer()
-          PSResponse.codec().encode(obj.pubsub, mw, {
-            lengthDelimited: false,
+          w.uint32(58)
+          PSResponse.codec().encode(obj.pubsub, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(58)
-            w.bytes(buf)
-          }
         }
 
         if (obj.peerStore != null) {
-          const mw = writer()
-          PeerstoreResponse.codec().encode(obj.peerStore, mw, {
-            lengthDelimited: false,
+          w.uint32(66)
+          PeerstoreResponse.codec().encode(obj.peerStore, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(66)
-            w.bytes(buf)
-          }
         }
 
         if (opts.lengthDelimited !== false) {
@@ -1058,17 +955,10 @@ export namespace DHTResponse {
         }
 
         if (obj.peer != null) {
-          const mw = writer()
-          PeerInfo.codec().encode(obj.peer, mw, {
-            lengthDelimited: false,
+          w.uint32(18)
+          PeerInfo.codec().encode(obj.peer, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(18)
-            w.bytes(buf)
-          }
         }
 
         if (obj.value != null) {
@@ -1738,17 +1628,10 @@ export namespace PeerstoreResponse {
         }
 
         if (obj.peer != null) {
-          const mw = writer()
-          PeerInfo.codec().encode(obj.peer, mw, {
-            lengthDelimited: false,
+          w.uint32(10)
+          PeerInfo.codec().encode(obj.peer, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(10)
-            w.bytes(buf)
-          }
         }
 
         if (obj.protos != null) {

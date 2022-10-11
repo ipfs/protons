@@ -401,28 +401,10 @@ ${Object.entries(fields)
 
           if (type === 'message') {
             // message fields are only written if they have values
-            moduleDef.imports.add('writer')
-
-            writeField = `const mw = writer()
-          ${typeName}.codec().encode(${valueVar}, mw, {
-            lengthDelimited: false,
+            writeField = `w.uint32(${id})
+          ${typeName}.codec().encode(${valueVar}, w, {
             writeDefaults: ${Boolean(fieldDef.repeated).toString()}
-          })
-          const buf = mw.finish()`
-
-            if (fieldDef.repeated) {
-              writeField += `
-
-          w.uint32(${id})
-          w.bytes(buf)`
-            } else {
-              writeField += `
-
-          if (buf.byteLength > 0) {
-            w.uint32(${id})
-            w.bytes(buf)
-          }`
-            }
+          })`
           }
 
           return writeField

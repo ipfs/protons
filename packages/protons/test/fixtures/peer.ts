@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -27,15 +27,10 @@ export namespace Peer {
 
         if (obj.addresses != null) {
           for (const value of obj.addresses) {
-            const mw = writer()
-            Address.codec().encode(value, mw, {
-              lengthDelimited: false,
+            w.uint32(10)
+            Address.codec().encode(value, w, {
               writeDefaults: true
             })
-            const buf = mw.finish()
-
-            w.uint32(10)
-            w.bytes(buf)
           }
         }
 
@@ -48,15 +43,10 @@ export namespace Peer {
 
         if (obj.metadata != null) {
           for (const value of obj.metadata) {
-            const mw = writer()
-            Metadata.codec().encode(value, mw, {
-              lengthDelimited: false,
+            w.uint32(26)
+            Metadata.codec().encode(value, w, {
               writeDefaults: true
             })
-            const buf = mw.finish()
-
-            w.uint32(26)
-            w.bytes(buf)
           }
         }
 

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { enumeration, encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -172,17 +172,10 @@ export namespace AllTheTypes {
         }
 
         if (obj.field13 != null) {
-          const mw = writer()
-          SubMessage.codec().encode(obj.field13, mw, {
-            lengthDelimited: false,
+          w.uint32(106)
+          SubMessage.codec().encode(obj.field13, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(106)
-            w.bytes(buf)
-          }
         }
 
         if (obj.field14 != null) {

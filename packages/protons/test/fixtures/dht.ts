@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { encodeMessage, decodeMessage, message, enumeration, writer } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message, enumeration } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -182,17 +182,10 @@ export namespace Message {
           }
 
           if (obj.connection != null) {
-            const mw = writer()
-            Message.ConnectionType.codec().encode(obj.connection, mw, {
-              lengthDelimited: false,
+            w.uint32(26)
+            Message.ConnectionType.codec().encode(obj.connection, w, {
               writeDefaults: false
             })
-            const buf = mw.finish()
-
-            if (buf.byteLength > 0) {
-              w.uint32(26)
-              w.bytes(buf)
-            }
           }
 
           if (opts.lengthDelimited !== false) {
@@ -271,29 +264,19 @@ export namespace Message {
 
         if (obj.closerPeers != null) {
           for (const value of obj.closerPeers) {
-            const mw = writer()
-            Message.Peer.codec().encode(value, mw, {
-              lengthDelimited: false,
+            w.uint32(66)
+            Message.Peer.codec().encode(value, w, {
               writeDefaults: true
             })
-            const buf = mw.finish()
-
-            w.uint32(66)
-            w.bytes(buf)
           }
         }
 
         if (obj.providerPeers != null) {
           for (const value of obj.providerPeers) {
-            const mw = writer()
-            Message.Peer.codec().encode(value, mw, {
-              lengthDelimited: false,
+            w.uint32(74)
+            Message.Peer.codec().encode(value, w, {
               writeDefaults: true
             })
-            const buf = mw.finish()
-
-            w.uint32(74)
-            w.bytes(buf)
           }
         }
 

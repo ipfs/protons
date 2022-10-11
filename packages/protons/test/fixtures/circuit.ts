@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { enumeration, encodeMessage, decodeMessage, message, writer } from 'protons-runtime'
+import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -164,31 +164,17 @@ export namespace CircuitRelay {
         }
 
         if (obj.srcPeer != null) {
-          const mw = writer()
-          CircuitRelay.Peer.codec().encode(obj.srcPeer, mw, {
-            lengthDelimited: false,
+          w.uint32(18)
+          CircuitRelay.Peer.codec().encode(obj.srcPeer, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(18)
-            w.bytes(buf)
-          }
         }
 
         if (obj.dstPeer != null) {
-          const mw = writer()
-          CircuitRelay.Peer.codec().encode(obj.dstPeer, mw, {
-            lengthDelimited: false,
+          w.uint32(26)
+          CircuitRelay.Peer.codec().encode(obj.dstPeer, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(26)
-            w.bytes(buf)
-          }
         }
 
         if (obj.code != null) {
