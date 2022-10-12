@@ -10,7 +10,7 @@ import WriterBufferClass from 'protobufjs/src/writer_buffer.js'
 import util from 'protobufjs/src/util/minimal.js'
 import type { Reader, Writer } from './index.js'
 
-function configure() {
+function configure () {
   util._configure()
   ReaderClass._configure(ReaderBufferClass)
   WriterClass._configure(WriterBufferClass)
@@ -27,7 +27,6 @@ const methods = [
 function patchReader (obj: any): any {
   for (const method of methods) {
     if (obj[method] == null) {
-      console.info('no', method)
       continue
     }
 
@@ -47,7 +46,6 @@ export function reader (buf: Uint8Array): Reader {
 function patchWriter (obj: any): any {
   for (const method of methods) {
     if (obj[method] == null) {
-      console.info('no', method)
       continue
     }
 
