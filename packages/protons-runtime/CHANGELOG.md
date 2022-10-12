@@ -1,3 +1,14 @@
+## [protons-runtime-v4.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v3.1.0...protons-runtime-v4.0.0) (2022-10-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* ts definitions will need to be generated from `.proto` files - singular message fields have become optional as message fields are always optional in proto3
+
+### Bug Fixes
+
+* adhere more closely to the language guide for proto3 default values ([#66](https://github.com/ipfs/protons/issues/66)) ([406d775](https://github.com/ipfs/protons/commit/406d7757d490eb0dbac93343d6622dd689ff0707)), closes [#43](https://github.com/ipfs/protons/issues/43)
+
 ## [protons-runtime-v3.1.0](https://github.com/ipfs/protons/compare/protons-runtime-v3.0.1...protons-runtime-v3.1.0) (2022-08-11)
 
 
