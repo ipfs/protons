@@ -56,6 +56,7 @@
     },
     "ignorePatterns": [
       "src/pbjs/*",
+      "src/protobuf-ts/*",
       "src/protobufjs/*"
     ]
   },
@@ -65,9 +66,12 @@
     "dep-check": "aegir dep-check",
     "build": "aegir build --no-bundle && cp -R src/protobufjs dist/src/protobufjs",
     "prestart": "npm run build",
-    "start": "node dist/src/index.js"
+    "start": "node dist/src/index.js",
+    "start:browser": "npx playwright-test dist/src/index.js --runner benchmark"
   },
   "dependencies": {
+    "@protobuf-ts/plugin": "^2.8.1",
+    "@protobuf-ts/runtime": "^2.8.1",
     "@types/benchmark": "^2.1.1",
     "aegir": "^37.0.5",
     "benchmark": "^2.1.4",

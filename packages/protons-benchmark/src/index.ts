@@ -10,6 +10,7 @@ import { expect } from 'aegir/chai'
 import { Test as ProtonsTest } from './protons/bench.js'
 import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
+import { Test as ProtobufTsTest } from './protobuf-ts/bench.js'
 
 const message = {
   meh: {
@@ -46,9 +47,15 @@ new Benchmark.Suite()
 
     expectDecodedCorrectly(result)
   })
-  .add('protobufjs', () => {
+  .add('protobuf.js', () => {
     const buf = ProtobufjsTest.encode(message).finish()
     const result = ProtobufjsTest.decode(buf)
+
+    expectDecodedCorrectly(result)
+  })
+  .add('@protobuf-ts', () => {
+    const buf = ProtobufTsTest.toBinary(message)
+    const result = ProtobufTsTest.fromBinary(buf)
 
     expectDecodedCorrectly(result)
   })

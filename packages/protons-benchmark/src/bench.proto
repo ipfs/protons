@@ -9,6 +9,7 @@ message Bar {
 }
 
 enum FOO {
+  NONE=0;
   LOL=1;
   ABE=3;
 }
@@ -19,7 +20,7 @@ message Yo {
 
 message Lol {
   optional string lol = 1;
-  required Bar b = 2;
+  Bar b = 2;
 }
 
 message Test {
