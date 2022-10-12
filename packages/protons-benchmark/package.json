@@ -56,6 +56,7 @@
     },
     "ignorePatterns": [
       "src/pbjs/*",
+      "src/protobuf-ts/*",
       "src/protobufjs/*"
     ]
   },
