@@ -1,3 +1,10 @@
+## [protons-runtime-v4.0.1](https://github.com/ipfs/protons/compare/protons-runtime-v4.0.0...protons-runtime-v4.0.1) (2022-10-12)
+
+
+### Bug Fixes
+
+* only import reader/writer to decrease bundle size ([#69](https://github.com/ipfs/protons/issues/69)) ([8eea129](https://github.com/ipfs/protons/commit/8eea129d1b4fe5914830b29b79c4af6348eddf73))
+
 ## [protons-runtime-v4.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v3.1.0...protons-runtime-v4.0.0) (2022-10-12)
 
 
