@@ -71,6 +71,7 @@
   },
   "dependencies": {
     "@protobuf-ts/plugin": "^2.8.1",
+    "@protobuf-ts/runtime": "^2.8.1",
     "@types/benchmark": "^2.1.1",
     "aegir": "^37.0.5",
     "benchmark": "^2.1.4",
