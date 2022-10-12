@@ -1,3 +1,19 @@
+## [protons-v6.0.0](https://github.com/ipfs/protons/compare/protons-v5.1.0...protons-v6.0.0) (2022-10-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* ts definitions will need to be generated from `.proto` files - singular message fields have become optional as message fields are always optional in proto3
+
+### Bug Fixes
+
+* adhere more closely to the language guide for proto3 default values ([#66](https://github.com/ipfs/protons/issues/66)) ([406d775](https://github.com/ipfs/protons/commit/406d7757d490eb0dbac93343d6622dd689ff0707)), closes [#43](https://github.com/ipfs/protons/issues/43)
+
+
+### Dependencies
+
+* update sibling dependencies ([b1316fa](https://github.com/ipfs/protons/commit/b1316fa23b6fa623bc438c6cf51c53f94759e199))
+
 ## [protons-v5.1.0](https://github.com/ipfs/protons/compare/protons-v5.0.0...protons-v5.1.0) (2022-08-11)
 
 
