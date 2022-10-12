@@ -35,21 +35,40 @@ Run the benchmark suite:
 ```console
 $ npm start
 
-Running "Encode/Decode" suite...
-Progress: 100%
+> protons-benchmark@0.0.0 prestart
+> npm run build
 
-  pbjs:
-    12 166 ops/s, ±3.92%   | 5.12% slower
 
-  protons:
-    9 755 ops/s, ±2.19%    | slowest, 23.93% slower
+> protons-benchmark@0.0.0 build
+> aegir build --no-bundle && cp -R src/protobufjs dist/src/protobufjs
 
-  protobufjs:
-    12 823 ops/s, ±2.02%   | fastest
+[15:02:28] tsc [started]
+[15:02:32] tsc [completed]
 
-Finished 3 cases!
-  Fastest: protobufjs
-  Slowest: protons
+> protons-benchmark@0.0.0 start
+> node dist/src/index.js
+
+pbjs x 11,798 ops/sec ±4.58% (88 runs sampled)
+protons x 11,693 ops/sec ±2.69% (85 runs sampled)
+protobuf.js x 12,419 ops/sec ±1.66% (88 runs sampled)
+@protobuf-ts x 10,536 ops/sec ±3.14% (85 runs sampled)
+Fastest is protobuf.js
+```
+
+Or in a browser:
+
+```console
+$ npm run start:browser
+
+> protons-benchmark@0.0.0 start:browser
+> npx playwright-test dist/src/index.js --runner benchmark
+
+✔ chromium set up
+pbjs x 19,027 ops/sec ±0.86% (67 runs sampled)
+protons x 18,901 ops/sec ±0.65% (67 runs sampled)
+protobuf.js x 18,937 ops/sec ±0.55% (65 runs sampled)
+@protobuf-ts x 16,669 ops/sec ±0.49% (68 runs sampled)
+Fastest is pbjs,protobuf.js
 ```
 
 ## License

@@ -1,7 +1,9 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { encodeMessage, decodeMessage, message, enumeration } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message, writer, enumeration } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -14,18 +16,18 @@ export namespace Foo {
 
   export const codec = (): Codec<Foo> => {
     if (_codec == null) {
-      _codec = message<Foo>((obj, writer, opts = {}) => {
+      _codec = message<Foo>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.baz != null) {
-          writer.uint32(8)
-          writer.uint32(obj.baz)
+          w.uint32(8)
+          w.uint32(obj.baz)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {}
@@ -70,18 +72,27 @@ export namespace Bar {
 
   export const codec = (): Codec<Bar> => {
     if (_codec == null) {
-      _codec = message<Bar>((obj, writer, opts = {}) => {
+      _codec = message<Bar>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.tmp != null) {
-          writer.uint32(10)
-          Foo.codec().encode(obj.tmp, writer)
+          const mw = writer()
+          Foo.codec().encode(obj.tmp, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(10)
+            w.bytes(buf)
+          }
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {}
@@ -118,11 +129,13 @@ export namespace Bar {
 }
 
 export enum FOO {
+  NONE = 'NONE',
   LOL = 'LOL',
   ABE = 'ABE'
 }
 
 enum __FOOValues {
+  NONE = 0,
   LOL = 1,
   ABE = 3
 }
@@ -141,22 +154,20 @@ export namespace Yo {
 
   export const codec = (): Codec<Yo> => {
     if (_codec == null) {
-      _codec = message<Yo>((obj, writer, opts = {}) => {
+      _codec = message<Yo>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.lol != null) {
           for (const value of obj.lol) {
-            writer.uint32(8)
-            FOO.codec().encode(value, writer)
+            w.uint32(8)
+            FOO.codec().encode(value, w)
           }
-        } else {
-          throw new Error('Protocol error: required field "lol" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {
@@ -196,7 +207,7 @@ export namespace Yo {
 
 export interface Lol {
   lol?: string
-  b: Bar
+  b?: Bar
 }
 
 export namespace Lol {
@@ -204,30 +215,35 @@ export namespace Lol {
 
   export const codec = (): Codec<Lol> => {
     if (_codec == null) {
-      _codec = message<Lol>((obj, writer, opts = {}) => {
+      _codec = message<Lol>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.lol != null) {
-          writer.uint32(10)
-          writer.string(obj.lol)
+          w.uint32(10)
+          w.string(obj.lol)
         }
 
         if (obj.b != null) {
-          writer.uint32(18)
-          Bar.codec().encode(obj.b, writer)
-        } else {
-          throw new Error('Protocol error: required field "b" was not found in object')
+          const mw = writer()
+          Bar.codec().encode(obj.b, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(18)
+            w.bytes(buf)
+          }
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {
-          b: undefined
-        }
+        const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -245,10 +261,6 @@ export namespace Lol {
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        if (obj.b == null) {
-          throw new Error('Protocol error: value for required field "b" was not found in protobuf')
         }
 
         return obj
@@ -279,33 +291,42 @@ export namespace Test {
 
   export const codec = (): Codec<Test> => {
     if (_codec == null) {
-      _codec = message<Test>((obj, writer, opts = {}) => {
+      _codec = message<Test>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.meh != null) {
-          writer.uint32(50)
-          Lol.codec().encode(obj.meh, writer)
+          const mw = writer()
+          Lol.codec().encode(obj.meh, mw, {
+            lengthDelimited: false,
+            writeDefaults: false
+          })
+          const buf = mw.finish()
+
+          if (buf.byteLength > 0) {
+            w.uint32(50)
+            w.bytes(buf)
+          }
         }
 
         if (obj.hello != null) {
-          writer.uint32(24)
-          writer.uint32(obj.hello)
+          w.uint32(24)
+          w.uint32(obj.hello)
         }
 
         if (obj.foo != null) {
-          writer.uint32(10)
-          writer.string(obj.foo)
+          w.uint32(10)
+          w.string(obj.foo)
         }
 
         if (obj.payload != null) {
-          writer.uint32(58)
-          writer.bytes(obj.payload)
+          w.uint32(58)
+          w.bytes(obj.payload)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {}
