@@ -12,6 +12,7 @@ export enum CODEC_TYPES {
 
 export interface EncodeOptions {
   lengthDelimited?: boolean
+  writeDefaults?: boolean
 }
 
 export interface EncodeFunction<T> {
