@@ -1,3 +1,11 @@
+## [protons-v6.0.1](https://github.com/ipfs/protons/compare/protons-v6.0.0...protons-v6.0.1) (2022-10-14)
+
+
+### Dependencies
+
+* bump meow from 10.1.5 to 11.0.0 ([#67](https://github.com/ipfs/protons/issues/67)) ([d489fd3](https://github.com/ipfs/protons/commit/d489fd35b8864fcc675da29f24b6a01f0c56d39d))
+* bump uint8arrays from 3.1.1 to 4.0.2 ([#71](https://github.com/ipfs/protons/issues/71)) ([b537e92](https://github.com/ipfs/protons/commit/b537e920a6704f005ea2b7bcef49741a9c3deb96))
+
 ## [protons-v6.0.0](https://github.com/ipfs/protons/compare/protons-v5.1.0...protons-v6.0.0) (2022-10-12)
 
 
