@@ -156,6 +156,10 @@ function findDef (typeName: string, classDef: MessageDef, moduleDef: ModuleDef):
 function createDefaultObject (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef): string {
   const output = Object.entries(fields)
     .map(([name, fieldDef]) => {
+      if (fieldDef.map) {
+        return `${name}: new Map<${types[fieldDef.keyType ?? 'string']}, ${types[fieldDef.valueType]}>()`
+      }
+
       if (fieldDef.repeated) {
         return `${name}: []`
       }
@@ -280,10 +284,17 @@ interface FieldDef {
   repeated: boolean
   message: boolean
   enum: boolean
+  map: boolean
+  valueType: string
+  keyType: string
 }
 
 function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef) {
   return Object.entries(fields).map(([fieldName, fieldDef]) => {
+    if (fieldDef.map) {
+      return `${fieldName}: Map<${findTypeName(fieldDef.keyType ?? 'string', messageDef, moduleDef)}, ${findTypeName(fieldDef.valueType, messageDef, moduleDef)}>`
+    }
+
     return `${fieldName}${fieldDef.optional ? '?' : ''}: ${findTypeName(fieldDef.type, messageDef, moduleDef)}${fieldDef.repeated ? '[]' : ''}`
   })
 }
@@ -365,7 +376,7 @@ export interface ${messageDef.name} {
 ${Object.entries(fields)
       .map(([name, fieldDef]) => {
         let codec: string = encoders[fieldDef.type]
-        let type: string = fieldDef.type
+        let type: string = fieldDef.map ? 'message' : fieldDef.type
         let typeName: string = ''
 
         if (codec == null) {
@@ -383,8 +394,10 @@ ${Object.entries(fields)
 
         let valueTest = `obj.${name} != null`
 
-        // proto3 singular fields should only be written out if they are not the default value
-        if (!fieldDef.optional && !fieldDef.repeated) {
+        if (fieldDef.map) {
+          valueTest = `obj.${name} != null && obj.${name}.size !== 0`
+        } else if (!fieldDef.optional && !fieldDef.repeated) {
+          // proto3 singular fields should only be written out if they are not the default value
           if (defaultValueTestGenerators[type] != null) {
             valueTest = `opts.writeDefaults === true || ${defaultValueTestGenerators[type](`obj.${name}`)}`
           } else if (type === 'enum') {
@@ -413,10 +426,11 @@ ${Object.entries(fields)
         let writeField = createWriteField(`obj.${name}`)
 
         if (fieldDef.repeated) {
-          writeField = `
-          for (const value of obj.${name}) {
+          if (fieldDef.map) {
+            writeField = `
+          for (const [key, value] of obj.${name}.entries()) {
           ${
-              createWriteField('value')
+              createWriteField('{ key, value }')
                 .split('\n')
                 .map(s => {
                   const trimmed = s.trim()
@@ -426,7 +440,23 @@ ${Object.entries(fields)
                 .join('\n')
             }
           }
+            `.trim()
+          } else {
+            writeField = `
+          for (const value of obj.${name}) {
+          ${
+            createWriteField('value')
+              .split('\n')
+              .map(s => {
+                const trimmed = s.trim()
+
+                return trimmed === '' ? trimmed : `  ${s}`
+              })
+              .join('\n')
+          }
+          }
           `.trim()
+          }
         }
 
         return `
@@ -448,30 +478,46 @@ ${Object.entries(fields)
 
           switch (tag >>> 3) {
             ${Object.entries(fields)
-              .map(([name, fieldDef]) => {
-                let codec: string = encoders[fieldDef.type]
-                let type: string = fieldDef.type
+              .map(([fieldName, fieldDef]) => {
+                function createReadField (fieldName: string, fieldDef: FieldDef) {
+                  let codec: string = encoders[fieldDef.type]
+                  let type: string = fieldDef.type
 
-                if (codec == null) {
-                  if (fieldDef.enum) {
-                    moduleDef.imports.add('enumeration')
-                    type = 'enum'
-                  } else {
-                    moduleDef.imports.add('message')
-                    type = 'message'
+                  if (codec == null) {
+                    if (fieldDef.enum) {
+                      moduleDef.imports.add('enumeration')
+                      type = 'enum'
+                    } else {
+                      moduleDef.imports.add('message')
+                      type = 'message'
+                    }
+
+                    const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+                    codec = `${typeName}.codec()`
                   }
 
-                  const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
-                  codec = `${typeName}.codec()`
+                  const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`
+
+                  if (fieldDef.map) {
+                    return `case ${fieldDef.id}: {
+              const entry = ${parseValue}
+              obj.${fieldName}.set(entry.key, entry.value)
+              break
+            }`
+                  } else if (fieldDef.repeated) {
+                    return `case ${fieldDef.id}:
+              obj.${fieldName}.push(${parseValue})
+              break`
+                  }
+
+                  return `case ${fieldDef.id}:
+              obj.${fieldName} = ${parseValue}
+              break`
                 }
 
-                return `case ${fieldDef.id}:${fieldDef.rule === 'repeated'
-? `
-              obj.${name}.push(${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()})`
-: `
-              obj.${name} = ${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`}
-              break`
-              }).join('\n            ')}
+                return createReadField(fieldName, fieldDef)
+              })
+              .join('\n            ')}
             default:
               reader.skipType(tag & 7)
               break
@@ -543,6 +589,7 @@ function defineModule (def: ClassDef): ModuleDef {
           const fieldDef = classDef.fields[name]
           fieldDef.repeated = fieldDef.rule === 'repeated'
           fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
+          fieldDef.map = fieldDef.keyType != null
         }
       }
 
@@ -598,6 +645,36 @@ export async function generate (source: string, flags: Flags) {
   }
 
   const def = JSON.parse(json)
+
+  for (const [className, classDef] of Object.entries<any>(def.nested)) {
+    for (const [fieldName, fieldDef] of Object.entries<any>(classDef.fields ?? {})) {
+      if (fieldDef.keyType == null) {
+        continue
+      }
+
+      // https://developers.google.com/protocol-buffers/docs/proto3#backwards_compatibility
+      const mapEntryType = `${className}$${fieldName}Entry`
+
+      classDef.nested = classDef.nested ?? {}
+      classDef.nested[mapEntryType] = {
+        fields: {
+          key: {
+            type: fieldDef.keyType,
+            id: 1
+          },
+          value: {
+            type: fieldDef.type,
+            id: 2
+          }
+        }
+      }
+
+      fieldDef.valueType = fieldDef.type
+      fieldDef.type = mapEntryType
+      fieldDef.rule = 'repeated'
+    }
+  }
+
   const moduleDef = defineModule(def)
 
   let lines = [

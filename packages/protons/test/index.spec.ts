@@ -67,13 +67,18 @@ function normalizePbjs (obj: any, target: any) {
     if (Array.isArray(target[key]) && output[key] == null) {
       output[key] = []
     }
+
+    // pbjs does not set maps by default
+    if (target[key] instanceof Map) {
+      output[key] = new Map()
+    }
   }
 
   return output
 }
 
 /**
- * Paper over differences between protons and pbjs output
+ * Paper over differences between protons and protobuf.js output
  */
 function normalizeProtonbufjs (obj: any, target: any) {
   let output = bigintifyLongs(obj)
@@ -83,6 +88,13 @@ function normalizeProtonbufjs (obj: any, target: any) {
     // protobujs sets unset message fields to `null`, protons does not set the field at all
     if (output[key] === null && target[key] == null) {
       delete output[key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
+    }
+  }
+
+  for (const key of Object.keys(target)) {
+    // protobujs uses plain objects instead of maps
+    if (target[key] instanceof Map) {
+      output[key] = new Map(Object.entries(output[key]))
     }
   }
 
