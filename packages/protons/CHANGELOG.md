@@ -1,3 +1,10 @@
+## [protons-v6.0.2](https://github.com/ipfs/protons/compare/protons-v6.0.1...protons-v6.0.2) (2023-01-12)
+
+
+### Dependencies
+
+* remove lerna, update aegir ([#76](https://github.com/ipfs/protons/issues/76)) ([83a24f2](https://github.com/ipfs/protons/commit/83a24f2a924704bd4a356b6f8a3195245d8b1062))
+
 ## [protons-v6.0.1](https://github.com/ipfs/protons/compare/protons-v6.0.0...protons-v6.0.1) (2022-10-14)
 
 
