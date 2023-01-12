@@ -479,7 +479,7 @@ ${Object.entries(fields)
           switch (tag >>> 3) {
             ${Object.entries(fields)
               .map(([fieldName, fieldDef]) => {
-                function createReadField (fieldName: string, fieldDef: FieldDef) {
+                function createReadField (fieldName: string, fieldDef: FieldDef): string {
                   let codec: string = encoders[fieldDef.type]
                   let type: string = fieldDef.type
 
