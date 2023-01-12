@@ -1,3 +1,10 @@
+## [protons-v6.1.0](https://github.com/ipfs/protons/compare/protons-v6.0.2...protons-v6.1.0) (2023-01-12)
+
+
+### Features
+
+* add support for maps ([#75](https://github.com/ipfs/protons/issues/75)) ([e8dfc0a](https://github.com/ipfs/protons/commit/e8dfc0a6a7700225e2cf9c6d2e82d17979da1549))
+
 ## [protons-v6.0.2](https://github.com/ipfs/protons/compare/protons-v6.0.1...protons-v6.0.2) (2023-01-12)
 
 
