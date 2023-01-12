@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message SubMessage {
+  string foo = 1;
+}
+
+message MapTypes {
+  map<string, string> stringMap = 1;
+  map<int32, int32> intMap = 2;
+  map<bool, bool> boolMap = 3;
+  map<string, SubMessage> messageMap = 4;
+}
