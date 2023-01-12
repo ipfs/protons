@@ -3,7 +3,7 @@
 import meow from 'meow'
 import { generate } from '../src/index.js'
 
-async function main () {
+async function main (): Promise<void> {
   const cli = meow(`
   Usage
     $ protons source...

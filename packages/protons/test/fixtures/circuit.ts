@@ -54,7 +54,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Status {
-    export const codec = () => {
+    export const codec = (): Codec<Status> => {
       return enumeration<Status>(__StatusValues)
     }
   }
@@ -74,7 +74,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }

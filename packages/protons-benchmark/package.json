@@ -35,7 +35,7 @@
   },
   "files": [
     "src",
-    "dist/src",
+    "dist",
     "!dist/test",
     "!**/*.tsbuildinfo"
   ],
@@ -63,7 +63,7 @@
   "scripts": {
     "clean": "aegir clean",
     "lint": "aegir lint",
-    "dep-check": "aegir dep-check",
+    "dep-check": "aegir dep-check --ignore @protobuf-ts/plugin pbjs protons",
     "build": "aegir build --no-bundle && cp -R src/protobufjs dist/src/protobufjs",
     "prestart": "npm run build",
     "start": "node dist/src/index.js",
@@ -73,12 +73,13 @@
     "@protobuf-ts/plugin": "^2.8.1",
     "@protobuf-ts/runtime": "^2.8.1",
     "@types/benchmark": "^2.1.1",
-    "aegir": "^37.0.5",
+    "aegir": "^38.0.0",
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
     "protons": "^6.0.0",
     "protons-runtime": "^4.0.0",
+    "uint8arraylist": "^2.4.3",
     "uint8arrays": "^4.0.2"
   },
   "private": true

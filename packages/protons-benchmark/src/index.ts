@@ -26,7 +26,7 @@ const message = {
   payload: Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 }
 
-function expectDecodedCorrectly (result: any) {
+function expectDecodedCorrectly (result: any): void {
   expect(result).to.have.nested.property('meh.lol', message.meh.lol)
   expect(result).to.have.nested.property('meh.b.tmp.baz', message.meh.b.tmp.baz)
   expect(result).to.have.property('hello', message.hello)

@@ -20,7 +20,7 @@ enum __SingularEnumValues {
 }
 
 export namespace SingularEnum {
-  export const codec = () => {
+  export const codec = (): Codec<SingularEnum> => {
     return enumeration<SingularEnum>(__SingularEnumValues)
   }
 }

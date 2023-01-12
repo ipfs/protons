@@ -20,7 +20,7 @@ enum __OptionalEnumValues {
 }
 
 export namespace OptionalEnum {
-  export const codec = () => {
+  export const codec = (): Codec<OptionalEnum> => {
     return enumeration<OptionalEnum>(__OptionalEnumValues)
   }
 }
