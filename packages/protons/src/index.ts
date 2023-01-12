@@ -14,7 +14,7 @@ export enum CODEC_TYPES {
   BIT32
 }
 
-function pathWithExtension (input: string, extension: string, outputDir?: string) {
+function pathWithExtension (input: string, extension: string, outputDir?: string): string {
   const output = outputDir ?? path.dirname(input)
   return path.join(output, path.basename(input).split('.').slice(0, -1).join('.') + extension)
 }
@@ -289,7 +289,7 @@ interface FieldDef {
   keyType: string
 }
 
-function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef) {
+function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef): string[] {
   return Object.entries(fields).map(([fieldName, fieldDef]) => {
     if (fieldDef.map) {
       return `${fieldName}: Map<${findTypeName(fieldDef.keyType ?? 'string', messageDef, moduleDef)}, ${findTypeName(fieldDef.valueType, messageDef, moduleDef)}>`
@@ -321,7 +321,7 @@ enum __${messageDef.name}Values {
 }
 
 export namespace ${messageDef.name} {
-  export const codec = () => {
+  export const codec = (): Codec<${messageDef.name}> => {
     return enumeration<${messageDef.name}>(__${messageDef.name}Values)
   }
 }`.trim()
@@ -572,7 +572,7 @@ function defineModule (def: ClassDef): ModuleDef {
     throw new Error('No top-level messages found in protobuf')
   }
 
-  function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef) {
+  function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef): void {
     for (const className of Object.keys(defs)) {
       const classDef = defs[className]
 
@@ -636,7 +636,7 @@ interface Flags {
   output?: string
 }
 
-export async function generate (source: string, flags: Flags) {
+export async function generate (source: string, flags: Flags): Promise<void> {
   // convert .protobuf to .json
   const json = await promisify(pbjs)(['-t', 'json', source])
 

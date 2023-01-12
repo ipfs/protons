@@ -47,7 +47,7 @@ export namespace Request {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -208,7 +208,7 @@ export namespace Response {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -809,7 +809,7 @@ export namespace DHTRequest {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -935,7 +935,7 @@ export namespace DHTResponse {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -1102,7 +1102,7 @@ export namespace ConnManagerRequest {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -1264,7 +1264,7 @@ export namespace PSRequest {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -1535,7 +1535,7 @@ export namespace PeerstoreRequest {
   }
 
   export namespace Type {
-    export const codec = () => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }

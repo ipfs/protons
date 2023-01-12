@@ -128,7 +128,7 @@ export namespace Message {
   }
 
   export namespace MessageType {
-    export const codec = () => {
+    export const codec = (): Codec<MessageType> => {
       return enumeration<MessageType>(__MessageTypeValues)
     }
   }
@@ -148,7 +148,7 @@ export namespace Message {
   }
 
   export namespace ConnectionType {
-    export const codec = () => {
+    export const codec = (): Codec<ConnectionType> => {
       return enumeration<ConnectionType>(__ConnectionTypeValues)
     }
   }

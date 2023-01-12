@@ -18,7 +18,7 @@ enum __AnEnumValues {
 }
 
 export namespace AnEnum {
-  export const codec = () => {
+  export const codec = (): Codec<AnEnum> => {
     return enumeration<AnEnum>(__AnEnumValues)
   }
 }

@@ -157,7 +157,7 @@
     "protobufjs-cli": "^1.0.0"
   },
   "devDependencies": {
-    "aegir": "^37.0.5",
+    "aegir": "^38.0.0",
     "long": "^5.2.0",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
