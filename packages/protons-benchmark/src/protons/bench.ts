@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 
-import { encodeMessage, decodeMessage, message, writer, enumeration } from 'protons-runtime'
+import { encodeMessage, decodeMessage, message, enumeration } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
 
@@ -78,17 +78,10 @@ export namespace Bar {
         }
 
         if (obj.tmp != null) {
-          const mw = writer()
-          Foo.codec().encode(obj.tmp, mw, {
-            lengthDelimited: false,
+          w.uint32(10)
+          Foo.codec().encode(obj.tmp, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(10)
-            w.bytes(buf)
-          }
         }
 
         if (opts.lengthDelimited !== false) {
@@ -141,7 +134,7 @@ enum __FOOValues {
 }
 
 export namespace FOO {
-  export const codec = () => {
+  export const codec = (): Codec<FOO> => {
     return enumeration<FOO>(__FOOValues)
   }
 }
@@ -226,17 +219,10 @@ export namespace Lol {
         }
 
         if (obj.b != null) {
-          const mw = writer()
-          Bar.codec().encode(obj.b, mw, {
-            lengthDelimited: false,
+          w.uint32(18)
+          Bar.codec().encode(obj.b, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(18)
-            w.bytes(buf)
-          }
         }
 
         if (opts.lengthDelimited !== false) {
@@ -297,17 +283,10 @@ export namespace Test {
         }
 
         if (obj.meh != null) {
-          const mw = writer()
-          Lol.codec().encode(obj.meh, mw, {
-            lengthDelimited: false,
+          w.uint32(50)
+          Lol.codec().encode(obj.meh, w, {
             writeDefaults: false
           })
-          const buf = mw.finish()
-
-          if (buf.byteLength > 0) {
-            w.uint32(50)
-            w.bytes(buf)
-          }
         }
 
         if (obj.hello != null) {

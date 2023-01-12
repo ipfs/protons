@@ -10,7 +10,7 @@ import WriterBufferClass from 'protobufjs/src/writer_buffer.js'
 import util from 'protobufjs/src/util/minimal.js'
 import type { Reader, Writer } from './index.js'
 
-function configure () {
+function configure (): void {
   util._configure()
   ReaderClass._configure(ReaderBufferClass)
   WriterClass._configure(WriterBufferClass)
