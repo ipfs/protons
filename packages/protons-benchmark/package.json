@@ -64,7 +64,7 @@
     "clean": "aegir clean",
     "lint": "aegir lint",
     "dep-check": "aegir dep-check --ignore @protobuf-ts/plugin pbjs protons",
-    "build": "aegir build --no-bundle && cp -R src/protobufjs dist/src /protobufjs",
+    "build": "aegir build --no-bundle && cp -R src/protobufjs dist/src/protobufjs",
     "prestart": "npm run build",
     "start": "node dist/src/index.js",
     "start:browser": "npx playwright-test dist/src/index.js --runner benchmark"
