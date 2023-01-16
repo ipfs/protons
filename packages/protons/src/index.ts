@@ -402,7 +402,7 @@ ${Object.entries(fields)
             valueTest = `opts.writeDefaults === true || ${defaultValueTestGenerators[type](`obj.${name}`)}`
           } else if (type === 'enum') {
             // handle enums
-            valueTest = `opts.writeDefaults === true || (obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0)`
+            valueTest = `opts.writeDefaults === true || (obj.${name} != null )`
           }
         }
 
