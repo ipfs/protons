@@ -2,10 +2,13 @@
 /* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+
+export interface pb {}
 
 export namespace pb {
   export interface NoiseHandshakePayload {
@@ -84,5 +87,47 @@ export namespace pb {
     export const decode = (buf: Uint8Array | Uint8ArrayList): NoiseHandshakePayload => {
       return decodeMessage(buf, NoiseHandshakePayload.codec())
     }
+  }
+
+  let _codec: Codec<pb>
+
+  export const codec = (): Codec<pb> => {
+    if (_codec == null) {
+      _codec = message<pb>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
+        }
+
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: pb): Uint8Array => {
+    return encodeMessage(obj, pb.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList): pb => {
+    return decodeMessage(buf, pb.codec())
   }
 }

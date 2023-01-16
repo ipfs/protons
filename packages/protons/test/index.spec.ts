@@ -3,7 +3,7 @@
 
 import { expect } from 'aegir/chai'
 import pbjs from 'pbjs'
-import { Basic } from './fixtures/basic.js'
+import { Basic, Empty } from './fixtures/basic.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
 import fs from 'fs'
 import protobufjs, { Type as PBType } from 'protobufjs'
@@ -148,6 +148,12 @@ describe('encode', () => {
     }
 
     testEncodings(obj, Basic, './test/fixtures/basic.proto', 'Basic')
+  })
+
+  it('should encode an empty message', () => {
+    const obj: Empty = {}
+
+    testEncodings(obj, Empty, './test/fixtures/basic.proto', 'Empty')
   })
 
   it('should encode all the types', () => {

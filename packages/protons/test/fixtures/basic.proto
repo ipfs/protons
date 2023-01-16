@@ -4,3 +4,7 @@ message Basic {
   optional string foo = 1;
   int32 num = 2;
 }
+
+message Empty {
+
+}
