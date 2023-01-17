@@ -1,3 +1,10 @@
+## [protons-v6.1.1](https://github.com/ipfs/protons/compare/protons-v6.1.0...protons-v6.1.1) (2023-01-17)
+
+
+### Bug Fixes
+
+* support empty messages ([#78](https://github.com/ipfs/protons/issues/78)) ([8a02910](https://github.com/ipfs/protons/commit/8a0291096c6b9aab9050bf8b35958015d99e9470))
+
 ## [protons-v6.1.0](https://github.com/ipfs/protons/compare/protons-v6.0.2...protons-v6.1.0) (2023-01-12)
 
 
