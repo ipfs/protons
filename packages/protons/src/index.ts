@@ -354,7 +354,10 @@ export namespace ${messageDef.name} {
   let interfaceDef = ''
   let interfaceCodecDef = ''
 
-  if (interfaceFields !== '') {
+  if (interfaceFields === '') {
+    interfaceDef = `
+export interface ${messageDef.name} {}`
+  } else {
     interfaceDef = `
 export interface ${messageDef.name} {
   ${
@@ -363,72 +366,64 @@ export interface ${messageDef.name} {
       .trim()
   }
 }`
+  }
 
-    interfaceCodecDef = `
-  let _codec: Codec<${messageDef.name}>
+  const encodeFields = Object.entries(fields)
+    .map(([name, fieldDef]) => {
+      let codec: string = encoders[fieldDef.type]
+      let type: string = fieldDef.map ? 'message' : fieldDef.type
+      let typeName: string = ''
 
-  export const codec = (): Codec<${messageDef.name}> => {
-    if (_codec == null) {
-      _codec = message<${messageDef.name}>((obj, w, opts = {}) => {
-        if (opts.lengthDelimited !== false) {
-          w.fork()
-        }
-${Object.entries(fields)
-      .map(([name, fieldDef]) => {
-        let codec: string = encoders[fieldDef.type]
-        let type: string = fieldDef.map ? 'message' : fieldDef.type
-        let typeName: string = ''
-
-        if (codec == null) {
-          if (fieldDef.enum) {
-            moduleDef.imports.add('enumeration')
-            type = 'enum'
-          } else {
-            moduleDef.imports.add('message')
-            type = 'message'
-          }
-
-          typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
-          codec = `${typeName}.codec()`
+      if (codec == null) {
+        if (fieldDef.enum) {
+          moduleDef.imports.add('enumeration')
+          type = 'enum'
+        } else {
+          moduleDef.imports.add('message')
+          type = 'message'
         }
 
-        let valueTest = `obj.${name} != null`
+        typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+        codec = `${typeName}.codec()`
+      }
 
-        if (fieldDef.map) {
-          valueTest = `obj.${name} != null && obj.${name}.size !== 0`
-        } else if (!fieldDef.optional && !fieldDef.repeated) {
-          // proto3 singular fields should only be written out if they are not the default value
-          if (defaultValueTestGenerators[type] != null) {
-            valueTest = `opts.writeDefaults === true || ${defaultValueTestGenerators[type](`obj.${name}`)}`
-          } else if (type === 'enum') {
-            // handle enums
-            valueTest = `opts.writeDefaults === true || (obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0)`
-          }
+      let valueTest = `obj.${name} != null`
+
+      if (fieldDef.map) {
+        valueTest = `obj.${name} != null && obj.${name}.size !== 0`
+      } else if (!fieldDef.optional && !fieldDef.repeated) {
+        // proto3 singular fields should only be written out if they are not the default value
+        if (defaultValueTestGenerators[type] != null) {
+          valueTest = `opts.writeDefaults === true || ${defaultValueTestGenerators[type](`obj.${name}`)}`
+        } else if (type === 'enum') {
+          // handle enums
+          valueTest = `opts.writeDefaults === true || (obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0)`
         }
+      }
 
-        function createWriteField (valueVar: string): string {
-          const id = (fieldDef.id << 3) | codecTypes[type]
+      function createWriteField (valueVar: string): string {
+        const id = (fieldDef.id << 3) | codecTypes[type]
 
-          let writeField = `w.uint32(${id})
+        let writeField = `w.uint32(${id})
           ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerators[type](valueVar)}`
 
-          if (type === 'message') {
-            // message fields are only written if they have values
-            writeField = `w.uint32(${id})
+        if (type === 'message') {
+          // message fields are only written if they have values
+          writeField = `w.uint32(${id})
           ${typeName}.codec().encode(${valueVar}, w, {
             writeDefaults: ${Boolean(fieldDef.repeated).toString()}
           })`
-          }
-
-          return writeField
         }
 
-        let writeField = createWriteField(`obj.${name}`)
+        return writeField
+      }
 
-        if (fieldDef.repeated) {
-          if (fieldDef.map) {
-            writeField = `
-          for (const [key, value] of obj.${name}.entries()) {
+      let writeField = createWriteField(`obj.${name}`)
+
+      if (fieldDef.repeated) {
+        if (fieldDef.map) {
+          writeField = `
+        for (const [key, value] of obj.${name}.entries()) {
           ${
               createWriteField('{ key, value }')
                 .split('\n')
@@ -440,9 +435,9 @@ ${Object.entries(fields)
                 .join('\n')
             }
           }
-            `.trim()
-          } else {
-            writeField = `
+          `.trim()
+        } else {
+          writeField = `
           for (const value of obj.${name}) {
           ${
             createWriteField('value')
@@ -455,16 +450,68 @@ ${Object.entries(fields)
               .join('\n')
           }
           }
-          `.trim()
-          }
+        `.trim()
         }
+      }
 
-        return `
+      return `
         if (${valueTest}) {
           ${writeField}
         }`
-}).join('\n')}
+    }).join('\n')
 
+  const decodeFields = Object.entries(fields)
+    .map(([fieldName, fieldDef]) => {
+      function createReadField (fieldName: string, fieldDef: FieldDef): string {
+        let codec: string = encoders[fieldDef.type]
+        let type: string = fieldDef.type
+
+        if (codec == null) {
+          if (fieldDef.enum) {
+            moduleDef.imports.add('enumeration')
+            type = 'enum'
+          } else {
+            moduleDef.imports.add('message')
+            type = 'message'
+          }
+
+          const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+          codec = `${typeName}.codec()`
+        }
+
+        const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`
+
+        if (fieldDef.map) {
+          return `case ${fieldDef.id}: {
+              const entry = ${parseValue}
+              obj.${fieldName}.set(entry.key, entry.value)
+              break
+            }`
+        } else if (fieldDef.repeated) {
+          return `case ${fieldDef.id}:
+              obj.${fieldName}.push(${parseValue})
+              break`
+        }
+
+        return `case ${fieldDef.id}:
+              obj.${fieldName} = ${parseValue}
+              break`
+      }
+
+      return createReadField(fieldName, fieldDef)
+    })
+    .join('\n            ')
+
+  interfaceCodecDef = `
+  let _codec: Codec<${messageDef.name}>
+
+  export const codec = (): Codec<${messageDef.name}> => {
+    if (_codec == null) {
+      _codec = message<${messageDef.name}>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+${encodeFields === '' ? '' : `${encodeFields}\n`}
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
@@ -476,48 +523,7 @@ ${Object.entries(fields)
         while (reader.pos < end) {
           const tag = reader.uint32()
 
-          switch (tag >>> 3) {
-            ${Object.entries(fields)
-              .map(([fieldName, fieldDef]) => {
-                function createReadField (fieldName: string, fieldDef: FieldDef): string {
-                  let codec: string = encoders[fieldDef.type]
-                  let type: string = fieldDef.type
-
-                  if (codec == null) {
-                    if (fieldDef.enum) {
-                      moduleDef.imports.add('enumeration')
-                      type = 'enum'
-                    } else {
-                      moduleDef.imports.add('message')
-                      type = 'message'
-                    }
-
-                    const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
-                    codec = `${typeName}.codec()`
-                  }
-
-                  const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`
-
-                  if (fieldDef.map) {
-                    return `case ${fieldDef.id}: {
-              const entry = ${parseValue}
-              obj.${fieldName}.set(entry.key, entry.value)
-              break
-            }`
-                  } else if (fieldDef.repeated) {
-                    return `case ${fieldDef.id}:
-              obj.${fieldName}.push(${parseValue})
-              break`
-                  }
-
-                  return `case ${fieldDef.id}:
-              obj.${fieldName} = ${parseValue}
-              break`
-                }
-
-                return createReadField(fieldName, fieldDef)
-              })
-              .join('\n            ')}
+          switch (tag >>> 3) {${decodeFields === '' ? '' : `\n            ${decodeFields}`}
             default:
               reader.skipType(tag & 7)
               break
@@ -538,7 +544,6 @@ ${Object.entries(fields)
   export const decode = (buf: Uint8Array | Uint8ArrayList): ${messageDef.name} => {
     return decodeMessage(buf, ${messageDef.name}.codec())
   }`
-  }
 
   return `
 ${interfaceDef}
@@ -682,6 +687,7 @@ export async function generate (source: string, flags: Flags): Promise<void> {
     '/* eslint-disable complexity */',
     '/* eslint-disable @typescript-eslint/no-namespace */',
     '/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */',
+    '/* eslint-disable @typescript-eslint/no-empty-interface */',
     ''
   ]
 
