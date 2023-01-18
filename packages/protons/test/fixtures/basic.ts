@@ -2,6 +2,7 @@
 /* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -71,5 +72,51 @@ export namespace Basic {
 
   export const decode = (buf: Uint8Array | Uint8ArrayList): Basic => {
     return decodeMessage(buf, Basic.codec())
+  }
+}
+
+export interface Empty {}
+
+export namespace Empty {
+  let _codec: Codec<Empty>
+
+  export const codec = (): Codec<Empty> => {
+    if (_codec == null) {
+      _codec = message<Empty>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
+        }
+
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: Empty): Uint8Array => {
+    return encodeMessage(obj, Empty.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Empty => {
+    return decodeMessage(buf, Empty.codec())
   }
 }
