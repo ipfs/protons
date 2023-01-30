@@ -595,6 +595,10 @@ function defineModule (def: ClassDef): ModuleDef {
           fieldDef.repeated = fieldDef.rule === 'repeated'
           fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
           fieldDef.map = fieldDef.keyType != null
+
+          if (fieldDef.rule === 'required') {
+            throw new Error('"required" fields are not allowed in proto3 - please convert your proto2 definitions to proto3')
+          }
         }
       }
 
