@@ -1,5 +1,4 @@
 /* eslint-env mocha */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 
 import { expect } from 'aegir/chai'
 import { execa } from 'execa'

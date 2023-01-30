@@ -67,7 +67,7 @@ new Benchmark.Suite()
   })
   .on('complete', function () {
     // @ts-expect-error types are wrong
-    console.info(`Fastest is ${this.filter('fastest').map('name')}`) // eslint-disable-line @typescript-eslint/restrict-template-expressions
+    console.info(`Fastest is ${this.filter('fastest').map('name')}`)
   })
   // run async
   .run({ async: true })
