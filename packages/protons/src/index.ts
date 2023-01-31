@@ -655,7 +655,7 @@ export async function generate (source: string, flags: Flags): Promise<void> {
 
   const def = JSON.parse(json)
 
-  for (const [className, classDef] of Object.entries<any>(def.nested)) {
+  for (const [className, classDef] of Object.entries<any>(def.nested ?? {})) {
     for (const [fieldName, fieldDef] of Object.entries<any>(classDef.fields ?? {})) {
       if (fieldDef.keyType == null) {
         continue
