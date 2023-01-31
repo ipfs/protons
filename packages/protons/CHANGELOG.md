@@ -1,3 +1,10 @@
+## [protons-v6.1.3](https://github.com/ipfs/protons/compare/protons-v6.1.2...protons-v6.1.3) (2023-01-31)
+
+
+### Bug Fixes
+
+* throw when .proto is empty ([#81](https://github.com/ipfs/protons/issues/81)) ([ed392cb](https://github.com/ipfs/protons/commit/ed392cb84847fe0be8b96c582eaca0d99d4a40d1))
+
 ## [protons-v6.1.2](https://github.com/ipfs/protons/compare/protons-v6.1.1...protons-v6.1.2) (2023-01-31)
 
 
