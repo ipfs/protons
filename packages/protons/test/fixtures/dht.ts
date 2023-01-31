@@ -91,7 +91,7 @@ export namespace Record {
     return _codec
   }
 
-  export const encode = (obj: Record): Uint8Array => {
+  export const encode = (obj: Partial<Record>): Uint8Array => {
     return encodeMessage(obj, Record.codec())
   }
 
@@ -225,7 +225,7 @@ export namespace Message {
       return _codec
     }
 
-    export const encode = (obj: Peer): Uint8Array => {
+    export const encode = (obj: Partial<Peer>): Uint8Array => {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -327,7 +327,7 @@ export namespace Message {
     return _codec
   }
 
-  export const encode = (obj: Message): Uint8Array => {
+  export const encode = (obj: Partial<Message>): Uint8Array => {
     return encodeMessage(obj, Message.codec())
   }
 

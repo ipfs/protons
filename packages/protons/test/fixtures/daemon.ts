@@ -64,7 +64,7 @@ export namespace Request {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          Request.Type.codec().encode(obj.type, w)
+          Request.Type.codec().encode(obj.type ?? Request.Type.IDENTIFY, w)
         }
 
         if (obj.connect != null) {
@@ -177,7 +177,7 @@ export namespace Request {
     return _codec
   }
 
-  export const encode = (obj: Request): Uint8Array => {
+  export const encode = (obj: Partial<Request>): Uint8Array => {
     return encodeMessage(obj, Request.codec())
   }
 
@@ -225,7 +225,7 @@ export namespace Response {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          Response.Type.codec().encode(obj.type, w)
+          Response.Type.codec().encode(obj.type ?? Response.Type.OK, w)
         }
 
         if (obj.error != null) {
@@ -331,7 +331,7 @@ export namespace Response {
     return _codec
   }
 
-  export const encode = (obj: Response): Uint8Array => {
+  export const encode = (obj: Partial<Response>): Uint8Array => {
     return encodeMessage(obj, Response.codec())
   }
 
@@ -357,7 +357,7 @@ export namespace IdentifyResponse {
 
         if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.id)
+          w.bytes(obj.id ?? new Uint8Array(0))
         }
 
         if (obj.addrs != null) {
@@ -401,7 +401,7 @@ export namespace IdentifyResponse {
     return _codec
   }
 
-  export const encode = (obj: IdentifyResponse): Uint8Array => {
+  export const encode = (obj: Partial<IdentifyResponse>): Uint8Array => {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
@@ -428,7 +428,7 @@ export namespace ConnectRequest {
 
         if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer)
+          w.bytes(obj.peer ?? new Uint8Array(0))
         }
 
         if (obj.addrs != null) {
@@ -480,7 +480,7 @@ export namespace ConnectRequest {
     return _codec
   }
 
-  export const encode = (obj: ConnectRequest): Uint8Array => {
+  export const encode = (obj: Partial<ConnectRequest>): Uint8Array => {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
@@ -507,7 +507,7 @@ export namespace StreamOpenRequest {
 
         if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer)
+          w.bytes(obj.peer ?? new Uint8Array(0))
         }
 
         if (obj.proto != null) {
@@ -559,7 +559,7 @@ export namespace StreamOpenRequest {
     return _codec
   }
 
-  export const encode = (obj: StreamOpenRequest): Uint8Array => {
+  export const encode = (obj: Partial<StreamOpenRequest>): Uint8Array => {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
@@ -585,7 +585,7 @@ export namespace StreamHandlerRequest {
 
         if (opts.writeDefaults === true || (obj.addr != null && obj.addr.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.addr)
+          w.bytes(obj.addr ?? new Uint8Array(0))
         }
 
         if (obj.proto != null) {
@@ -629,7 +629,7 @@ export namespace StreamHandlerRequest {
     return _codec
   }
 
-  export const encode = (obj: StreamHandlerRequest): Uint8Array => {
+  export const encode = (obj: Partial<StreamHandlerRequest>): Uint8Array => {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
@@ -654,7 +654,7 @@ export namespace ErrorResponse {
 
         if (opts.writeDefaults === true || obj.msg !== '') {
           w.uint32(10)
-          w.string(obj.msg)
+          w.string(obj.msg ?? '')
         }
 
         if (opts.lengthDelimited !== false) {
@@ -687,7 +687,7 @@ export namespace ErrorResponse {
     return _codec
   }
 
-  export const encode = (obj: ErrorResponse): Uint8Array => {
+  export const encode = (obj: Partial<ErrorResponse>): Uint8Array => {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
@@ -714,17 +714,17 @@ export namespace StreamInfo {
 
         if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer)
+          w.bytes(obj.peer ?? new Uint8Array(0))
         }
 
         if (opts.writeDefaults === true || (obj.addr != null && obj.addr.byteLength > 0)) {
           w.uint32(18)
-          w.bytes(obj.addr)
+          w.bytes(obj.addr ?? new Uint8Array(0))
         }
 
         if (opts.writeDefaults === true || obj.proto !== '') {
           w.uint32(26)
-          w.string(obj.proto)
+          w.string(obj.proto ?? '')
         }
 
         if (opts.lengthDelimited !== false) {
@@ -765,7 +765,7 @@ export namespace StreamInfo {
     return _codec
   }
 
-  export const encode = (obj: StreamInfo): Uint8Array => {
+  export const encode = (obj: Partial<StreamInfo>): Uint8Array => {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
@@ -826,7 +826,7 @@ export namespace DHTRequest {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          DHTRequest.Type.codec().encode(obj.type, w)
+          DHTRequest.Type.codec().encode(obj.type ?? DHTRequest.Type.FIND_PEER, w)
         }
 
         if (obj.peer != null) {
@@ -907,7 +907,7 @@ export namespace DHTRequest {
     return _codec
   }
 
-  export const encode = (obj: DHTRequest): Uint8Array => {
+  export const encode = (obj: Partial<DHTRequest>): Uint8Array => {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
@@ -952,7 +952,7 @@ export namespace DHTResponse {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          DHTResponse.Type.codec().encode(obj.type, w)
+          DHTResponse.Type.codec().encode(obj.type ?? DHTResponse.Type.BEGIN, w)
         }
 
         if (obj.peer != null) {
@@ -1003,7 +1003,7 @@ export namespace DHTResponse {
     return _codec
   }
 
-  export const encode = (obj: DHTResponse): Uint8Array => {
+  export const encode = (obj: Partial<DHTResponse>): Uint8Array => {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
@@ -1029,7 +1029,7 @@ export namespace PeerInfo {
 
         if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.id)
+          w.bytes(obj.id ?? new Uint8Array(0))
         }
 
         if (obj.addrs != null) {
@@ -1073,7 +1073,7 @@ export namespace PeerInfo {
     return _codec
   }
 
-  export const encode = (obj: PeerInfo): Uint8Array => {
+  export const encode = (obj: Partial<PeerInfo>): Uint8Array => {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
@@ -1119,7 +1119,7 @@ export namespace ConnManagerRequest {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          ConnManagerRequest.Type.codec().encode(obj.type, w)
+          ConnManagerRequest.Type.codec().encode(obj.type ?? ConnManagerRequest.Type.TAG_PEER, w)
         }
 
         if (obj.peer != null) {
@@ -1176,7 +1176,7 @@ export namespace ConnManagerRequest {
     return _codec
   }
 
-  export const encode = (obj: ConnManagerRequest): Uint8Array => {
+  export const encode = (obj: Partial<ConnManagerRequest>): Uint8Array => {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
@@ -1201,7 +1201,7 @@ export namespace DisconnectRequest {
 
         if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer)
+          w.bytes(obj.peer ?? new Uint8Array(0))
         }
 
         if (opts.lengthDelimited !== false) {
@@ -1234,7 +1234,7 @@ export namespace DisconnectRequest {
     return _codec
   }
 
-  export const encode = (obj: DisconnectRequest): Uint8Array => {
+  export const encode = (obj: Partial<DisconnectRequest>): Uint8Array => {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
@@ -1281,7 +1281,7 @@ export namespace PSRequest {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          PSRequest.Type.codec().encode(obj.type, w)
+          PSRequest.Type.codec().encode(obj.type ?? PSRequest.Type.GET_TOPICS, w)
         }
 
         if (obj.topic != null) {
@@ -1330,7 +1330,7 @@ export namespace PSRequest {
     return _codec
   }
 
-  export const encode = (obj: PSRequest): Uint8Array => {
+  export const encode = (obj: Partial<PSRequest>): Uint8Array => {
     return encodeMessage(obj, PSRequest.codec())
   }
 
@@ -1435,7 +1435,7 @@ export namespace PSMessage {
     return _codec
   }
 
-  export const encode = (obj: PSMessage): Uint8Array => {
+  export const encode = (obj: Partial<PSMessage>): Uint8Array => {
     return encodeMessage(obj, PSMessage.codec())
   }
 
@@ -1507,7 +1507,7 @@ export namespace PSResponse {
     return _codec
   }
 
-  export const encode = (obj: PSResponse): Uint8Array => {
+  export const encode = (obj: Partial<PSResponse>): Uint8Array => {
     return encodeMessage(obj, PSResponse.codec())
   }
 
@@ -1552,7 +1552,7 @@ export namespace PeerstoreRequest {
 
         if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
           w.uint32(8)
-          PeerstoreRequest.Type.codec().encode(obj.type, w)
+          PeerstoreRequest.Type.codec().encode(obj.type ?? PeerstoreRequest.Type.INVALID, w)
         }
 
         if (obj.id != null) {
@@ -1604,7 +1604,7 @@ export namespace PeerstoreRequest {
     return _codec
   }
 
-  export const encode = (obj: PeerstoreRequest): Uint8Array => {
+  export const encode = (obj: Partial<PeerstoreRequest>): Uint8Array => {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
@@ -1675,7 +1675,7 @@ export namespace PeerstoreResponse {
     return _codec
   }
 
-  export const encode = (obj: PeerstoreResponse): Uint8Array => {
+  export const encode = (obj: Partial<PeerstoreResponse>): Uint8Array => {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 

@@ -115,7 +115,7 @@ export namespace RPC {
 
           if (opts.writeDefaults === true || obj.topic !== '') {
             w.uint32(34)
-            w.string(obj.topic)
+            w.string(obj.topic ?? '')
           }
 
           if (obj.signature != null) {

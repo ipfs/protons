@@ -105,7 +105,7 @@ export namespace Peer {
     return _codec
   }
 
-  export const encode = (obj: Peer): Uint8Array => {
+  export const encode = (obj: Partial<Peer>): Uint8Array => {
     return encodeMessage(obj, Peer.codec())
   }
 
@@ -131,7 +131,7 @@ export namespace Address {
 
         if (opts.writeDefaults === true || (obj.multiaddr != null && obj.multiaddr.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.multiaddr)
+          w.bytes(obj.multiaddr ?? new Uint8Array(0))
         }
 
         if (obj.isCertified != null) {
@@ -172,7 +172,7 @@ export namespace Address {
     return _codec
   }
 
-  export const encode = (obj: Address): Uint8Array => {
+  export const encode = (obj: Partial<Address>): Uint8Array => {
     return encodeMessage(obj, Address.codec())
   }
 
@@ -198,12 +198,12 @@ export namespace Metadata {
 
         if (opts.writeDefaults === true || obj.key !== '') {
           w.uint32(10)
-          w.string(obj.key)
+          w.string(obj.key ?? '')
         }
 
         if (opts.writeDefaults === true || (obj.value != null && obj.value.byteLength > 0)) {
           w.uint32(18)
-          w.bytes(obj.value)
+          w.bytes(obj.value ?? new Uint8Array(0))
         }
 
         if (opts.lengthDelimited !== false) {
@@ -240,7 +240,7 @@ export namespace Metadata {
     return _codec
   }
 
-  export const encode = (obj: Metadata): Uint8Array => {
+  export const encode = (obj: Partial<Metadata>): Uint8Array => {
     return encodeMessage(obj, Metadata.codec())
   }
 

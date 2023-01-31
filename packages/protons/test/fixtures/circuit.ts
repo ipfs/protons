@@ -97,7 +97,7 @@ export namespace CircuitRelay {
 
           if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
             w.uint32(10)
-            w.bytes(obj.id)
+            w.bytes(obj.id ?? new Uint8Array(0))
           }
 
           if (obj.addrs != null) {
@@ -141,7 +141,7 @@ export namespace CircuitRelay {
       return _codec
     }
 
-    export const encode = (obj: Peer): Uint8Array => {
+    export const encode = (obj: Partial<Peer>): Uint8Array => {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -220,7 +220,7 @@ export namespace CircuitRelay {
     return _codec
   }
 
-  export const encode = (obj: CircuitRelay): Uint8Array => {
+  export const encode = (obj: Partial<CircuitRelay>): Uint8Array => {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 

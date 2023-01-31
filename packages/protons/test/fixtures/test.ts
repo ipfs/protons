@@ -39,7 +39,7 @@ export namespace SubMessage {
 
         if (opts.writeDefaults === true || obj.foo !== '') {
           w.uint32(10)
-          w.string(obj.foo)
+          w.string(obj.foo ?? '')
         }
 
         if (opts.lengthDelimited !== false) {
@@ -72,7 +72,7 @@ export namespace SubMessage {
     return _codec
   }
 
-  export const encode = (obj: SubMessage): Uint8Array => {
+  export const encode = (obj: Partial<SubMessage>): Uint8Array => {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -287,7 +287,7 @@ export namespace AllTheTypes {
     return _codec
   }
 
-  export const encode = (obj: AllTheTypes): Uint8Array => {
+  export const encode = (obj: Partial<AllTheTypes>): Uint8Array => {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 

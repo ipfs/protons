@@ -29,17 +29,17 @@ export namespace pb {
 
           if (opts.writeDefaults === true || (obj.identityKey != null && obj.identityKey.byteLength > 0)) {
             w.uint32(10)
-            w.bytes(obj.identityKey)
+            w.bytes(obj.identityKey ?? new Uint8Array(0))
           }
 
           if (opts.writeDefaults === true || (obj.identitySig != null && obj.identitySig.byteLength > 0)) {
             w.uint32(18)
-            w.bytes(obj.identitySig)
+            w.bytes(obj.identitySig ?? new Uint8Array(0))
           }
 
           if (opts.writeDefaults === true || (obj.data != null && obj.data.byteLength > 0)) {
             w.uint32(26)
-            w.bytes(obj.data)
+            w.bytes(obj.data ?? new Uint8Array(0))
           }
 
           if (opts.lengthDelimited !== false) {
@@ -80,7 +80,7 @@ export namespace pb {
       return _codec
     }
 
-    export const encode = (obj: NoiseHandshakePayload): Uint8Array => {
+    export const encode = (obj: Partial<NoiseHandshakePayload>): Uint8Array => {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
@@ -123,7 +123,7 @@ export namespace pb {
     return _codec
   }
 
-  export const encode = (obj: pb): Uint8Array => {
+  export const encode = (obj: Partial<pb>): Uint8Array => {
     return encodeMessage(obj, pb.codec())
   }
 
