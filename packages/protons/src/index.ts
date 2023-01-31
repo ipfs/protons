@@ -38,21 +38,21 @@ const types: Record<string, string> = {
 }
 
 const encoderGenerators: Record<string, (val: string, includeDefault: boolean) => string> = {
-  bool: (val, includeDefault) => `w.bool(${val}${includeDefault ? ' ?? false' : '' })`,
-  bytes: (val, includeDefault) => `w.bytes(${val}${includeDefault ? ' ?? new Uint8Array(0)' : '' })`,
-  double: (val, includeDefault) => `w.double(${val}${includeDefault ? ' ?? 0' : '' })`,
-  fixed32: (val, includeDefault) => `w.fixed32(${val}${includeDefault ? ' ?? 0' : '' })`,
-  fixed64: (val, includeDefault) => `w.fixed64(${val}${includeDefault ? ' ?? 0n' : '' })`,
-  float: (val, includeDefault) => `w.float(${val}${includeDefault ? ' ?? 0' : '' })`,
-  int32: (val, includeDefault) => `w.int32(${val}${includeDefault ? ' ?? 0' : '' })`,
-  int64: (val, includeDefault) => `w.int64(${val}${includeDefault ? ' ?? 0n' : '' })`,
-  sfixed32: (val, includeDefault) => `w.sfixed32(${val}${includeDefault ? ' ?? 0' : '' })`,
-  sfixed64: (val, includeDefault) => `w.sfixed64(${val}${includeDefault ? ' ?? 0n' : '' })`,
-  sint32: (val, includeDefault) => `w.sint32(${val}${includeDefault ? ' ?? 0' : '' })`,
-  sint64: (val, includeDefault) => `w.sint64(${val}${includeDefault ? ' ?? 0n' : '' })`,
-  string: (val, includeDefault) => `w.string(${val}${includeDefault ? ' ?? \'\'' : '' })`,
-  uint32: (val, includeDefault) => `w.uint32(${val}${includeDefault ? ' ?? 0' : '' })`,
-  uint64: (val, includeDefault) => `w.uint64(${val}${includeDefault ? ' ?? 0n' : '' })`
+  bool: (val, includeDefault) => `w.bool(${val}${includeDefault ? ' ?? false' : ''})`,
+  bytes: (val, includeDefault) => `w.bytes(${val}${includeDefault ? ' ?? new Uint8Array(0)' : ''})`,
+  double: (val, includeDefault) => `w.double(${val}${includeDefault ? ' ?? 0' : ''})`,
+  fixed32: (val, includeDefault) => `w.fixed32(${val}${includeDefault ? ' ?? 0' : ''})`,
+  fixed64: (val, includeDefault) => `w.fixed64(${val}${includeDefault ? ' ?? 0n' : ''})`,
+  float: (val, includeDefault) => `w.float(${val}${includeDefault ? ' ?? 0' : ''})`,
+  int32: (val, includeDefault) => `w.int32(${val}${includeDefault ? ' ?? 0' : ''})`,
+  int64: (val, includeDefault) => `w.int64(${val}${includeDefault ? ' ?? 0n' : ''})`,
+  sfixed32: (val, includeDefault) => `w.sfixed32(${val}${includeDefault ? ' ?? 0' : ''})`,
+  sfixed64: (val, includeDefault) => `w.sfixed64(${val}${includeDefault ? ' ?? 0n' : ''})`,
+  sint32: (val, includeDefault) => `w.sint32(${val}${includeDefault ? ' ?? 0' : ''})`,
+  sint64: (val, includeDefault) => `w.sint64(${val}${includeDefault ? ' ?? 0n' : ''})`,
+  string: (val, includeDefault) => `w.string(${val}${includeDefault ? ' ?? \'\'' : ''})`,
+  uint32: (val, includeDefault) => `w.uint32(${val}${includeDefault ? ' ?? 0' : ''})`,
+  uint64: (val, includeDefault) => `w.uint64(${val}${includeDefault ? ' ?? 0n' : ''})`
 }
 
 const decoderGenerators: Record<string, () => string> = {
@@ -401,7 +401,7 @@ export interface ${messageDef.name} {
         }
       }
 
-      function createWriteField (valueVar: string): (includeDefault: boolean ) => string {
+      function createWriteField (valueVar: string): (includeDefault: boolean) => string {
         const id = (fieldDef.id << 3) | codecTypes[type]
         let defaultValue = ''
 
@@ -415,7 +415,7 @@ export interface ${messageDef.name} {
           defaultValue = Object.keys(def.values)[0]
         }
 
-        let writeField = (includeDefault: boolean) => `w.uint32(${id})
+        let writeField = (includeDefault: boolean): string => `w.uint32(${id})
           ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}${includeDefault ? ` ?? ${typeName}.${defaultValue}` : ''}, w)` : encoderGenerators[type](valueVar, includeDefault)}`
 
         if (type === 'message') {
