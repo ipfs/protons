@@ -1,3 +1,10 @@
+## [protons-v6.1.2](https://github.com/ipfs/protons/compare/protons-v6.1.1...protons-v6.1.2) (2023-01-31)
+
+
+### Bug Fixes
+
+* throw when unsupported fields are detected ([#80](https://github.com/ipfs/protons/issues/80)) ([8108875](https://github.com/ipfs/protons/commit/81088755804629e68a0a51d3e4037e58253134fc)), closes [#34](https://github.com/ipfs/protons/issues/34)
+
 ## [protons-v6.1.1](https://github.com/ipfs/protons/compare/protons-v6.1.0...protons-v6.1.1) (2023-01-17)
 
 
