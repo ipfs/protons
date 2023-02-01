@@ -417,7 +417,7 @@ describe('encode', () => {
     })
   })
 
-  it('does not write singular field values when set to defaults', () => {
+  it('does not write singular field values when defaults are omitted', () => {
     const buf = Singular.encode({})
 
     expect(buf.byteLength).to.equal(0, 'wrote default values for singular fields')
@@ -443,6 +443,32 @@ describe('encode', () => {
 
     expect(Singular.decode(buf)).to.deep.equal(outputObject)
   })
+
+  it('does not write singular field values when set to defaults', () => {
+    const objectWithDefaults: Singular = {
+      double: 0,
+      float: 0,
+      int32: 0,
+      int64: 0n,
+      uint32: 0,
+      uint64: 0n,
+      sint32: 0,
+      sint64: 0n,
+      fixed32: 0,
+      fixed64: 0n,
+      sfixed32: 0,
+      sfixed64: 0n,
+      bool: false,
+      string: '',
+      bytes: new Uint8Array(0),
+      enum: SingularEnum.NO_VALUE
+    }
+
+    const buf = Singular.encode(objectWithDefaults)
+    expect(buf.byteLength).to.equal(0, 'wrote default values for singular fields')
+    expect(Singular.decode(buf)).to.deep.equal(objectWithDefaults)
+  })
+
 
   it('writes singular field values when not set to defaults', () => {
     const obj: Singular = {
