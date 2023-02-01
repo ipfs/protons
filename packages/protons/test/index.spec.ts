@@ -469,7 +469,6 @@ describe('encode', () => {
     expect(Singular.decode(buf)).to.deep.equal(objectWithDefaults)
   })
 
-
   it('writes singular field values when not set to defaults', () => {
     const obj: Singular = {
       double: 1.0,
