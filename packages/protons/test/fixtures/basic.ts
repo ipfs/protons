@@ -28,7 +28,7 @@ export namespace Basic {
           w.string(obj.foo)
         }
 
-        if (opts.writeDefaults === true || obj.num !== 0) {
+        if (opts.writeDefaults === true || (obj.num != null && obj.num !== 0)) {
           w.uint32(16)
           w.int32(obj.num ?? 0)
         }

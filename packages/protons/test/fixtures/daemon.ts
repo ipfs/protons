@@ -652,7 +652,7 @@ export namespace ErrorResponse {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.msg !== '') {
+        if (opts.writeDefaults === true || (obj.msg != null && obj.msg !== '')) {
           w.uint32(10)
           w.string(obj.msg ?? '')
         }
@@ -722,7 +722,7 @@ export namespace StreamInfo {
           w.bytes(obj.addr ?? new Uint8Array(0))
         }
 
-        if (opts.writeDefaults === true || obj.proto !== '') {
+        if (opts.writeDefaults === true || (obj.proto != null && obj.proto !== '')) {
           w.uint32(26)
           w.string(obj.proto ?? '')
         }

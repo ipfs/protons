@@ -37,7 +37,7 @@ export namespace SubMessage {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.foo !== '') {
+        if (opts.writeDefaults === true || (obj.foo != null && obj.foo !== '')) {
           w.uint32(10)
           w.string(obj.foo ?? '')
         }

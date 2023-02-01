@@ -196,7 +196,7 @@ export namespace Metadata {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.key !== '') {
+        if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
           w.uint32(10)
           w.string(obj.key ?? '')
         }

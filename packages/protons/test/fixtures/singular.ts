@@ -40,12 +40,12 @@ export namespace SingularSubMessage {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.foo !== '') {
+        if (opts.writeDefaults === true || (obj.foo != null && obj.foo !== '')) {
           w.uint32(10)
           w.string(obj.foo ?? '')
         }
 
-        if (opts.writeDefaults === true || obj.bar !== 0) {
+        if (opts.writeDefaults === true || (obj.bar != null && obj.bar !== 0)) {
           w.uint32(16)
           w.int32(obj.bar ?? 0)
         }
@@ -123,72 +123,72 @@ export namespace Singular {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.double !== 0) {
+        if (opts.writeDefaults === true || (obj.double != null && obj.double !== 0)) {
           w.uint32(9)
           w.double(obj.double ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.float !== 0) {
+        if (opts.writeDefaults === true || (obj.float != null && obj.float !== 0)) {
           w.uint32(21)
           w.float(obj.float ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.int32 !== 0) {
+        if (opts.writeDefaults === true || (obj.int32 != null && obj.int32 !== 0)) {
           w.uint32(24)
           w.int32(obj.int32 ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.int64 !== 0n) {
+        if (opts.writeDefaults === true || (obj.int64 != null && obj.int64 !== 0n)) {
           w.uint32(32)
           w.int64(obj.int64 ?? 0n)
         }
 
-        if (opts.writeDefaults === true || obj.uint32 !== 0) {
+        if (opts.writeDefaults === true || (obj.uint32 != null && obj.uint32 !== 0)) {
           w.uint32(40)
           w.uint32(obj.uint32 ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.uint64 !== 0n) {
+        if (opts.writeDefaults === true || (obj.uint64 != null && obj.uint64 !== 0n)) {
           w.uint32(48)
           w.uint64(obj.uint64 ?? 0n)
         }
 
-        if (opts.writeDefaults === true || obj.sint32 !== 0) {
+        if (opts.writeDefaults === true || (obj.sint32 != null && obj.sint32 !== 0)) {
           w.uint32(56)
           w.sint32(obj.sint32 ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.sint64 !== 0n) {
+        if (opts.writeDefaults === true || (obj.sint64 != null && obj.sint64 !== 0n)) {
           w.uint32(64)
           w.sint64(obj.sint64 ?? 0n)
         }
 
-        if (opts.writeDefaults === true || obj.fixed32 !== 0) {
+        if (opts.writeDefaults === true || (obj.fixed32 != null && obj.fixed32 !== 0)) {
           w.uint32(77)
           w.fixed32(obj.fixed32 ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.fixed64 !== 0n) {
+        if (opts.writeDefaults === true || (obj.fixed64 != null && obj.fixed64 !== 0n)) {
           w.uint32(81)
           w.fixed64(obj.fixed64 ?? 0n)
         }
 
-        if (opts.writeDefaults === true || obj.sfixed32 !== 0) {
+        if (opts.writeDefaults === true || (obj.sfixed32 != null && obj.sfixed32 !== 0)) {
           w.uint32(93)
           w.sfixed32(obj.sfixed32 ?? 0)
         }
 
-        if (opts.writeDefaults === true || obj.sfixed64 !== 0n) {
+        if (opts.writeDefaults === true || (obj.sfixed64 != null && obj.sfixed64 !== 0n)) {
           w.uint32(97)
           w.sfixed64(obj.sfixed64 ?? 0n)
         }
 
-        if (opts.writeDefaults === true || obj.bool !== false) {
+        if (opts.writeDefaults === true || (obj.bool != null && obj.bool !== false)) {
           w.uint32(104)
           w.bool(obj.bool ?? false)
         }
 
-        if (opts.writeDefaults === true || obj.string !== '') {
+        if (opts.writeDefaults === true || (obj.string != null && obj.string !== '')) {
           w.uint32(114)
           w.string(obj.string ?? '')
         }

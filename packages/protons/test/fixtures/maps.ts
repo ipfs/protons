@@ -22,7 +22,7 @@ export namespace SubMessage {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.foo !== '') {
+        if (opts.writeDefaults === true || (obj.foo != null && obj.foo !== '')) {
           w.uint32(10)
           w.string(obj.foo ?? '')
         }
@@ -89,12 +89,12 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== '') {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
             w.uint32(10)
             w.string(obj.key ?? '')
           }
 
-          if (opts.writeDefaults === true || obj.value !== '') {
+          if (opts.writeDefaults === true || (obj.value != null && obj.value !== '')) {
             w.uint32(18)
             w.string(obj.value ?? '')
           }
@@ -157,12 +157,12 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== 0) {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== 0)) {
             w.uint32(8)
             w.int32(obj.key ?? 0)
           }
 
-          if (opts.writeDefaults === true || obj.value !== 0) {
+          if (opts.writeDefaults === true || (obj.value != null && obj.value !== 0)) {
             w.uint32(16)
             w.int32(obj.value ?? 0)
           }
@@ -225,12 +225,12 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== false) {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== false)) {
             w.uint32(8)
             w.bool(obj.key ?? false)
           }
 
-          if (opts.writeDefaults === true || obj.value !== false) {
+          if (opts.writeDefaults === true || (obj.value != null && obj.value !== false)) {
             w.uint32(16)
             w.bool(obj.value ?? false)
           }
@@ -293,7 +293,7 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== '') {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
             w.uint32(10)
             w.string(obj.key ?? '')
           }

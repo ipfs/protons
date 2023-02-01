@@ -92,21 +92,21 @@ const defaultValueGenerators: Record<string, () => string> = {
 }
 
 const defaultValueTestGenerators: Record<string, (field: string) => string> = {
-  bool: (field) => `${field} !== false`,
+  bool: (field) => `(${field} != null && ${field} !== false)`,
   bytes: (field) => `(${field} != null && ${field}.byteLength > 0)`,
-  double: (field) => `${field} !== 0`,
-  fixed32: (field) => `${field} !== 0`,
-  fixed64: (field) => `${field} !== 0n`,
-  float: (field) => `${field} !== 0`,
-  int32: (field) => `${field} !== 0`,
-  int64: (field) => `${field} !== 0n`,
-  sfixed32: (field) => `${field} !== 0`,
-  sfixed64: (field) => `${field} !== 0n`,
-  sint32: (field) => `${field} !== 0`,
-  sint64: (field) => `${field} !== 0n`,
-  string: (field) => `${field} !== ''`,
-  uint32: (field) => `${field} !== 0`,
-  uint64: (field) => `${field} !== 0n`
+  double: (field) => `(${field} != null && ${field} !== 0)`,
+  fixed32: (field) => `(${field} != null && ${field} !== 0)`,
+  fixed64: (field) => `(${field} != null && ${field} !== 0n)`,
+  float: (field) => `(${field} != null && ${field} !== 0)`,
+  int32: (field) => `(${field} != null && ${field} !== 0)`,
+  int64: (field) => `(${field} != null && ${field} !== 0n)`,
+  sfixed32: (field) => `(${field} != null && ${field} !== 0)`,
+  sfixed64: (field) => `(${field} != null && ${field} !== 0n)`,
+  sint32: (field) => `(${field} != null && ${field} !== 0)`,
+  sint64: (field) => `(${field} != null && ${field} !== 0n)`,
+  string: (field) => `(${field} != null && ${field} !== '')`,
+  uint32: (field) => `(${field} != null && ${field} !== 0)`,
+  uint64: (field) => `(${field} != null && ${field} !== 0n)`
 }
 
 function findTypeName (typeName: string, classDef: MessageDef, moduleDef: ModuleDef): string {
