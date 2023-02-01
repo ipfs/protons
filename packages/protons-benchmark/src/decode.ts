@@ -6,9 +6,10 @@ $ npx playwright-test dist/src/index.js --runner benchmark
 */
 
 import Benchmark from 'benchmark'
-import { Test as ProtonsTest } from './protons/bench.js'
+
 import { decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
+import { Test as ProtonsTest } from './protons/bench.js'
 
 const message = {
   meh: {

@@ -1,4 +1,5 @@
 import type { Uint8ArrayList } from 'uint8arraylist'
+
 import type { Codec } from './codec.js'
 import { reader } from './utils.js'
 

@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 import meow from 'meow'
+
 import { generate } from '../src/index.js'
 
 async function main (): Promise<void> {
