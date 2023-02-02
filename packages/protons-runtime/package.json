@@ -1,6 +1,6 @@
 {
   "name": "protons-runtime",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Shared code to make your bundle smaller when running protons in your app",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons-runtime#readme",

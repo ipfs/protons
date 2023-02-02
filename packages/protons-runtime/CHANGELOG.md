@@ -1,3 +1,15 @@
+## [protons-runtime-v5.0.0](https://github.com/ipfs/protons/compare/protons-runtime-v4.0.2...protons-runtime-v5.0.0) (2023-02-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* singular fields should be optional to write (#83)
+
+### Bug Fixes
+
+* singular fields should be optional to write ([#83](https://github.com/ipfs/protons/issues/83)) ([229afbc](https://github.com/ipfs/protons/commit/229afbcb38ba0edc0622d4c2e97847462b439dc8)), closes [#42](https://github.com/ipfs/protons/issues/42)
+* sort imports ([#84](https://github.com/ipfs/protons/issues/84)) ([6f796f1](https://github.com/ipfs/protons/commit/6f796f1e7dfd631314f9a1df534eabd96dd1528c))
+
 ## [protons-runtime-v4.0.2](https://github.com/ipfs/protons/compare/protons-runtime-v4.0.1...protons-runtime-v4.0.2) (2023-01-12)
 
 
