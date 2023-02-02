@@ -1,3 +1,21 @@
+## [protons-v7.0.0](https://github.com/ipfs/protons/compare/protons-v6.1.3...protons-v7.0.0) (2023-02-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* singular fields should be optional to write (#83)
+
+### Bug Fixes
+
+* singular fields should be optional to write ([#83](https://github.com/ipfs/protons/issues/83)) ([229afbc](https://github.com/ipfs/protons/commit/229afbcb38ba0edc0622d4c2e97847462b439dc8)), closes [#42](https://github.com/ipfs/protons/issues/42)
+* sort imports ([#84](https://github.com/ipfs/protons/issues/84)) ([6f796f1](https://github.com/ipfs/protons/commit/6f796f1e7dfd631314f9a1df534eabd96dd1528c))
+* update sibling dep versions ([a77d027](https://github.com/ipfs/protons/commit/a77d027e055e442f4d1b004ebc1203e52292e7ed))
+
+
+### Trivial Changes
+
+* move bad fixtures to separate directory ([#82](https://github.com/ipfs/protons/issues/82)) ([76aa198](https://github.com/ipfs/protons/commit/76aa19882cd9fb4fa918dda6701b1f7b4ad740a4))
+
 ## [protons-v6.1.3](https://github.com/ipfs/protons/compare/protons-v6.1.2...protons-v6.1.3) (2023-01-31)
 
 
