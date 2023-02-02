@@ -28,9 +28,9 @@ export namespace Basic {
           w.string(obj.foo)
         }
 
-        if (opts.writeDefaults === true || obj.num !== 0) {
+        if (opts.writeDefaults === true || (obj.num != null && obj.num !== 0)) {
           w.uint32(16)
-          w.int32(obj.num)
+          w.int32(obj.num ?? 0)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -66,7 +66,7 @@ export namespace Basic {
     return _codec
   }
 
-  export const encode = (obj: Basic): Uint8Array => {
+  export const encode = (obj: Partial<Basic>): Uint8Array => {
     return encodeMessage(obj, Basic.codec())
   }
 
@@ -112,7 +112,7 @@ export namespace Empty {
     return _codec
   }
 
-  export const encode = (obj: Empty): Uint8Array => {
+  export const encode = (obj: Partial<Empty>): Uint8Array => {
     return encodeMessage(obj, Empty.codec())
   }
 

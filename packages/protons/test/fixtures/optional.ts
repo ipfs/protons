@@ -81,7 +81,7 @@ export namespace OptionalSubMessage {
     return _codec
   }
 
-  export const encode = (obj: OptionalSubMessage): Uint8Array => {
+  export const encode = (obj: Partial<OptionalSubMessage>): Uint8Array => {
     return encodeMessage(obj, OptionalSubMessage.codec())
   }
 
@@ -283,7 +283,7 @@ export namespace Optional {
     return _codec
   }
 
-  export const encode = (obj: Optional): Uint8Array => {
+  export const encode = (obj: Partial<Optional>): Uint8Array => {
     return encodeMessage(obj, Optional.codec())
   }
 

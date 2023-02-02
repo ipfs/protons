@@ -22,9 +22,9 @@ export namespace SubMessage {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || obj.foo !== '') {
+        if (opts.writeDefaults === true || (obj.foo != null && obj.foo !== '')) {
           w.uint32(10)
-          w.string(obj.foo)
+          w.string(obj.foo ?? '')
         }
 
         if (opts.lengthDelimited !== false) {
@@ -57,7 +57,7 @@ export namespace SubMessage {
     return _codec
   }
 
-  export const encode = (obj: SubMessage): Uint8Array => {
+  export const encode = (obj: Partial<SubMessage>): Uint8Array => {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -89,14 +89,14 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== '') {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
             w.uint32(10)
-            w.string(obj.key)
+            w.string(obj.key ?? '')
           }
 
-          if (opts.writeDefaults === true || obj.value !== '') {
+          if (opts.writeDefaults === true || (obj.value != null && obj.value !== '')) {
             w.uint32(18)
-            w.string(obj.value)
+            w.string(obj.value ?? '')
           }
 
           if (opts.lengthDelimited !== false) {
@@ -133,7 +133,7 @@ export namespace MapTypes {
       return _codec
     }
 
-    export const encode = (obj: MapTypes$stringMapEntry): Uint8Array => {
+    export const encode = (obj: Partial<MapTypes$stringMapEntry>): Uint8Array => {
       return encodeMessage(obj, MapTypes$stringMapEntry.codec())
     }
 
@@ -157,14 +157,14 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== 0) {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== 0)) {
             w.uint32(8)
-            w.int32(obj.key)
+            w.int32(obj.key ?? 0)
           }
 
-          if (opts.writeDefaults === true || obj.value !== 0) {
+          if (opts.writeDefaults === true || (obj.value != null && obj.value !== 0)) {
             w.uint32(16)
-            w.int32(obj.value)
+            w.int32(obj.value ?? 0)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -201,7 +201,7 @@ export namespace MapTypes {
       return _codec
     }
 
-    export const encode = (obj: MapTypes$intMapEntry): Uint8Array => {
+    export const encode = (obj: Partial<MapTypes$intMapEntry>): Uint8Array => {
       return encodeMessage(obj, MapTypes$intMapEntry.codec())
     }
 
@@ -225,14 +225,14 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== false) {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== false)) {
             w.uint32(8)
-            w.bool(obj.key)
+            w.bool(obj.key ?? false)
           }
 
-          if (opts.writeDefaults === true || obj.value !== false) {
+          if (opts.writeDefaults === true || (obj.value != null && obj.value !== false)) {
             w.uint32(16)
-            w.bool(obj.value)
+            w.bool(obj.value ?? false)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -269,7 +269,7 @@ export namespace MapTypes {
       return _codec
     }
 
-    export const encode = (obj: MapTypes$boolMapEntry): Uint8Array => {
+    export const encode = (obj: Partial<MapTypes$boolMapEntry>): Uint8Array => {
       return encodeMessage(obj, MapTypes$boolMapEntry.codec())
     }
 
@@ -293,9 +293,9 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || obj.key !== '') {
+          if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
             w.uint32(10)
-            w.string(obj.key)
+            w.string(obj.key ?? '')
           }
 
           if (obj.value != null) {
@@ -339,7 +339,7 @@ export namespace MapTypes {
       return _codec
     }
 
-    export const encode = (obj: MapTypes$messageMapEntry): Uint8Array => {
+    export const encode = (obj: Partial<MapTypes$messageMapEntry>): Uint8Array => {
       return encodeMessage(obj, MapTypes$messageMapEntry.codec())
     }
 
@@ -443,7 +443,7 @@ export namespace MapTypes {
     return _codec
   }
 
-  export const encode = (obj: MapTypes): Uint8Array => {
+  export const encode = (obj: Partial<MapTypes>): Uint8Array => {
     return encodeMessage(obj, MapTypes.codec())
   }
 
