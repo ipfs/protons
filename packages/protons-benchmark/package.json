@@ -77,7 +77,7 @@
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
-    "protons": "^6.0.0",
+    "protons": "^7.0.0",
     "protons-runtime": "^5.0.0",
     "uint8arraylist": "^2.4.3",
     "uint8arrays": "^4.0.2"
