@@ -3,11 +3,12 @@ import ReaderClass from 'protobufjs/src/reader.js'
 // @ts-expect-error no types
 import ReaderBufferClass from 'protobufjs/src/reader_buffer.js'
 // @ts-expect-error no types
+import util from 'protobufjs/src/util/minimal.js'
+// @ts-expect-error no types
 import WriterClass from 'protobufjs/src/writer.js'
 // @ts-expect-error no types
 import WriterBufferClass from 'protobufjs/src/writer_buffer.js'
-// @ts-expect-error no types
-import util from 'protobufjs/src/util/minimal.js'
+
 import type { Reader, Writer } from './index.js'
 
 function configure (): void {

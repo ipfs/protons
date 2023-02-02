@@ -5,8 +5,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum OptionalEnum {
   NO_VALUE = 'NO_VALUE',

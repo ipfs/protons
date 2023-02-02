@@ -1,9 +1,10 @@
 /* eslint-disable max-depth */
 
-import { main as pbjs } from 'protobufjs-cli/pbjs.js'
+import fs from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
-import fs from 'fs/promises'
+
+import { main as pbjs } from 'protobufjs-cli/pbjs.js'
 
 export enum CODEC_TYPES {
   VARINT = 0,
@@ -697,29 +698,37 @@ export async function generate (source: string, flags: Flags): Promise<void> {
 
   const moduleDef = defineModule(def)
 
-  let lines = [
+  const ignores = [
     '/* eslint-disable import/export */',
     '/* eslint-disable complexity */',
     '/* eslint-disable @typescript-eslint/no-namespace */',
     '/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */',
-    '/* eslint-disable @typescript-eslint/no-empty-interface */',
-    ''
+    '/* eslint-disable @typescript-eslint/no-empty-interface */'
   ]
 
+  const imports = []
+
   if (moduleDef.imports.size > 0) {
-    lines.push(`import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'`)
+    imports.push(`import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'`)
   }
 
   if (moduleDef.imports.has('encodeMessage')) {
-    lines.push("import type { Uint8ArrayList } from 'uint8arraylist'")
+    imports.push("import type { Uint8ArrayList } from 'uint8arraylist'")
   }
 
   if (moduleDef.importedTypes.size > 0) {
-    lines.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
+    imports.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
   }
 
-  lines = [
-    ...lines,
+  const lines = [
+    ...ignores,
+    '',
+    ...imports.sort((a, b) => {
+      const aModule = a.split("from '")[1].toString()
+      const bModule = b.split("from '")[1].toString()
+
+      return aModule.localeCompare(bModule)
+    }),
     '',
     ...moduleDef.compiled
   ]

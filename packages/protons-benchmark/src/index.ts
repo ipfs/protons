@@ -5,12 +5,14 @@ $ node dist/src/index.js
 $ npx playwright-test dist/src/index.js --runner benchmark
 */
 
-import Benchmark from 'benchmark'
 import { expect } from 'aegir/chai'
-import { Test as ProtonsTest } from './protons/bench.js'
+
+import Benchmark from 'benchmark'
+
 import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
-import { Test as ProtobufjsTest } from './protobufjs/bench.js'
 import { Test as ProtobufTsTest } from './protobuf-ts/bench.js'
+import { Test as ProtobufjsTest } from './protobufjs/bench.js'
+import { Test as ProtonsTest } from './protons/bench.js'
 
 const message = {
   meh: {
