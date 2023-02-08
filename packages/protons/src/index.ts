@@ -38,22 +38,22 @@ const types: Record<string, string> = {
   uint64: 'bigint'
 }
 
-const encoderGenerators: Record<string, (val: string, includeDefault: boolean) => string> = {
-  bool: (val, includeDefault) => `w.bool(${val}${includeDefault ? ' ?? false' : ''})`,
-  bytes: (val, includeDefault) => `w.bytes(${val}${includeDefault ? ' ?? new Uint8Array(0)' : ''})`,
-  double: (val, includeDefault) => `w.double(${val}${includeDefault ? ' ?? 0' : ''})`,
-  fixed32: (val, includeDefault) => `w.fixed32(${val}${includeDefault ? ' ?? 0' : ''})`,
-  fixed64: (val, includeDefault) => `w.fixed64(${val}${includeDefault ? ' ?? 0n' : ''})`,
-  float: (val, includeDefault) => `w.float(${val}${includeDefault ? ' ?? 0' : ''})`,
-  int32: (val, includeDefault) => `w.int32(${val}${includeDefault ? ' ?? 0' : ''})`,
-  int64: (val, includeDefault) => `w.int64(${val}${includeDefault ? ' ?? 0n' : ''})`,
-  sfixed32: (val, includeDefault) => `w.sfixed32(${val}${includeDefault ? ' ?? 0' : ''})`,
-  sfixed64: (val, includeDefault) => `w.sfixed64(${val}${includeDefault ? ' ?? 0n' : ''})`,
-  sint32: (val, includeDefault) => `w.sint32(${val}${includeDefault ? ' ?? 0' : ''})`,
-  sint64: (val, includeDefault) => `w.sint64(${val}${includeDefault ? ' ?? 0n' : ''})`,
-  string: (val, includeDefault) => `w.string(${val}${includeDefault ? ' ?? \'\'' : ''})`,
-  uint32: (val, includeDefault) => `w.uint32(${val}${includeDefault ? ' ?? 0' : ''})`,
-  uint64: (val, includeDefault) => `w.uint64(${val}${includeDefault ? ' ?? 0n' : ''})`
+const encoderGenerators: Record<string, (val: string) => string> = {
+  bool: (val) => `w.bool(${val})`,
+  bytes: (val) => `w.bytes(${val})`,
+  double: (val) => `w.double(${val})`,
+  fixed32: (val) => `w.fixed32(${val})`,
+  fixed64: (val) => `w.fixed64(${val})`,
+  float: (val) => `w.float(${val})`,
+  int32: (val) => `w.int32(${val})`,
+  int64: (val) => `w.int64(${val})`,
+  sfixed32: (val) => `w.sfixed32(${val})`,
+  sfixed64: (val) => `w.sfixed64(${val})`,
+  sint32: (val) => `w.sint32(${val})`,
+  sint64: (val) => `w.sint64(${val})`,
+  string: (val) => `w.string(${val})`,
+  uint32: (val) => `w.uint32(${val})`,
+  uint64: (val) => `w.uint64(${val})`
 }
 
 const decoderGenerators: Record<string, () => string> = {
@@ -395,16 +395,15 @@ export interface ${messageDef.name} {
       } else if (!fieldDef.optional && !fieldDef.repeated) {
         // proto3 singular fields should only be written out if they are not the default value
         if (defaultValueTestGenerators[type] != null) {
-          valueTest = `opts.writeDefaults === true || ${defaultValueTestGenerators[type](`obj.${name}`)}`
+          valueTest = `${defaultValueTestGenerators[type](`obj.${name}`)}`
         } else if (type === 'enum') {
           // handle enums
-          valueTest = `opts.writeDefaults === true || (obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0)`
+          valueTest = `obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0`
         }
       }
 
-      function createWriteField (valueVar: string): (includeDefault: boolean) => string {
+      function createWriteField (valueVar: string): () => string {
         const id = (fieldDef.id << 3) | codecTypes[type]
-        let defaultValue = ''
 
         if (fieldDef.enum) {
           const def = findDef(fieldDef.type, messageDef, moduleDef)
@@ -412,12 +411,10 @@ export interface ${messageDef.name} {
           if (!isEnumDef(def)) {
             throw new Error(`${fieldDef.type} was not enum def`)
           }
-
-          defaultValue = Object.keys(def.values)[0]
         }
 
-        let writeField = (includeDefault: boolean): string => `w.uint32(${id})
-          ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}${includeDefault ? ` ?? ${typeName}.${defaultValue}` : ''}, w)` : encoderGenerators[type](valueVar, includeDefault)}`
+        let writeField = (): string => `w.uint32(${id})
+          ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerators[type](valueVar)}`
 
         if (type === 'message') {
           // message fields are only written if they have values. But if a message
@@ -437,7 +434,7 @@ export interface ${messageDef.name} {
           writeField = () => `
         for (const [key, value] of obj.${name}.entries()) {
           ${
-              createWriteField('{ key, value }')(false)
+              createWriteField('{ key, value }')()
                 .split('\n')
                 .map(s => {
                   const trimmed = s.trim()
@@ -452,7 +449,7 @@ export interface ${messageDef.name} {
           writeField = () => `
           for (const value of obj.${name}) {
           ${
-            createWriteField('value')(false)
+            createWriteField('value')()
               .split('\n')
               .map(s => {
                 const trimmed = s.trim()
@@ -468,7 +465,7 @@ export interface ${messageDef.name} {
 
       return `
         if (${valueTest}) {
-          ${writeField(valueTest.includes('opts.writeDefaults === true'))}
+          ${writeField()}
         }`
     }).join('\n')
 

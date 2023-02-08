@@ -95,9 +95,9 @@ export namespace CircuitRelay {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
+          if ((obj.id != null && obj.id.byteLength > 0)) {
             w.uint32(10)
-            w.bytes(obj.id ?? new Uint8Array(0))
+            w.bytes(obj.id)
           }
 
           if (obj.addrs != null) {

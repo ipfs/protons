@@ -22,9 +22,9 @@ export namespace SubMessage {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.foo != null && obj.foo !== '')) {
+        if ((obj.foo != null && obj.foo !== '')) {
           w.uint32(10)
-          w.string(obj.foo ?? '')
+          w.string(obj.foo)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -89,14 +89,14 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
+          if ((obj.key != null && obj.key !== '')) {
             w.uint32(10)
-            w.string(obj.key ?? '')
+            w.string(obj.key)
           }
 
-          if (opts.writeDefaults === true || (obj.value != null && obj.value !== '')) {
+          if ((obj.value != null && obj.value !== '')) {
             w.uint32(18)
-            w.string(obj.value ?? '')
+            w.string(obj.value)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -157,14 +157,14 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.key != null && obj.key !== 0)) {
+          if ((obj.key != null && obj.key !== 0)) {
             w.uint32(8)
-            w.int32(obj.key ?? 0)
+            w.int32(obj.key)
           }
 
-          if (opts.writeDefaults === true || (obj.value != null && obj.value !== 0)) {
+          if ((obj.value != null && obj.value !== 0)) {
             w.uint32(16)
-            w.int32(obj.value ?? 0)
+            w.int32(obj.value)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -225,14 +225,14 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.key != null && obj.key !== false)) {
+          if ((obj.key != null && obj.key !== false)) {
             w.uint32(8)
-            w.bool(obj.key ?? false)
+            w.bool(obj.key)
           }
 
-          if (opts.writeDefaults === true || (obj.value != null && obj.value !== false)) {
+          if ((obj.value != null && obj.value !== false)) {
             w.uint32(16)
-            w.bool(obj.value ?? false)
+            w.bool(obj.value)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -293,9 +293,9 @@ export namespace MapTypes {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
+          if ((obj.key != null && obj.key !== '')) {
             w.uint32(10)
-            w.string(obj.key ?? '')
+            w.string(obj.key)
           }
 
           if (obj.value != null) {

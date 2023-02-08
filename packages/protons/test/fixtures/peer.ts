@@ -125,9 +125,9 @@ export namespace Address {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.multiaddr != null && obj.multiaddr.byteLength > 0)) {
+        if ((obj.multiaddr != null && obj.multiaddr.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.multiaddr ?? new Uint8Array(0))
+          w.bytes(obj.multiaddr)
         }
 
         if (obj.isCertified != null) {
@@ -192,14 +192,14 @@ export namespace Metadata {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.key != null && obj.key !== '')) {
+        if ((obj.key != null && obj.key !== '')) {
           w.uint32(10)
-          w.string(obj.key ?? '')
+          w.string(obj.key)
         }
 
-        if (opts.writeDefaults === true || (obj.value != null && obj.value.byteLength > 0)) {
+        if ((obj.value != null && obj.value.byteLength > 0)) {
           w.uint32(18)
-          w.bytes(obj.value ?? new Uint8Array(0))
+          w.bytes(obj.value)
         }
 
         if (opts.lengthDelimited !== false) {
