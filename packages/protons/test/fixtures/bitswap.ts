@@ -57,14 +57,14 @@ export namespace Message {
               w.fork()
             }
 
-            if (opts.writeDefaults === true || (obj.block != null && obj.block.byteLength > 0)) {
+            if ((obj.block != null && obj.block.byteLength > 0)) {
               w.uint32(10)
-              w.bytes(obj.block ?? new Uint8Array(0))
+              w.bytes(obj.block)
             }
 
-            if (opts.writeDefaults === true || (obj.priority != null && obj.priority !== 0)) {
+            if ((obj.priority != null && obj.priority !== 0)) {
               w.uint32(16)
-              w.int32(obj.priority ?? 0)
+              w.int32(obj.priority)
             }
 
             if (obj.cancel != null) {
@@ -72,14 +72,14 @@ export namespace Message {
               w.bool(obj.cancel)
             }
 
-            if (opts.writeDefaults === true || (obj.wantType != null && __WantTypeValues[obj.wantType] !== 0)) {
+            if (obj.wantType != null && __WantTypeValues[obj.wantType] !== 0) {
               w.uint32(32)
-              Message.Wantlist.WantType.codec().encode(obj.wantType ?? Message.Wantlist.WantType.Block, w)
+              Message.Wantlist.WantType.codec().encode(obj.wantType, w)
             }
 
-            if (opts.writeDefaults === true || (obj.sendDontHave != null && obj.sendDontHave !== false)) {
+            if ((obj.sendDontHave != null && obj.sendDontHave !== false)) {
               w.uint32(40)
-              w.bool(obj.sendDontHave ?? false)
+              w.bool(obj.sendDontHave)
             }
 
             if (opts.lengthDelimited !== false) {
@@ -152,9 +152,9 @@ export namespace Message {
             }
           }
 
-          if (opts.writeDefaults === true || (obj.full != null && obj.full !== false)) {
+          if ((obj.full != null && obj.full !== false)) {
             w.uint32(16)
-            w.bool(obj.full ?? false)
+            w.bool(obj.full)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -215,14 +215,14 @@ export namespace Message {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.prefix != null && obj.prefix.byteLength > 0)) {
+          if ((obj.prefix != null && obj.prefix.byteLength > 0)) {
             w.uint32(10)
-            w.bytes(obj.prefix ?? new Uint8Array(0))
+            w.bytes(obj.prefix)
           }
 
-          if (opts.writeDefaults === true || (obj.data != null && obj.data.byteLength > 0)) {
+          if ((obj.data != null && obj.data.byteLength > 0)) {
             w.uint32(18)
-            w.bytes(obj.data ?? new Uint8Array(0))
+            w.bytes(obj.data)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -299,14 +299,14 @@ export namespace Message {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.cid != null && obj.cid.byteLength > 0)) {
+          if ((obj.cid != null && obj.cid.byteLength > 0)) {
             w.uint32(10)
-            w.bytes(obj.cid ?? new Uint8Array(0))
+            w.bytes(obj.cid)
           }
 
-          if (opts.writeDefaults === true || (obj.type != null && __BlockPresenceTypeValues[obj.type] !== 0)) {
+          if (obj.type != null && __BlockPresenceTypeValues[obj.type] !== 0) {
             w.uint32(16)
-            Message.BlockPresenceType.codec().encode(obj.type ?? Message.BlockPresenceType.Have, w)
+            Message.BlockPresenceType.codec().encode(obj.type, w)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -387,9 +387,9 @@ export namespace Message {
           }
         }
 
-        if (opts.writeDefaults === true || (obj.pendingBytes != null && obj.pendingBytes !== 0)) {
+        if ((obj.pendingBytes != null && obj.pendingBytes !== 0)) {
           w.uint32(40)
-          w.int32(obj.pendingBytes ?? 0)
+          w.int32(obj.pendingBytes)
         }
 
         if (opts.lengthDelimited !== false) {

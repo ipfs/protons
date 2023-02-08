@@ -27,19 +27,19 @@ export namespace pb {
             w.fork()
           }
 
-          if (opts.writeDefaults === true || (obj.identityKey != null && obj.identityKey.byteLength > 0)) {
+          if ((obj.identityKey != null && obj.identityKey.byteLength > 0)) {
             w.uint32(10)
-            w.bytes(obj.identityKey ?? new Uint8Array(0))
+            w.bytes(obj.identityKey)
           }
 
-          if (opts.writeDefaults === true || (obj.identitySig != null && obj.identitySig.byteLength > 0)) {
+          if ((obj.identitySig != null && obj.identitySig.byteLength > 0)) {
             w.uint32(18)
-            w.bytes(obj.identitySig ?? new Uint8Array(0))
+            w.bytes(obj.identitySig)
           }
 
-          if (opts.writeDefaults === true || (obj.data != null && obj.data.byteLength > 0)) {
+          if ((obj.data != null && obj.data.byteLength > 0)) {
             w.uint32(26)
-            w.bytes(obj.data ?? new Uint8Array(0))
+            w.bytes(obj.data)
           }
 
           if (opts.lengthDelimited !== false) {

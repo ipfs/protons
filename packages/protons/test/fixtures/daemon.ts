@@ -62,9 +62,9 @@ export namespace Request {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          Request.Type.codec().encode(obj.type ?? Request.Type.IDENTIFY, w)
+          Request.Type.codec().encode(obj.type, w)
         }
 
         if (obj.connect != null) {
@@ -207,9 +207,9 @@ export namespace Response {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          Response.Type.codec().encode(obj.type ?? Response.Type.OK, w)
+          Response.Type.codec().encode(obj.type, w)
         }
 
         if (obj.error != null) {
@@ -325,9 +325,9 @@ export namespace IdentifyResponse {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
+        if ((obj.id != null && obj.id.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.id ?? new Uint8Array(0))
+          w.bytes(obj.id)
         }
 
         if (obj.addrs != null) {
@@ -396,9 +396,9 @@ export namespace ConnectRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+        if ((obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer ?? new Uint8Array(0))
+          w.bytes(obj.peer)
         }
 
         if (obj.addrs != null) {
@@ -475,9 +475,9 @@ export namespace StreamOpenRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+        if ((obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer ?? new Uint8Array(0))
+          w.bytes(obj.peer)
         }
 
         if (obj.proto != null) {
@@ -553,9 +553,9 @@ export namespace StreamHandlerRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.addr != null && obj.addr.byteLength > 0)) {
+        if ((obj.addr != null && obj.addr.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.addr ?? new Uint8Array(0))
+          w.bytes(obj.addr)
         }
 
         if (obj.proto != null) {
@@ -622,9 +622,9 @@ export namespace ErrorResponse {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.msg != null && obj.msg !== '')) {
+        if ((obj.msg != null && obj.msg !== '')) {
           w.uint32(10)
-          w.string(obj.msg ?? '')
+          w.string(obj.msg)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -682,19 +682,19 @@ export namespace StreamInfo {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+        if ((obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer ?? new Uint8Array(0))
+          w.bytes(obj.peer)
         }
 
-        if (opts.writeDefaults === true || (obj.addr != null && obj.addr.byteLength > 0)) {
+        if ((obj.addr != null && obj.addr.byteLength > 0)) {
           w.uint32(18)
-          w.bytes(obj.addr ?? new Uint8Array(0))
+          w.bytes(obj.addr)
         }
 
-        if (opts.writeDefaults === true || (obj.proto != null && obj.proto !== '')) {
+        if ((obj.proto != null && obj.proto !== '')) {
           w.uint32(26)
-          w.string(obj.proto ?? '')
+          w.string(obj.proto)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -794,9 +794,9 @@ export namespace DHTRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          DHTRequest.Type.codec().encode(obj.type ?? DHTRequest.Type.FIND_PEER, w)
+          DHTRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.peer != null) {
@@ -920,9 +920,9 @@ export namespace DHTResponse {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          DHTResponse.Type.codec().encode(obj.type ?? DHTResponse.Type.BEGIN, w)
+          DHTResponse.Type.codec().encode(obj.type, w)
         }
 
         if (obj.peer != null) {
@@ -995,9 +995,9 @@ export namespace PeerInfo {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.id != null && obj.id.byteLength > 0)) {
+        if ((obj.id != null && obj.id.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.id ?? new Uint8Array(0))
+          w.bytes(obj.id)
         }
 
         if (obj.addrs != null) {
@@ -1085,9 +1085,9 @@ export namespace ConnManagerRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          ConnManagerRequest.Type.codec().encode(obj.type ?? ConnManagerRequest.Type.TAG_PEER, w)
+          ConnManagerRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.peer != null) {
@@ -1167,9 +1167,9 @@ export namespace DisconnectRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.peer != null && obj.peer.byteLength > 0)) {
+        if ((obj.peer != null && obj.peer.byteLength > 0)) {
           w.uint32(10)
-          w.bytes(obj.peer ?? new Uint8Array(0))
+          w.bytes(obj.peer)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -1247,9 +1247,9 @@ export namespace PSRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          PSRequest.Type.codec().encode(obj.type ?? PSRequest.Type.GET_TOPICS, w)
+          PSRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.topic != null) {
@@ -1518,9 +1518,9 @@ export namespace PeerstoreRequest {
           w.fork()
         }
 
-        if (opts.writeDefaults === true || (obj.type != null && __TypeValues[obj.type] !== 0)) {
+        if (obj.type != null && __TypeValues[obj.type] !== 0) {
           w.uint32(8)
-          PeerstoreRequest.Type.codec().encode(obj.type ?? PeerstoreRequest.Type.INVALID, w)
+          PeerstoreRequest.Type.codec().encode(obj.type, w)
         }
 
         if (obj.id != null) {
