@@ -1,3 +1,10 @@
+## [protons-v7.0.2](https://github.com/ipfs/protons/compare/protons-v7.0.1...protons-v7.0.2) (2023-02-08)
+
+
+### Bug Fixes
+
+* remove writing default values ([#88](https://github.com/ipfs/protons/issues/88)) ([078c62f](https://github.com/ipfs/protons/commit/078c62f569fab2163ccb5772d796b56f5e7adf37))
+
 ## [protons-v7.0.1](https://github.com/ipfs/protons/compare/protons-v7.0.0...protons-v7.0.1) (2023-02-08)
 
 
