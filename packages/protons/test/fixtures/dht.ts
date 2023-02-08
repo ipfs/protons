@@ -183,10 +183,8 @@ export namespace Message {
           }
 
           if (obj.connection != null) {
-            w.uint32(26)
-            Message.ConnectionType.codec().encode(obj.connection, w, {
-              writeDefaults: false
-            })
+            w.uint32(24)
+            Message.ConnectionType.codec().encode(obj.connection, w)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -210,7 +208,7 @@ export namespace Message {
                 obj.addrs.push(reader.bytes())
                 break
               case 3:
-                obj.connection = Message.ConnectionType.codec().decode(reader, reader.uint32())
+                obj.connection = Message.ConnectionType.codec().decode(reader)
                 break
               default:
                 reader.skipType(tag & 7)
@@ -266,18 +264,14 @@ export namespace Message {
         if (obj.closerPeers != null) {
           for (const value of obj.closerPeers) {
             w.uint32(66)
-            Message.Peer.codec().encode(value, w, {
-              writeDefaults: true
-            })
+            Message.Peer.codec().encode(value, w)
           }
         }
 
         if (obj.providerPeers != null) {
           for (const value of obj.providerPeers) {
             w.uint32(74)
-            Message.Peer.codec().encode(value, w, {
-              writeDefaults: true
-            })
+            Message.Peer.codec().encode(value, w)
           }
         }
 

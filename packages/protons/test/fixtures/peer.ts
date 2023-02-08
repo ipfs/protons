@@ -29,9 +29,7 @@ export namespace Peer {
         if (obj.addresses != null) {
           for (const value of obj.addresses) {
             w.uint32(10)
-            Address.codec().encode(value, w, {
-              writeDefaults: true
-            })
+            Address.codec().encode(value, w)
           }
         }
 
@@ -45,9 +43,7 @@ export namespace Peer {
         if (obj.metadata != null) {
           for (const value of obj.metadata) {
             w.uint32(26)
-            Metadata.codec().encode(value, w, {
-              writeDefaults: true
-            })
+            Metadata.codec().encode(value, w)
           }
         }
 

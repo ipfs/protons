@@ -69,58 +69,42 @@ export namespace Request {
 
         if (obj.connect != null) {
           w.uint32(18)
-          ConnectRequest.codec().encode(obj.connect, w, {
-            writeDefaults: false
-          })
+          ConnectRequest.codec().encode(obj.connect, w)
         }
 
         if (obj.streamOpen != null) {
           w.uint32(26)
-          StreamOpenRequest.codec().encode(obj.streamOpen, w, {
-            writeDefaults: false
-          })
+          StreamOpenRequest.codec().encode(obj.streamOpen, w)
         }
 
         if (obj.streamHandler != null) {
           w.uint32(34)
-          StreamHandlerRequest.codec().encode(obj.streamHandler, w, {
-            writeDefaults: false
-          })
+          StreamHandlerRequest.codec().encode(obj.streamHandler, w)
         }
 
         if (obj.dht != null) {
           w.uint32(42)
-          DHTRequest.codec().encode(obj.dht, w, {
-            writeDefaults: false
-          })
+          DHTRequest.codec().encode(obj.dht, w)
         }
 
         if (obj.connManager != null) {
           w.uint32(50)
-          ConnManagerRequest.codec().encode(obj.connManager, w, {
-            writeDefaults: false
-          })
+          ConnManagerRequest.codec().encode(obj.connManager, w)
         }
 
         if (obj.disconnect != null) {
           w.uint32(58)
-          DisconnectRequest.codec().encode(obj.disconnect, w, {
-            writeDefaults: false
-          })
+          DisconnectRequest.codec().encode(obj.disconnect, w)
         }
 
         if (obj.pubsub != null) {
           w.uint32(66)
-          PSRequest.codec().encode(obj.pubsub, w, {
-            writeDefaults: false
-          })
+          PSRequest.codec().encode(obj.pubsub, w)
         }
 
         if (obj.peerStore != null) {
           w.uint32(74)
-          PeerstoreRequest.codec().encode(obj.peerStore, w, {
-            writeDefaults: false
-          })
+          PeerstoreRequest.codec().encode(obj.peerStore, w)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -230,53 +214,39 @@ export namespace Response {
 
         if (obj.error != null) {
           w.uint32(18)
-          ErrorResponse.codec().encode(obj.error, w, {
-            writeDefaults: false
-          })
+          ErrorResponse.codec().encode(obj.error, w)
         }
 
         if (obj.streamInfo != null) {
           w.uint32(26)
-          StreamInfo.codec().encode(obj.streamInfo, w, {
-            writeDefaults: false
-          })
+          StreamInfo.codec().encode(obj.streamInfo, w)
         }
 
         if (obj.identify != null) {
           w.uint32(34)
-          IdentifyResponse.codec().encode(obj.identify, w, {
-            writeDefaults: false
-          })
+          IdentifyResponse.codec().encode(obj.identify, w)
         }
 
         if (obj.dht != null) {
           w.uint32(42)
-          DHTResponse.codec().encode(obj.dht, w, {
-            writeDefaults: false
-          })
+          DHTResponse.codec().encode(obj.dht, w)
         }
 
         if (obj.peers != null) {
           for (const value of obj.peers) {
             w.uint32(50)
-            PeerInfo.codec().encode(value, w, {
-              writeDefaults: true
-            })
+            PeerInfo.codec().encode(value, w)
           }
         }
 
         if (obj.pubsub != null) {
           w.uint32(58)
-          PSResponse.codec().encode(obj.pubsub, w, {
-            writeDefaults: false
-          })
+          PSResponse.codec().encode(obj.pubsub, w)
         }
 
         if (obj.peerStore != null) {
           w.uint32(66)
-          PeerstoreResponse.codec().encode(obj.peerStore, w, {
-            writeDefaults: false
-          })
+          PeerstoreResponse.codec().encode(obj.peerStore, w)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -957,9 +927,7 @@ export namespace DHTResponse {
 
         if (obj.peer != null) {
           w.uint32(18)
-          PeerInfo.codec().encode(obj.peer, w, {
-            writeDefaults: false
-          })
+          PeerInfo.codec().encode(obj.peer, w)
         }
 
         if (obj.value != null) {
@@ -1630,9 +1598,7 @@ export namespace PeerstoreResponse {
 
         if (obj.peer != null) {
           w.uint32(10)
-          PeerInfo.codec().encode(obj.peer, w, {
-            writeDefaults: false
-          })
+          PeerInfo.codec().encode(obj.peer, w)
         }
 
         if (obj.protos != null) {

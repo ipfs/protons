@@ -166,16 +166,12 @@ export namespace CircuitRelay {
 
         if (obj.srcPeer != null) {
           w.uint32(18)
-          CircuitRelay.Peer.codec().encode(obj.srcPeer, w, {
-            writeDefaults: false
-          })
+          CircuitRelay.Peer.codec().encode(obj.srcPeer, w)
         }
 
         if (obj.dstPeer != null) {
           w.uint32(26)
-          CircuitRelay.Peer.codec().encode(obj.dstPeer, w, {
-            writeDefaults: false
-          })
+          CircuitRelay.Peer.codec().encode(obj.dstPeer, w)
         }
 
         if (obj.code != null) {

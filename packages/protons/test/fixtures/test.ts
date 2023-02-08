@@ -174,9 +174,7 @@ export namespace AllTheTypes {
 
         if (obj.field13 != null) {
           w.uint32(106)
-          SubMessage.codec().encode(obj.field13, w, {
-            writeDefaults: false
-          })
+          SubMessage.codec().encode(obj.field13, w)
         }
 
         if (obj.field14 != null) {
