@@ -1,3 +1,10 @@
+## [protons-v7.0.1](https://github.com/ipfs/protons/compare/protons-v7.0.0...protons-v7.0.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* treat nested enums as enums and not messages ([#87](https://github.com/ipfs/protons/issues/87)) ([3af689b](https://github.com/ipfs/protons/commit/3af689b08975aa686b23beb33622264af18b4697))
+
 ## [protons-v7.0.0](https://github.com/ipfs/protons/compare/protons-v6.1.3...protons-v7.0.0) (2023-02-02)
 
 
