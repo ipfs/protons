@@ -205,9 +205,7 @@ export namespace Singular {
 
         if (obj.subMessage != null) {
           w.uint32(138)
-          SingularSubMessage.codec().encode(obj.subMessage, w, {
-            writeDefaults: false
-          })
+          SingularSubMessage.codec().encode(obj.subMessage, w)
         }
 
         if (opts.lengthDelimited !== false) {

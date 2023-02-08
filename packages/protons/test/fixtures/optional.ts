@@ -202,9 +202,7 @@ export namespace Optional {
 
         if (obj.subMessage != null) {
           w.uint32(138)
-          OptionalSubMessage.codec().encode(obj.subMessage, w, {
-            writeDefaults: false
-          })
+          OptionalSubMessage.codec().encode(obj.subMessage, w)
         }
 
         if (opts.lengthDelimited !== false) {

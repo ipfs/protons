@@ -14,6 +14,7 @@ import { Optional, OptionalEnum } from './fixtures/optional.js'
 import { Peer } from './fixtures/peer.js'
 import { Singular, SingularEnum } from './fixtures/singular.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
+import { Message as Bitswap } from './fixtures/bitswap.js'
 
 function longifyBigInts (obj: any): any {
   const output = {
@@ -258,7 +259,18 @@ describe('encode', () => {
       }]
     }
 
-    testEncodings(obj, Peer, './test/fixtures/peer.proto', 'Peer')
+    const buf = Peer.encode(obj)
+    const out = Peer.decode(buf)
+
+    expect(obj).to.deep.equal(out)
+
+    testEncodings(obj, Peer, './test/fixtures/peer.proto', 'Peer', {
+      // protobuf.js encodes default values when it shouldn't
+      compareBytes: false,
+
+      // pbjs doesn't encode repeated fields properly
+      comparePbjs: false
+    })
   })
 
   it('decodes enums with values that are not 0-n', () => {
@@ -532,5 +544,34 @@ describe('encode', () => {
       // pbjs does not set default values when values are not present on the wire
       comparePbjs: false
     })
+  })
+
+  it('should round trip deeply nested messages with defaults', () => {
+    const input = {
+      wantlist: {
+        entries: [{
+          block: Buffer.from([]),
+          priority: 0,
+          cancel: false,
+          wantType: Bitswap.Wantlist.WantType.Block,
+          sendDontHave: false
+        }],
+        full: false
+      },
+      blocks: [],
+      payload: [{
+        prefix: Buffer.from([]),
+        data: Buffer.from([])
+      }],
+      blockPresences: [{
+        cid: Buffer.from([]),
+        type: Bitswap.BlockPresenceType.Have
+      }],
+      pendingBytes: 0
+    }
+    const buf = Bitswap.encode(input)
+    const output = Bitswap.decode(buf)
+
+    expect(output).to.deep.equal(input)
   })
 })

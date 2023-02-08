@@ -280,7 +280,7 @@ export namespace MapTypes {
 
   export interface MapTypes$messageMapEntry {
     key: string
-    value: SubMessage
+    value?: SubMessage
   }
 
   export namespace MapTypes$messageMapEntry {
@@ -300,9 +300,7 @@ export namespace MapTypes {
 
           if (obj.value != null) {
             w.uint32(18)
-            SubMessage.codec().encode(obj.value, w, {
-              writeDefaults: false
-            })
+            SubMessage.codec().encode(obj.value, w)
           }
 
           if (opts.lengthDelimited !== false) {
@@ -310,8 +308,7 @@ export namespace MapTypes {
           }
         }, (reader, length) => {
           const obj: any = {
-            key: '',
-            value: undefined
+            key: ''
           }
 
           const end = length == null ? reader.len : reader.pos + length
@@ -360,36 +357,28 @@ export namespace MapTypes {
         if (obj.stringMap != null && obj.stringMap.size !== 0) {
           for (const [key, value] of obj.stringMap.entries()) {
             w.uint32(10)
-            MapTypes.MapTypes$stringMapEntry.codec().encode({ key, value }, w, {
-              writeDefaults: true
-            })
+            MapTypes.MapTypes$stringMapEntry.codec().encode({ key, value }, w)
           }
         }
 
         if (obj.intMap != null && obj.intMap.size !== 0) {
           for (const [key, value] of obj.intMap.entries()) {
             w.uint32(18)
-            MapTypes.MapTypes$intMapEntry.codec().encode({ key, value }, w, {
-              writeDefaults: true
-            })
+            MapTypes.MapTypes$intMapEntry.codec().encode({ key, value }, w)
           }
         }
 
         if (obj.boolMap != null && obj.boolMap.size !== 0) {
           for (const [key, value] of obj.boolMap.entries()) {
             w.uint32(26)
-            MapTypes.MapTypes$boolMapEntry.codec().encode({ key, value }, w, {
-              writeDefaults: true
-            })
+            MapTypes.MapTypes$boolMapEntry.codec().encode({ key, value }, w)
           }
         }
 
         if (obj.messageMap != null && obj.messageMap.size !== 0) {
           for (const [key, value] of obj.messageMap.entries()) {
             w.uint32(34)
-            MapTypes.MapTypes$messageMapEntry.codec().encode({ key, value }, w, {
-              writeDefaults: true
-            })
+            MapTypes.MapTypes$messageMapEntry.codec().encode({ key, value }, w)
           }
         }
 

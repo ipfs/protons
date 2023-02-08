@@ -420,11 +420,11 @@ export interface ${messageDef.name} {
           ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}${includeDefault ? ` ?? ${typeName}.${defaultValue}` : ''}, w)` : encoderGenerators[type](valueVar, includeDefault)}`
 
         if (type === 'message') {
-          // message fields are only written if they have values
+          // message fields are only written if they have values. But if a message
+          // is part of a repeated field, and consists of only default values it
+          // won't be written, so write a zero-length buffer if that's the case
           writeField = () => `w.uint32(${id})
-          ${typeName}.codec().encode(${valueVar}, w, {
-            writeDefaults: ${Boolean(fieldDef.repeated).toString()}
-          })`
+          ${typeName}.codec().encode(${valueVar}, w)`
         }
 
         return writeField
@@ -620,29 +620,38 @@ function defineModule (def: ClassDef): ModuleDef {
     }
   }
 
-  defineMessage(defs)
+  function updateTypes (defs: Record<string, ClassDef>, parent?: ClassDef): void {
+    for (const className of Object.keys(defs)) {
+      const classDef = defs[className]
 
-  // set enum/message fields now all messages have been defined
-  for (const className of Object.keys(defs)) {
-    const classDef = defs[className]
+      if (classDef.nested != null) {
+        updateTypes(classDef.nested, classDef)
+      }
 
-    if (classDef.fields != null) {
-      for (const name of Object.keys(classDef.fields)) {
-        const fieldDef = classDef.fields[name]
-        if (types[fieldDef.type] == null) {
-          const def = findDef(fieldDef.type, classDef, moduleDef)
-          fieldDef.enum = isEnumDef(def)
-          fieldDef.message = !fieldDef.enum
+      if (classDef.fields != null) {
+        for (const name of Object.keys(classDef.fields)) {
+          const fieldDef = classDef.fields[name]
+          if (types[fieldDef.type] == null) {
+            const def = findDef(fieldDef.type, classDef, moduleDef)
 
-          if (fieldDef.message && !fieldDef.repeated) {
-            // the default type for a message is unset so they are always optional
-            // https://developers.google.com/protocol-buffers/docs/proto3#default
-            fieldDef.optional = true
+            fieldDef.enum = isEnumDef(def)
+            fieldDef.message = !fieldDef.enum
+
+            if (fieldDef.message && !fieldDef.repeated) {
+              // the default type for a message is unset so they are always optional
+              // https://developers.google.com/protocol-buffers/docs/proto3#default
+              fieldDef.optional = true
+            }
           }
         }
       }
     }
   }
+
+  defineMessage(defs)
+
+  // set enum/message fields now all messages have been defined
+  updateTypes(defs)
 
   for (const className of Object.keys(defs)) {
     const classDef = defs[className]
