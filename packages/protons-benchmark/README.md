@@ -20,6 +20,7 @@
 $ git clone git@github.com:ipfs/protons.git
 $ cd protons
 $ npm i
+$ npm run build
 $ cd packages/protons-benchmark
 ```
 
