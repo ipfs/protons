@@ -29,7 +29,7 @@ $ cd packages/protons-benchmark
 
 ## Usage
 
-Run the benchmark suite:
+Run the benchmark suite in node:
 
 ```console
 $ npm start
@@ -47,10 +47,11 @@ $ npm start
 > protons-benchmark@0.0.0 start
 > node dist/src/index.js
 
-pbjs x 11,798 ops/sec ±4.58% (88 runs sampled)
-protons x 11,693 ops/sec ±2.69% (85 runs sampled)
-protobuf.js x 12,419 ops/sec ±1.66% (88 runs sampled)
-@protobuf-ts x 10,536 ops/sec ±3.14% (85 runs sampled)
+pbjs x 19,188 ops/sec ±0.38% (98 runs sampled)
+protons x 19,001 ops/sec ±0.33% (95 runs sampled)
+protobuf.js x 19,558 ops/sec ±0.30% (91 runs sampled)
+@protobuf-ts x 17,216 ops/sec ±0.32% (95 runs sampled)
+protobuf-es x 15,673 ops/sec ±0.48% (93 runs sampled)
 Fastest is protobuf.js
 ```
 
@@ -63,11 +64,12 @@ $ npm run start:browser
 > npx playwright-test dist/src/index.js --runner benchmark
 
 ✔ chromium set up
-pbjs x 19,027 ops/sec ±0.86% (67 runs sampled)
-protons x 18,901 ops/sec ±0.65% (67 runs sampled)
-protobuf.js x 18,937 ops/sec ±0.55% (65 runs sampled)
-@protobuf-ts x 16,669 ops/sec ±0.49% (68 runs sampled)
-Fastest is pbjs,protobuf.js
+pbjs x 19,763 ops/sec ±0.35% (67 runs sampled)
+protons x 19,617 ops/sec ±0.37% (68 runs sampled)
+protobuf.js x 19,772 ops/sec ±0.34% (67 runs sampled)
+@protobuf-ts x 17,204 ops/sec ±0.33% (69 runs sampled)
+protobuf-es x 16,032 ops/sec ±0.38% (68 runs sampled)
+Fastest is protobuf.js,pbjs
 ```
 
 ## License
