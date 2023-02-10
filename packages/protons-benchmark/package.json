@@ -70,6 +70,7 @@
     "start:browser": "npx playwright-test dist/src/index.js --runner benchmark"
   },
   "dependencies": {
+    "@bufbuild/protobuf": "^1.0.0",
     "@protobuf-ts/plugin": "^2.8.1",
     "@protobuf-ts/runtime": "^2.8.1",
     "@types/benchmark": "^2.1.1",
@@ -81,6 +82,9 @@
     "protons-runtime": "^5.0.0",
     "uint8arraylist": "^2.4.3",
     "uint8arrays": "^4.0.2"
+  },
+  "devDependencies": {
+    "@bufbuild/protoc-gen-es": "^1.0.0"
   },
   "private": true
 }
