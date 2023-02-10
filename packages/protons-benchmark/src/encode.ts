@@ -10,6 +10,7 @@ import Benchmark from 'benchmark'
 import { encodeTest as pbjsEncodeTest } from './pbjs/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
 import { Test as ProtonsTest } from './protons/bench.js'
+import { Test as ProtobufEsTest } from './protobuf-es/bench_pb.js'
 
 const message = {
   meh: {
@@ -34,6 +35,9 @@ new Benchmark.Suite()
   })
   .add('protobufjs', () => {
     ProtobufjsTest.encode(message).finish()
+  })
+  .add('protobufes', () => {
+    new ProtobufEsTest(message).toBinary()
   })
   .on('error', (err: Error) => {
     console.error(err)

@@ -13,6 +13,7 @@ import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pb
 import { Test as ProtobufTsTest } from './protobuf-ts/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
 import { Test as ProtonsTest } from './protons/bench.js'
+import { Test as ProtobufEsTest } from './protobuf-es/bench_pb.js'
 
 const message = {
   meh: {
@@ -58,6 +59,12 @@ new Benchmark.Suite()
   .add('@protobuf-ts', () => {
     const buf = ProtobufTsTest.toBinary(message)
     const result = ProtobufTsTest.fromBinary(buf)
+
+    expectDecodedCorrectly(result)
+  })
+  .add('protobuf-es', () => {
+    const buf = new ProtobufEsTest(message).toBinary()
+    const result = ProtobufEsTest.fromBinary(buf)
 
     expectDecodedCorrectly(result)
   })
