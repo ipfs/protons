@@ -17,10 +17,6 @@
 ## Install
 
 ```console
-$ npm i protons-benchmark
-```
-
-```console
 $ git clone git@github.com:ipfs/protons.git
 $ cd protons
 $ npm i
