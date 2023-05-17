@@ -152,7 +152,7 @@
     "uint8arraylist": "^2.4.3"
   },
   "devDependencies": {
-    "aegir": "^38.0.0"
+    "aegir": "^39.0.7"
   },
   "peerDependencies": {
     "uint8arraylist": "^2.3.2"
