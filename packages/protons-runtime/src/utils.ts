@@ -8,7 +8,6 @@ import util from 'protobufjs/src/util/minimal.js'
 import WriterClass from 'protobufjs/src/writer.js'
 // @ts-expect-error no types
 import WriterBufferClass from 'protobufjs/src/writer_buffer.js'
-
 import type { Reader, Writer } from './index.js'
 
 function configure (): void {

@@ -1,20 +1,17 @@
 /* eslint-env mocha */
 
 import fs from 'fs'
-
 import { expect } from 'aegir/chai'
-
 import Long from 'long'
 import pbjs from 'pbjs'
-import protobufjs, { Type as PBType } from 'protobufjs'
-
+import protobufjs, { type Type as PBType } from 'protobufjs'
 import { Basic, Empty } from './fixtures/basic.js'
+import { Message as Bitswap } from './fixtures/bitswap.js'
 import { CircuitRelay } from './fixtures/circuit.js'
 import { Optional, OptionalEnum } from './fixtures/optional.js'
 import { Peer } from './fixtures/peer.js'
 import { Singular, SingularEnum } from './fixtures/singular.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
-import { Message as Bitswap } from './fixtures/bitswap.js'
 
 function longifyBigInts (obj: any): any {
   const output = {
@@ -280,7 +277,7 @@ describe('encode', () => {
     }
 
     const root = protobufjs.loadSync('./test/fixtures/circuit.proto')
-    // @ts-expect-error
+    // @ts-expect-error root.nested is possibly undefined
     const PbCircuitRelay = root.nested.CircuitRelay as PBType
 
     const protobufJsBuf = PbCircuitRelay.encode(PbCircuitRelay.fromObject(message)).finish()
