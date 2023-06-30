@@ -18,7 +18,7 @@ async function main (): Promise<void> {
     flags: {
       output: {
         type: 'string',
-        alias: 'o'
+        shortFlag: 'o'
       }
     }
   })
