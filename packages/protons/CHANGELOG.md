@@ -1,3 +1,10 @@
+## [protons-v7.0.4](https://github.com/ipfs/protons/compare/protons-v7.0.3...protons-v7.0.4) (2023-06-30)
+
+
+### Dependencies
+
+* bump meow from 11.0.0 to 12.0.1 ([#97](https://github.com/ipfs/protons/issues/97)) ([33250df](https://github.com/ipfs/protons/commit/33250df60fc3f613126fe3a8b1043547e2d6779e))
+
 ## [protons-v7.0.3](https://github.com/ipfs/protons/compare/protons-v7.0.2...protons-v7.0.3) (2023-06-30)
 
 
