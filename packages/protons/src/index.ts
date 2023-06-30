@@ -3,7 +3,6 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
-
 import { main as pbjs } from 'protobufjs-cli/pbjs.js'
 
 export enum CODEC_TYPES {

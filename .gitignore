@@ -1,15 +1,9 @@
-# Coverage directory used by tools like istanbul
-.nyc_output
-
+node_modules
 build
 dist
-docs
-
-# Dependency directory
-# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+.docs
+.coverage
 node_modules
-# Lock files
 package-lock.json
 yarn.lock
-.clinic
-coverage
+.vscode

@@ -5,10 +5,8 @@ $ node dist/src/index.js
 $ npx playwright-test dist/src/index.js --runner benchmark
 */
 
-import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-
 import Benchmark from 'benchmark'
-
+import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { RPC as ProtobufjsRPC } from './protobufjs/rpc.js'
 import { RPC as ProtonsRPC } from './protons/rpc.js'
 
