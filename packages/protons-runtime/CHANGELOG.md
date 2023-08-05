@@ -1,3 +1,10 @@
+## [protons-runtime-v5.0.2](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.1...protons-runtime-v5.0.2) (2023-08-05)
+
+
+### Dependencies
+
+* bump aegir from 39.0.13 to 40.0.8 ([#108](https://github.com/ipfs/protons/issues/108)) ([8b54c80](https://github.com/ipfs/protons/commit/8b54c8097683b055736a8e431728422cedf82697))
+
 ## [protons-runtime-v5.0.1](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.0...protons-runtime-v5.0.1) (2023-06-30)
 
 
