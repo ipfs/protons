@@ -1,4 +1,3 @@
-
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, Codec } from '../codec.js'
 
