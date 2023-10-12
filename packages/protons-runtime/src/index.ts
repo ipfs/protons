@@ -18,7 +18,8 @@ export {
 
 export { enumeration } from './codecs/enum.js'
 export { message } from './codecs/message.js'
-export { reader, writer } from './utils.js'
+export { createReader as reader } from './utils/reader.js'
+export { createWriter as writer } from './utils/writer.js'
 export type { Codec, EncodeOptions } from './codec.js'
 
 export interface Writer {
