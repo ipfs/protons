@@ -29,8 +29,6 @@ export class Uint8ArrayReader implements Reader {
   constructor (buffer: Uint8Array) {
     /**
      * Read buffer
-     *
-     * @type {Uint8Array}
      */
     this.buf = buffer
 

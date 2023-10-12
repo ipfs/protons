@@ -1,26 +1,6 @@
 import { allocUnsafe } from 'uint8arrays/alloc'
 
 /**
- * An allocator as used by {@link util.pool}.
- *
- * @typedef PoolAllocator
- * @type {Function}
- * @param {number} size - Buffer size
- * @returns {Uint8Array} Buffer
- */
-
-/**
- * A slicer as used by {@link util.pool}.
- *
- * @typedef PoolSlicer
- * @type {Function}
- * @param {number} start - Start offset
- * @param {number} end - End offset
- * @returns {Uint8Array} Buffer slice
- * @this {Uint8Array}
- */
-
-/**
  * A general purpose buffer pool
  */
 export default function pool (size?: number): (size: number) => Uint8Array {
