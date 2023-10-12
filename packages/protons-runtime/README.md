@@ -10,6 +10,7 @@
 ## Table of contents <!-- omit in toc -->
 
 - [Install](#install)
+- [API Docs](#api-docs)
 - [License](#license)
 - [Contribute](#contribute)
 
@@ -20,6 +21,10 @@ $ npm i protons-runtime
 ```
 
 Contains shared code to reduce code duplication between modules transpiled by protons.
+
+## API Docs
+
+- <https://ipfs.github.io/protons/modules/protons_runtime.html>
 
 ## License
 

@@ -11,6 +11,7 @@
 
 - [Install](#install)
 - [Usage](#usage)
+- [API Docs](#api-docs)
 - [License](#license)
 - [Contribute](#contribute)
 
@@ -69,6 +70,10 @@ protobuf.js x 18,937 ops/sec ±0.55% (65 runs sampled)
 @protobuf-ts x 16,669 ops/sec ±0.49% (68 runs sampled)
 Fastest is pbjs,protobuf.js
 ```
+
+## API Docs
+
+- <https://ipfs.github.io/protons/modules/protons_benchmark.html>
 
 ## License
 
