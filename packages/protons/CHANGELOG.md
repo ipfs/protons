@@ -1,3 +1,10 @@
+## [protons-v7.0.6](https://github.com/ipfs/protons/compare/protons-v7.0.5...protons-v7.0.6) (2023-10-12)
+
+
+### Dependencies
+
+* bump aegir from 40.0.13 to 41.0.4 ([#116](https://github.com/ipfs/protons/issues/116)) ([b95e988](https://github.com/ipfs/protons/commit/b95e9881a5c842b3c70a40d6d93b4aa5219b8aee))
+
 ## [protons-v7.0.5](https://github.com/ipfs/protons/compare/protons-v7.0.4...protons-v7.0.5) (2023-08-05)
 
 
