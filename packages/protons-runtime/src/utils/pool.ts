@@ -21,14 +21,9 @@ import { allocUnsafe } from 'uint8arrays/alloc'
  */
 
 /**
- * A general purpose buffer pool.
- *
- * @memberof util
- * @function
- * @param {number} [size=8192] - Slab size
- * @returns {PoolAllocator} Pooled allocator
+ * A general purpose buffer pool
  */
-export default function pool (size?: number) {
+export default function pool (size?: number): (size: number) => Uint8Array {
   const SIZE = size ?? 8192
   const MAX = SIZE >>> 1
   let slab: Uint8Array

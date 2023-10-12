@@ -12,10 +12,11 @@ export enum CODEC_TYPES {
 
 export interface EncodeOptions {
   lengthDelimited?: boolean
+  writeDefaults?: boolean
 }
 
 export interface EncodeFunction<T> {
-  (value: T, writer: Writer, opts?: EncodeOptions): void
+  (value: Partial<T>, writer: Writer, opts?: EncodeOptions): void
 }
 
 export interface DecodeFunction<T> {

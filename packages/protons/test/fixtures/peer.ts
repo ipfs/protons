@@ -1,9 +1,12 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Peer {
   addresses: Address[]
@@ -18,53 +21,51 @@ export namespace Peer {
 
   export const codec = (): Codec<Peer> => {
     if (_codec == null) {
-      _codec = message<Peer>((obj, writer, opts = {}) => {
+      _codec = message<Peer>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.addresses != null) {
           for (const value of obj.addresses) {
-            writer.uint32(10)
-            Address.codec().encode(value, writer)
+            w.uint32(10)
+            Address.codec().encode(value, w)
           }
-        } else {
-          throw new Error('Protocol error: required field "addresses" was not found in object')
         }
 
         if (obj.protocols != null) {
           for (const value of obj.protocols) {
-            writer.uint32(18)
-            writer.string(value)
+            w.uint32(18)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "protocols" was not found in object')
         }
 
         if (obj.metadata != null) {
           for (const value of obj.metadata) {
-            writer.uint32(26)
-            Metadata.codec().encode(value, writer)
+            w.uint32(26)
+            Metadata.codec().encode(value, w)
           }
-        } else {
-          throw new Error('Protocol error: required field "metadata" was not found in object')
         }
 
         if (obj.pubKey != null) {
-          writer.uint32(34)
-          writer.bytes(obj.pubKey)
+          w.uint32(34)
+          w.bytes(obj.pubKey)
         }
 
         if (obj.peerRecordEnvelope != null) {
-          writer.uint32(42)
-          writer.bytes(obj.peerRecordEnvelope)
+          w.uint32(42)
+          w.bytes(obj.peerRecordEnvelope)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          addresses: [],
+          protocols: [],
+          metadata: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -73,15 +74,12 @@ export namespace Peer {
 
           switch (tag >>> 3) {
             case 1:
-              obj.addresses = obj.addresses ?? []
               obj.addresses.push(Address.codec().decode(reader, reader.uint32()))
               break
             case 2:
-              obj.protocols = obj.protocols ?? []
               obj.protocols.push(reader.string())
               break
             case 3:
-              obj.metadata = obj.metadata ?? []
               obj.metadata.push(Metadata.codec().decode(reader, reader.uint32()))
               break
             case 4:
@@ -96,22 +94,6 @@ export namespace Peer {
           }
         }
 
-        obj.addresses = obj.addresses ?? []
-        obj.protocols = obj.protocols ?? []
-        obj.metadata = obj.metadata ?? []
-
-        if (obj.addresses == null) {
-          throw new Error('Protocol error: value for required field "addresses" was not found in protobuf')
-        }
-
-        if (obj.protocols == null) {
-          throw new Error('Protocol error: value for required field "protocols" was not found in protobuf')
-        }
-
-        if (obj.metadata == null) {
-          throw new Error('Protocol error: value for required field "metadata" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -119,7 +101,7 @@ export namespace Peer {
     return _codec
   }
 
-  export const encode = (obj: Peer): Uint8Array => {
+  export const encode = (obj: Partial<Peer>): Uint8Array => {
     return encodeMessage(obj, Peer.codec())
   }
 
@@ -138,28 +120,28 @@ export namespace Address {
 
   export const codec = (): Codec<Address> => {
     if (_codec == null) {
-      _codec = message<Address>((obj, writer, opts = {}) => {
+      _codec = message<Address>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.multiaddr != null) {
-          writer.uint32(10)
-          writer.bytes(obj.multiaddr)
-        } else {
-          throw new Error('Protocol error: required field "multiaddr" was not found in object')
+        if ((obj.multiaddr != null && obj.multiaddr.byteLength > 0)) {
+          w.uint32(10)
+          w.bytes(obj.multiaddr)
         }
 
         if (obj.isCertified != null) {
-          writer.uint32(16)
-          writer.bool(obj.isCertified)
+          w.uint32(16)
+          w.bool(obj.isCertified)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          multiaddr: new Uint8Array(0)
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -179,10 +161,6 @@ export namespace Address {
           }
         }
 
-        if (obj.multiaddr == null) {
-          throw new Error('Protocol error: value for required field "multiaddr" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -190,7 +168,7 @@ export namespace Address {
     return _codec
   }
 
-  export const encode = (obj: Address): Uint8Array => {
+  export const encode = (obj: Partial<Address>): Uint8Array => {
     return encodeMessage(obj, Address.codec())
   }
 
@@ -209,30 +187,29 @@ export namespace Metadata {
 
   export const codec = (): Codec<Metadata> => {
     if (_codec == null) {
-      _codec = message<Metadata>((obj, writer, opts = {}) => {
+      _codec = message<Metadata>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.key != null) {
-          writer.uint32(10)
-          writer.string(obj.key)
-        } else {
-          throw new Error('Protocol error: required field "key" was not found in object')
+        if ((obj.key != null && obj.key !== '')) {
+          w.uint32(10)
+          w.string(obj.key)
         }
 
-        if (obj.value != null) {
-          writer.uint32(18)
-          writer.bytes(obj.value)
-        } else {
-          throw new Error('Protocol error: required field "value" was not found in object')
+        if ((obj.value != null && obj.value.byteLength > 0)) {
+          w.uint32(18)
+          w.bytes(obj.value)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          key: '',
+          value: new Uint8Array(0)
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -252,14 +229,6 @@ export namespace Metadata {
           }
         }
 
-        if (obj.key == null) {
-          throw new Error('Protocol error: value for required field "key" was not found in protobuf')
-        }
-
-        if (obj.value == null) {
-          throw new Error('Protocol error: value for required field "value" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -267,7 +236,7 @@ export namespace Metadata {
     return _codec
   }
 
-  export const encode = (obj: Metadata): Uint8Array => {
+  export const encode = (obj: Partial<Metadata>): Uint8Array => {
     return encodeMessage(obj, Metadata.codec())
   }
 

@@ -3,7 +3,7 @@
 import meow from 'meow'
 import { generate } from '../src/index.js'
 
-async function main () {
+async function main (): Promise<void> {
   const cli = meow(`
   Usage
     $ protons source...
@@ -14,11 +14,12 @@ async function main () {
   Examples
     $ protons ./path/to/file.proto ./path/to/other/file.proto
 `, {
+    // @ts-expect-error wrong version is hoisted?!
     importMeta: import.meta,
     flags: {
       output: {
         type: 'string',
-        alias: 'o'
+        shortFlag: 'o'
       }
     }
   })

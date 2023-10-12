@@ -1,17 +1,7 @@
 /**
- * A minimal UTF8 implementation for number arrays.
- *
- * @memberof util
- * @namespace
+ * Calculates the UTF8 byte length of a string
  */
-
-/**
- * Calculates the UTF8 byte length of a string.
- *
- * @param {string} string - String
- * @returns {number} Byte length
- */
-export function length (string: string) {
+export function length (string: string): number {
   let len = 0
   let c = 0
   for (let i = 0; i < string.length; ++i) {
@@ -33,14 +23,9 @@ export function length (string: string) {
 }
 
 /**
- * Reads UTF8 bytes as a string.
- *
- * @param {Uint8Array} buffer - Source buffer
- * @param {number} start - Source start
- * @param {number} end - Source end
- * @returns {string} String read
+ * Reads UTF8 bytes as a string
  */
-export function read (buffer: Uint8Array, start: number, end: number) {
+export function read (buffer: Uint8Array, start: number, end: number): string {
   const len = end - start
 
   if (len < 1) {
@@ -85,14 +70,9 @@ export function read (buffer: Uint8Array, start: number, end: number) {
 }
 
 /**
- * Writes a string as UTF8 bytes.
- *
- * @param {string} string - Source string
- * @param {Uint8Array} buffer - Destination buffer
- * @param {number} offset - Destination offset
- * @returns {number} Bytes written
+ * Writes a string as UTF8 bytes
  */
-export function write (string: string, buffer: Uint8Array, offset: number) {
+export function write (string: string, buffer: Uint8Array, offset: number): number {
   const start = offset
   let c1 // character 1
   let c2 // character 2

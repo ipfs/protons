@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "4.0.3",
+  "version": "7.0.5",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons#readme",
@@ -11,34 +11,14 @@
   "bugs": {
     "url": "https://github.com/ipfs/protons/issues"
   },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
-  },
   "bin": {
     "protons": "./dist/bin/protons.js"
   },
   "type": "module",
   "types": "./dist/src/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "*",
-        "dist/*",
-        "dist/src/*",
-        "dist/src/*/index"
-      ],
-      "src/*": [
-        "*",
-        "dist/*",
-        "dist/src/*",
-        "dist/src/*/index"
-      ]
-    }
-  },
   "files": [
     "src",
-    "dist/src",
+    "dist",
     "!dist/test",
     "!**/*.tsbuildinfo"
   ],
@@ -46,15 +26,12 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
-    },
-    "./status": {
-      "types": "./dist/src/status.d.ts",
-      "import": "./dist/src/status.js"
     }
   },
   "eslintConfig": {
     "extends": "ipfs",
     "parserOptions": {
+      "project": true,
       "sourceType": "module"
     }
   },
@@ -153,16 +130,15 @@
     "release": "aegir release"
   },
   "dependencies": {
-    "meow": "^10.1.2",
+    "meow": "^12.0.1",
     "protobufjs-cli": "^1.0.0"
   },
   "devDependencies": {
-    "aegir": "^37.0.5",
+    "aegir": "^41.0.4",
     "long": "^5.2.0",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
-    "protons-runtime": "^3.0.0",
-    "uint8arraylist": "^2.3.2",
-    "uint8arrays": "^3.1.0"
+    "protons-runtime": "^5.0.0",
+    "uint8arraylist": "^2.4.3"
   }
 }

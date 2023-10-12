@@ -14,7 +14,7 @@ message Request {
     PEERSTORE      = 9;
   }
 
-  required Type type = 1;
+  Type type = 1;
 
   optional ConnectRequest connect = 2;
   optional StreamOpenRequest streamOpen = 3;
@@ -32,7 +32,7 @@ message Response {
     ERROR = 1;
   }
 
-  required Type type = 1;
+  Type type = 1;
   optional ErrorResponse error = 2;
   optional StreamInfo streamInfo = 3;
   optional IdentifyResponse identify = 4;
@@ -43,35 +43,35 @@ message Response {
 }
 
 message IdentifyResponse {
-  required bytes id = 1;
+  bytes id = 1;
   repeated bytes addrs = 2;
 }
 
 message ConnectRequest {
-  required bytes peer = 1;
+  bytes peer = 1;
   repeated bytes addrs = 2;
   optional int64 timeout = 3;
 }
 
 message StreamOpenRequest {
-  required bytes peer = 1;
+  bytes peer = 1;
   repeated string proto = 2;
   optional int64 timeout = 3;
 }
 
 message StreamHandlerRequest {
-  required bytes addr = 1;
+  bytes addr = 1;
   repeated string proto = 2;
 }
 
 message ErrorResponse {
-  required string msg = 1;
+  string msg = 1;
 }
 
 message StreamInfo {
-  required bytes peer = 1;
-  required bytes addr = 2;
-  required string proto = 3;
+  bytes peer = 1;
+  bytes addr = 2;
+  string proto = 3;
 }
 
 message DHTRequest {
@@ -87,7 +87,7 @@ message DHTRequest {
     PROVIDE                      = 8;
   }
 
-  required Type type = 1;
+  Type type = 1;
   optional bytes peer = 2;
   optional bytes cid = 3;
   optional bytes key = 4;
@@ -103,13 +103,13 @@ message DHTResponse {
     END   = 2;
   }
 
-  required Type type = 1;
+  Type type = 1;
   optional PeerInfo peer = 2;
   optional bytes value = 3;
 }
 
 message PeerInfo {
-  required bytes id = 1;
+  bytes id = 1;
   repeated bytes addrs = 2;
 }
 
@@ -120,7 +120,7 @@ message ConnManagerRequest {
     TRIM            = 2;
   }
 
-  required Type type = 1;
+  Type type = 1;
 
   optional bytes peer = 2;
   optional string tag = 3;
@@ -128,7 +128,7 @@ message ConnManagerRequest {
 }
 
 message DisconnectRequest {
-  required bytes peer = 1;
+  bytes peer = 1;
 }
 
 message PSRequest {
@@ -139,7 +139,7 @@ message PSRequest {
     SUBSCRIBE  = 3;
   }
 
-  required Type type = 1;
+  Type type = 1;
   optional string topic = 2;
   optional bytes data = 3;
 }
@@ -160,11 +160,12 @@ message PSResponse {
 
 message PeerstoreRequest {
   enum Type {
+    INVALID = 0;
     GET_PROTOCOLS = 1;
     GET_PEER_INFO = 2;
   }
 
-  required Type type = 1;
+  Type type = 1;
   optional bytes id = 2;
   repeated string protos = 3;
 }

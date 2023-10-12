@@ -1,4 +1,3 @@
-
 /**
  * Constructs new long bits.
  *
@@ -17,16 +16,12 @@ export class LongBits {
     // generated converter code might still call the ctor with signed 32bits. kept for compat.
 
     /**
-     * Low bits.
-     *
-     * @type {number}
+     * Low bits
      */
     this.lo = lo | 0
 
     /**
-     * High bits.
-     *
-     * @type {number}
+     * High bits
      */
     this.hi = hi | 0
   }
@@ -34,7 +29,7 @@ export class LongBits {
   /**
    * Converts this long bits to a possibly unsafe JavaScript number
    */
-  toBigInt (unsigned: boolean = false) {
+  toBigInt (unsigned: boolean = false): bigint {
     if (unsigned) {
       const result = BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n)
       return result
@@ -53,9 +48,9 @@ export class LongBits {
   }
 
   /**
-   * Zig-zag encodes this long bits.
+   * Zig-zag encodes this long bits
    */
-  zzEncode () {
+  zzEncode (): this {
     const mask = this.hi >> 31
     this.hi = ((this.hi << 1 | this.lo >>> 31) ^ mask) >>> 0
     this.lo = (this.lo << 1 ^ mask) >>> 0
@@ -65,7 +60,7 @@ export class LongBits {
   /**
    * Zig-zag decodes this long bits
    */
-  zzDecode () {
+  zzDecode (): this {
     const mask = -(this.lo & 1)
     this.lo = ((this.lo >>> 1 | this.hi << 31) ^ mask) >>> 0
     this.hi = (this.hi >>> 1 ^ mask) >>> 0
@@ -75,7 +70,7 @@ export class LongBits {
   /**
    * Calculates the length of this longbits when encoded as a varint.
    */
-  length () {
+  length (): number {
     const part0 = this.lo
     const part1 = (this.lo >>> 28 | this.hi << 4) >>> 0
     const part2 = this.hi >>> 24
@@ -93,7 +88,7 @@ export class LongBits {
   /**
    * Constructs new long bits from the specified number
    */
-  static fromBigInt (value: bigint) {
+  static fromBigInt (value: bigint): LongBits {
     if (value === 0n) { return zero }
 
     const negative = value < 0
@@ -118,7 +113,7 @@ export class LongBits {
   /**
    * Constructs new long bits from the specified number
    */
-  static fromNumber (value: number) {
+  static fromNumber (value: number): LongBits {
     if (value === 0) { return zero }
     const sign = value < 0
     if (sign) { value = -value }
@@ -138,7 +133,7 @@ export class LongBits {
   /**
    * Constructs new long bits from a number, long or string
    */
-  static from (value: bigint|number|string|{ low: number, high: number }) {
+  static from (value: bigint | number | string | { low: number, high: number }): LongBits {
     if (typeof value === 'number') {
       return LongBits.fromNumber(value)
     }

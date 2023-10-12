@@ -1,4 +1,3 @@
-
 import { createCodec, CODEC_TYPES } from '../codec.js'
 import type { DecodeFunction, EncodeFunction, Codec } from '../codec.js'
 
@@ -20,7 +19,7 @@ export function enumeration <T> (v: any): Codec<T> {
   }
 
   const decode: DecodeFunction<number | string> = function enumDecode (reader) {
-    const val = reader.uint32()
+    const val = reader.int32()
 
     return findValue(val)
   }

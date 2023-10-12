@@ -1,9 +1,12 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { encodeMessage, decodeMessage, message, enumeration } from 'protons-runtime'
-import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Record {
   key?: Uint8Array
@@ -18,38 +21,38 @@ export namespace Record {
 
   export const codec = (): Codec<Record> => {
     if (_codec == null) {
-      _codec = message<Record>((obj, writer, opts = {}) => {
+      _codec = message<Record>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.key != null) {
-          writer.uint32(10)
-          writer.bytes(obj.key)
+          w.uint32(10)
+          w.bytes(obj.key)
         }
 
         if (obj.value != null) {
-          writer.uint32(18)
-          writer.bytes(obj.value)
+          w.uint32(18)
+          w.bytes(obj.value)
         }
 
         if (obj.author != null) {
-          writer.uint32(26)
-          writer.bytes(obj.author)
+          w.uint32(26)
+          w.bytes(obj.author)
         }
 
         if (obj.signature != null) {
-          writer.uint32(34)
-          writer.bytes(obj.signature)
+          w.uint32(34)
+          w.bytes(obj.signature)
         }
 
         if (obj.timeReceived != null) {
-          writer.uint32(42)
-          writer.string(obj.timeReceived)
+          w.uint32(42)
+          w.string(obj.timeReceived)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
         const obj: any = {}
@@ -88,7 +91,7 @@ export namespace Record {
     return _codec
   }
 
-  export const encode = (obj: Record): Uint8Array => {
+  export const encode = (obj: Partial<Record>): Uint8Array => {
     return encodeMessage(obj, Record.codec())
   }
 
@@ -126,7 +129,7 @@ export namespace Message {
   }
 
   export namespace MessageType {
-    export const codec = () => {
+    export const codec = (): Codec<MessageType> => {
       return enumeration<MessageType>(__MessageTypeValues)
     }
   }
@@ -146,7 +149,7 @@ export namespace Message {
   }
 
   export namespace ConnectionType {
-    export const codec = () => {
+    export const codec = (): Codec<ConnectionType> => {
       return enumeration<ConnectionType>(__ConnectionTypeValues)
     }
   }
@@ -162,35 +165,35 @@ export namespace Message {
 
     export const codec = (): Codec<Peer> => {
       if (_codec == null) {
-        _codec = message<Peer>((obj, writer, opts = {}) => {
+        _codec = message<Peer>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
-            writer.fork()
+            w.fork()
           }
 
           if (obj.id != null) {
-            writer.uint32(10)
-            writer.bytes(obj.id)
+            w.uint32(10)
+            w.bytes(obj.id)
           }
 
           if (obj.addrs != null) {
             for (const value of obj.addrs) {
-              writer.uint32(18)
-              writer.bytes(value)
+              w.uint32(18)
+              w.bytes(value)
             }
-          } else {
-            throw new Error('Protocol error: required field "addrs" was not found in object')
           }
 
           if (obj.connection != null) {
-            writer.uint32(24)
-            Message.ConnectionType.codec().encode(obj.connection, writer)
+            w.uint32(24)
+            Message.ConnectionType.codec().encode(obj.connection, w)
           }
 
           if (opts.lengthDelimited !== false) {
-            writer.ldelim()
+            w.ldelim()
           }
         }, (reader, length) => {
-          const obj: any = {}
+          const obj: any = {
+            addrs: []
+          }
 
           const end = length == null ? reader.len : reader.pos + length
 
@@ -202,7 +205,6 @@ export namespace Message {
                 obj.id = reader.bytes()
                 break
               case 2:
-                obj.addrs = obj.addrs ?? []
                 obj.addrs.push(reader.bytes())
                 break
               case 3:
@@ -214,12 +216,6 @@ export namespace Message {
             }
           }
 
-          obj.addrs = obj.addrs ?? []
-
-          if (obj.addrs == null) {
-            throw new Error('Protocol error: value for required field "addrs" was not found in protobuf')
-          }
-
           return obj
         })
       }
@@ -227,7 +223,7 @@ export namespace Message {
       return _codec
     }
 
-    export const encode = (obj: Peer): Uint8Array => {
+    export const encode = (obj: Partial<Peer>): Uint8Array => {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -240,54 +236,53 @@ export namespace Message {
 
   export const codec = (): Codec<Message> => {
     if (_codec == null) {
-      _codec = message<Message>((obj, writer, opts = {}) => {
+      _codec = message<Message>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.type != null) {
-          writer.uint32(8)
-          Message.MessageType.codec().encode(obj.type, writer)
+          w.uint32(8)
+          Message.MessageType.codec().encode(obj.type, w)
         }
 
         if (obj.clusterLevelRaw != null) {
-          writer.uint32(80)
-          writer.int32(obj.clusterLevelRaw)
+          w.uint32(80)
+          w.int32(obj.clusterLevelRaw)
         }
 
         if (obj.key != null) {
-          writer.uint32(18)
-          writer.bytes(obj.key)
+          w.uint32(18)
+          w.bytes(obj.key)
         }
 
         if (obj.record != null) {
-          writer.uint32(26)
-          writer.bytes(obj.record)
+          w.uint32(26)
+          w.bytes(obj.record)
         }
 
         if (obj.closerPeers != null) {
           for (const value of obj.closerPeers) {
-            writer.uint32(66)
-            Message.Peer.codec().encode(value, writer)
+            w.uint32(66)
+            Message.Peer.codec().encode(value, w)
           }
-        } else {
-          throw new Error('Protocol error: required field "closerPeers" was not found in object')
         }
 
         if (obj.providerPeers != null) {
           for (const value of obj.providerPeers) {
-            writer.uint32(74)
-            Message.Peer.codec().encode(value, writer)
+            w.uint32(74)
+            Message.Peer.codec().encode(value, w)
           }
-        } else {
-          throw new Error('Protocol error: required field "providerPeers" was not found in object')
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          closerPeers: [],
+          providerPeers: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -308,28 +303,15 @@ export namespace Message {
               obj.record = reader.bytes()
               break
             case 8:
-              obj.closerPeers = obj.closerPeers ?? []
               obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
               break
             case 9:
-              obj.providerPeers = obj.providerPeers ?? []
               obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
               break
             default:
               reader.skipType(tag & 7)
               break
           }
-        }
-
-        obj.closerPeers = obj.closerPeers ?? []
-        obj.providerPeers = obj.providerPeers ?? []
-
-        if (obj.closerPeers == null) {
-          throw new Error('Protocol error: value for required field "closerPeers" was not found in protobuf')
-        }
-
-        if (obj.providerPeers == null) {
-          throw new Error('Protocol error: value for required field "providerPeers" was not found in protobuf')
         }
 
         return obj
@@ -339,7 +321,7 @@ export namespace Message {
     return _codec
   }
 
-  export const encode = (obj: Message): Uint8Array => {
+  export const encode = (obj: Partial<Message>): Uint8Array => {
     return encodeMessage(obj, Message.codec())
   }
 

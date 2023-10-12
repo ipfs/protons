@@ -1,9 +1,14 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
+
+export interface pb {}
 
 export namespace pb {
   export interface NoiseHandshakePayload {
@@ -17,37 +22,35 @@ export namespace pb {
 
     export const codec = (): Codec<NoiseHandshakePayload> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload>((obj, writer, opts = {}) => {
+        _codec = message<NoiseHandshakePayload>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
-            writer.fork()
+            w.fork()
           }
 
-          if (obj.identityKey != null) {
-            writer.uint32(10)
-            writer.bytes(obj.identityKey)
-          } else {
-            throw new Error('Protocol error: required field "identityKey" was not found in object')
+          if ((obj.identityKey != null && obj.identityKey.byteLength > 0)) {
+            w.uint32(10)
+            w.bytes(obj.identityKey)
           }
 
-          if (obj.identitySig != null) {
-            writer.uint32(18)
-            writer.bytes(obj.identitySig)
-          } else {
-            throw new Error('Protocol error: required field "identitySig" was not found in object')
+          if ((obj.identitySig != null && obj.identitySig.byteLength > 0)) {
+            w.uint32(18)
+            w.bytes(obj.identitySig)
           }
 
-          if (obj.data != null) {
-            writer.uint32(26)
-            writer.bytes(obj.data)
-          } else {
-            throw new Error('Protocol error: required field "data" was not found in object')
+          if ((obj.data != null && obj.data.byteLength > 0)) {
+            w.uint32(26)
+            w.bytes(obj.data)
           }
 
           if (opts.lengthDelimited !== false) {
-            writer.ldelim()
+            w.ldelim()
           }
         }, (reader, length) => {
-          const obj: any = {}
+          const obj: any = {
+            identityKey: new Uint8Array(0),
+            identitySig: new Uint8Array(0),
+            data: new Uint8Array(0)
+          }
 
           const end = length == null ? reader.len : reader.pos + length
 
@@ -70,18 +73,6 @@ export namespace pb {
             }
           }
 
-          if (obj.identityKey == null) {
-            throw new Error('Protocol error: value for required field "identityKey" was not found in protobuf')
-          }
-
-          if (obj.identitySig == null) {
-            throw new Error('Protocol error: value for required field "identitySig" was not found in protobuf')
-          }
-
-          if (obj.data == null) {
-            throw new Error('Protocol error: value for required field "data" was not found in protobuf')
-          }
-
           return obj
         })
       }
@@ -89,12 +80,54 @@ export namespace pb {
       return _codec
     }
 
-    export const encode = (obj: NoiseHandshakePayload): Uint8Array => {
+    export const encode = (obj: Partial<NoiseHandshakePayload>): Uint8Array => {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
     export const decode = (buf: Uint8Array | Uint8ArrayList): NoiseHandshakePayload => {
       return decodeMessage(buf, NoiseHandshakePayload.codec())
     }
+  }
+
+  let _codec: Codec<pb>
+
+  export const codec = (): Codec<pb> => {
+    if (_codec == null) {
+      _codec = message<pb>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
+        }
+
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: Partial<pb>): Uint8Array => {
+    return encodeMessage(obj, pb.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList): pb => {
+    return decodeMessage(buf, pb.codec())
   }
 }

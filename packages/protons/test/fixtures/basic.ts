@@ -1,9 +1,12 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Basic {
   foo?: string
@@ -15,28 +18,28 @@ export namespace Basic {
 
   export const codec = (): Codec<Basic> => {
     if (_codec == null) {
-      _codec = message<Basic>((obj, writer, opts = {}) => {
+      _codec = message<Basic>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.foo != null) {
-          writer.uint32(10)
-          writer.string(obj.foo)
+          w.uint32(10)
+          w.string(obj.foo)
         }
 
-        if (obj.num != null) {
-          writer.uint32(16)
-          writer.int32(obj.num)
-        } else {
-          throw new Error('Protocol error: required field "num" was not found in object')
+        if ((obj.num != null && obj.num !== 0)) {
+          w.uint32(16)
+          w.int32(obj.num)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          num: 0
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -56,8 +59,50 @@ export namespace Basic {
           }
         }
 
-        if (obj.num == null) {
-          throw new Error('Protocol error: value for required field "num" was not found in protobuf')
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: Partial<Basic>): Uint8Array => {
+    return encodeMessage(obj, Basic.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Basic => {
+    return decodeMessage(buf, Basic.codec())
+  }
+}
+
+export interface Empty {}
+
+export namespace Empty {
+  let _codec: Codec<Empty>
+
+  export const codec = (): Codec<Empty> => {
+    if (_codec == null) {
+      _codec = message<Empty>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length) => {
+        const obj: any = {}
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            default:
+              reader.skipType(tag & 7)
+              break
+          }
         }
 
         return obj
@@ -67,11 +112,11 @@ export namespace Basic {
     return _codec
   }
 
-  export const encode = (obj: Basic): Uint8Array => {
-    return encodeMessage(obj, Basic.codec())
+  export const encode = (obj: Partial<Empty>): Uint8Array => {
+    return encodeMessage(obj, Empty.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Basic => {
-    return decodeMessage(buf, Basic.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList): Empty => {
+    return decodeMessage(buf, Empty.codec())
   }
 }

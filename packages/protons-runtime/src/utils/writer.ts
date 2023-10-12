@@ -1,8 +1,8 @@
-import pool from './pool.js'
-import { LongBits } from './longbits.js'
-import { writeFloatLE, writeDoubleLE } from './float.js'
-import * as utf8 from './utf8.js'
 import { allocUnsafe } from 'uint8arrays/alloc'
+import { writeFloatLE, writeDoubleLE } from './float.js'
+import { LongBits } from './longbits.js'
+import pool from './pool.js'
+import * as utf8 from './utf8.js'
 import type { Writer } from '../index.js'
 
 interface WriterOperation<T> {
@@ -44,16 +44,10 @@ class Op<T> {
 }
 
 /* istanbul ignore next */
-function noop () {} // eslint-disable-line no-empty-function
+function noop (): void {} // eslint-disable-line no-empty-function
 
 /**
- * Constructs a new writer state instance.
- *
- * @classdesc Copied writer state.
- * @memberof Writer
- * @function Object() { [native code] }
- * @param {Writer} writer - Writer to copy state from
- * @ignore
+ * Constructs a new writer state instance
  */
 class State {
   /**
@@ -89,7 +83,7 @@ const bufferPool = pool()
 /**
  * Allocates a buffer of the specified size
  */
-function alloc (size: number) {
+function alloc (size: number): Uint8Array {
   if (globalThis.Buffer != null) {
     return allocUnsafe(size)
   }
@@ -135,7 +129,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Pushes a new operation to the queue
    */
-  _push (fn: WriterOperation<any>, len: number, val: any) {
+  _push (fn: WriterOperation<any>, len: number, val: any): this {
     this.tail = this.tail.next = new Op(fn, len, val)
     this.len += len
 
@@ -145,7 +139,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes an unsigned 32 bit value as a varint
    */
-  uint32 (value: number) {
+  uint32 (value: number): this {
     // here, the call to this.push has been inlined and a varint specific Op subclass is used.
     // uint32 is by far the most frequently used operation and benefits significantly from this.
     this.len += (this.tail = this.tail.next = new VarintOp(
@@ -166,7 +160,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes a signed 32 bit value as a varint`
    */
-  int32 (value: number) {
+  int32 (value: number): this {
     return value < 0
       ? this._push(writeVarint64, 10, LongBits.fromNumber(value)) // 10 bytes per spec
       : this.uint32(value)
@@ -175,14 +169,14 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes a 32 bit value as a varint, zig-zag encoded
    */
-  sint32 (value: number) {
+  sint32 (value: number): this {
     return this.uint32((value << 1 ^ value >> 31) >>> 0)
   }
 
   /**
    * Writes an unsigned 64 bit value as a varint
    */
-  uint64 (value: bigint) {
+  uint64 (value: bigint): this {
     const bits = LongBits.fromBigInt(value)
     return this._push(writeVarint64, bits.length(), bits)
   }
@@ -190,14 +184,14 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes a signed 64 bit value as a varint
    */
-  int64 (value: bigint) {
+  int64 (value: bigint): this {
     return this.uint64(value)
   }
 
   /**
    * Writes a signed 64 bit value as a varint, zig-zag encoded
    */
-  sint64 (value: bigint) {
+  sint64 (value: bigint): this {
     const bits = LongBits.fromBigInt(value).zzEncode()
     return this._push(writeVarint64, bits.length(), bits)
   }
@@ -205,28 +199,28 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes a boolish value as a varint
    */
-  bool (value: boolean) {
+  bool (value: boolean): this {
     return this._push(writeByte, 1, value ? 1 : 0)
   }
 
   /**
    * Writes an unsigned 32 bit value as fixed 32 bits
    */
-  fixed32 (value: number) {
+  fixed32 (value: number): this {
     return this._push(writeFixed32, 4, value >>> 0)
   }
 
   /**
    * Writes a signed 32 bit value as fixed 32 bits
    */
-  sfixed32 (value: number) {
+  sfixed32 (value: number): this {
     return this.fixed32(value)
   }
 
   /**
    * Writes an unsigned 64 bit value as fixed 64 bits
    */
-  fixed64 (value: bigint) {
+  fixed64 (value: bigint): this {
     const bits = LongBits.fromBigInt(value)
 
     return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi)
@@ -235,14 +229,14 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes a signed 64 bit value as fixed 64 bits
    */
-  sfixed64 (value: bigint) {
+  sfixed64 (value: bigint): this {
     return this.fixed64(value)
   }
 
   /**
    * Writes a float (32 bit)
    */
-  float (value: number) {
+  float (value: number): this {
     return this._push(writeFloatLE, 4, value)
   }
 
@@ -253,14 +247,14 @@ class Uint8ArrayWriter implements Writer {
    * @param {number} value - Value to write
    * @returns {Writer} `this`
    */
-  double (value: number) {
+  double (value: number): this {
     return this._push(writeDoubleLE, 8, value)
   }
 
   /**
    * Writes a sequence of bytes
    */
-  bytes (value: Uint8Array) {
+  bytes (value: Uint8Array): this {
     const len = value.length >>> 0
 
     if (len === 0) {
@@ -273,7 +267,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Writes a string
    */
-  string (value: string) {
+  string (value: string): this {
     const len = utf8.length(value)
     return len !== 0
       ? this.uint32(len)._push(utf8.write, len, value)
@@ -284,7 +278,7 @@ class Uint8ArrayWriter implements Writer {
    * Forks this writer's state by pushing it to a stack.
    * Calling {@link Writer#reset|reset} or {@link Writer#ldelim|ldelim} resets the writer to the previous state.
    */
-  fork () {
+  fork (): this {
     this.states = new State(this)
     this.head = this.tail = new Op(noop, 0, 0)
     this.len = 0
@@ -292,11 +286,9 @@ class Uint8ArrayWriter implements Writer {
   }
 
   /**
-   * Resets this instance to the last state.
-   *
-   * @returns {Writer} `this`
+   * Resets this instance to the last state
    */
-  reset () {
+  reset (): this {
     if (this.states != null) {
       this.head = this.states.head
       this.tail = this.states.tail
@@ -312,7 +304,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Resets to the last state and appends the fork state's current write length as a varint followed by its operations.
    */
-  ldelim () {
+  ldelim (): this {
     const head = this.head
     const tail = this.tail
     const len = this.len
@@ -328,7 +320,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Finishes the write operation
    */
-  finish () {
+  finish (): Uint8Array {
     let head = this.head.next // skip noop
     const buf = alloc(this.len)
     let pos = 0
@@ -342,11 +334,11 @@ class Uint8ArrayWriter implements Writer {
   }
 }
 
-function writeByte (val: number, buf: Uint8Array, pos: number) {
+function writeByte (val: number, buf: Uint8Array, pos: number): void {
   buf[pos] = val & 255
 }
 
-function writeVarint32 (val: number, buf: Uint8Array, pos: number) {
+function writeVarint32 (val: number, buf: Uint8Array, pos: number): void {
   while (val > 127) {
     buf[pos++] = val & 127 | 128
     val >>>= 7
@@ -368,7 +360,7 @@ class VarintOp extends Op<number> {
   }
 }
 
-function writeVarint64 (val: LongBits, buf: Uint8Array, pos: number) {
+function writeVarint64 (val: LongBits, buf: Uint8Array, pos: number): void {
   while (val.hi !== 0) {
     buf[pos++] = val.lo & 127 | 128
     val.lo = (val.lo >>> 7 | val.hi << 25) >>> 0
@@ -381,14 +373,14 @@ function writeVarint64 (val: LongBits, buf: Uint8Array, pos: number) {
   buf[pos++] = val.lo
 }
 
-function writeFixed32 (val: number, buf: Uint8Array, pos: number) {
+function writeFixed32 (val: number, buf: Uint8Array, pos: number): void {
   buf[pos] = val & 255
   buf[pos + 1] = val >>> 8 & 255
   buf[pos + 2] = val >>> 16 & 255
   buf[pos + 3] = val >>> 24
 }
 
-function writeBytes (val: Uint8Array, buf: Uint8Array, pos: number) {
+function writeBytes (val: Uint8Array, buf: Uint8Array, pos: number): void {
   buf.set(val, pos)
 }
 
@@ -418,18 +410,18 @@ if (globalThis.Buffer != null) {
   }
 }
 
-function writeBytesBuffer (val: Uint8Array, buf: Uint8Array, pos: number) {
+function writeBytesBuffer (val: Uint8Array, buf: Uint8Array, pos: number): void {
   buf.set(val, pos) // faster than copy (requires node >= 4 where Buffers extend Uint8Array and set is properly inherited)
   // also works for plain array values
 }
 
-function writeStringBuffer (val: string, buf: Uint8Array, pos: number) {
+function writeStringBuffer (val: string, buf: Uint8Array, pos: number): void {
   if (val.length < 40) {
     // plain js is faster for short strings (probably due to redundant assertions)
     utf8.write(val, buf, pos)
-    // @ts-expect-error
+    // @ts-expect-error buf isn't a Uint8Array?
   } else if (buf.utf8Write != null) {
-    // @ts-expect-error
+    // @ts-expect-error buf isn't a Uint8Array?
     buf.utf8Write(val, pos)
   } else {
     // @ts-expect-error .write is a function on node Buffers

@@ -1,9 +1,12 @@
 /* eslint-disable import/export */
+/* eslint-disable complexity */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Uint8ArrayList } from 'uint8arraylist'
 import type { Codec } from 'protons-runtime'
+import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum AnEnum {
   HERP = 'HERP',
@@ -16,7 +19,7 @@ enum __AnEnumValues {
 }
 
 export namespace AnEnum {
-  export const codec = () => {
+  export const codec = (): Codec<AnEnum> => {
     return enumeration<AnEnum>(__AnEnumValues)
   }
 }
@@ -29,23 +32,23 @@ export namespace SubMessage {
 
   export const codec = (): Codec<SubMessage> => {
     if (_codec == null) {
-      _codec = message<SubMessage>((obj, writer, opts = {}) => {
+      _codec = message<SubMessage>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
-        if (obj.foo != null) {
-          writer.uint32(10)
-          writer.string(obj.foo)
-        } else {
-          throw new Error('Protocol error: required field "foo" was not found in object')
+        if ((obj.foo != null && obj.foo !== '')) {
+          w.uint32(10)
+          w.string(obj.foo)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          foo: ''
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -62,10 +65,6 @@ export namespace SubMessage {
           }
         }
 
-        if (obj.foo == null) {
-          throw new Error('Protocol error: value for required field "foo" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -73,7 +72,7 @@ export namespace SubMessage {
     return _codec
   }
 
-  export const encode = (obj: SubMessage): Uint8Array => {
+  export const encode = (obj: Partial<SubMessage>): Uint8Array => {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -108,110 +107,110 @@ export namespace AllTheTypes {
 
   export const codec = (): Codec<AllTheTypes> => {
     if (_codec == null) {
-      _codec = message<AllTheTypes>((obj, writer, opts = {}) => {
+      _codec = message<AllTheTypes>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
-          writer.fork()
+          w.fork()
         }
 
         if (obj.field1 != null) {
-          writer.uint32(8)
-          writer.bool(obj.field1)
+          w.uint32(8)
+          w.bool(obj.field1)
         }
 
         if (obj.field2 != null) {
-          writer.uint32(16)
-          writer.int32(obj.field2)
+          w.uint32(16)
+          w.int32(obj.field2)
         }
 
         if (obj.field3 != null) {
-          writer.uint32(24)
-          writer.int64(obj.field3)
+          w.uint32(24)
+          w.int64(obj.field3)
         }
 
         if (obj.field4 != null) {
-          writer.uint32(32)
-          writer.uint32(obj.field4)
+          w.uint32(32)
+          w.uint32(obj.field4)
         }
 
         if (obj.field5 != null) {
-          writer.uint32(40)
-          writer.uint64(obj.field5)
+          w.uint32(40)
+          w.uint64(obj.field5)
         }
 
         if (obj.field6 != null) {
-          writer.uint32(48)
-          writer.sint32(obj.field6)
+          w.uint32(48)
+          w.sint32(obj.field6)
         }
 
         if (obj.field7 != null) {
-          writer.uint32(56)
-          writer.sint64(obj.field7)
+          w.uint32(56)
+          w.sint64(obj.field7)
         }
 
         if (obj.field8 != null) {
-          writer.uint32(65)
-          writer.double(obj.field8)
+          w.uint32(65)
+          w.double(obj.field8)
         }
 
         if (obj.field9 != null) {
-          writer.uint32(77)
-          writer.float(obj.field9)
+          w.uint32(77)
+          w.float(obj.field9)
         }
 
         if (obj.field10 != null) {
-          writer.uint32(82)
-          writer.string(obj.field10)
+          w.uint32(82)
+          w.string(obj.field10)
         }
 
         if (obj.field11 != null) {
-          writer.uint32(90)
-          writer.bytes(obj.field11)
+          w.uint32(90)
+          w.bytes(obj.field11)
         }
 
         if (obj.field12 != null) {
-          writer.uint32(96)
-          AnEnum.codec().encode(obj.field12, writer)
+          w.uint32(96)
+          AnEnum.codec().encode(obj.field12, w)
         }
 
         if (obj.field13 != null) {
-          writer.uint32(106)
-          SubMessage.codec().encode(obj.field13, writer)
+          w.uint32(106)
+          SubMessage.codec().encode(obj.field13, w)
         }
 
         if (obj.field14 != null) {
           for (const value of obj.field14) {
-            writer.uint32(114)
-            writer.string(value)
+            w.uint32(114)
+            w.string(value)
           }
-        } else {
-          throw new Error('Protocol error: required field "field14" was not found in object')
         }
 
         if (obj.field15 != null) {
-          writer.uint32(125)
-          writer.fixed32(obj.field15)
+          w.uint32(125)
+          w.fixed32(obj.field15)
         }
 
         if (obj.field16 != null) {
-          writer.uint32(129)
-          writer.fixed64(obj.field16)
+          w.uint32(129)
+          w.fixed64(obj.field16)
         }
 
         if (obj.field17 != null) {
-          writer.uint32(141)
-          writer.sfixed32(obj.field17)
+          w.uint32(141)
+          w.sfixed32(obj.field17)
         }
 
         if (obj.field18 != null) {
-          writer.uint32(145)
-          writer.sfixed64(obj.field18)
+          w.uint32(145)
+          w.sfixed64(obj.field18)
         }
 
         if (opts.lengthDelimited !== false) {
-          writer.ldelim()
+          w.ldelim()
         }
       }, (reader, length) => {
-        const obj: any = {}
+        const obj: any = {
+          field14: []
+        }
 
         const end = length == null ? reader.len : reader.pos + length
 
@@ -259,7 +258,6 @@ export namespace AllTheTypes {
               obj.field13 = SubMessage.codec().decode(reader, reader.uint32())
               break
             case 14:
-              obj.field14 = obj.field14 ?? []
               obj.field14.push(reader.string())
               break
             case 15:
@@ -280,12 +278,6 @@ export namespace AllTheTypes {
           }
         }
 
-        obj.field14 = obj.field14 ?? []
-
-        if (obj.field14 == null) {
-          throw new Error('Protocol error: value for required field "field14" was not found in protobuf')
-        }
-
         return obj
       })
     }
@@ -293,7 +285,7 @@ export namespace AllTheTypes {
     return _codec
   }
 
-  export const encode = (obj: AllTheTypes): Uint8Array => {
+  export const encode = (obj: Partial<AllTheTypes>): Uint8Array => {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 

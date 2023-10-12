@@ -6,9 +6,9 @@ $ npx playwright-test dist/src/index.js --runner benchmark
 */
 
 import Benchmark from 'benchmark'
-import { RPC as ProtonsRPC } from './protons/rpc.js'
-import { RPC as ProtobufjsRPC } from './protobufjs/rpc.js'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
+import { RPC as ProtobufjsRPC } from './protobufjs/rpc.js'
+import { RPC as ProtonsRPC } from './protons/rpc.js'
 
 const rpc = {
   subscriptions: [],
@@ -43,7 +43,7 @@ new Benchmark.Suite()
   })
   .on('complete', function () {
     // @ts-expect-error types are wrong
-    console.info(`Fastest is ${this.filter('fastest').map('name')}`) // eslint-disable-line @typescript-eslint/restrict-template-expressions
+    console.info(`Fastest is ${this.filter('fastest').map('name')}`)
   })
   // run async
   .run({ async: true })

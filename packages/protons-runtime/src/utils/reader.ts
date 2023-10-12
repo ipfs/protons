@@ -1,15 +1,15 @@
-import * as utf8 from './utf8.js'
-import { LongBits } from './longbits.js'
 import { readFloatLE, readDoubleLE } from './float.js'
+import { LongBits } from './longbits.js'
+import * as utf8 from './utf8.js'
 import type { Reader } from '../index.js'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 /* istanbul ignore next */
-function indexOutOfRange (reader: Reader, writeLength?: number) {
+function indexOutOfRange (reader: Reader, writeLength?: number): RangeError {
   return RangeError(`index out of range: ${reader.pos} + ${writeLength ?? 1} > ${reader.len}`)
 }
 
-function readFixed32End (buf: Uint8Array, end: number) { // note that this uses `end`, not `pos`
+function readFixed32End (buf: Uint8Array, end: number): number { // note that this uses `end`, not `pos`
   return (buf[end - 4] |
         buf[end - 3] << 8 |
         buf[end - 2] << 16 |
@@ -18,10 +18,6 @@ function readFixed32End (buf: Uint8Array, end: number) { // note that this uses 
 
 /**
  * Constructs a new reader instance using the specified buffer.
- *
- * @classdesc Wire format reader using `Uint8Array` if available, otherwise `Array`.
- * @function Object() { [native code] }
- * @param {Uint8Array} buffer - Buffer to read from
  */
 export class Uint8ArrayReader implements Reader {
   public buf: Uint8Array
@@ -32,34 +28,27 @@ export class Uint8ArrayReader implements Reader {
 
   constructor (buffer: Uint8Array) {
     /**
-     * Read buffer.
+     * Read buffer
      *
      * @type {Uint8Array}
      */
     this.buf = buffer
 
     /**
-     * Read buffer position.
-     *
-     * @type {number}
+     * Read buffer position
      */
     this.pos = 0
 
     /**
-     * Read buffer length.
-     *
-     * @type {number}
+     * Read buffer length
      */
     this.len = buffer.length
   }
 
   /**
-   * Reads a varint as an unsigned 32 bit value.
-   *
-   * @function
-   * @returns {number} Value read
+   * Reads a varint as an unsigned 32 bit value
    */
-  uint32 () {
+  uint32 (): number {
     let value = 4294967295
 
     value = (this.buf[this.pos] & 127) >>> 0; if (this.buf[this.pos++] < 128) return value
@@ -77,39 +66,31 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads a varint as a signed 32 bit value.
-   *
-   * @returns {number} Value read
+   * Reads a varint as a signed 32 bit value
    */
-  int32 () {
+  int32 (): number {
     return this.uint32() | 0
   }
 
   /**
-   * Reads a zig-zag encoded varint as a signed 32 bit value.
-   *
-   * @returns {number} Value read
+   * Reads a zig-zag encoded varint as a signed 32 bit value
    */
-  sint32 () {
+  sint32 (): number {
     const value = this.uint32()
     return value >>> 1 ^ -(value & 1) | 0
   }
 
   /**
-   * Reads a varint as a boolean.
-   *
-   * @returns {boolean} Value read
+   * Reads a varint as a boolean
    */
-  bool () {
+  bool (): boolean {
     return this.uint32() !== 0
   }
 
   /**
-   * Reads fixed 32 bits as an unsigned 32 bit integer.
-   *
-   * @returns {number} Value read
+   * Reads fixed 32 bits as an unsigned 32 bit integer
    */
-  fixed32 () {
+  fixed32 (): number {
     if (this.pos + 4 > this.len) { throw indexOutOfRange(this, 4) }
 
     const res = readFixed32End(this.buf, this.pos += 4)
@@ -118,11 +99,9 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads fixed 32 bits as a signed 32 bit integer.
-   *
-   * @returns {number} Value read
+   * Reads fixed 32 bits as a signed 32 bit integer
    */
-  sfixed32 () {
+  sfixed32 (): number {
     if (this.pos + 4 > this.len) {
       throw indexOutOfRange(this, 4)
     }
@@ -133,12 +112,9 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads a float (32 bit) as a number.
-   *
-   * @function
-   * @returns {number} Value read
+   * Reads a float (32 bit) as a number
    */
-  float () {
+  float (): number {
     if (this.pos + 4 > this.len) {
       throw indexOutOfRange(this, 4)
     }
@@ -149,12 +125,9 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads a double (64 bit float) as a number.
-   *
-   * @function
-   * @returns {number} Value read
+   * Reads a double (64 bit float) as a number
    */
-  double () {
+  double (): number {
     /* istanbul ignore if */
     if (this.pos + 8 > this.len) { throw indexOutOfRange(this, 4) }
 
@@ -164,11 +137,9 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads a sequence of bytes preceded by its length as a varint.
-   *
-   * @returns {Uint8Array} Value read
+   * Reads a sequence of bytes preceded by its length as a varint
    */
-  bytes () {
+  bytes (): Uint8Array {
     const length = this.uint32()
     const start = this.pos
     const end = this.pos + length
@@ -186,22 +157,17 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads a string preceded by its byte length as a varint.
-   *
-   * @returns {string} Value read
+   * Reads a string preceded by its byte length as a varint
    */
-  string () {
+  string (): string {
     const bytes = this.bytes()
     return utf8.read(bytes, 0, bytes.length)
   }
 
   /**
-   * Skips the specified number of bytes if specified, otherwise skips a varint.
-   *
-   * @param {number} [length] - Length if known, otherwise a varint is assumed
-   * @returns {Reader} `this`
+   * Skips the specified number of bytes if specified, otherwise skips a varint
    */
-  skip (length?: number) {
+  skip (length?: number): this {
     if (typeof length === 'number') {
       /* istanbul ignore if */
       if (this.pos + length > this.len) { throw indexOutOfRange(this, length) }
@@ -218,12 +184,9 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Skips the next element of the specified wire type.
-   *
-   * @param {number} wireType - Wire type received
-   * @returns {Reader} `this`
+   * Skips the next element of the specified wire type
    */
-  skipType (wireType: number) {
+  skipType (wireType: number): this {
     switch (wireType) {
       case 0:
         this.skip()
@@ -250,7 +213,7 @@ export class Uint8ArrayReader implements Reader {
     return this
   }
 
-  private readLongVarint () {
+  private readLongVarint (): LongBits {
     // tends to deopt with local vars for octet etc.
     const bits = new LongBits(0, 0)
     let i = 0
@@ -298,7 +261,7 @@ export class Uint8ArrayReader implements Reader {
     throw Error('invalid varint encoding')
   }
 
-  private readFixed64 () {
+  private readFixed64 (): LongBits {
     if (this.pos + 8 > this.len) {
       throw indexOutOfRange(this, 8)
     }
@@ -310,35 +273,23 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
-   * Reads a varint as a signed 64 bit value.
-   *
-   * @name Reader#int64
-   * @function
-   * @returns {Long} Value read
+   * Reads a varint as a signed 64 bit value
    */
-  int64 () {
+  int64 (): bigint {
     return this.readLongVarint().toBigInt()
   }
 
   /**
-   * Reads a varint as an unsigned 64 bit value.
-   *
-   * @name Reader#uint64
-   * @function
-   * @returns {Long} Value read
+   * Reads a varint as an unsigned 64 bit value
    */
-  uint64 () {
+  uint64 (): bigint {
     return this.readLongVarint().toBigInt(true)
   }
 
   /**
-   * Reads a zig-zag encoded varint as a signed 64 bit value.
-   *
-   * @name Reader#sint64
-   * @function
-   * @returns {Long} Value read
+   * Reads a zig-zag encoded varint as a signed 64 bit value
    */
-  sint64 () {
+  sint64 (): bigint {
     return this.readLongVarint().zzDecode().toBigInt()
   }
 

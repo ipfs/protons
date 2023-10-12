@@ -1,3 +1,138 @@
+## [protons-v7.0.5](https://github.com/ipfs/protons/compare/protons-v7.0.4...protons-v7.0.5) (2023-08-05)
+
+
+### Dependencies
+
+* bump aegir from 39.0.13 to 40.0.8 ([#108](https://github.com/ipfs/protons/issues/108)) ([8b54c80](https://github.com/ipfs/protons/commit/8b54c8097683b055736a8e431728422cedf82697))
+
+## [protons-v7.0.4](https://github.com/ipfs/protons/compare/protons-v7.0.3...protons-v7.0.4) (2023-06-30)
+
+
+### Dependencies
+
+* bump meow from 11.0.0 to 12.0.1 ([#97](https://github.com/ipfs/protons/issues/97)) ([33250df](https://github.com/ipfs/protons/commit/33250df60fc3f613126fe3a8b1043547e2d6779e))
+
+## [protons-v7.0.3](https://github.com/ipfs/protons/compare/protons-v7.0.2...protons-v7.0.3) (2023-06-30)
+
+
+### Dependencies
+
+* bump aegir from 38.1.8 to 39.0.13 ([#104](https://github.com/ipfs/protons/issues/104)) ([912e0e6](https://github.com/ipfs/protons/commit/912e0e627fbe8047b56cdcd5d26cb81bf5700bf8))
+
+## [protons-v7.0.2](https://github.com/ipfs/protons/compare/protons-v7.0.1...protons-v7.0.2) (2023-02-08)
+
+
+### Bug Fixes
+
+* remove writing default values ([#88](https://github.com/ipfs/protons/issues/88)) ([078c62f](https://github.com/ipfs/protons/commit/078c62f569fab2163ccb5772d796b56f5e7adf37))
+
+## [protons-v7.0.1](https://github.com/ipfs/protons/compare/protons-v7.0.0...protons-v7.0.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* treat nested enums as enums and not messages ([#87](https://github.com/ipfs/protons/issues/87)) ([3af689b](https://github.com/ipfs/protons/commit/3af689b08975aa686b23beb33622264af18b4697))
+
+## [protons-v7.0.0](https://github.com/ipfs/protons/compare/protons-v6.1.3...protons-v7.0.0) (2023-02-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* singular fields should be optional to write (#83)
+
+### Bug Fixes
+
+* singular fields should be optional to write ([#83](https://github.com/ipfs/protons/issues/83)) ([229afbc](https://github.com/ipfs/protons/commit/229afbcb38ba0edc0622d4c2e97847462b439dc8)), closes [#42](https://github.com/ipfs/protons/issues/42)
+* sort imports ([#84](https://github.com/ipfs/protons/issues/84)) ([6f796f1](https://github.com/ipfs/protons/commit/6f796f1e7dfd631314f9a1df534eabd96dd1528c))
+* update sibling dep versions ([a77d027](https://github.com/ipfs/protons/commit/a77d027e055e442f4d1b004ebc1203e52292e7ed))
+
+
+### Trivial Changes
+
+* move bad fixtures to separate directory ([#82](https://github.com/ipfs/protons/issues/82)) ([76aa198](https://github.com/ipfs/protons/commit/76aa19882cd9fb4fa918dda6701b1f7b4ad740a4))
+
+## [protons-v6.1.3](https://github.com/ipfs/protons/compare/protons-v6.1.2...protons-v6.1.3) (2023-01-31)
+
+
+### Bug Fixes
+
+* throw when .proto is empty ([#81](https://github.com/ipfs/protons/issues/81)) ([ed392cb](https://github.com/ipfs/protons/commit/ed392cb84847fe0be8b96c582eaca0d99d4a40d1))
+
+## [protons-v6.1.2](https://github.com/ipfs/protons/compare/protons-v6.1.1...protons-v6.1.2) (2023-01-31)
+
+
+### Bug Fixes
+
+* throw when unsupported fields are detected ([#80](https://github.com/ipfs/protons/issues/80)) ([8108875](https://github.com/ipfs/protons/commit/81088755804629e68a0a51d3e4037e58253134fc)), closes [#34](https://github.com/ipfs/protons/issues/34)
+
+## [protons-v6.1.1](https://github.com/ipfs/protons/compare/protons-v6.1.0...protons-v6.1.1) (2023-01-17)
+
+
+### Bug Fixes
+
+* support empty messages ([#78](https://github.com/ipfs/protons/issues/78)) ([8a02910](https://github.com/ipfs/protons/commit/8a0291096c6b9aab9050bf8b35958015d99e9470))
+
+## [protons-v6.1.0](https://github.com/ipfs/protons/compare/protons-v6.0.2...protons-v6.1.0) (2023-01-12)
+
+
+### Features
+
+* add support for maps ([#75](https://github.com/ipfs/protons/issues/75)) ([e8dfc0a](https://github.com/ipfs/protons/commit/e8dfc0a6a7700225e2cf9c6d2e82d17979da1549))
+
+## [protons-v6.0.2](https://github.com/ipfs/protons/compare/protons-v6.0.1...protons-v6.0.2) (2023-01-12)
+
+
+### Dependencies
+
+* remove lerna, update aegir ([#76](https://github.com/ipfs/protons/issues/76)) ([83a24f2](https://github.com/ipfs/protons/commit/83a24f2a924704bd4a356b6f8a3195245d8b1062))
+
+## [protons-v6.0.1](https://github.com/ipfs/protons/compare/protons-v6.0.0...protons-v6.0.1) (2022-10-14)
+
+
+### Dependencies
+
+* bump meow from 10.1.5 to 11.0.0 ([#67](https://github.com/ipfs/protons/issues/67)) ([d489fd3](https://github.com/ipfs/protons/commit/d489fd35b8864fcc675da29f24b6a01f0c56d39d))
+* bump uint8arrays from 3.1.1 to 4.0.2 ([#71](https://github.com/ipfs/protons/issues/71)) ([b537e92](https://github.com/ipfs/protons/commit/b537e920a6704f005ea2b7bcef49741a9c3deb96))
+
+## [protons-v6.0.0](https://github.com/ipfs/protons/compare/protons-v5.1.0...protons-v6.0.0) (2022-10-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* ts definitions will need to be generated from `.proto` files - singular message fields have become optional as message fields are always optional in proto3
+
+### Bug Fixes
+
+* adhere more closely to the language guide for proto3 default values ([#66](https://github.com/ipfs/protons/issues/66)) ([406d775](https://github.com/ipfs/protons/commit/406d7757d490eb0dbac93343d6622dd689ff0707)), closes [#43](https://github.com/ipfs/protons/issues/43)
+
+
+### Dependencies
+
+* update sibling dependencies ([b1316fa](https://github.com/ipfs/protons/commit/b1316fa23b6fa623bc438c6cf51c53f94759e199))
+
+## [protons-v5.1.0](https://github.com/ipfs/protons/compare/protons-v5.0.0...protons-v5.1.0) (2022-08-11)
+
+
+### Features
+
+* define default types during decode ([#62](https://github.com/ipfs/protons/issues/62)) ([6453809](https://github.com/ipfs/protons/commit/64538091f7339f285ab6efbb0e18054970e00f33)), closes [#43](https://github.com/ipfs/protons/issues/43)
+
+## [protons-v5.0.0](https://github.com/ipfs/protons/compare/protons-v4.0.3...protons-v5.0.0) (2022-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* the exported types of `protons-runtime` have changed and protobuf encoders/decoders will need to be regenerated
+
+### Bug Fixes
+
+* increase encoding/decoding performance ([#58](https://github.com/ipfs/protons/issues/58)) ([9987b97](https://github.com/ipfs/protons/commit/9987b97cc6910dd67152c3a9c0941ae0ab0a8b9a))
+
+
+### Trivial Changes
+
+* update sibling deps ([7568283](https://github.com/ipfs/protons/commit/756828339bc1ad3fae784b28d7d218bbc55c3518))
+
 ## [protons-v4.0.3](https://github.com/ipfs/protons/compare/protons-v4.0.2...protons-v4.0.3) (2022-08-04)
 
 
