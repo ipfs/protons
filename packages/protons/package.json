@@ -31,6 +31,7 @@
   "eslintConfig": {
     "extends": "ipfs",
     "parserOptions": {
+      "project": true,
       "sourceType": "module"
     }
   },
@@ -133,7 +134,7 @@
     "protobufjs-cli": "^1.0.0"
   },
   "devDependencies": {
-    "aegir": "^40.0.8",
+    "aegir": "^41.0.4",
     "long": "^5.2.0",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",

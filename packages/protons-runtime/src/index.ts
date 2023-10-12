@@ -30,98 +30,98 @@ export interface Writer {
   /**
    * Writes an unsigned 32 bit value as a varint
    */
-  uint32: (value: number) => Writer
+  uint32(value: number): Writer
 
   /**
    * Writes a signed 32 bit value as a varint`
    */
-  int32: (value: number) => Writer
+  int32(value: number): Writer
 
   /**
    * Writes a 32 bit value as a varint, zig-zag encoded
    */
-  sint32: (value: number) => Writer
+  sint32(value: number): Writer
 
   /**
    * Writes an unsigned 64 bit value as a varint
    */
-  uint64: (value: bigint) => Writer
+  uint64(value: bigint): Writer
 
   /**
    * Writes a signed 64 bit value as a varint
    */
-  int64: (value: bigint) => Writer
+  int64(value: bigint): Writer
 
   /**
    * Writes a signed 64 bit value as a varint, zig-zag encoded
    */
-  sint64: (value: bigint) => Writer
+  sint64(value: bigint): Writer
 
   /**
    * Writes a boolish value as a varint
    */
-  bool: (value: boolean) => Writer
+  bool(value: boolean): Writer
 
   /**
    * Writes an unsigned 32 bit value as fixed 32 bits
    */
-  fixed32: (value: number) => Writer
+  fixed32(value: number): Writer
 
   /**
    * Writes a signed 32 bit value as fixed 32 bits
    */
-  sfixed32: (value: number) => Writer
+  sfixed32(value: number): Writer
 
   /**
    * Writes an unsigned 64 bit value as fixed 64 bits
    */
-  fixed64: (value: bigint) => Writer
+  fixed64(value: bigint): Writer
 
   /**
    * Writes a signed 64 bit value as fixed 64 bits
    */
-  sfixed64: (value: bigint) => Writer
+  sfixed64(value: bigint): Writer
 
   /**
    * Writes a float (32 bit)
    */
-  float: (value: number) => Writer
+  float(value: number): Writer
 
   /**
    * Writes a double (64 bit float)
    */
-  double: (value: number) => Writer
+  double(value: number): Writer
 
   /**
    * Writes a sequence of bytes
    */
-  bytes: (value: Uint8Array) => Writer
+  bytes(value: Uint8Array): Writer
 
   /**
    * Writes a string
    */
-  string: (value: string) => Writer
+  string(value: string): Writer
 
   /**
    * Forks this writer's state by pushing it to a stack.
    * Calling {@link Writer#reset|reset} or {@link Writer#ldelim|ldelim} resets the writer to the previous state.
    */
-  fork: () => Writer
+  fork(): Writer
 
   /**
    * Resets this instance to the last state.
    */
-  reset: () => Writer
+  reset(): Writer
 
   /**
    * Resets to the last state and appends the fork state's current write length as a varint followed by its operations.
    */
-  ldelim: () => Writer
+  ldelim(): Writer
 
   /**
    * Finishes the write operation
    */
-  finish: () => Uint8Array
+  finish(): Uint8Array
 }
 
 export interface Reader {
@@ -143,85 +143,85 @@ export interface Reader {
   /**
    * Reads a varint as an unsigned 32 bit value
    */
-  uint32: () => number
+  uint32(): number
 
   /**
    * Reads a varint as a signed 32 bit value
    */
-  int32: () => number
+  int32(): number
 
   /**
    * Reads a zig-zag encoded varint as a signed 32 bit value
    */
-  sint32: () => number
+  sint32(): number
 
   /**
    * Reads a varint as a boolean
    */
-  bool: () => boolean
+  bool(): boolean
 
   /**
    * Reads fixed 32 bits as an unsigned 32 bit integer
    */
-  fixed32: () => number
+  fixed32(): number
 
   /**
    * Reads fixed 32 bits as a signed 32 bit integer
    */
-  sfixed32: () => number
+  sfixed32(): number
 
   /**
    * Reads a float (32 bit) as a number
    */
-  float: () => number
+  float(): number
 
   /**
    * Reads a double (64 bit float) as a number
    */
-  double: () => number
+  double(): number
 
   /**
    * Reads a sequence of bytes preceded by its length as a varint
    */
-  bytes: () => Uint8Array
+  bytes(): Uint8Array
 
   /**
    * Reads a string preceded by its byte length as a varint
    */
-  string: () => string
+  string(): string
 
   /**
    * Skips the specified number of bytes if specified, otherwise skips a varints`
    */
-  skip: (length?: number) => void
+  skip(length?: number): void
 
   /**
    * Skips the next element of the specified wire type
    */
-  skipType: (wireType: number) => void
+  skipType(wireType: number): void
 
   /**
    * Reads a varint as a signed 64 bit value
    */
-  int64: () => bigint
+  int64(): bigint
 
   /**
    * Reads a varint as an unsigned 64 bit value
    */
-  uint64: () => bigint
+  uint64(): bigint
 
   /**
    * Reads a zig-zag encoded varint as a signed 64 bit value
    */
-  sint64: () => bigint
+  sint64(): bigint
 
   /**
    * Reads fixed 64 bits
    */
-  fixed64: () => bigint
+  fixed64(): bigint
 
   /**
    * Reads zig-zag encoded fixed 64 bits
    */
-  sfixed64: () => bigint
+  sfixed64(): bigint
 }
