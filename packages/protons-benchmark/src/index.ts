@@ -8,10 +8,10 @@ $ npx playwright-test dist/src/index.js --runner benchmark
 import { expect } from 'aegir/chai'
 import Benchmark from 'benchmark'
 import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
+import { Test as ProtobufEsTest } from './protobuf-es/bench_pb.js'
 import { Test as ProtobufTsTest } from './protobuf-ts/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
 import { Test as ProtonsTest } from './protons/bench.js'
-import { Test as ProtobufEsTest } from './protobuf-es/bench_pb.js'
 
 const message = {
   meh: {
