@@ -18,7 +18,8 @@ export {
 
 export { enumeration } from './codecs/enum.js'
 export { message } from './codecs/message.js'
-export { reader, writer } from './utils.js'
+export { createReader as reader } from './utils/reader.js'
+export { createWriter as writer } from './utils/writer.js'
 export type { Codec, EncodeOptions } from './codec.js'
 
 export interface Writer {
@@ -30,93 +31,93 @@ export interface Writer {
   /**
    * Writes an unsigned 32 bit value as a varint
    */
-  uint32(value: number): Writer
+  uint32(value: number): this
 
   /**
    * Writes a signed 32 bit value as a varint`
    */
-  int32(value: number): Writer
+  int32(value: number): this
 
   /**
    * Writes a 32 bit value as a varint, zig-zag encoded
    */
-  sint32(value: number): Writer
+  sint32(value: number): this
 
   /**
    * Writes an unsigned 64 bit value as a varint
    */
-  uint64(value: bigint): Writer
+  uint64(value: bigint): this
 
   /**
    * Writes a signed 64 bit value as a varint
    */
-  int64(value: bigint): Writer
+  int64(value: bigint): this
 
   /**
    * Writes a signed 64 bit value as a varint, zig-zag encoded
    */
-  sint64(value: bigint): Writer
+  sint64(value: bigint): this
 
   /**
    * Writes a boolish value as a varint
    */
-  bool(value: boolean): Writer
+  bool(value: boolean): this
 
   /**
    * Writes an unsigned 32 bit value as fixed 32 bits
    */
-  fixed32(value: number): Writer
+  fixed32(value: number): this
 
   /**
    * Writes a signed 32 bit value as fixed 32 bits
    */
-  sfixed32(value: number): Writer
+  sfixed32(value: number): this
 
   /**
    * Writes an unsigned 64 bit value as fixed 64 bits
    */
-  fixed64(value: bigint): Writer
+  fixed64(value: bigint): this
 
   /**
    * Writes a signed 64 bit value as fixed 64 bits
    */
-  sfixed64(value: bigint): Writer
+  sfixed64(value: bigint): this
 
   /**
    * Writes a float (32 bit)
    */
-  float(value: number): Writer
+  float(value: number): this
 
   /**
    * Writes a double (64 bit float)
    */
-  double(value: number): Writer
+  double(value: number): this
 
   /**
    * Writes a sequence of bytes
    */
-  bytes(value: Uint8Array): Writer
+  bytes(value: Uint8Array): this
 
   /**
    * Writes a string
    */
-  string(value: string): Writer
+  string(value: string): this
 
   /**
    * Forks this writer's state by pushing it to a stack.
    * Calling {@link Writer#reset|reset} or {@link Writer#ldelim|ldelim} resets the writer to the previous state.
    */
-  fork(): Writer
+  fork(): this
 
   /**
    * Resets this instance to the last state.
    */
-  reset(): Writer
+  reset(): this
 
   /**
    * Resets to the last state and appends the fork state's current write length as a varint followed by its operations.
    */
-  ldelim(): Writer
+  ldelim(): this
 
   /**
    * Finishes the write operation
