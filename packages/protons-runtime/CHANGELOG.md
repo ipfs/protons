@@ -1,3 +1,15 @@
+## [protons-runtime-v5.0.5](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.4...protons-runtime-v5.0.5) (2023-10-13)
+
+
+### Bug Fixes
+
+* write string into output buffer as uint8array ([#118](https://github.com/ipfs/protons/issues/118)) ([03ab706](https://github.com/ipfs/protons/commit/03ab706e03cdc16ff897e4ab54d87f343a8d61db))
+
+
+### Trivial Changes
+
+* update project config ([c54b7ac](https://github.com/ipfs/protons/commit/c54b7acbc9ac3839d1ef2d2653f1d19b5a0fdbf4))
+
 ## [protons-runtime-v5.0.4](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.3...protons-runtime-v5.0.4) (2023-10-13)
 
 
