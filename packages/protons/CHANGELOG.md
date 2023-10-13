@@ -1,3 +1,10 @@
+## [protons-v7.0.7](https://github.com/ipfs/protons/compare/protons-v7.0.6...protons-v7.0.7) (2023-10-13)
+
+
+### Bug Fixes
+
+* port protobuf reader/writer to ts ([#60](https://github.com/ipfs/protons/issues/60)) ([d101804](https://github.com/ipfs/protons/commit/d101804674e6ba42c28505fc8fdf605020ac319e))
+
 ## [protons-v7.0.6](https://github.com/ipfs/protons/compare/protons-v7.0.5...protons-v7.0.6) (2023-10-12)
 
 
