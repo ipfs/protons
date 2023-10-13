@@ -1,3 +1,10 @@
+## [protons-runtime-v5.0.4](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.3...protons-runtime-v5.0.4) (2023-10-13)
+
+
+### Bug Fixes
+
+* port protobuf reader/writer to ts ([#60](https://github.com/ipfs/protons/issues/60)) ([d101804](https://github.com/ipfs/protons/commit/d101804674e6ba42c28505fc8fdf605020ac319e))
+
 ## [protons-runtime-v5.0.3](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.2...protons-runtime-v5.0.3) (2023-10-12)
 
 
