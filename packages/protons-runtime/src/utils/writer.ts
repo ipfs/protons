@@ -1,4 +1,5 @@
 import { allocUnsafe } from 'uint8arrays/alloc'
+import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { writeFloatLE, writeDoubleLE } from './float.js'
 import { LongBits } from './longbits.js'
 import pool from './pool.js'
@@ -424,8 +425,7 @@ function writeStringBuffer (val: string, buf: Uint8Array, pos: number): void {
     // @ts-expect-error buf isn't a Uint8Array?
     buf.utf8Write(val, pos)
   } else {
-    // @ts-expect-error .write is a function on node Buffers
-    buf.write(val, pos)
+    buf.set(uint8ArrayFromString(val), pos)
   }
 }
 
