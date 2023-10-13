@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message CustomOptionNumber {
+  int32 num = 1;
+  int64 bignum = 2 [jstype = JS_NUMBER];
+}
+
+message CustomOptionString {
+  int32 num = 1;
+  int64 bignum = 2 [jstype = JS_STRING];
+}
