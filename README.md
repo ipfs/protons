@@ -11,6 +11,7 @@
 
 - [Structure](#structure)
 - [Packages](#packages)
+- [API Docs](#api-docs)
 - [License](#license)
 - [Contribute](#contribute)
 
@@ -27,6 +28,10 @@ Transpiles `.proto` files to `.ts` - uses `Uint8Array` for `byte` fields and `Bi
 - [`/packages/protons`](./packages/protons) The transpiler
 - [`/packages/protons-benchmark`](./packages/protons-benchmark) A benchmark suite
 - [`/packages/protons-runtime`](./packages/protons-runtime) Shared components that turn values to bytes and back again
+
+## API Docs
+
+- <https://ipfs.github.io/protons>
 
 ## License
 

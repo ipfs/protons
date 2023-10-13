@@ -15,10 +15,6 @@
     "interface",
     "libp2p"
   ],
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
-  },
   "private": true,
   "scripts": {
     "reset": "aegir run clean && aegir clean ./node_modules ./package-lock.json packages/*/node_modules packages/*/package-lock.json packages/*/dist",
@@ -34,10 +30,11 @@
     "build": "aegir run build",
     "lint": "aegir run lint",
     "dep-check": "aegir run dep-check",
-    "release": "aegir run release"
+    "release": "aegir run release",
+    "docs": "aegir docs"
   },
   "dependencies": {
-    "aegir": "^38.0.0"
+    "aegir": "^41.0.4"
   },
   "workspaces": [
     "packages/*"

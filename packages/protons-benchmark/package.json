@@ -11,28 +11,8 @@
   "bugs": {
     "url": "https://github.com/ipfs/protons/issues"
   },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
-  },
   "type": "module",
   "types": "./dist/src/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "*",
-        "dist/*",
-        "dist/src/*",
-        "dist/src/*/index"
-      ],
-      "src/*": [
-        "*",
-        "dist/*",
-        "dist/src/*",
-        "dist/src/*/index"
-      ]
-    }
-  },
   "files": [
     "src",
     "dist",
@@ -43,15 +23,12 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
-    },
-    "./status": {
-      "types": "./dist/src/status.d.ts",
-      "import": "./dist/src/status.js"
     }
   },
   "eslintConfig": {
     "extends": "ipfs",
     "parserOptions": {
+      "project": true,
       "sourceType": "module"
     },
     "ignorePatterns": [
@@ -75,7 +52,7 @@
     "@protobuf-ts/plugin": "^2.8.1",
     "@protobuf-ts/runtime": "^2.8.1",
     "@types/benchmark": "^2.1.1",
-    "aegir": "^38.0.0",
+    "aegir": "^41.0.4",
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",

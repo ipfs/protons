@@ -6,9 +6,7 @@ $ npx playwright-test dist/src/index.js --runner benchmark
 */
 
 import { expect } from 'aegir/chai'
-
 import Benchmark from 'benchmark'
-
 import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
 import { Test as ProtobufTsTest } from './protobuf-ts/bench.js'
 import { Test as ProtobufjsTest } from './protobufjs/bench.js'
