@@ -37,55 +37,145 @@ const types: Record<string, string> = {
   uint64: 'bigint'
 }
 
-const jsTypeOverrides: Record<string, string> = {
+const jsTypeOverrides: Record<string, 'number' | 'string'> = {
   JS_NUMBER: 'number',
   JS_STRING: 'string'
 }
 
-const encoderGenerators: Record<string, (val: string) => string> = {
+const encoderGenerators: Record<string, (val: string, jsTypeOverride?: 'number' | 'string') => string> = {
   bool: (val) => `w.bool(${val})`,
   bytes: (val) => `w.bytes(${val})`,
   double: (val) => `w.double(${val})`,
   fixed32: (val) => `w.fixed32(${val})`,
-  fixed64: (val) => `w.fixed64(${val})`,
+  fixed64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.fixed64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.fixed64String(${val})`
+    }
+
+    return `w.fixed64(${val})`
+  },
   float: (val) => `w.float(${val})`,
   int32: (val) => `w.int32(${val})`,
-  int64: (val) => `w.int64(${val})`,
+  int64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.int64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.int64String(${val})`
+    }
+
+    return `w.int64(${val})`
+  },
   sfixed32: (val) => `w.sfixed32(${val})`,
-  sfixed64: (val) => `w.sfixed64(${val})`,
+  sfixed64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.sfixed64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.sfixed64String(${val})`
+    }
+
+    return `w.sfixed64(${val})`
+  },
   sint32: (val) => `w.sint32(${val})`,
-  sint64: (val) => `w.sint64(${val})`,
+  sint64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.sint64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.sint64String(${val})`
+    }
+
+    return `w.sint64(${val})`
+  },
   string: (val) => `w.string(${val})`,
   uint32: (val) => `w.uint32(${val})`,
-  uint64: (val) => `w.uint64(${val})`
+  uint64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.uint64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.uint64String(${val})`
+    }
+
+    return `w.uint64(${val})`
+  }
 }
 
-const encoderGeneratorsJsTypeOverrides: Record<string, (val: string) => string> = {
-  number: (val: string) => `BigInt(${val})`,
-  string: (val: string) => `BigInt(${val})`
-}
-
-const decoderGenerators: Record<string, () => string> = {
+const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string') => string> = {
   bool: () => 'reader.bool()',
   bytes: () => 'reader.bytes()',
   double: () => 'reader.double()',
   fixed32: () => 'reader.fixed32()',
-  fixed64: () => 'reader.fixed64()',
+  fixed64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.fixed64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.fixed64String()'
+    }
+
+    return 'reader.fixed64()'
+  },
   float: () => 'reader.float()',
   int32: () => 'reader.int32()',
-  int64: () => 'reader.int64()',
+  int64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.int64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.int64String()'
+    }
+
+    return 'reader.int64()'
+  },
   sfixed32: () => 'reader.sfixed32()',
-  sfixed64: () => 'reader.sfixed64()',
+  sfixed64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.sfixed64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.sfixed64String()'
+    }
+
+    return 'reader.sfixed64()'
+  },
   sint32: () => 'reader.sint32()',
-  sint64: () => 'reader.sint64()',
+  sint64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.sint64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.sint64String()'
+    }
+
+    return 'reader.sint64()'
+  },
   string: () => 'reader.string()',
   uint32: () => 'reader.uint32()',
-  uint64: () => 'reader.uint64()'
-}
+  uint64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.uint64Number()'
+    }
 
-const decoderGeneratorsJsTypeOverrides: Record<string, (original: string) => string> = {
-  number: (original: string) => `Number(${original})`,
-  string: (original: string) => `String(${original})`
+    if (jsTypeOverride === 'string') {
+      return 'reader.uint64String()'
+    }
+
+    return 'reader.uint64()'
+  }
 }
 
 const defaultValueGenerators: Record<string, () => string> = {
@@ -134,7 +224,7 @@ const defaultValueTestGeneratorsJsTypeOverrides: Record<string, (field: string) 
   string: (field) => `(${field} != null && ${field} !== '')`
 }
 
-function findJsTypeOverride (defaultType: string, fieldDef: FieldDef): string | undefined {
+function findJsTypeOverride (defaultType: string, fieldDef: FieldDef): 'number' | 'string' | undefined {
   if (fieldDef.options?.jstype != null && jsTypeOverrides[fieldDef.options?.jstype] != null) {
     if (!['int64', 'uint64', 'sint64', 'fixed64', 'sfixed64'].includes(defaultType)) {
       throw new Error(`jstype is only allowed on int64, uint64, sint64, fixed64 or sfixed64 fields - got "${defaultType}"`)
@@ -470,17 +560,10 @@ export interface ${messageDef.name} {
 
         let writeField = (): string => {
           const encoderGenerator = encoderGenerators[type]
-
-          if (encoderGenerator != null) {
-            const jsTypeOverride = findJsTypeOverride(type, fieldDef)
-
-            if (jsTypeOverride != null && encoderGeneratorsJsTypeOverrides[jsTypeOverride] != null) {
-              valueVar = encoderGeneratorsJsTypeOverrides[jsTypeOverride](valueVar)
-            }
-          }
+          const jsTypeOverride = findJsTypeOverride(type, fieldDef)
 
           return `w.uint32(${id})
-          ${encoderGenerator == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerator(valueVar)}`
+          ${encoderGenerator == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerator(valueVar, jsTypeOverride)}`
         }
 
         if (type === 'message') {
@@ -555,14 +638,10 @@ export interface ${messageDef.name} {
           codec = `${typeName}.codec()`
         }
 
-        let parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`
-
         // override setting type on js object
         const jsTypeOverride = findJsTypeOverride(fieldDef.type, fieldDef)
 
-        if (jsTypeOverride != null && decoderGeneratorsJsTypeOverrides[jsTypeOverride] != null) {
-          parseValue = decoderGeneratorsJsTypeOverrides[jsTypeOverride](parseValue)
-        }
+        const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type](jsTypeOverride)}`
 
         if (fieldDef.map) {
           return `case ${fieldDef.id}: {

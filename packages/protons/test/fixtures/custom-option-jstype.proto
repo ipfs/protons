@@ -2,10 +2,18 @@ syntax = "proto3";
 
 message CustomOptionNumber {
   int32 num = 1;
-  int64 bignum = 2 [jstype = JS_NUMBER];
+  int64 i64 = 2 [jstype = JS_NUMBER];
+  uint64 ui64 = 3 [jstype = JS_NUMBER];
+  sint64 si64 = 4 [jstype = JS_NUMBER];
+  fixed64 f64 = 5 [jstype = JS_NUMBER];
+  sfixed64 sf64 = 6 [jstype = JS_NUMBER];
 }
 
 message CustomOptionString {
   int32 num = 1;
-  int64 bignum = 2 [jstype = JS_STRING];
+  int64 i64 = 2 [jstype = JS_STRING];
+  uint64 ui64 = 3 [jstype = JS_STRING];
+  sint64 si64 = 4 [jstype = JS_STRING];
+  fixed64 f64 = 5 [jstype = JS_STRING];
+  sfixed64 sf64 = 6 [jstype = JS_STRING];
 }

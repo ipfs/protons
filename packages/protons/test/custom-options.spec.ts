@@ -7,7 +7,11 @@ describe('custom options', () => {
   it('should allow overriding 64 bit numbers with numbers', () => {
     const obj: CustomOptionNumber = {
       num: 5,
-      bignum: 5
+      i64: 5,
+      ui64: 5,
+      si64: 5,
+      f64: 5,
+      sf64: 5
     }
 
     expect(CustomOptionNumber.decode(CustomOptionNumber.encode(obj)))
@@ -17,7 +21,11 @@ describe('custom options', () => {
   it('should allow overriding 64 bit numbers with strings', () => {
     const obj: CustomOptionString = {
       num: 5,
-      bignum: '5'
+      i64: '5',
+      ui64: '5',
+      si64: '5',
+      f64: '5',
+      sf64: '5'
     }
 
     expect(CustomOptionString.decode(CustomOptionString.encode(obj)))

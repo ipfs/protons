@@ -29,6 +29,21 @@ export class LongBits {
   /**
    * Converts this long bits to a possibly unsafe JavaScript number
    */
+  toNumber (unsigned: boolean = false): number {
+    if (!unsigned && (this.hi >>> 31) > 0) {
+      const lo = ~this.lo + 1 >>> 0
+      let hi = ~this.hi >>> 0
+      if (lo === 0) {
+        hi = hi + 1 >>> 0
+      }
+      return -(lo + hi * 4294967296)
+    }
+    return this.lo + this.hi * 4294967296
+  }
+
+  /**
+   * Converts this long bits to a bigint
+   */
   toBigInt (unsigned: boolean = false): bigint {
     if (unsigned) {
       const result = BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n)
@@ -45,6 +60,13 @@ export class LongBits {
     }
 
     return BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n)
+  }
+
+  /**
+   * Converts this long bits to a string
+   */
+  toString (unsigned: boolean = false): string {
+    return this.toBigInt(unsigned).toString()
   }
 
   /**
