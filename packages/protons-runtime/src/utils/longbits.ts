@@ -1,3 +1,6 @@
+// the largest BigInt we can safely downcast to a Number
+const MAX_SAFE_NUMBER_INTEGER = BigInt(Number.MAX_SAFE_INTEGER)
+
 /**
  * Constructs new long bits.
  *
@@ -46,8 +49,7 @@ export class LongBits {
    */
   toBigInt (unsigned: boolean = false): bigint {
     if (unsigned) {
-      const result = BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n)
-      return result
+      return BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n)
     }
 
     if ((this.hi >>> 31) !== 0) {
@@ -111,25 +113,34 @@ export class LongBits {
    * Constructs new long bits from the specified number
    */
   static fromBigInt (value: bigint): LongBits {
-    if (value === 0n) { return zero }
+    if (value === 0n) {
+      return zero
+    }
 
-    const negative = value < 0
+    if (value < MAX_SAFE_NUMBER_INTEGER) {
+      return this.fromNumber(Number(value))
+    }
+
+    const negative = value < 0n
+
     if (negative) {
       value = -value
     }
-    let hi = Number(value >> 32n)
-    let lo = Number(value - (BigInt(hi) << 32n))
+
+    let hi = value >> 32n
+    let lo = value - (hi << 32n)
 
     if (negative) {
-      hi = ~hi >>> 0
-      lo = ~lo >>> 0
+      hi = ~hi | 0n
+      lo = ~lo | 0n
+
       if (++lo > TWO_32) {
-        lo = 0
-        if (++hi > TWO_32) { hi = 0 }
+        lo = 0n
+        if (++hi > TWO_32) { hi = 0n }
       }
     }
 
-    return new LongBits(lo, hi)
+    return new LongBits(Number(lo), Number(hi))
   }
 
   /**
