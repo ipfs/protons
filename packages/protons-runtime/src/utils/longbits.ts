@@ -1,5 +1,6 @@
 // the largest BigInt we can safely downcast to a Number
 const MAX_SAFE_NUMBER_INTEGER = BigInt(Number.MAX_SAFE_INTEGER)
+const MIN_SAFE_NUMBER_INTEGER = BigInt(Number.MIN_SAFE_INTEGER)
 
 /**
  * Constructs new long bits.
@@ -117,7 +118,7 @@ export class LongBits {
       return zero
     }
 
-    if (value < MAX_SAFE_NUMBER_INTEGER) {
+    if (value < MAX_SAFE_NUMBER_INTEGER && value > MIN_SAFE_NUMBER_INTEGER) {
       return this.fromNumber(Number(value))
     }
 
