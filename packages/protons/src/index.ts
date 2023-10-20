@@ -19,6 +19,16 @@ function pathWithExtension (input: string, extension: string, outputDir?: string
   return path.join(output, path.basename(input).split('.').slice(0, -1).join('.') + extension)
 }
 
+export class CodeError extends Error {
+  public code: string
+
+  constructor (message: string, code: string, options?: ErrorOptions) {
+    super(message, options)
+
+    this.code = code
+  }
+}
+
 const types: Record<string, string> = {
   bool: 'boolean',
   bytes: 'Uint8Array',
@@ -299,9 +309,21 @@ function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef,
   })
 }
 
-function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef): string {
+function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef, flags?: Flags): string {
   if (isEnumDef(messageDef)) {
     moduleDef.imports.add('enumeration')
+
+    // check that the enum def values start from 0
+    if (Object.values(messageDef.values)[0] !== 0) {
+      const message = `enum ${messageDef.name} does not contain a value that maps to zero as it's first element, this is required in proto3 - see https://protobuf.dev/programming-guides/proto3/#enum`
+
+      if (flags?.strict === true) {
+        throw new CodeError(message, 'ERR_PARSE_ERROR')
+      } else {
+        // eslint-disable-next-line no-console
+        console.info(`[WARN] ${message}`)
+      }
+    }
 
     return `
 export enum ${messageDef.name} {
@@ -332,7 +354,7 @@ export namespace ${messageDef.name} {
   if (messageDef.nested != null) {
     nested = '\n'
     nested += Object.values(messageDef.nested)
-      .map(def => compileMessage(def, moduleDef).trim())
+      .map(def => compileMessage(def, moduleDef, flags).trim())
       .join('\n\n')
       .split('\n')
       .map(line => line.trim() === '' ? '' : `  ${line}`)
@@ -397,7 +419,19 @@ export interface ${messageDef.name} {
           valueTest = `${defaultValueTestGenerators[type](`obj.${name}`)}`
         } else if (type === 'enum') {
           // handle enums
-          valueTest = `obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0`
+          const def = findDef(fieldDef.type, messageDef, moduleDef)
+
+          if (!isEnumDef(def)) {
+            throw new Error(`${fieldDef.type} was not enum def`)
+          }
+
+          valueTest = `obj.${name} != null`
+
+          // singular enums default to 0, but enums can be defined without a 0
+          // value which is against the proto3 spec but is tolerated
+          if (Object.values(def.values)[0] === 0) {
+            valueTest += ` && __${fieldDef.type}Values[obj.${name}] !== 0`
+          }
         }
       }
 
@@ -582,7 +616,7 @@ function defineModule (def: ClassDef): ModuleDef {
   const defs = def.nested
 
   if (defs == null) {
-    throw new Error('No top-level messages found in protobuf')
+    throw new CodeError('No top-level messages found in protobuf', 'ERR_NO_MESSAGES_FOUND')
   }
 
   function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef): void {
@@ -605,7 +639,14 @@ function defineModule (def: ClassDef): ModuleDef {
           fieldDef.map = fieldDef.keyType != null
 
           if (fieldDef.rule === 'required') {
-            throw new Error('"required" fields are not allowed in proto3 - please convert your proto2 definitions to proto3')
+            const message = `field "${name}" is required - this is not allowed in proto3 - please convert your proto2 definitions to proto3`
+
+            if (flags?.strict === true) {
+              throw new CodeError(message, 'ERR_PARSE_ERROR')
+            } else {
+              // eslint-disable-next-line no-console
+              console.info(`[WARN] ${message}`)
+            }
           }
         }
       }
@@ -652,7 +693,7 @@ function defineModule (def: ClassDef): ModuleDef {
   for (const className of Object.keys(defs)) {
     const classDef = defs[className]
 
-    moduleDef.compiled.push(compileMessage(classDef, moduleDef))
+    moduleDef.compiled.push(compileMessage(classDef, moduleDef, flags))
   }
 
   return moduleDef

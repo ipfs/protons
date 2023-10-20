@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+enum AnEnum {
+  // enum values should start from 0
+  value1 = 1;
+}
