@@ -604,7 +604,7 @@ interface ModuleDef {
   globals: Record<string, ClassDef>
 }
 
-function defineModule (def: ClassDef): ModuleDef {
+function defineModule (def: ClassDef, flags: Flags): ModuleDef {
   const moduleDef: ModuleDef = {
     imports: new Set(),
     importedTypes: new Set(),
@@ -619,7 +619,7 @@ function defineModule (def: ClassDef): ModuleDef {
     throw new CodeError('No top-level messages found in protobuf', 'ERR_NO_MESSAGES_FOUND')
   }
 
-  function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef): void {
+  function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef, flags?: Flags): void {
     for (const className of Object.keys(defs)) {
       const classDef = defs[className]
 
@@ -685,7 +685,7 @@ function defineModule (def: ClassDef): ModuleDef {
     }
   }
 
-  defineMessage(defs)
+  defineMessage(defs, undefined, flags)
 
   // set enum/message fields now all messages have been defined
   updateTypes(defs)
@@ -750,7 +750,7 @@ export async function generate (source: string, flags: Flags): Promise<void> {
     }
   }
 
-  const moduleDef = defineModule(def)
+  const moduleDef = defineModule(def, flags)
 
   const ignores = [
     '/* eslint-disable import/export */',
