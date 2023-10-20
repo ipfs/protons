@@ -700,7 +700,15 @@ function defineModule (def: ClassDef): ModuleDef {
 }
 
 interface Flags {
+  /**
+   * Specifies an output directory
+   */
   output?: string
+
+  /**
+   * If true, warnings will be thrown as errors
+   */
+  strict?: boolean
 }
 
 export async function generate (source: string, flags: Flags): Promise<void> {
