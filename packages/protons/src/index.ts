@@ -297,6 +297,13 @@ interface FieldDef {
   map: boolean
   valueType: string
   keyType: string
+
+  /**
+   * Support proto2 required field. This field means a value should always be
+   * in the serialized buffer, any message without it should be considered
+   * invalid. It was removed for proto3.
+   */
+  proto2Required: boolean
 }
 
 function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef): string[] {
@@ -413,7 +420,7 @@ export interface ${messageDef.name} {
 
       if (fieldDef.map) {
         valueTest = `obj.${name} != null && obj.${name}.size !== 0`
-      } else if (!fieldDef.optional && !fieldDef.repeated) {
+      } else if (!fieldDef.optional && !fieldDef.repeated && !fieldDef.proto2Required) {
         // proto3 singular fields should only be written out if they are not the default value
         if (defaultValueTestGenerators[type] != null) {
           valueTest = `${defaultValueTestGenerators[type](`obj.${name}`)}`
@@ -637,6 +644,7 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
           fieldDef.repeated = fieldDef.rule === 'repeated'
           fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
           fieldDef.map = fieldDef.keyType != null
+          fieldDef.proto2Required = false
 
           if (fieldDef.rule === 'required') {
             const message = `field "${name}" is required - this is not allowed in proto3 - please convert your proto2 definitions to proto3`
@@ -644,6 +652,8 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
             if (flags?.strict === true) {
               throw new CodeError(message, 'ERR_PARSE_ERROR')
             } else {
+              fieldDef.proto2Required = true
+
               // eslint-disable-next-line no-console
               console.info(`[WARN] ${message}`)
             }
