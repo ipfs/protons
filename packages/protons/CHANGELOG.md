@@ -1,3 +1,10 @@
+## [protons-v7.2.1](https://github.com/ipfs/protons/compare/protons-v7.2.0...protons-v7.2.1) (2023-10-23)
+
+
+### Tests
+
+* regenerate custom options ([768573b](https://github.com/ipfs/protons/commit/768573b5f607fb80b2b1e94205b848b72cbc85e4))
+
 ## [protons-v7.2.0](https://github.com/ipfs/protons/compare/protons-v7.1.0...protons-v7.2.0) (2023-10-23)
 
 
