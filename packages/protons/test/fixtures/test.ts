@@ -56,12 +56,14 @@ export namespace SubMessage {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.foo = reader.string()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -218,63 +220,82 @@ export namespace AllTheTypes {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.field1 = reader.bool()
               break
-            case 2:
+            }
+            case 2: {
               obj.field2 = reader.int32()
               break
-            case 3:
+            }
+            case 3: {
               obj.field3 = reader.int64()
               break
-            case 4:
+            }
+            case 4: {
               obj.field4 = reader.uint32()
               break
-            case 5:
+            }
+            case 5: {
               obj.field5 = reader.uint64()
               break
-            case 6:
+            }
+            case 6: {
               obj.field6 = reader.sint32()
               break
-            case 7:
+            }
+            case 7: {
               obj.field7 = reader.sint64()
               break
-            case 8:
+            }
+            case 8: {
               obj.field8 = reader.double()
               break
-            case 9:
+            }
+            case 9: {
               obj.field9 = reader.float()
               break
-            case 10:
+            }
+            case 10: {
               obj.field10 = reader.string()
               break
-            case 11:
+            }
+            case 11: {
               obj.field11 = reader.bytes()
               break
-            case 12:
+            }
+            case 12: {
               obj.field12 = AnEnum.codec().decode(reader)
               break
-            case 13:
+            }
+            case 13: {
               obj.field13 = SubMessage.codec().decode(reader, reader.uint32())
               break
-            case 14:
+            }
+            case 14: {
               obj.field14.push(reader.string())
               break
-            case 15:
+            }
+            case 15: {
               obj.field15 = reader.fixed32()
               break
-            case 16:
+            }
+            case 16: {
               obj.field16 = reader.fixed64()
               break
-            case 17:
+            }
+            case 17: {
               obj.field17 = reader.sfixed32()
               break
-            case 18:
+            }
+            case 18: {
               obj.field18 = reader.sfixed64()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

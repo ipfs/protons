@@ -99,24 +99,30 @@ export namespace Message {
               const tag = reader.uint32()
 
               switch (tag >>> 3) {
-                case 1:
+                case 1: {
                   obj.block = reader.bytes()
                   break
-                case 2:
+                }
+                case 2: {
                   obj.priority = reader.int32()
                   break
-                case 3:
+                }
+                case 3: {
                   obj.cancel = reader.bool()
                   break
-                case 4:
+                }
+                case 4: {
                   obj.wantType = Message.Wantlist.WantType.codec().decode(reader)
                   break
-                case 5:
+                }
+                case 5: {
                   obj.sendDontHave = reader.bool()
                   break
-                default:
+                }
+                default: {
                   reader.skipType(tag & 7)
                   break
+                }
               }
             }
 
@@ -172,15 +178,18 @@ export namespace Message {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.entries.push(Message.Wantlist.Entry.codec().decode(reader, reader.uint32()))
                 break
-              case 2:
+              }
+              case 2: {
                 obj.full = reader.bool()
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -240,15 +249,18 @@ export namespace Message {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.prefix = reader.bytes()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.data = reader.bytes()
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -324,15 +336,18 @@ export namespace Message {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.cid = reader.bytes()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.type = Message.BlockPresenceType.codec().decode(reader)
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -409,24 +424,30 @@ export namespace Message {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.wantlist = Message.Wantlist.codec().decode(reader, reader.uint32())
               break
-            case 2:
+            }
+            case 2: {
               obj.blocks.push(reader.bytes())
               break
-            case 3:
+            }
+            case 3: {
               obj.payload.push(Message.Block.codec().decode(reader, reader.uint32()))
               break
-            case 4:
+            }
+            case 4: {
               obj.blockPresences.push(Message.BlockPresence.codec().decode(reader, reader.uint32()))
               break
-            case 5:
+            }
+            case 5: {
               obj.pendingBytes = reader.int32()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

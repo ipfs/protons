@@ -19,6 +19,16 @@ function pathWithExtension (input: string, extension: string, outputDir?: string
   return path.join(output, path.basename(input).split('.').slice(0, -1).join('.') + extension)
 }
 
+export class CodeError extends Error {
+  public code: string
+
+  constructor (message: string, code: string, options?: ErrorOptions) {
+    super(message, options)
+
+    this.code = code
+  }
+}
+
 const types: Record<string, string> = {
   bool: 'boolean',
   bytes: 'Uint8Array',
@@ -37,40 +47,145 @@ const types: Record<string, string> = {
   uint64: 'bigint'
 }
 
-const encoderGenerators: Record<string, (val: string) => string> = {
+const jsTypeOverrides: Record<string, 'number' | 'string'> = {
+  JS_NUMBER: 'number',
+  JS_STRING: 'string'
+}
+
+const encoderGenerators: Record<string, (val: string, jsTypeOverride?: 'number' | 'string') => string> = {
   bool: (val) => `w.bool(${val})`,
   bytes: (val) => `w.bytes(${val})`,
   double: (val) => `w.double(${val})`,
   fixed32: (val) => `w.fixed32(${val})`,
-  fixed64: (val) => `w.fixed64(${val})`,
+  fixed64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.fixed64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.fixed64String(${val})`
+    }
+
+    return `w.fixed64(${val})`
+  },
   float: (val) => `w.float(${val})`,
   int32: (val) => `w.int32(${val})`,
-  int64: (val) => `w.int64(${val})`,
+  int64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.int64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.int64String(${val})`
+    }
+
+    return `w.int64(${val})`
+  },
   sfixed32: (val) => `w.sfixed32(${val})`,
-  sfixed64: (val) => `w.sfixed64(${val})`,
+  sfixed64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.sfixed64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.sfixed64String(${val})`
+    }
+
+    return `w.sfixed64(${val})`
+  },
   sint32: (val) => `w.sint32(${val})`,
-  sint64: (val) => `w.sint64(${val})`,
+  sint64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.sint64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.sint64String(${val})`
+    }
+
+    return `w.sint64(${val})`
+  },
   string: (val) => `w.string(${val})`,
   uint32: (val) => `w.uint32(${val})`,
-  uint64: (val) => `w.uint64(${val})`
+  uint64: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return `w.uint64Number(${val})`
+    }
+
+    if (jsTypeOverride === 'string') {
+      return `w.uint64String(${val})`
+    }
+
+    return `w.uint64(${val})`
+  }
 }
 
-const decoderGenerators: Record<string, () => string> = {
+const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string') => string> = {
   bool: () => 'reader.bool()',
   bytes: () => 'reader.bytes()',
   double: () => 'reader.double()',
   fixed32: () => 'reader.fixed32()',
-  fixed64: () => 'reader.fixed64()',
+  fixed64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.fixed64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.fixed64String()'
+    }
+
+    return 'reader.fixed64()'
+  },
   float: () => 'reader.float()',
   int32: () => 'reader.int32()',
-  int64: () => 'reader.int64()',
+  int64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.int64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.int64String()'
+    }
+
+    return 'reader.int64()'
+  },
   sfixed32: () => 'reader.sfixed32()',
-  sfixed64: () => 'reader.sfixed64()',
+  sfixed64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.sfixed64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.sfixed64String()'
+    }
+
+    return 'reader.sfixed64()'
+  },
   sint32: () => 'reader.sint32()',
-  sint64: () => 'reader.sint64()',
+  sint64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.sint64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.sint64String()'
+    }
+
+    return 'reader.sint64()'
+  },
   string: () => 'reader.string()',
   uint32: () => 'reader.uint32()',
-  uint64: () => 'reader.uint64()'
+  uint64: (jsTypeOverride) => {
+    if (jsTypeOverride === 'number') {
+      return 'reader.uint64Number()'
+    }
+
+    if (jsTypeOverride === 'string') {
+      return 'reader.uint64String()'
+    }
+
+    return 'reader.uint64()'
+  }
 }
 
 const defaultValueGenerators: Record<string, () => string> = {
@@ -91,6 +206,11 @@ const defaultValueGenerators: Record<string, () => string> = {
   uint64: () => '0n'
 }
 
+const defaultValueGeneratorsJsTypeOverrides: Record<string, () => string> = {
+  number: () => '0',
+  string: () => "''"
+}
+
 const defaultValueTestGenerators: Record<string, (field: string) => string> = {
   bool: (field) => `(${field} != null && ${field} !== false)`,
   bytes: (field) => `(${field} != null && ${field}.byteLength > 0)`,
@@ -109,7 +229,28 @@ const defaultValueTestGenerators: Record<string, (field: string) => string> = {
   uint64: (field) => `(${field} != null && ${field} !== 0n)`
 }
 
-function findTypeName (typeName: string, classDef: MessageDef, moduleDef: ModuleDef): string {
+const defaultValueTestGeneratorsJsTypeOverrides: Record<string, (field: string) => string> = {
+  number: (field) => `(${field} != null && ${field} !== 0)`,
+  string: (field) => `(${field} != null && ${field} !== '')`
+}
+
+function findJsTypeOverride (defaultType: string, fieldDef: FieldDef): 'number' | 'string' | undefined {
+  if (fieldDef.options?.jstype != null && jsTypeOverrides[fieldDef.options?.jstype] != null) {
+    if (!['int64', 'uint64', 'sint64', 'fixed64', 'sfixed64'].includes(defaultType)) {
+      throw new Error(`jstype is only allowed on int64, uint64, sint64, fixed64 or sfixed64 fields - got "${defaultType}"`)
+    }
+
+    return jsTypeOverrides[fieldDef.options?.jstype]
+  }
+}
+
+function findJsTypeName (typeName: string, classDef: MessageDef, moduleDef: ModuleDef, fieldDef: FieldDef): string {
+  const override = findJsTypeOverride(typeName, fieldDef)
+
+  if (override != null) {
+    return override
+  }
+
   if (types[typeName] != null) {
     return types[typeName]
   }
@@ -123,7 +264,7 @@ function findTypeName (typeName: string, classDef: MessageDef, moduleDef: Module
   }
 
   if (classDef.parent != null) {
-    return findTypeName(typeName, classDef.parent, moduleDef)
+    return findJsTypeName(typeName, classDef.parent, moduleDef, fieldDef)
   }
 
   if (moduleDef.globals[typeName] != null) {
@@ -170,9 +311,16 @@ function createDefaultObject (fields: Record<string, FieldDef>, messageDef: Mess
 
       const type: string = fieldDef.type
       let defaultValue
+      let defaultValueGenerator = defaultValueGenerators[type]
 
-      if (defaultValueGenerators[type] != null) {
-        defaultValue = defaultValueGenerators[type]()
+      if (defaultValueGenerator != null) {
+        const jsTypeOverride = findJsTypeOverride(type, fieldDef)
+
+        if (jsTypeOverride != null && defaultValueGeneratorsJsTypeOverrides[jsTypeOverride] != null) {
+          defaultValueGenerator = defaultValueGeneratorsJsTypeOverrides[jsTypeOverride]
+        }
+
+        defaultValue = defaultValueGenerator()
       } else {
         const def = findDef(fieldDef.type, messageDef, moduleDef)
 
@@ -287,21 +435,40 @@ interface FieldDef {
   map: boolean
   valueType: string
   keyType: string
+
+  /**
+   * Support proto2 required field. This field means a value should always be
+   * in the serialized buffer, any message without it should be considered
+   * invalid. It was removed for proto3.
+   */
+  proto2Required: boolean
 }
 
 function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef): string[] {
   return Object.entries(fields).map(([fieldName, fieldDef]) => {
     if (fieldDef.map) {
-      return `${fieldName}: Map<${findTypeName(fieldDef.keyType ?? 'string', messageDef, moduleDef)}, ${findTypeName(fieldDef.valueType, messageDef, moduleDef)}>`
+      return `${fieldName}: Map<${findJsTypeName(fieldDef.keyType ?? 'string', messageDef, moduleDef, fieldDef)}, ${findJsTypeName(fieldDef.valueType, messageDef, moduleDef, fieldDef)}>`
     }
 
-    return `${fieldName}${fieldDef.optional ? '?' : ''}: ${findTypeName(fieldDef.type, messageDef, moduleDef)}${fieldDef.repeated ? '[]' : ''}`
+    return `${fieldName}${fieldDef.optional ? '?' : ''}: ${findJsTypeName(fieldDef.type, messageDef, moduleDef, fieldDef)}${fieldDef.repeated ? '[]' : ''}`
   })
 }
 
-function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef): string {
+function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef, flags?: Flags): string {
   if (isEnumDef(messageDef)) {
     moduleDef.imports.add('enumeration')
+
+    // check that the enum def values start from 0
+    if (Object.values(messageDef.values)[0] !== 0) {
+      const message = `enum ${messageDef.name} does not contain a value that maps to zero as it's first element, this is required in proto3 - see https://protobuf.dev/programming-guides/proto3/#enum`
+
+      if (flags?.strict === true) {
+        throw new CodeError(message, 'ERR_PARSE_ERROR')
+      } else {
+        // eslint-disable-next-line no-console
+        console.info(`[WARN] ${message}`)
+      }
+    }
 
     return `
 export enum ${messageDef.name} {
@@ -332,7 +499,7 @@ export namespace ${messageDef.name} {
   if (messageDef.nested != null) {
     nested = '\n'
     nested += Object.values(messageDef.nested)
-      .map(def => compileMessage(def, moduleDef).trim())
+      .map(def => compileMessage(def, moduleDef, flags).trim())
       .join('\n\n')
       .split('\n')
       .map(line => line.trim() === '' ? '' : `  ${line}`)
@@ -383,7 +550,7 @@ export interface ${messageDef.name} {
           type = 'message'
         }
 
-        typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+        typeName = findJsTypeName(fieldDef.type, messageDef, moduleDef, fieldDef)
         codec = `${typeName}.codec()`
       }
 
@@ -391,13 +558,33 @@ export interface ${messageDef.name} {
 
       if (fieldDef.map) {
         valueTest = `obj.${name} != null && obj.${name}.size !== 0`
-      } else if (!fieldDef.optional && !fieldDef.repeated) {
+      } else if (!fieldDef.optional && !fieldDef.repeated && !fieldDef.proto2Required) {
+        let defaultValueTestGenerator = defaultValueTestGenerators[type]
+
         // proto3 singular fields should only be written out if they are not the default value
-        if (defaultValueTestGenerators[type] != null) {
-          valueTest = `${defaultValueTestGenerators[type](`obj.${name}`)}`
+        if (defaultValueTestGenerator != null) {
+          const jsTypeOverride = findJsTypeOverride(type, fieldDef)
+
+          if (jsTypeOverride != null && defaultValueTestGeneratorsJsTypeOverrides[jsTypeOverride] != null) {
+            defaultValueTestGenerator = defaultValueTestGeneratorsJsTypeOverrides[jsTypeOverride]
+          }
+
+          valueTest = `${defaultValueTestGenerator(`obj.${name}`)}`
         } else if (type === 'enum') {
           // handle enums
-          valueTest = `obj.${name} != null && __${fieldDef.type}Values[obj.${name}] !== 0`
+          const def = findDef(fieldDef.type, messageDef, moduleDef)
+
+          if (!isEnumDef(def)) {
+            throw new Error(`${fieldDef.type} was not enum def`)
+          }
+
+          valueTest = `obj.${name} != null`
+
+          // singular enums default to 0, but enums can be defined without a 0
+          // value which is against the proto3 spec but is tolerated
+          if (Object.values(def.values)[0] === 0) {
+            valueTest += ` && __${fieldDef.type}Values[obj.${name}] !== 0`
+          }
         }
       }
 
@@ -412,8 +599,13 @@ export interface ${messageDef.name} {
           }
         }
 
-        let writeField = (): string => `w.uint32(${id})
-          ${encoderGenerators[type] == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerators[type](valueVar)}`
+        let writeField = (): string => {
+          const encoderGenerator = encoderGenerators[type]
+          const jsTypeOverride = findJsTypeOverride(type, fieldDef)
+
+          return `w.uint32(${id})
+          ${encoderGenerator == null ? `${codec}.encode(${valueVar}, w)` : encoderGenerator(valueVar, jsTypeOverride)}`
+        }
 
         if (type === 'message') {
           // message fields are only written if they have values. But if a message
@@ -483,11 +675,14 @@ export interface ${messageDef.name} {
             type = 'message'
           }
 
-          const typeName = findTypeName(fieldDef.type, messageDef, moduleDef)
+          const typeName = findJsTypeName(fieldDef.type, messageDef, moduleDef, fieldDef)
           codec = `${typeName}.codec()`
         }
 
-        const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type]()}`
+        // override setting type on js object
+        const jsTypeOverride = findJsTypeOverride(fieldDef.type, fieldDef)
+
+        const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type](jsTypeOverride)}`
 
         if (fieldDef.map) {
           return `case ${fieldDef.id}: {
@@ -496,14 +691,16 @@ export interface ${messageDef.name} {
               break
             }`
         } else if (fieldDef.repeated) {
-          return `case ${fieldDef.id}:
+          return `case ${fieldDef.id}: {
               obj.${fieldName}.push(${parseValue})
-              break`
+              break
+            }`
         }
 
-        return `case ${fieldDef.id}:
+        return `case ${fieldDef.id}: {
               obj.${fieldName} = ${parseValue}
-              break`
+              break
+            }`
       }
 
       return createReadField(fieldName, fieldDef)
@@ -532,9 +729,10 @@ ${encodeFields === '' ? '' : `${encodeFields}\n`}
           const tag = reader.uint32()
 
           switch (tag >>> 3) {${decodeFields === '' ? '' : `\n            ${decodeFields}`}
-            default:
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -570,7 +768,7 @@ interface ModuleDef {
   globals: Record<string, ClassDef>
 }
 
-function defineModule (def: ClassDef): ModuleDef {
+function defineModule (def: ClassDef, flags: Flags): ModuleDef {
   const moduleDef: ModuleDef = {
     imports: new Set(),
     importedTypes: new Set(),
@@ -582,10 +780,10 @@ function defineModule (def: ClassDef): ModuleDef {
   const defs = def.nested
 
   if (defs == null) {
-    throw new Error('No top-level messages found in protobuf')
+    throw new CodeError('No top-level messages found in protobuf', 'ERR_NO_MESSAGES_FOUND')
   }
 
-  function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef): void {
+  function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef, flags?: Flags): void {
     for (const className of Object.keys(defs)) {
       const classDef = defs[className]
 
@@ -603,9 +801,19 @@ function defineModule (def: ClassDef): ModuleDef {
           fieldDef.repeated = fieldDef.rule === 'repeated'
           fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
           fieldDef.map = fieldDef.keyType != null
+          fieldDef.proto2Required = false
 
           if (fieldDef.rule === 'required') {
-            throw new Error('"required" fields are not allowed in proto3 - please convert your proto2 definitions to proto3')
+            const message = `field "${name}" is required, this is not allowed in proto3. Please convert your proto2 definitions to proto3 - see https://github.com/ipfs/protons/wiki/Required-fields-and-protobuf-3`
+
+            if (flags?.strict === true) {
+              throw new CodeError(message, 'ERR_PARSE_ERROR')
+            } else {
+              fieldDef.proto2Required = true
+
+              // eslint-disable-next-line no-console
+              console.info(`[WARN] ${message}`)
+            }
           }
         }
       }
@@ -644,7 +852,7 @@ function defineModule (def: ClassDef): ModuleDef {
     }
   }
 
-  defineMessage(defs)
+  defineMessage(defs, undefined, flags)
 
   // set enum/message fields now all messages have been defined
   updateTypes(defs)
@@ -652,14 +860,22 @@ function defineModule (def: ClassDef): ModuleDef {
   for (const className of Object.keys(defs)) {
     const classDef = defs[className]
 
-    moduleDef.compiled.push(compileMessage(classDef, moduleDef))
+    moduleDef.compiled.push(compileMessage(classDef, moduleDef, flags))
   }
 
   return moduleDef
 }
 
 interface Flags {
+  /**
+   * Specifies an output directory
+   */
   output?: string
+
+  /**
+   * If true, warnings will be thrown as errors
+   */
+  strict?: boolean
 }
 
 export async function generate (source: string, flags: Flags): Promise<void> {
@@ -701,7 +917,7 @@ export async function generate (source: string, flags: Flags): Promise<void> {
     }
   }
 
-  const moduleDef = defineModule(def)
+  const moduleDef = defineModule(def, flags)
 
   const ignores = [
     '/* eslint-disable import/export */',

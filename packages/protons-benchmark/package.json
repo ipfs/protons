@@ -32,20 +32,20 @@
       "sourceType": "module"
     },
     "ignorePatterns": [
-      "src/pbjs/*",
-      "src/protobuf-ts/*",
-      "src/protobufjs/*",
-      "src/protobuf-es/*"
+      "src/implementations/pbjs/*",
+      "src/implementations/protobuf-es/*",
+      "src/implementations/protobuf-ts/*",
+      "src/implementations/protobufjs/*"
     ]
   },
   "scripts": {
     "clean": "aegir clean",
     "lint": "aegir lint",
     "dep-check": "aegir dep-check --ignore @protobuf-ts/plugin pbjs protons @bufbuild/protoc-gen-es",
-    "build": "aegir build --no-bundle && cp -R src/protobufjs dist/src/protobufjs",
+    "build": "aegir build --no-bundle && cp -R src/implementations/protobufjs dist/src/implementations/protobufjs",
     "prestart": "npm run build",
-    "start": "node dist/src/index.js",
-    "start:browser": "npx playwright-test dist/src/index.js --runner benchmark"
+    "start": "node dist/src/implementations/index.js",
+    "start:browser": "npx playwright-test dist/src/implementations/index.js --runner benchmark"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^1.0.0",
@@ -59,8 +59,7 @@
     "protobufjs": "^7.0.0",
     "protons": "^7.0.0",
     "protons-runtime": "^5.0.0",
-    "uint8arraylist": "^2.4.3",
-    "uint8arrays": "^4.0.2"
+    "uint8arraylist": "^2.4.3"
   },
   "private": true
 }

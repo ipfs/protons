@@ -63,24 +63,30 @@ export namespace Record {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.key = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.value = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.author = reader.bytes()
               break
-            case 4:
+            }
+            case 4: {
               obj.signature = reader.bytes()
               break
-            case 5:
+            }
+            case 5: {
               obj.timeReceived = reader.string()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -201,18 +207,22 @@ export namespace Message {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.id = reader.bytes()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.addrs.push(reader.bytes())
                 break
-              case 3:
+              }
+              case 3: {
                 obj.connection = Message.ConnectionType.codec().decode(reader)
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -290,27 +300,34 @@ export namespace Message {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = Message.MessageType.codec().decode(reader)
               break
-            case 10:
+            }
+            case 10: {
               obj.clusterLevelRaw = reader.int32()
               break
-            case 2:
+            }
+            case 2: {
               obj.key = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.record = reader.bytes()
               break
-            case 8:
+            }
+            case 8: {
               obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
               break
-            case 9:
+            }
+            case 9: {
               obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

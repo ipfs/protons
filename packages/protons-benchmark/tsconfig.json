@@ -9,8 +9,8 @@
     "test"
   ],
   "exclude": [
-    "src/protobufjs/bench.js",
-    "src/protobufjs/rpc.js"
+    "src/implementations/protobufjs/bench.js",
+    "src/implementations/protobufjs/rpc.js"
   ],
   "references": [
     {

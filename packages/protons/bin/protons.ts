@@ -10,6 +10,7 @@ async function main (): Promise<void> {
 
   Options
     --output, -o Path to a directory to write transpiled typescript files into
+    --strict, -s Causes parsing warnings to become errors
 
   Examples
     $ protons ./path/to/file.proto ./path/to/other/file.proto
@@ -20,6 +21,10 @@ async function main (): Promise<void> {
       output: {
         type: 'string',
         shortFlag: 'o'
+      },
+      strict: {
+        type: 'boolean',
+        shortFlag: 's'
       }
     }
   })
