@@ -62,15 +62,18 @@ export namespace OptionalSubMessage {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.foo = reader.string()
               break
-            case 2:
+            }
+            case 2: {
               obj.bar = reader.int32()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -217,60 +220,78 @@ export namespace Optional {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.double = reader.double()
               break
-            case 2:
+            }
+            case 2: {
               obj.float = reader.float()
               break
-            case 3:
+            }
+            case 3: {
               obj.int32 = reader.int32()
               break
-            case 4:
+            }
+            case 4: {
               obj.int64 = reader.int64()
               break
-            case 5:
+            }
+            case 5: {
               obj.uint32 = reader.uint32()
               break
-            case 6:
+            }
+            case 6: {
               obj.uint64 = reader.uint64()
               break
-            case 7:
+            }
+            case 7: {
               obj.sint32 = reader.sint32()
               break
-            case 8:
+            }
+            case 8: {
               obj.sint64 = reader.sint64()
               break
-            case 9:
+            }
+            case 9: {
               obj.fixed32 = reader.fixed32()
               break
-            case 10:
+            }
+            case 10: {
               obj.fixed64 = reader.fixed64()
               break
-            case 11:
+            }
+            case 11: {
               obj.sfixed32 = reader.sfixed32()
               break
-            case 12:
+            }
+            case 12: {
               obj.sfixed64 = reader.sfixed64()
               break
-            case 13:
+            }
+            case 13: {
               obj.bool = reader.bool()
               break
-            case 14:
+            }
+            case 14: {
               obj.string = reader.string()
               break
-            case 15:
+            }
+            case 15: {
               obj.bytes = reader.bytes()
               break
-            case 16:
+            }
+            case 16: {
               obj.enum = OptionalEnum.codec().decode(reader)
               break
-            case 17:
+            }
+            case 17: {
               obj.subMessage = OptionalSubMessage.codec().decode(reader, reader.uint32())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

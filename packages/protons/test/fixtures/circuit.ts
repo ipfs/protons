@@ -122,15 +122,18 @@ export namespace CircuitRelay {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.id = reader.bytes()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.addrs.push(reader.bytes())
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -191,21 +194,26 @@ export namespace CircuitRelay {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = CircuitRelay.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.srcPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32())
               break
-            case 3:
+            }
+            case 3: {
               obj.dstPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32())
               break
-            case 4:
+            }
+            case 4: {
               obj.code = CircuitRelay.Status.codec().decode(reader)
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

@@ -121,36 +121,46 @@ export namespace Request {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = Request.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.connect = ConnectRequest.codec().decode(reader, reader.uint32())
               break
-            case 3:
+            }
+            case 3: {
               obj.streamOpen = StreamOpenRequest.codec().decode(reader, reader.uint32())
               break
-            case 4:
+            }
+            case 4: {
               obj.streamHandler = StreamHandlerRequest.codec().decode(reader, reader.uint32())
               break
-            case 5:
+            }
+            case 5: {
               obj.dht = DHTRequest.codec().decode(reader, reader.uint32())
               break
-            case 6:
+            }
+            case 6: {
               obj.connManager = ConnManagerRequest.codec().decode(reader, reader.uint32())
               break
-            case 7:
+            }
+            case 7: {
               obj.disconnect = DisconnectRequest.codec().decode(reader, reader.uint32())
               break
-            case 8:
+            }
+            case 8: {
               obj.pubsub = PSRequest.codec().decode(reader, reader.uint32())
               break
-            case 9:
+            }
+            case 9: {
               obj.peerStore = PeerstoreRequest.codec().decode(reader, reader.uint32())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -264,33 +274,42 @@ export namespace Response {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = Response.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.error = ErrorResponse.codec().decode(reader, reader.uint32())
               break
-            case 3:
+            }
+            case 3: {
               obj.streamInfo = StreamInfo.codec().decode(reader, reader.uint32())
               break
-            case 4:
+            }
+            case 4: {
               obj.identify = IdentifyResponse.codec().decode(reader, reader.uint32())
               break
-            case 5:
+            }
+            case 5: {
               obj.dht = DHTResponse.codec().decode(reader, reader.uint32())
               break
-            case 6:
+            }
+            case 6: {
               obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32()))
               break
-            case 7:
+            }
+            case 7: {
               obj.pubsub = PSResponse.codec().decode(reader, reader.uint32())
               break
-            case 8:
+            }
+            case 8: {
               obj.peerStore = PeerstoreResponse.codec().decode(reader, reader.uint32())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -352,15 +371,18 @@ export namespace IdentifyResponse {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.id = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.addrs.push(reader.bytes())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -428,18 +450,22 @@ export namespace ConnectRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.peer = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.addrs.push(reader.bytes())
               break
-            case 3:
+            }
+            case 3: {
               obj.timeout = reader.int64()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -507,18 +533,22 @@ export namespace StreamOpenRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.peer = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.proto.push(reader.string())
               break
-            case 3:
+            }
+            case 3: {
               obj.timeout = reader.int64()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -580,15 +610,18 @@ export namespace StreamHandlerRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.addr = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.proto.push(reader.string())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -641,12 +674,14 @@ export namespace ErrorResponse {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.msg = reader.string()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -713,18 +748,22 @@ export namespace StreamInfo {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.peer = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.addr = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.proto = reader.string()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -843,30 +882,38 @@ export namespace DHTRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = DHTRequest.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.peer = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.cid = reader.bytes()
               break
-            case 4:
+            }
+            case 4: {
               obj.key = reader.bytes()
               break
-            case 5:
+            }
+            case 5: {
               obj.value = reader.bytes()
               break
-            case 6:
+            }
+            case 6: {
               obj.count = reader.int32()
               break
-            case 7:
+            }
+            case 7: {
               obj.timeout = reader.int64()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -949,18 +996,22 @@ export namespace DHTResponse {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = DHTResponse.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
               break
-            case 3:
+            }
+            case 3: {
               obj.value = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1022,15 +1073,18 @@ export namespace PeerInfo {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.id = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.addrs.push(reader.bytes())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1119,21 +1173,26 @@ export namespace ConnManagerRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = ConnManagerRequest.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.peer = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.tag = reader.string()
               break
-            case 4:
+            }
+            case 4: {
               obj.weight = reader.int64()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1186,12 +1245,14 @@ export namespace DisconnectRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.peer = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1276,18 +1337,22 @@ export namespace PSRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = PSRequest.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.topic = reader.string()
               break
-            case 3:
+            }
+            case 3: {
               obj.data = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1372,27 +1437,34 @@ export namespace PSMessage {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.from = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.data = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.seqno = reader.bytes()
               break
-            case 4:
+            }
+            case 4: {
               obj.topicIDs.push(reader.string())
               break
-            case 5:
+            }
+            case 5: {
               obj.signature = reader.bytes()
               break
-            case 6:
+            }
+            case 6: {
               obj.key = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1456,15 +1528,18 @@ export namespace PSResponse {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.topics.push(reader.string())
               break
-            case 2:
+            }
+            case 2: {
               obj.peerIDs.push(reader.bytes())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1550,18 +1625,22 @@ export namespace PeerstoreRequest {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.type = PeerstoreRequest.Type.codec().decode(reader)
               break
-            case 2:
+            }
+            case 2: {
               obj.id = reader.bytes()
               break
-            case 3:
+            }
+            case 3: {
               obj.protos.push(reader.string())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -1622,15 +1701,18 @@ export namespace PeerstoreResponse {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
               break
-            case 2:
+            }
+            case 2: {
               obj.protos.push(reader.string())
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

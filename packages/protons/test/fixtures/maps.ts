@@ -41,12 +41,14 @@ export namespace SubMessage {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.foo = reader.string()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -114,15 +116,18 @@ export namespace MapTypes {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.key = reader.string()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.value = reader.string()
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -182,15 +187,18 @@ export namespace MapTypes {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.key = reader.int32()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.value = reader.int32()
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -250,15 +258,18 @@ export namespace MapTypes {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.key = reader.bool()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.value = reader.bool()
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -317,15 +328,18 @@ export namespace MapTypes {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.key = reader.string()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.value = SubMessage.codec().decode(reader, reader.uint32())
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -419,9 +433,10 @@ export namespace MapTypes {
               obj.messageMap.set(entry.key, entry.value)
               break
             }
-            default:
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

@@ -47,15 +47,18 @@ export namespace Basic {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.foo = reader.string()
               break
-            case 2:
+            }
+            case 2: {
               obj.num = reader.int32()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -99,9 +102,10 @@ export namespace Empty {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            default:
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
