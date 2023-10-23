@@ -430,6 +430,7 @@ interface FieldDef {
   rule: string
   optional: boolean
   repeated: boolean
+  lengthLimit?: number
   message: boolean
   enum: boolean
   map: boolean
@@ -685,13 +686,37 @@ export interface ${messageDef.name} {
         const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type](jsTypeOverride)}`
 
         if (fieldDef.map) {
-          return `case ${fieldDef.id}: {
+          let limit = ''
+
+          if (fieldDef.lengthLimit != null) {
+            moduleDef.imports.add('CodeError')
+
+            limit = `
+              if (obj.${fieldName}.size === ${fieldDef.lengthLimit}) {
+                throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_SIZE')
+              }
+`
+          }
+
+          return `case ${fieldDef.id}: {${limit}
               const entry = ${parseValue}
               obj.${fieldName}.set(entry.key, entry.value)
               break
             }`
         } else if (fieldDef.repeated) {
-          return `case ${fieldDef.id}: {
+          let limit = ''
+
+          if (fieldDef.lengthLimit != null) {
+            moduleDef.imports.add('CodeError')
+
+            limit = `
+              if (obj.${fieldName}.length === ${fieldDef.lengthLimit}) {
+                throw new CodeError('decode error - repeated field "${fieldName}" had too many elements', 'ERR_MAX_LENGTH')
+              }
+`
+          }
+
+          return `case ${fieldDef.id}: {${limit}
               obj.${fieldName}.push(${parseValue})
               break
             }`
@@ -801,6 +826,7 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
           fieldDef.repeated = fieldDef.rule === 'repeated'
           fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
           fieldDef.map = fieldDef.keyType != null
+          fieldDef.lengthLimit = fieldDef.options?.['(protons.limit)']
           fieldDef.proto2Required = false
 
           if (fieldDef.rule === 'required') {

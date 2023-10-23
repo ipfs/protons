@@ -326,3 +326,13 @@ export interface Reader {
    */
   sfixed64String(): string
 }
+
+export class CodeError extends Error {
+  public code: string
+
+  constructor (message: string, code: string, options?: ErrorOptions) {
+    super(message, options)
+
+    this.code = code
+  }
+}
