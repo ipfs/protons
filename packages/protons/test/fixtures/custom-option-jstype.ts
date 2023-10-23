@@ -76,27 +76,34 @@ export namespace CustomOptionNumber {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.num = reader.int32()
               break
-            case 2:
+            }
+            case 2: {
               obj.i64 = reader.int64Number()
               break
-            case 3:
+            }
+            case 3: {
               obj.ui64 = reader.uint64Number()
               break
-            case 4:
+            }
+            case 4: {
               obj.si64 = reader.sint64Number()
               break
-            case 5:
+            }
+            case 5: {
               obj.f64 = reader.fixed64Number()
               break
-            case 6:
+            }
+            case 6: {
               obj.sf64 = reader.sfixed64Number()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -184,27 +191,34 @@ export namespace CustomOptionString {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.num = reader.int32()
               break
-            case 2:
+            }
+            case 2: {
               obj.i64 = reader.int64String()
               break
-            case 3:
+            }
+            case 3: {
               obj.ui64 = reader.uint64String()
               break
-            case 4:
+            }
+            case 4: {
               obj.si64 = reader.sint64String()
               break
-            case 5:
+            }
+            case 5: {
               obj.f64 = reader.fixed64String()
               break
-            case 6:
+            }
+            case 6: {
               obj.sf64 = reader.sfixed64String()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
