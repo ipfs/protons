@@ -58,18 +58,22 @@ export namespace pb {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
-              case 1:
+              case 1: {
                 obj.identityKey = reader.bytes()
                 break
-              case 2:
+              }
+              case 2: {
                 obj.identitySig = reader.bytes()
                 break
-              case 3:
+              }
+              case 3: {
                 obj.data = reader.bytes()
                 break
-              default:
+              }
+              default: {
                 reader.skipType(tag & 7)
                 break
+              }
             }
           }
 
@@ -110,9 +114,10 @@ export namespace pb {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            default:
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

@@ -73,24 +73,30 @@ export namespace Peer {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.addresses.push(Address.codec().decode(reader, reader.uint32()))
               break
-            case 2:
+            }
+            case 2: {
               obj.protocols.push(reader.string())
               break
-            case 3:
+            }
+            case 3: {
               obj.metadata.push(Metadata.codec().decode(reader, reader.uint32()))
               break
-            case 4:
+            }
+            case 4: {
               obj.pubKey = reader.bytes()
               break
-            case 5:
+            }
+            case 5: {
               obj.peerRecordEnvelope = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -149,15 +155,18 @@ export namespace Address {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.multiaddr = reader.bytes()
               break
-            case 2:
+            }
+            case 2: {
               obj.isCertified = reader.bool()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -217,15 +226,18 @@ export namespace Metadata {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.key = reader.string()
               break
-            case 2:
+            }
+            case 2: {
               obj.value = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 

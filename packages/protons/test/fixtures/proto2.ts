@@ -9,7 +9,7 @@ import type { Codec } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface MessageWithRequired {
-  field: number
+  scalarField: number
 }
 
 export namespace MessageWithRequired {
@@ -22,9 +22,9 @@ export namespace MessageWithRequired {
           w.fork()
         }
 
-        if (obj.field != null) {
+        if (obj.scalarField != null) {
           w.uint32(8)
-          w.int32(obj.field)
+          w.int32(obj.scalarField)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -32,7 +32,7 @@ export namespace MessageWithRequired {
         }
       }, (reader, length) => {
         const obj: any = {
-          field: 0
+          scalarField: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -42,7 +42,7 @@ export namespace MessageWithRequired {
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field = reader.int32()
+              obj.scalarField = reader.int32()
               break
             }
             default: {

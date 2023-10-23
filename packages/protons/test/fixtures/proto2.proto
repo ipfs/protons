@@ -1,5 +1,5 @@
 syntax = "proto2";
 
 message MessageWithRequired {
-  required int32 field = 1;
+  required int32 scalarField = 1;
 }

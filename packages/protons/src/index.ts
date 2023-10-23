@@ -537,14 +537,16 @@ export interface ${messageDef.name} {
               break
             }`
         } else if (fieldDef.repeated) {
-          return `case ${fieldDef.id}:
+          return `case ${fieldDef.id}: {
               obj.${fieldName}.push(${parseValue})
-              break`
+              break
+            }`
         }
 
-        return `case ${fieldDef.id}:
+        return `case ${fieldDef.id}: {
               obj.${fieldName} = ${parseValue}
-              break`
+              break
+            }`
       }
 
       return createReadField(fieldName, fieldDef)
@@ -573,9 +575,10 @@ ${encodeFields === '' ? '' : `${encodeFields}\n`}
           const tag = reader.uint32()
 
           switch (tag >>> 3) {${decodeFields === '' ? '' : `\n            ${decodeFields}`}
-            default:
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
@@ -647,7 +650,7 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
           fieldDef.proto2Required = false
 
           if (fieldDef.rule === 'required') {
-            const message = `field "${name}" is required - this is not allowed in proto3 - please convert your proto2 definitions to proto3`
+            const message = `field "${name}" is required, this is not allowed in proto3. Please convert your proto2 definitions to proto3 - see https://github.com/ipfs/protons/wiki/Required-fields-and-protobuf-3`
 
             if (flags?.strict === true) {
               throw new CodeError(message, 'ERR_PARSE_ERROR')
