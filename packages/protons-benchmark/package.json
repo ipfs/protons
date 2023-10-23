@@ -32,19 +32,19 @@
       "sourceType": "module"
     },
     "ignorePatterns": [
-      "src/pbjs/*",
-      "src/protobuf-ts/*",
-      "src/protobufjs/*"
+      "src/implementations/pbjs/*",
+      "src/implementations/protobuf-ts/*",
+      "src/implementations/protobufjs/*"
     ]
   },
   "scripts": {
     "clean": "aegir clean",
     "lint": "aegir lint",
     "dep-check": "aegir dep-check --ignore @protobuf-ts/plugin pbjs protons",
-    "build": "aegir build --no-bundle && cp -R src/protobufjs dist/src/protobufjs",
+    "build": "aegir build --no-bundle && cp -R src/implementations/protobufjs dist/src/implementations/protobufjs",
     "prestart": "npm run build",
-    "start": "node dist/src/index.js",
-    "start:browser": "npx playwright-test dist/src/index.js --runner benchmark"
+    "start": "node dist/src/implementations/index.js",
+    "start:browser": "npx playwright-test dist/src/implementations/index.js --runner benchmark"
   },
   "dependencies": {
     "@protobuf-ts/plugin": "^2.8.1",

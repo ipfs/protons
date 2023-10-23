@@ -278,10 +278,40 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
+   * Reads a varint as a signed 64 bit value returned as a possibly unsafe
+   * JavaScript number
+   */
+  int64Number (): number {
+    return this.readLongVarint().toNumber()
+  }
+
+  /**
+   * Reads a varint as a signed 64 bit value returned as a string
+   */
+  int64String (): string {
+    return this.readLongVarint().toString()
+  }
+
+  /**
    * Reads a varint as an unsigned 64 bit value
    */
   uint64 (): bigint {
     return this.readLongVarint().toBigInt(true)
+  }
+
+  /**
+   * Reads a varint as an unsigned 64 bit value returned as a possibly unsafe
+   * JavaScript number
+   */
+  uint64Number (): number {
+    return this.readLongVarint().toNumber(true)
+  }
+
+  /**
+   * Reads a varint as an unsigned 64 bit value returned as a string
+   */
+  uint64String (): string {
+    return this.readLongVarint().toString(true)
   }
 
   /**
@@ -292,6 +322,22 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value returned as a
+   * possibly unsafe JavaScript number
+   */
+  sint64Number (): number {
+    return this.readLongVarint().zzDecode().toNumber()
+  }
+
+  /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value returned as a
+   * string
+   */
+  sint64String (): string {
+    return this.readLongVarint().zzDecode().toString()
+  }
+
+  /**
    * Reads fixed 64 bits
    */
   fixed64 (): bigint {
@@ -299,10 +345,39 @@ export class Uint8ArrayReader implements Reader {
   }
 
   /**
+   * Reads fixed 64 bits returned as a possibly unsafe JavaScript number
+   */
+  fixed64Number (): number {
+    return this.readFixed64().toNumber()
+  }
+
+  /**
+   * Reads fixed 64 bits returned as a string
+   */
+  fixed64String (): string {
+    return this.readFixed64().toString()
+  }
+
+  /**
    * Reads zig-zag encoded fixed 64 bits
    */
   sfixed64 (): bigint {
     return this.readFixed64().toBigInt()
+  }
+
+  /**
+   * Reads zig-zag encoded fixed 64 bits returned as a possibly unsafe
+   * JavaScript number
+   */
+  sfixed64Number (): number {
+    return this.readFixed64().toNumber()
+  }
+
+  /**
+   * Reads zig-zag encoded fixed 64 bits returned as a string
+   */
+  sfixed64String (): string {
+    return this.readFixed64().toString()
   }
 }
 

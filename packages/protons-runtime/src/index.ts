@@ -49,14 +49,44 @@ export interface Writer {
   uint64(value: bigint): this
 
   /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64Number(value: number): this
+
+  /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64String(value: string): this
+
+  /**
    * Writes a signed 64 bit value as a varint
    */
   int64(value: bigint): this
 
   /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64Number(value: number): this
+
+  /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64String(value: string): this
+
+  /**
    * Writes a signed 64 bit value as a varint, zig-zag encoded
    */
   sint64(value: bigint): this
+
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64Number(value: number): this
+
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64String(value: string): this
 
   /**
    * Writes a boolish value as a varint
@@ -79,9 +109,29 @@ export interface Writer {
   fixed64(value: bigint): this
 
   /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64Number(value: number): this
+
+  /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64String(value: string): this
+
+  /**
    * Writes a signed 64 bit value as fixed 64 bits
    */
   sfixed64(value: bigint): this
+
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64Number(value: number): this
+
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64String(value: string): this
 
   /**
    * Writes a float (32 bit)
@@ -207,9 +257,29 @@ export interface Reader {
   int64(): bigint
 
   /**
+   * Reads a varint as a signed 64 bit value
+   */
+  int64Number(): number
+
+  /**
+   * Reads a varint as a signed 64 bit value
+   */
+  int64String(): string
+
+  /**
    * Reads a varint as an unsigned 64 bit value
    */
   uint64(): bigint
+
+  /**
+   * Reads a varint as an unsigned 64 bit value
+   */
+  uint64Number(): number
+
+  /**
+   * Reads a varint as an unsigned 64 bit value
+   */
+  uint64String(): string
 
   /**
    * Reads a zig-zag encoded varint as a signed 64 bit value
@@ -217,12 +287,42 @@ export interface Reader {
   sint64(): bigint
 
   /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value
+   */
+  sint64Number(): number
+
+  /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value
+   */
+  sint64String(): string
+
+  /**
    * Reads fixed 64 bits
    */
   fixed64(): bigint
 
   /**
+   * Reads fixed 64 bits
+   */
+  fixed64Number(): number
+
+  /**
+   * Reads fixed 64 bits
+   */
+  fixed64String(): string
+
+  /**
    * Reads zig-zag encoded fixed 64 bits
    */
   sfixed64(): bigint
+
+  /**
+   * Reads zig-zag encoded fixed 64 bits
+   */
+  sfixed64Number(): number
+
+  /**
+   * Reads zig-zag encoded fixed 64 bits
+   */
+  sfixed64String(): string
 }

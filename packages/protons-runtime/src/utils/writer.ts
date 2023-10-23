@@ -183,10 +183,39 @@ class Uint8ArrayWriter implements Writer {
   }
 
   /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64Number (value: number): this {
+    const bits = LongBits.fromNumber(value)
+    return this._push(writeVarint64, bits.length(), bits)
+  }
+
+  /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64String (value: string): this {
+    return this.uint64(BigInt(value))
+  }
+
+  /**
    * Writes a signed 64 bit value as a varint
    */
   int64 (value: bigint): this {
     return this.uint64(value)
+  }
+
+  /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64Number (value: number): this {
+    return this.uint64Number(value)
+  }
+
+  /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64String (value: string): this {
+    return this.uint64String(value)
   }
 
   /**
@@ -195,6 +224,21 @@ class Uint8ArrayWriter implements Writer {
   sint64 (value: bigint): this {
     const bits = LongBits.fromBigInt(value).zzEncode()
     return this._push(writeVarint64, bits.length(), bits)
+  }
+
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64Number (value: number): this {
+    const bits = LongBits.fromNumber(value).zzEncode()
+    return this._push(writeVarint64, bits.length(), bits)
+  }
+
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64String (value: string): this {
+    return this.sint64(BigInt(value))
   }
 
   /**
@@ -223,8 +267,22 @@ class Uint8ArrayWriter implements Writer {
    */
   fixed64 (value: bigint): this {
     const bits = LongBits.fromBigInt(value)
-
     return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi)
+  }
+
+  /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64Number (value: number): this {
+    const bits = LongBits.fromNumber(value)
+    return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi)
+  }
+
+  /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64String (value: string): this {
+    return this.fixed64(BigInt(value))
   }
 
   /**
@@ -232,6 +290,20 @@ class Uint8ArrayWriter implements Writer {
    */
   sfixed64 (value: bigint): this {
     return this.fixed64(value)
+  }
+
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64Number (value: number): this {
+    return this.fixed64Number(value)
+  }
+
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64String (value: string): this {
+    return this.fixed64String(value)
   }
 
   /**
