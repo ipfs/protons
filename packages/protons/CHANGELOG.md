@@ -1,3 +1,15 @@
+## [protons-v7.1.0](https://github.com/ipfs/protons/compare/protons-v7.0.7...protons-v7.1.0) (2023-10-23)
+
+
+### Features
+
+* add strict option to CLI ([#119](https://github.com/ipfs/protons/issues/119)) ([8c039c5](https://github.com/ipfs/protons/commit/8c039c50c0085bd496d684ffc42b30ae786f4a52))
+
+
+### Trivial Changes
+
+* update project config ([c54b7ac](https://github.com/ipfs/protons/commit/c54b7acbc9ac3839d1ef2d2653f1d19b5a0fdbf4))
+
 ## [protons-v7.0.7](https://github.com/ipfs/protons/compare/protons-v7.0.6...protons-v7.0.7) (2023-10-13)
 
 
