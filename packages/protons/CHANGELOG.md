@@ -1,3 +1,10 @@
+## [protons-v7.2.0](https://github.com/ipfs/protons/compare/protons-v7.1.0...protons-v7.2.0) (2023-10-23)
+
+
+### Features
+
+* support jstype custom options ([#117](https://github.com/ipfs/protons/issues/117)) ([ba35475](https://github.com/ipfs/protons/commit/ba354756bbec60055bbeb4a6ee5bc3ab73267312)), closes [#112](https://github.com/ipfs/protons/issues/112)
+
 ## [protons-v7.1.0](https://github.com/ipfs/protons/compare/protons-v7.0.7...protons-v7.1.0) (2023-10-23)
 
 
