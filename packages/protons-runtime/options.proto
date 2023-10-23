@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 
 import "google/protobuf/descriptor.proto";
 
@@ -11,5 +11,5 @@ message ProtonsOptions {
 
 // custom options available for use by protons
 extend google.protobuf.FieldOptions {
-  optional ProtonsOptions protons_options = 1186;
+  optional ProtonsOptions options = 1186;
 }

@@ -826,7 +826,7 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
           fieldDef.repeated = fieldDef.rule === 'repeated'
           fieldDef.optional = !fieldDef.repeated && fieldDef.options?.proto3_optional === true
           fieldDef.map = fieldDef.keyType != null
-          fieldDef.lengthLimit = fieldDef.options?.['(protons.limit)']
+          fieldDef.lengthLimit = fieldDef.options?.['(protons.options).limit']
           fieldDef.proto2Required = false
 
           if (fieldDef.rule === 'required') {

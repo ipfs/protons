@@ -3,9 +3,9 @@ syntax = "proto3";
 import "protons-rutime/options.proto";
 
 message MessageWithSizeLimitedRepeatedField {
-  repeated string repeatedField = 1 [(protons.limit) = 1];
+  repeated string repeatedField = 1 [(protons.options).limit = 1];
 }
 
 message MessageWithSizeLimitedMap {
-  map<string, string> mapField = 1 [(protons.limit) = 1];
+  map<string, string> mapField = 1 [(protons.options).limit = 1];
 }
