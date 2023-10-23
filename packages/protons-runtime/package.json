@@ -14,7 +14,7 @@
   "type": "module",
   "types": "./dist/src/index.d.ts",
   "files": [
-    "options.proto",
+    "protons.proto",
     "src",
     "dist",
     "!dist/test",

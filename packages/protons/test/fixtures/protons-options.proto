@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "protons-rutime/options.proto";
+import "protons.proto";
 
 message MessageWithSizeLimitedRepeatedField {
   repeated string repeatedField = 1 [(protons.options).limit = 1];

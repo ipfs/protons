@@ -902,11 +902,20 @@ interface Flags {
    * If true, warnings will be thrown as errors
    */
   strict?: boolean
+
+  /**
+   * A list of directories to add to the include path
+   */
+  path?: string[]
 }
 
 export async function generate (source: string, flags: Flags): Promise<void> {
   // convert .protobuf to .json
-  const json = await promisify(pbjs)(['-t', 'json', source])
+  const json = await promisify(pbjs)([
+    '-t', 'json',
+    ...(flags.path ?? []).map(p => ['--path', path.isAbsolute(p) ? p : path.resolve(process.cwd(), p)]).flat(),
+    source
+  ])
 
   if (json == null) {
     throw new Error(`Could not convert ${source} to intermediate JSON format`)
