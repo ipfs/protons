@@ -1,3 +1,10 @@
+## [protons-runtime-v5.2.0](https://github.com/ipfs/protons/compare/protons-runtime-v5.1.0...protons-runtime-v5.2.0) (2023-11-01)
+
+
+### Features
+
+* add custom protons options for limiting list/map sizes ([#120](https://github.com/ipfs/protons/issues/120)) ([a5ba36b](https://github.com/ipfs/protons/commit/a5ba36bbfbfb1d2bded026e0da1251e02defacdd)), closes [#113](https://github.com/ipfs/protons/issues/113)
+
 ## [protons-runtime-v5.1.0](https://github.com/ipfs/protons/compare/protons-runtime-v5.0.5...protons-runtime-v5.1.0) (2023-10-23)
 
 
