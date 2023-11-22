@@ -809,7 +809,7 @@ class ModuleDef {
     this.globals = {}
   }
 
-  addImport (module: string, symbol: string, alias?: string) {
+  addImport (module: string, symbol: string, alias?: string): void {
     const defs = this._findDefs(module)
 
     for (const def of defs) {
@@ -832,7 +832,7 @@ class ModuleDef {
     })
   }
 
-  addTypeImport (module: string, symbol: string, alias?: string) {
+  addTypeImport (module: string, symbol: string, alias?: string): void {
     const defs = this._findDefs(module)
 
     for (const def of defs) {
