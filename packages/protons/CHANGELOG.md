@@ -1,3 +1,10 @@
+## [protons-v7.3.1](https://github.com/ipfs/protons/compare/protons-v7.3.0...protons-v7.3.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* use uint8arrays alloc for new buffers ([#123](https://github.com/ipfs/protons/issues/123)) ([d1bfc94](https://github.com/ipfs/protons/commit/d1bfc948940dbff3e5fe25ab09d7df9d8367d191))
+
 ## [protons-v7.3.0](https://github.com/ipfs/protons/compare/protons-v7.2.1...protons-v7.3.0) (2023-11-01)
 
 
