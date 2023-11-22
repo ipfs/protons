@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Codec } from 'protons-runtime'
+import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface CircuitRelay {
@@ -112,7 +112,7 @@ export namespace CircuitRelay {
           }
         }, (reader, length) => {
           const obj: any = {
-            id: new Uint8Array(0),
+            id: uint8ArrayAlloc(0),
             addrs: []
           }
 

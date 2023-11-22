@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Codec } from 'protons-runtime'
+import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum SingularEnum {
@@ -230,7 +230,7 @@ export namespace Singular {
           sfixed64: 0n,
           bool: false,
           string: '',
-          bytes: new Uint8Array(0),
+          bytes: uint8ArrayAlloc(0),
           enum: SingularEnum.NO_VALUE
         }
 
