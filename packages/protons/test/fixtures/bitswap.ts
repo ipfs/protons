@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Codec } from 'protons-runtime'
+import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Message {
@@ -87,7 +87,7 @@ export namespace Message {
             }
           }, (reader, length) => {
             const obj: any = {
-              block: new Uint8Array(0),
+              block: uint8ArrayAlloc(0),
               priority: 0,
               wantType: WantType.Block,
               sendDontHave: false
@@ -239,8 +239,8 @@ export namespace Message {
           }
         }, (reader, length) => {
           const obj: any = {
-            prefix: new Uint8Array(0),
-            data: new Uint8Array(0)
+            prefix: uint8ArrayAlloc(0),
+            data: uint8ArrayAlloc(0)
           }
 
           const end = length == null ? reader.len : reader.pos + length
@@ -326,7 +326,7 @@ export namespace Message {
           }
         }, (reader, length) => {
           const obj: any = {
-            cid: new Uint8Array(0),
+            cid: uint8ArrayAlloc(0),
             type: BlockPresenceType.Have
           }
 

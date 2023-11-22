@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { enumeration, encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Codec } from 'protons-runtime'
+import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Request {
@@ -361,7 +361,7 @@ export namespace IdentifyResponse {
         }
       }, (reader, length) => {
         const obj: any = {
-          id: new Uint8Array(0),
+          id: uint8ArrayAlloc(0),
           addrs: []
         }
 
@@ -440,7 +440,7 @@ export namespace ConnectRequest {
         }
       }, (reader, length) => {
         const obj: any = {
-          peer: new Uint8Array(0),
+          peer: uint8ArrayAlloc(0),
           addrs: []
         }
 
@@ -523,7 +523,7 @@ export namespace StreamOpenRequest {
         }
       }, (reader, length) => {
         const obj: any = {
-          peer: new Uint8Array(0),
+          peer: uint8ArrayAlloc(0),
           proto: []
         }
 
@@ -600,7 +600,7 @@ export namespace StreamHandlerRequest {
         }
       }, (reader, length) => {
         const obj: any = {
-          addr: new Uint8Array(0),
+          addr: uint8ArrayAlloc(0),
           proto: []
         }
 
@@ -737,8 +737,8 @@ export namespace StreamInfo {
         }
       }, (reader, length) => {
         const obj: any = {
-          peer: new Uint8Array(0),
-          addr: new Uint8Array(0),
+          peer: uint8ArrayAlloc(0),
+          addr: uint8ArrayAlloc(0),
           proto: ''
         }
 
@@ -1063,7 +1063,7 @@ export namespace PeerInfo {
         }
       }, (reader, length) => {
         const obj: any = {
-          id: new Uint8Array(0),
+          id: uint8ArrayAlloc(0),
           addrs: []
         }
 
@@ -1236,7 +1236,7 @@ export namespace DisconnectRequest {
         }
       }, (reader, length) => {
         const obj: any = {
-          peer: new Uint8Array(0)
+          peer: uint8ArrayAlloc(0)
         }
 
         const end = length == null ? reader.len : reader.pos + length

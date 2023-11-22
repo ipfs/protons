@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { encodeMessage, decodeMessage, message } from 'protons-runtime'
-import type { Codec } from 'protons-runtime'
+import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Peer {
@@ -146,7 +146,7 @@ export namespace Address {
         }
       }, (reader, length) => {
         const obj: any = {
-          multiaddr: new Uint8Array(0)
+          multiaddr: uint8ArrayAlloc(0)
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -217,7 +217,7 @@ export namespace Metadata {
       }, (reader, length) => {
         const obj: any = {
           key: '',
-          value: new Uint8Array(0)
+          value: uint8ArrayAlloc(0)
         }
 
         const end = length == null ? reader.len : reader.pos + length

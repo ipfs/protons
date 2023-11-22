@@ -190,7 +190,7 @@ const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string') =
 
 const defaultValueGenerators: Record<string, () => string> = {
   bool: () => 'false',
-  bytes: () => 'new Uint8Array(0)',
+  bytes: () => 'uint8ArrayAlloc(0)',
   double: () => '0',
   fixed32: () => '0',
   fixed64: () => '0n',
@@ -318,6 +318,10 @@ function createDefaultObject (fields: Record<string, FieldDef>, messageDef: Mess
 
         if (jsTypeOverride != null && defaultValueGeneratorsJsTypeOverrides[jsTypeOverride] != null) {
           defaultValueGenerator = defaultValueGeneratorsJsTypeOverrides[jsTypeOverride]
+        }
+
+        if (type === 'bytes') {
+          moduleDef.addImport('uint8arrays/alloc', 'alloc', 'uint8ArrayAlloc')
         }
 
         defaultValue = defaultValueGenerator()
@@ -457,7 +461,7 @@ function defineFields (fields: Record<string, FieldDef>, messageDef: MessageDef,
 
 function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef, flags?: Flags): string {
   if (isEnumDef(messageDef)) {
-    moduleDef.imports.add('enumeration')
+    moduleDef.addImport('protons-runtime', 'enumeration')
 
     // check that the enum def values start from 0
     if (Object.values(messageDef.values)[0] !== 0) {
@@ -510,10 +514,11 @@ export namespace ${messageDef.name} {
   const fields = messageDef.fields ?? {}
 
   // import relevant modules
-  moduleDef.imports.add('encodeMessage')
-  moduleDef.imports.add('decodeMessage')
-  moduleDef.imports.add('message')
-  moduleDef.importedTypes.add('Codec')
+  moduleDef.addImport('protons-runtime', 'encodeMessage')
+  moduleDef.addImport('protons-runtime', 'decodeMessage')
+  moduleDef.addImport('protons-runtime', 'message')
+  moduleDef.addTypeImport('protons-runtime', 'Codec')
+  moduleDef.addTypeImport('uint8arraylist', 'Uint8ArrayList')
 
   const interfaceFields = defineFields(fields, messageDef, moduleDef)
     .join('\n  ')
@@ -544,10 +549,10 @@ export interface ${messageDef.name} {
 
       if (codec == null) {
         if (fieldDef.enum) {
-          moduleDef.imports.add('enumeration')
+          moduleDef.addImport('protons-runtime', 'enumeration')
           type = 'enum'
         } else {
-          moduleDef.imports.add('message')
+          moduleDef.addImport('protons-runtime', 'message')
           type = 'message'
         }
 
@@ -669,10 +674,10 @@ export interface ${messageDef.name} {
 
         if (codec == null) {
           if (fieldDef.enum) {
-            moduleDef.imports.add('enumeration')
+            moduleDef.addImport('protons-runtime', 'enumeration')
             type = 'enum'
           } else {
-            moduleDef.imports.add('message')
+            moduleDef.addImport('protons-runtime', 'message')
             type = 'message'
           }
 
@@ -689,7 +694,7 @@ export interface ${messageDef.name} {
           let limit = ''
 
           if (fieldDef.lengthLimit != null) {
-            moduleDef.imports.add('CodeError')
+            moduleDef.addImport('protons-runtime', 'CodeError')
 
             limit = `
               if (obj.${fieldName}.size === ${fieldDef.lengthLimit}) {
@@ -707,7 +712,7 @@ export interface ${messageDef.name} {
           let limit = ''
 
           if (fieldDef.lengthLimit != null) {
-            moduleDef.imports.add('CodeError')
+            moduleDef.addImport('protons-runtime', 'CodeError')
 
             limit = `
               if (obj.${fieldName}.length === ${fieldDef.lengthLimit}) {
@@ -785,23 +790,83 @@ export namespace ${messageDef.name} {
 `.trimStart()
 }
 
-interface ModuleDef {
-  imports: Set<string>
-  importedTypes: Set<string>
+interface Import {
+  symbol: string
+  alias?: string
+  type: boolean
+}
+
+class ModuleDef {
+  imports: Map<string, Import[]>
   types: Set<string>
   compiled: string[]
   globals: Record<string, ClassDef>
+
+  constructor () {
+    this.imports = new Map()
+    this.types = new Set()
+    this.compiled = []
+    this.globals = {}
+  }
+
+  addImport (module: string, symbol: string, alias?: string) {
+    const defs = this._findDefs(module)
+
+    for (const def of defs) {
+      // check if we already have a definition for this symbol
+      if (def.symbol === symbol) {
+        if (alias !== def.alias) {
+          throw new Error(`Type symbol ${symbol} imported from ${module} with alias ${def.alias} does not match alias ${alias}`)
+        }
+
+        // if it was a type before it's not now
+        def.type = false
+        return
+      }
+    }
+
+    defs.push({
+      symbol,
+      alias,
+      type: false
+    })
+  }
+
+  addTypeImport (module: string, symbol: string, alias?: string) {
+    const defs = this._findDefs(module)
+
+    for (const def of defs) {
+      // check if we already have a definition for this symbol
+      if (def.symbol === symbol) {
+        if (alias !== def.alias) {
+          throw new Error(`Type symbol ${symbol} imported from ${module} with alias ${def.alias} does not match alias ${alias}`)
+        }
+
+        return
+      }
+    }
+
+    defs.push({
+      symbol,
+      alias,
+      type: true
+    })
+  }
+
+  _findDefs (module: string): Import[] {
+    let defs = this.imports.get(module)
+
+    if (defs == null) {
+      defs = []
+      this.imports.set(module, defs)
+    }
+
+    return defs
+  }
 }
 
 function defineModule (def: ClassDef, flags: Flags): ModuleDef {
-  const moduleDef: ModuleDef = {
-    imports: new Set(),
-    importedTypes: new Set(),
-    types: new Set(),
-    compiled: [],
-    globals: {}
-  }
-
+  const moduleDef = new ModuleDef()
   const defs = def.nested
 
   if (defs == null) {
@@ -963,28 +1028,48 @@ export async function generate (source: string, flags: Flags): Promise<void> {
   ]
 
   const imports = []
+  const importedModules = Array.from([...moduleDef.imports.entries()])
+    .sort((a, b) => {
+      return a[0].localeCompare(b[0])
+    })
+    .sort((a, b) => {
+      const aAllTypes = a[1].reduce((acc, curr) => {
+        return acc && curr.type
+      }, true)
 
-  if (moduleDef.imports.size > 0) {
-    imports.push(`import { ${Array.from(moduleDef.imports).join(', ')} } from 'protons-runtime'`)
-  }
+      const bAllTypes = b[1].reduce((acc, curr) => {
+        return acc && curr.type
+      }, true)
 
-  if (moduleDef.imports.has('encodeMessage')) {
-    imports.push("import type { Uint8ArrayList } from 'uint8arraylist'")
-  }
+      if (aAllTypes && !bAllTypes) {
+        return 1
+      }
 
-  if (moduleDef.importedTypes.size > 0) {
-    imports.push(`import type { ${Array.from(moduleDef.importedTypes).join(', ')} } from 'protons-runtime'`)
+      if (!aAllTypes && bAllTypes) {
+        return -1
+      }
+
+      return 0
+    })
+
+  for (const imp of importedModules) {
+    const allTypes = imp[1].reduce((acc, curr) => {
+      return acc && curr.type
+    }, true)
+
+    const symbols = imp[1].sort((a, b) => {
+      return a.symbol.localeCompare(b.symbol)
+    }).map(imp => {
+      return `${!allTypes && imp.type ? 'type ' : ''}${imp.symbol}${imp.alias != null ? ` as ${imp.alias}` : ''}`
+    }).join(', ')
+
+    imports.push(`import ${allTypes ? 'type ' : ''}{ ${symbols} } from '${imp[0]}'`)
   }
 
   const lines = [
     ...ignores,
     '',
-    ...imports.sort((a, b) => {
-      const aModule = a.split("from '")[1].toString()
-      const bModule = b.split("from '")[1].toString()
-
-      return aModule.localeCompare(bModule)
-    }),
+    ...imports,
     '',
     ...moduleDef.compiled
   ]
