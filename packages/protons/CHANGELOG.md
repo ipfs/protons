@@ -1,3 +1,10 @@
+## [protons-v7.3.2](https://github.com/ipfs/protons/compare/protons-v7.3.1...protons-v7.3.2) (2023-12-30)
+
+
+### Dependencies
+
+* bump meow from 12.1.1 to 13.0.0 ([#125](https://github.com/ipfs/protons/issues/125)) ([2b356b8](https://github.com/ipfs/protons/commit/2b356b87619cdcadbbcde6f4d8c4c35cb252d970))
+
 ## [protons-v7.3.1](https://github.com/ipfs/protons/compare/protons-v7.3.0...protons-v7.3.1) (2023-11-22)
 
 
