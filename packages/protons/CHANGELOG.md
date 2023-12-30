@@ -1,3 +1,10 @@
+## [protons-v7.3.3](https://github.com/ipfs/protons/compare/protons-v7.3.2...protons-v7.3.3) (2023-12-30)
+
+
+### Dependencies
+
+* bump uint8arrays from 4.0.10 to 5.0.1 ([#126](https://github.com/ipfs/protons/issues/126)) ([1e5a0b0](https://github.com/ipfs/protons/commit/1e5a0b0608b4395283c7571353918bacc3a3bd63))
+
 ## [protons-v7.3.2](https://github.com/ipfs/protons/compare/protons-v7.3.1...protons-v7.3.2) (2023-12-30)
 
 
