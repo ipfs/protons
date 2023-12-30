@@ -1,3 +1,10 @@
+## [protons-runtime-v5.2.1](https://github.com/ipfs/protons/compare/protons-runtime-v5.2.0...protons-runtime-v5.2.1) (2023-12-30)
+
+
+### Dependencies
+
+* bump uint8arrays from 4.0.10 to 5.0.1 ([#126](https://github.com/ipfs/protons/issues/126)) ([1e5a0b0](https://github.com/ipfs/protons/commit/1e5a0b0608b4395283c7571353918bacc3a3bd63))
+
 ## [protons-runtime-v5.2.0](https://github.com/ipfs/protons/compare/protons-runtime-v5.1.0...protons-runtime-v5.2.0) (2023-11-01)
 
 
