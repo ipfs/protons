@@ -34,7 +34,7 @@
     "docs": "aegir docs"
   },
   "dependencies": {
-    "aegir": "^41.0.4"
+    "aegir": "^42.0.1"
   },
   "workspaces": [
     "packages/*"
