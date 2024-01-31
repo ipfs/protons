@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "7.3.4",
+  "version": "7.4.0",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons#readme",

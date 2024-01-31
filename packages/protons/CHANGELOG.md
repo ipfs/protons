@@ -1,3 +1,21 @@
+## protons [7.4.0](https://github.com/ipfs/protons/compare/protons-v7.3.4...protons-7.4.0) (2024-01-31)
+
+
+### Features
+
+* runtime size limits for arrays and maps ([#128](https://github.com/ipfs/protons/issues/128)) ([a737d05](https://github.com/ipfs/protons/commit/a737d05d8cd8b22568ff489d07c9e4c824cb4f40))
+
+
+### Trivial Changes
+
+* update publish config ([942e050](https://github.com/ipfs/protons/commit/942e050bc0c14d3c8177da218f178d8dab1c0333))
+
+
+
+### Dependencies
+
+* **protons-runtime:** upgraded to 5.3.0
+
 ## [protons-v7.3.4](https://github.com/ipfs/protons/compare/protons-v7.3.3...protons-v7.3.4) (2024-01-08)
 
 
