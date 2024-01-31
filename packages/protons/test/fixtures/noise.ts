@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -45,7 +45,7 @@ export namespace pb {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             identityKey: uint8ArrayAlloc(0),
             identitySig: uint8ArrayAlloc(0),
@@ -88,8 +88,8 @@ export namespace pb {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): NoiseHandshakePayload => {
-      return decodeMessage(buf, NoiseHandshakePayload.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<NoiseHandshakePayload>): NoiseHandshakePayload => {
+      return decodeMessage(buf, NoiseHandshakePayload.codec(), opts)
     }
   }
 
@@ -105,7 +105,7 @@ export namespace pb {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -132,7 +132,7 @@ export namespace pb {
     return encodeMessage(obj, pb.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): pb => {
-    return decodeMessage(buf, pb.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<pb>): pb => {
+    return decodeMessage(buf, pb.codec(), opts)
   }
 }

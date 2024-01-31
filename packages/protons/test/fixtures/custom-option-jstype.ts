@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface CustomOptionNumber {
@@ -59,7 +59,7 @@ export namespace CustomOptionNumber {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           num: 0,
           i64: 0,
@@ -117,8 +117,8 @@ export namespace CustomOptionNumber {
     return encodeMessage(obj, CustomOptionNumber.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): CustomOptionNumber => {
-    return decodeMessage(buf, CustomOptionNumber.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CustomOptionNumber>): CustomOptionNumber => {
+    return decodeMessage(buf, CustomOptionNumber.codec(), opts)
   }
 }
 
@@ -174,7 +174,7 @@ export namespace CustomOptionString {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           num: 0,
           i64: '',
@@ -232,7 +232,7 @@ export namespace CustomOptionString {
     return encodeMessage(obj, CustomOptionString.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): CustomOptionString => {
-    return decodeMessage(buf, CustomOptionString.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CustomOptionString>): CustomOptionString => {
+    return decodeMessage(buf, CustomOptionString.codec(), opts)
   }
 }

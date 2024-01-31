@@ -12,6 +12,9 @@
 - [Install](#install)
 - [Usage](#usage)
 - [Differences from protobuf.js](#differences-from-protobufjs)
+- [Extra features](#extra-features)
+  - [Limiting the size of repeated/map elements](#limiting-the-size-of-repeatedmap-elements)
+  - [Overriding 64 bit types](#overriding-64-bit-types)
 - [Missing features](#missing-features)
 - [API Docs](#api-docs)
 - [License](#license)
@@ -72,6 +75,59 @@ It does have one or two differences:
 4. `singular` fields set to default values are not serialized and are set to default values when deserialized if not set - protobuf.js [diverges from the language guide](https://github.com/protobufjs/protobuf.js/issues/1468#issuecomment-745177012) around this feature
 5. `map` fields can have keys of any type - protobufs.js [only supports strings](https://github.com/protobufjs/protobuf.js/issues/1203#issuecomment-488637338)
 6. `map` fields are deserialized as ES6 `Map`s - protobuf.js uses `Object`s
+
+## Extra features
+
+### Limiting the size of repeated/map elements
+
+To protect decoders from malicious payloads, it's possible to limit the maximum size of repeated/map elements.
+
+You can either do this at compile time by using the [protons.options](https://github.com/protocolbuffers/protobuf/blob/6f1d88107f268b8ebdad6690d116e74c403e366e/docs/options.md?plain=1#L490-L493) extension:
+
+```protobuf
+message MyMessage {
+  // repeatedField cannot have more than 10 entries
+  repeated uint32 repeatedField = 1 [(protons.options).limit = 10];
+
+  // stringMap cannot have more than 10 keys
+  map<string, string> stringMap = 2 [(protons.options).limit = 10];
+}
+```
+
+Or at runtime by passing objects to the `.decode` function of your message:
+
+```TypeScript
+const message = MyMessage.decode(buf, {
+  limits: {
+    repeatedField: 10,
+    stringMap: 10
+  }
+})
+```
+
+### Overriding 64 bit types
+
+By default 64 bit types are implemented as [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)s.
+
+Sometimes this is undesirable due to [performance issues](https://betterprogramming.pub/the-downsides-of-bigints-in-javascript-6350fd807d) or code legibility.
+
+It's possible to override the JavaScript type 64 bit fields will deserialize to:
+
+```protobuf
+message MyMessage {
+  repeated int64 bigintField = 1;
+  repeated int64 numberField = 2 [jstype = JS_NUMBER];
+  repeated int64 stringField = 3 [jstype = JS_STRING];
+}
+```
+
+```TypeScript
+const message = MyMessage.decode(buf)
+
+console.info(typeof message.bigintField) // bigint
+console.info(typeof message.numberField) // number
+console.info(typeof message.stringField) // string
+```
 
 ## Missing features
 

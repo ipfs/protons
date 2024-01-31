@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -53,7 +53,7 @@ export namespace SingularSubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           foo: '',
           bar: 0
@@ -91,8 +91,8 @@ export namespace SingularSubMessage {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): SingularSubMessage => {
-    return decodeMessage(buf, SingularSubMessage.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SingularSubMessage>): SingularSubMessage => {
+    return decodeMessage(buf, SingularSubMessage.codec(), opts)
   }
 }
 
@@ -214,7 +214,7 @@ export namespace Singular {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           double: 0,
           float: 0,
@@ -326,7 +326,7 @@ export namespace Singular {
     return encodeMessage(obj, Singular.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Singular => {
-    return decodeMessage(buf, Singular.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Singular>): Singular => {
+    return decodeMessage(buf, Singular.codec(), opts)
   }
 }

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface MessageWithRequired {
@@ -29,7 +29,7 @@ export namespace MessageWithRequired {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           scalarField: 0
         }
@@ -62,7 +62,7 @@ export namespace MessageWithRequired {
     return encodeMessage(obj, MessageWithRequired.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): MessageWithRequired => {
-    return decodeMessage(buf, MessageWithRequired.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRequired>): MessageWithRequired => {
+    return decodeMessage(buf, MessageWithRequired.codec(), opts)
   }
 }

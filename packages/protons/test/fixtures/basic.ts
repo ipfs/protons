@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Basic {
@@ -35,7 +35,7 @@ export namespace Basic {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           num: 0
         }
@@ -72,8 +72,8 @@ export namespace Basic {
     return encodeMessage(obj, Basic.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Basic => {
-    return decodeMessage(buf, Basic.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Basic>): Basic => {
+    return decodeMessage(buf, Basic.codec(), opts)
   }
 }
 
@@ -92,7 +92,7 @@ export namespace Empty {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -119,7 +119,7 @@ export namespace Empty {
     return encodeMessage(obj, Empty.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Empty => {
-    return decodeMessage(buf, Empty.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Empty>): Empty => {
+    return decodeMessage(buf, Empty.codec(), opts)
   }
 }

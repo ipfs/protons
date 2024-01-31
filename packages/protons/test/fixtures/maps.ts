@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface SubMessage {
@@ -29,7 +29,7 @@ export namespace SubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           foo: ''
         }
@@ -62,8 +62,8 @@ export namespace SubMessage {
     return encodeMessage(obj, SubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): SubMessage => {
-    return decodeMessage(buf, SubMessage.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): SubMessage => {
+    return decodeMessage(buf, SubMessage.codec(), opts)
   }
 }
 
@@ -103,7 +103,7 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: ''
@@ -141,8 +141,8 @@ export namespace MapTypes {
       return encodeMessage(obj, MapTypes$stringMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): MapTypes$stringMapEntry => {
-      return decodeMessage(buf, MapTypes$stringMapEntry.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$stringMapEntry>): MapTypes$stringMapEntry => {
+      return decodeMessage(buf, MapTypes$stringMapEntry.codec(), opts)
     }
   }
 
@@ -174,7 +174,7 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             key: 0,
             value: 0
@@ -212,8 +212,8 @@ export namespace MapTypes {
       return encodeMessage(obj, MapTypes$intMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): MapTypes$intMapEntry => {
-      return decodeMessage(buf, MapTypes$intMapEntry.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$intMapEntry>): MapTypes$intMapEntry => {
+      return decodeMessage(buf, MapTypes$intMapEntry.codec(), opts)
     }
   }
 
@@ -245,7 +245,7 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             key: false,
             value: false
@@ -283,8 +283,8 @@ export namespace MapTypes {
       return encodeMessage(obj, MapTypes$boolMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): MapTypes$boolMapEntry => {
-      return decodeMessage(buf, MapTypes$boolMapEntry.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$boolMapEntry>): MapTypes$boolMapEntry => {
+      return decodeMessage(buf, MapTypes$boolMapEntry.codec(), opts)
     }
   }
 
@@ -316,7 +316,7 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             key: ''
           }
@@ -353,8 +353,8 @@ export namespace MapTypes {
       return encodeMessage(obj, MapTypes$messageMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): MapTypes$messageMapEntry => {
-      return decodeMessage(buf, MapTypes$messageMapEntry.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$messageMapEntry>): MapTypes$messageMapEntry => {
+      return decodeMessage(buf, MapTypes$messageMapEntry.codec(), opts)
     }
   }
 
@@ -398,7 +398,7 @@ export namespace MapTypes {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           stringMap: new Map<string, string>(),
           intMap: new Map<number, number>(),
@@ -413,21 +413,37 @@ export namespace MapTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              if (opts.limits?.stringMap != null && obj.stringMap.size === opts.limits.stringMap) {
+                throw new CodeError('decode error - map field "stringMap" had too many elements', 'ERR_MAX_SIZE')
+              }
+
               const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(reader, reader.uint32())
               obj.stringMap.set(entry.key, entry.value)
               break
             }
             case 2: {
+              if (opts.limits?.intMap != null && obj.intMap.size === opts.limits.intMap) {
+                throw new CodeError('decode error - map field "intMap" had too many elements', 'ERR_MAX_SIZE')
+              }
+
               const entry = MapTypes.MapTypes$intMapEntry.codec().decode(reader, reader.uint32())
               obj.intMap.set(entry.key, entry.value)
               break
             }
             case 3: {
+              if (opts.limits?.boolMap != null && obj.boolMap.size === opts.limits.boolMap) {
+                throw new CodeError('decode error - map field "boolMap" had too many elements', 'ERR_MAX_SIZE')
+              }
+
               const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(reader, reader.uint32())
               obj.boolMap.set(entry.key, entry.value)
               break
             }
             case 4: {
+              if (opts.limits?.messageMap != null && obj.messageMap.size === opts.limits.messageMap) {
+                throw new CodeError('decode error - map field "messageMap" had too many elements', 'ERR_MAX_SIZE')
+              }
+
               const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32())
               obj.messageMap.set(entry.key, entry.value)
               break
@@ -450,7 +466,7 @@ export namespace MapTypes {
     return encodeMessage(obj, MapTypes.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): MapTypes => {
-    return decodeMessage(buf, MapTypes.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes>): MapTypes => {
+    return decodeMessage(buf, MapTypes.codec(), opts)
   }
 }

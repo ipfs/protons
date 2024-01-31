@@ -518,6 +518,7 @@ export namespace ${messageDef.name} {
   moduleDef.addImport('protons-runtime', 'decodeMessage')
   moduleDef.addImport('protons-runtime', 'message')
   moduleDef.addTypeImport('protons-runtime', 'Codec')
+  moduleDef.addTypeImport('protons-runtime', 'DecodeOptions')
   moduleDef.addTypeImport('uint8arraylist', 'Uint8ArrayList')
 
   const interfaceFields = defineFields(fields, messageDef, moduleDef)
@@ -691,12 +692,16 @@ export interface ${messageDef.name} {
         const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type](jsTypeOverride)}`
 
         if (fieldDef.map) {
-          let limit = ''
+          moduleDef.addImport('protons-runtime', 'CodeError')
+
+          let limit = `
+              if (opts.limits?.${fieldName} != null && obj.${fieldName}.size === opts.limits.${fieldName}) {
+                throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_SIZE')
+              }
+`
 
           if (fieldDef.lengthLimit != null) {
-            moduleDef.addImport('protons-runtime', 'CodeError')
-
-            limit = `
+            limit += `
               if (obj.${fieldName}.size === ${fieldDef.lengthLimit}) {
                 throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_SIZE')
               }
@@ -709,12 +714,16 @@ export interface ${messageDef.name} {
               break
             }`
         } else if (fieldDef.repeated) {
-          let limit = ''
+          moduleDef.addImport('protons-runtime', 'CodeError')
+
+          let limit = `
+              if (opts.limits?.${fieldName} != null && obj.${fieldName}.length === opts.limits.${fieldName}) {
+                throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_LENGTH')
+              }
+`
 
           if (fieldDef.lengthLimit != null) {
-            moduleDef.addImport('protons-runtime', 'CodeError')
-
-            limit = `
+            limit += `
               if (obj.${fieldName}.length === ${fieldDef.lengthLimit}) {
                 throw new CodeError('decode error - repeated field "${fieldName}" had too many elements', 'ERR_MAX_LENGTH')
               }
@@ -750,7 +759,7 @@ ${encodeFields === '' ? '' : `${encodeFields}\n`}
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {${createDefaultObject(fields, messageDef, moduleDef)}}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -777,8 +786,8 @@ ${encodeFields === '' ? '' : `${encodeFields}\n`}
     return encodeMessage(obj, ${messageDef.name}.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): ${messageDef.name} => {
-    return decodeMessage(buf, ${messageDef.name}.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<${messageDef.name}>): ${messageDef.name} => {
+    return decodeMessage(buf, ${messageDef.name}.codec(), opts)
   }`
 
   return `

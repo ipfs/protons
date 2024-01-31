@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -110,7 +110,7 @@ export namespace CircuitRelay {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             id: uint8ArrayAlloc(0),
             addrs: []
@@ -127,6 +127,10 @@ export namespace CircuitRelay {
                 break
               }
               case 2: {
+                if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                  throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+                }
+
                 obj.addrs.push(reader.bytes())
                 break
               }
@@ -148,8 +152,8 @@ export namespace CircuitRelay {
       return encodeMessage(obj, Peer.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): Peer => {
-      return decodeMessage(buf, Peer.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer => {
+      return decodeMessage(buf, Peer.codec(), opts)
     }
   }
 
@@ -185,7 +189,7 @@ export namespace CircuitRelay {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -228,7 +232,7 @@ export namespace CircuitRelay {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): CircuitRelay => {
-    return decodeMessage(buf, CircuitRelay.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): CircuitRelay => {
+    return decodeMessage(buf, CircuitRelay.codec(), opts)
   }
 }

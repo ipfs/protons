@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum AnEnum {
@@ -44,7 +44,7 @@ export namespace SubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           foo: ''
         }
@@ -77,8 +77,8 @@ export namespace SubMessage {
     return encodeMessage(obj, SubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): SubMessage => {
-    return decodeMessage(buf, SubMessage.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): SubMessage => {
+    return decodeMessage(buf, SubMessage.codec(), opts)
   }
 }
 
@@ -208,7 +208,7 @@ export namespace AllTheTypes {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           field14: []
         }
@@ -272,6 +272,10 @@ export namespace AllTheTypes {
               break
             }
             case 14: {
+              if (opts.limits?.field14 != null && obj.field14.length === opts.limits.field14) {
+                throw new CodeError('decode error - map field "field14" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.field14.push(reader.string())
               break
             }
@@ -309,7 +313,7 @@ export namespace AllTheTypes {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): AllTheTypes => {
-    return decodeMessage(buf, AllTheTypes.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): AllTheTypes => {
+    return decodeMessage(buf, AllTheTypes.codec(), opts)
   }
 }

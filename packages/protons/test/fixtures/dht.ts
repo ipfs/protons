@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Record {
@@ -53,7 +53,7 @@ export namespace Record {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -100,8 +100,8 @@ export namespace Record {
     return encodeMessage(obj, Record.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Record => {
-    return decodeMessage(buf, Record.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Record>): Record => {
+    return decodeMessage(buf, Record.codec(), opts)
   }
 }
 
@@ -195,7 +195,7 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             addrs: []
           }
@@ -211,6 +211,10 @@ export namespace Message {
                 break
               }
               case 2: {
+                if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                  throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+                }
+
                 obj.addrs.push(reader.bytes())
                 break
               }
@@ -236,8 +240,8 @@ export namespace Message {
       return encodeMessage(obj, Peer.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): Peer => {
-      return decodeMessage(buf, Peer.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer => {
+      return decodeMessage(buf, Peer.codec(), opts)
     }
   }
 
@@ -287,7 +291,7 @@ export namespace Message {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           closerPeers: [],
           providerPeers: []
@@ -316,10 +320,18 @@ export namespace Message {
               break
             }
             case 8: {
+              if (opts.limits?.closerPeers != null && obj.closerPeers.length === opts.limits.closerPeers) {
+                throw new CodeError('decode error - map field "closerPeers" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
               break
             }
             case 9: {
+              if (opts.limits?.providerPeers != null && obj.providerPeers.length === opts.limits.providerPeers) {
+                throw new CodeError('decode error - map field "providerPeers" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
               break
             }
@@ -341,7 +353,7 @@ export namespace Message {
     return encodeMessage(obj, Message.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Message => {
-    return decodeMessage(buf, Message.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Message => {
+    return decodeMessage(buf, Message.codec(), opts)
   }
 }
