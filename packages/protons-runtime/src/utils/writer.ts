@@ -1,3 +1,4 @@
+import { encodeUint8Array, encodingLength } from 'uint8-varint'
 import { allocUnsafe } from 'uint8arrays/alloc'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { writeFloatLE, writeDoubleLE } from './float.js'
@@ -186,8 +187,7 @@ class Uint8ArrayWriter implements Writer {
    * Writes an unsigned 64 bit value as a varint
    */
   uint64Number (value: number): this {
-    const bits = LongBits.fromNumber(value)
-    return this._push(writeVarint64, bits.length(), bits)
+    return this._push(encodeUint8Array, encodingLength(value), value)
   }
 
   /**

@@ -126,6 +126,7 @@
     "release": "aegir release"
   },
   "dependencies": {
+    "uint8-varint": "^2.0.2",
     "uint8arraylist": "^2.4.3",
     "uint8arrays": "^5.0.1"
   },

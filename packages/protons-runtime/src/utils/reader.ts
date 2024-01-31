@@ -1,3 +1,4 @@
+import { decodeUint8Array, encodingLength } from 'uint8-varint'
 import { readFloatLE, readDoubleLE } from './float.js'
 import { LongBits } from './longbits.js'
 import * as utf8 from './utf8.js'
@@ -304,7 +305,9 @@ export class Uint8ArrayReader implements Reader {
    * JavaScript number
    */
   uint64Number (): number {
-    return this.readLongVarint().toNumber(true)
+    const value = decodeUint8Array(this.buf, this.pos)
+    this.pos += encodingLength(value)
+    return value
   }
 
   /**
