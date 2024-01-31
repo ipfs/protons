@@ -16,7 +16,6 @@ async function main (): Promise<void> {
   Examples
     $ protons ./path/to/file.proto ./path/to/other/file.proto
 `, {
-    // @ts-expect-error importMeta is missing from the types
     importMeta: import.meta,
     flags: {
       output: {
