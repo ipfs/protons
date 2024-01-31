@@ -1,3 +1,20 @@
+## protons-runtime [5.3.0](https://github.com/ipfs/protons/compare/protons-runtime-v5.2.2...protons-runtime-5.3.0) (2024-01-31)
+
+
+### Features
+
+* runtime size limits for arrays and maps ([#128](https://github.com/ipfs/protons/issues/128)) ([a737d05](https://github.com/ipfs/protons/commit/a737d05d8cd8b22568ff489d07c9e4c824cb4f40))
+
+
+### Bug Fixes
+
+* improve uint64 perf ([#122](https://github.com/ipfs/protons/issues/122)) ([3234bb6](https://github.com/ipfs/protons/commit/3234bb61eac82ebbc40925df084793efbb0f0186))
+
+
+### Trivial Changes
+
+* update publish config ([942e050](https://github.com/ipfs/protons/commit/942e050bc0c14d3c8177da218f178d8dab1c0333))
+
 ## [protons-runtime-v5.2.2](https://github.com/ipfs/protons/compare/protons-runtime-v5.2.1...protons-runtime-v5.2.2) (2024-01-08)
 
 
