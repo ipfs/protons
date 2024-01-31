@@ -7,14 +7,17 @@
 
 > Shared code to make your bundle smaller when running protons in your app
 
-## Table of contents <!-- omit in toc -->
+# About
 
-- [Install](#install)
-- [API Docs](#api-docs)
-- [License](#license)
-- [Contribute](#contribute)
+This module contains serialization/deserialization code used when encoding/decoding protobufs.
 
-## Install
+It should be declared as a dependency of your project:
+
+```console
+npm i protons-runtime
+```
+
+# Install
 
 ```console
 $ npm i protons-runtime
@@ -22,18 +25,18 @@ $ npm i protons-runtime
 
 Contains shared code to reduce code duplication between modules transpiled by protons.
 
-## API Docs
+# API Docs
 
 - <https://ipfs.github.io/protons/modules/protons_runtime.html>
 
-## License
+# License
 
 Licensed under either of
 
 - Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
 - MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
 
-## Contribute
+# Contribute
 
 Contributions welcome! Please check out [the issues](https://github.com/ipfs/protons/issues).
 

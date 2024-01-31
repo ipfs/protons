@@ -7,40 +7,26 @@
 
 > Protobuf to ts transpiler
 
-## Table of contents <!-- omit in toc -->
+`protons` is a high performance implementation of [Protocol Buffers v3](https://protobuf.dev/programming-guides/proto3/).
 
-- [Structure](#structure)
-- [Packages](#packages)
-- [API Docs](#api-docs)
-- [License](#license)
-- [Contribute](#contribute)
-
-## Structure
-
-- [`/packages/protons`](./packages/protons) Protobuf to ts transpiler
-- [`/packages/protons-benchmark`](./packages/protons-benchmark) Protobuf to ts transpiler
-- [`/packages/protons-runtime`](./packages/protons-runtime) Shared code to make your bundle smaller when running protons in your app
-
-Transpiles `.proto` files to `.ts` - uses `Uint8Array` for `byte` fields and `BigInt` for `int64`/`uint64` and `sint64`.
-
-## Packages
+# Packages
 
 - [`/packages/protons`](./packages/protons) The transpiler
 - [`/packages/protons-benchmark`](./packages/protons-benchmark) A benchmark suite
 - [`/packages/protons-runtime`](./packages/protons-runtime) Shared components that turn values to bytes and back again
 
-## API Docs
+# API Docs
 
 - <https://ipfs.github.io/protons>
 
-## License
+# License
 
 Licensed under either of
 
 - Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
 - MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
 
-## Contribute
+# Contribute
 
 Contributions welcome! Please check out [the issues](https://github.com/ipfs/protons/issues).
 

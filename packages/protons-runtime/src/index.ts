@@ -1,3 +1,15 @@
+/**
+ * @packageDocumentation
+ *
+ * This module contains serialization/deserialization code used when encoding/decoding protobufs.
+ *
+ * It should be declared as a dependency of your project:
+ *
+ * ```console
+ * npm i protons-runtime
+ * ```
+ */
+
 import type { Codec } from './codec.js'
 
 export interface FieldDef {
