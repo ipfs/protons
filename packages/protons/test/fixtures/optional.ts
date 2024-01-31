@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum OptionalEnum {
@@ -52,7 +52,7 @@ export namespace OptionalSubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -87,8 +87,8 @@ export namespace OptionalSubMessage {
     return encodeMessage(obj, OptionalSubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): OptionalSubMessage => {
-    return decodeMessage(buf, OptionalSubMessage.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OptionalSubMessage>): OptionalSubMessage => {
+    return decodeMessage(buf, OptionalSubMessage.codec(), opts)
   }
 }
 
@@ -210,7 +210,7 @@ export namespace Optional {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -305,7 +305,7 @@ export namespace Optional {
     return encodeMessage(obj, Optional.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Optional => {
-    return decodeMessage(buf, Optional.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Optional>): Optional => {
+    return decodeMessage(buf, Optional.codec(), opts)
   }
 }

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface MessageWithSizeLimitedRepeatedField {
@@ -31,7 +31,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           repeatedField: []
         }
@@ -43,6 +43,10 @@ export namespace MessageWithSizeLimitedRepeatedField {
 
           switch (tag >>> 3) {
             case 1: {
+              if (opts.limits?.repeatedField != null && obj.repeatedField.length === opts.limits.repeatedField) {
+                throw new CodeError('decode error - map field "repeatedField" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               if (obj.repeatedField.length === 1) {
                 throw new CodeError('decode error - repeated field "repeatedField" had too many elements', 'ERR_MAX_LENGTH')
               }
@@ -68,8 +72,8 @@ export namespace MessageWithSizeLimitedRepeatedField {
     return encodeMessage(obj, MessageWithSizeLimitedRepeatedField.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): MessageWithSizeLimitedRepeatedField => {
-    return decodeMessage(buf, MessageWithSizeLimitedRepeatedField.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedRepeatedField>): MessageWithSizeLimitedRepeatedField => {
+    return decodeMessage(buf, MessageWithSizeLimitedRepeatedField.codec(), opts)
   }
 }
 
@@ -106,7 +110,7 @@ export namespace MessageWithSizeLimitedMap {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: ''
@@ -144,8 +148,8 @@ export namespace MessageWithSizeLimitedMap {
       return encodeMessage(obj, MessageWithSizeLimitedMap$mapFieldEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): MessageWithSizeLimitedMap$mapFieldEntry => {
-      return decodeMessage(buf, MessageWithSizeLimitedMap$mapFieldEntry.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedMap$mapFieldEntry>): MessageWithSizeLimitedMap$mapFieldEntry => {
+      return decodeMessage(buf, MessageWithSizeLimitedMap$mapFieldEntry.codec(), opts)
     }
   }
 
@@ -168,7 +172,7 @@ export namespace MessageWithSizeLimitedMap {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           mapField: new Map<string, string>()
         }
@@ -180,6 +184,10 @@ export namespace MessageWithSizeLimitedMap {
 
           switch (tag >>> 3) {
             case 1: {
+              if (opts.limits?.mapField != null && obj.mapField.size === opts.limits.mapField) {
+                throw new CodeError('decode error - map field "mapField" had too many elements', 'ERR_MAX_SIZE')
+              }
+
               if (obj.mapField.size === 1) {
                 throw new CodeError('decode error - map field "mapField" had too many elements', 'ERR_MAX_SIZE')
               }
@@ -206,7 +214,7 @@ export namespace MessageWithSizeLimitedMap {
     return encodeMessage(obj, MessageWithSizeLimitedMap.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): MessageWithSizeLimitedMap => {
-    return decodeMessage(buf, MessageWithSizeLimitedMap.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedMap>): MessageWithSizeLimitedMap => {
+    return decodeMessage(buf, MessageWithSizeLimitedMap.codec(), opts)
   }
 }

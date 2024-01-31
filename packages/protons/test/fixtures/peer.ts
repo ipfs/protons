@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -60,7 +60,7 @@ export namespace Peer {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           addresses: [],
           protocols: [],
@@ -74,14 +74,26 @@ export namespace Peer {
 
           switch (tag >>> 3) {
             case 1: {
+              if (opts.limits?.addresses != null && obj.addresses.length === opts.limits.addresses) {
+                throw new CodeError('decode error - map field "addresses" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.addresses.push(Address.codec().decode(reader, reader.uint32()))
               break
             }
             case 2: {
+              if (opts.limits?.protocols != null && obj.protocols.length === opts.limits.protocols) {
+                throw new CodeError('decode error - map field "protocols" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.protocols.push(reader.string())
               break
             }
             case 3: {
+              if (opts.limits?.metadata != null && obj.metadata.length === opts.limits.metadata) {
+                throw new CodeError('decode error - map field "metadata" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.metadata.push(Metadata.codec().decode(reader, reader.uint32()))
               break
             }
@@ -111,8 +123,8 @@ export namespace Peer {
     return encodeMessage(obj, Peer.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Peer => {
-    return decodeMessage(buf, Peer.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer => {
+    return decodeMessage(buf, Peer.codec(), opts)
   }
 }
 
@@ -144,7 +156,7 @@ export namespace Address {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           multiaddr: uint8ArrayAlloc(0)
         }
@@ -181,8 +193,8 @@ export namespace Address {
     return encodeMessage(obj, Address.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Address => {
-    return decodeMessage(buf, Address.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Address>): Address => {
+    return decodeMessage(buf, Address.codec(), opts)
   }
 }
 
@@ -214,7 +226,7 @@ export namespace Metadata {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           key: '',
           value: uint8ArrayAlloc(0)
@@ -252,7 +264,7 @@ export namespace Metadata {
     return encodeMessage(obj, Metadata.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Metadata => {
-    return decodeMessage(buf, Metadata.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Metadata>): Metadata => {
+    return decodeMessage(buf, Metadata.codec(), opts)
   }
 }

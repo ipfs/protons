@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -110,7 +110,7 @@ export namespace Request {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.IDENTIFY
         }
@@ -175,8 +175,8 @@ export namespace Request {
     return encodeMessage(obj, Request.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Request => {
-    return decodeMessage(buf, Request.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Request>): Request => {
+    return decodeMessage(buf, Request.codec(), opts)
   }
 }
 
@@ -262,7 +262,7 @@ export namespace Response {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.OK,
           peers: []
@@ -295,6 +295,10 @@ export namespace Response {
               break
             }
             case 6: {
+              if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
+                throw new CodeError('decode error - map field "peers" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32()))
               break
             }
@@ -324,8 +328,8 @@ export namespace Response {
     return encodeMessage(obj, Response.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Response => {
-    return decodeMessage(buf, Response.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Response>): Response => {
+    return decodeMessage(buf, Response.codec(), opts)
   }
 }
 
@@ -359,7 +363,7 @@ export namespace IdentifyResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           id: uint8ArrayAlloc(0),
           addrs: []
@@ -376,6 +380,10 @@ export namespace IdentifyResponse {
               break
             }
             case 2: {
+              if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.addrs.push(reader.bytes())
               break
             }
@@ -397,8 +405,8 @@ export namespace IdentifyResponse {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): IdentifyResponse => {
-    return decodeMessage(buf, IdentifyResponse.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<IdentifyResponse>): IdentifyResponse => {
+    return decodeMessage(buf, IdentifyResponse.codec(), opts)
   }
 }
 
@@ -438,7 +446,7 @@ export namespace ConnectRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           addrs: []
@@ -455,6 +463,10 @@ export namespace ConnectRequest {
               break
             }
             case 2: {
+              if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.addrs.push(reader.bytes())
               break
             }
@@ -480,8 +492,8 @@ export namespace ConnectRequest {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): ConnectRequest => {
-    return decodeMessage(buf, ConnectRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnectRequest>): ConnectRequest => {
+    return decodeMessage(buf, ConnectRequest.codec(), opts)
   }
 }
 
@@ -521,7 +533,7 @@ export namespace StreamOpenRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           proto: []
@@ -538,6 +550,10 @@ export namespace StreamOpenRequest {
               break
             }
             case 2: {
+              if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
+                throw new CodeError('decode error - map field "proto" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.proto.push(reader.string())
               break
             }
@@ -563,8 +579,8 @@ export namespace StreamOpenRequest {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): StreamOpenRequest => {
-    return decodeMessage(buf, StreamOpenRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamOpenRequest>): StreamOpenRequest => {
+    return decodeMessage(buf, StreamOpenRequest.codec(), opts)
   }
 }
 
@@ -598,7 +614,7 @@ export namespace StreamHandlerRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           addr: uint8ArrayAlloc(0),
           proto: []
@@ -615,6 +631,10 @@ export namespace StreamHandlerRequest {
               break
             }
             case 2: {
+              if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
+                throw new CodeError('decode error - map field "proto" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.proto.push(reader.string())
               break
             }
@@ -636,8 +656,8 @@ export namespace StreamHandlerRequest {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): StreamHandlerRequest => {
-    return decodeMessage(buf, StreamHandlerRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamHandlerRequest>): StreamHandlerRequest => {
+    return decodeMessage(buf, StreamHandlerRequest.codec(), opts)
   }
 }
 
@@ -663,7 +683,7 @@ export namespace ErrorResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           msg: ''
         }
@@ -696,8 +716,8 @@ export namespace ErrorResponse {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): ErrorResponse => {
-    return decodeMessage(buf, ErrorResponse.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ErrorResponse>): ErrorResponse => {
+    return decodeMessage(buf, ErrorResponse.codec(), opts)
   }
 }
 
@@ -735,7 +755,7 @@ export namespace StreamInfo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           addr: uint8ArrayAlloc(0),
@@ -778,8 +798,8 @@ export namespace StreamInfo {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): StreamInfo => {
-    return decodeMessage(buf, StreamInfo.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamInfo>): StreamInfo => {
+    return decodeMessage(buf, StreamInfo.codec(), opts)
   }
 }
 
@@ -871,7 +891,7 @@ export namespace DHTRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.FIND_PEER
         }
@@ -928,8 +948,8 @@ export namespace DHTRequest {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): DHTRequest => {
-    return decodeMessage(buf, DHTRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTRequest>): DHTRequest => {
+    return decodeMessage(buf, DHTRequest.codec(), opts)
   }
 }
 
@@ -985,7 +1005,7 @@ export namespace DHTResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.BEGIN
         }
@@ -1026,8 +1046,8 @@ export namespace DHTResponse {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): DHTResponse => {
-    return decodeMessage(buf, DHTResponse.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTResponse>): DHTResponse => {
+    return decodeMessage(buf, DHTResponse.codec(), opts)
   }
 }
 
@@ -1061,7 +1081,7 @@ export namespace PeerInfo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           id: uint8ArrayAlloc(0),
           addrs: []
@@ -1078,6 +1098,10 @@ export namespace PeerInfo {
               break
             }
             case 2: {
+              if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.addrs.push(reader.bytes())
               break
             }
@@ -1099,8 +1123,8 @@ export namespace PeerInfo {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): PeerInfo => {
-    return decodeMessage(buf, PeerInfo.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerInfo>): PeerInfo => {
+    return decodeMessage(buf, PeerInfo.codec(), opts)
   }
 }
 
@@ -1162,7 +1186,7 @@ export namespace ConnManagerRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.TAG_PEER
         }
@@ -1207,8 +1231,8 @@ export namespace ConnManagerRequest {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): ConnManagerRequest => {
-    return decodeMessage(buf, ConnManagerRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnManagerRequest>): ConnManagerRequest => {
+    return decodeMessage(buf, ConnManagerRequest.codec(), opts)
   }
 }
 
@@ -1234,7 +1258,7 @@ export namespace DisconnectRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0)
         }
@@ -1267,8 +1291,8 @@ export namespace DisconnectRequest {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): DisconnectRequest => {
-    return decodeMessage(buf, DisconnectRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DisconnectRequest>): DisconnectRequest => {
+    return decodeMessage(buf, DisconnectRequest.codec(), opts)
   }
 }
 
@@ -1326,7 +1350,7 @@ export namespace PSRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.GET_TOPICS
         }
@@ -1367,8 +1391,8 @@ export namespace PSRequest {
     return encodeMessage(obj, PSRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): PSRequest => {
-    return decodeMessage(buf, PSRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSRequest>): PSRequest => {
+    return decodeMessage(buf, PSRequest.codec(), opts)
   }
 }
 
@@ -1426,7 +1450,7 @@ export namespace PSMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           topicIDs: []
         }
@@ -1450,6 +1474,10 @@ export namespace PSMessage {
               break
             }
             case 4: {
+              if (opts.limits?.topicIDs != null && obj.topicIDs.length === opts.limits.topicIDs) {
+                throw new CodeError('decode error - map field "topicIDs" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.topicIDs.push(reader.string())
               break
             }
@@ -1479,8 +1507,8 @@ export namespace PSMessage {
     return encodeMessage(obj, PSMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): PSMessage => {
-    return decodeMessage(buf, PSMessage.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSMessage>): PSMessage => {
+    return decodeMessage(buf, PSMessage.codec(), opts)
   }
 }
 
@@ -1516,7 +1544,7 @@ export namespace PSResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           topics: [],
           peerIDs: []
@@ -1529,10 +1557,18 @@ export namespace PSResponse {
 
           switch (tag >>> 3) {
             case 1: {
+              if (opts.limits?.topics != null && obj.topics.length === opts.limits.topics) {
+                throw new CodeError('decode error - map field "topics" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.topics.push(reader.string())
               break
             }
             case 2: {
+              if (opts.limits?.peerIDs != null && obj.peerIDs.length === opts.limits.peerIDs) {
+                throw new CodeError('decode error - map field "peerIDs" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.peerIDs.push(reader.bytes())
               break
             }
@@ -1554,8 +1590,8 @@ export namespace PSResponse {
     return encodeMessage(obj, PSResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): PSResponse => {
-    return decodeMessage(buf, PSResponse.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSResponse>): PSResponse => {
+    return decodeMessage(buf, PSResponse.codec(), opts)
   }
 }
 
@@ -1613,7 +1649,7 @@ export namespace PeerstoreRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           type: Type.INVALID,
           protos: []
@@ -1634,6 +1670,10 @@ export namespace PeerstoreRequest {
               break
             }
             case 3: {
+              if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
+                throw new CodeError('decode error - map field "protos" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.protos.push(reader.string())
               break
             }
@@ -1655,8 +1695,8 @@ export namespace PeerstoreRequest {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): PeerstoreRequest => {
-    return decodeMessage(buf, PeerstoreRequest.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreRequest>): PeerstoreRequest => {
+    return decodeMessage(buf, PeerstoreRequest.codec(), opts)
   }
 }
 
@@ -1690,7 +1730,7 @@ export namespace PeerstoreResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           protos: []
         }
@@ -1706,6 +1746,10 @@ export namespace PeerstoreResponse {
               break
             }
             case 2: {
+              if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
+                throw new CodeError('decode error - map field "protos" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.protos.push(reader.string())
               break
             }
@@ -1727,7 +1771,7 @@ export namespace PeerstoreResponse {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): PeerstoreResponse => {
-    return decodeMessage(buf, PeerstoreResponse.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreResponse>): PeerstoreResponse => {
+    return decodeMessage(buf, PeerstoreResponse.codec(), opts)
   }
 }

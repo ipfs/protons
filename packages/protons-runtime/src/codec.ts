@@ -19,8 +19,15 @@ export interface EncodeFunction<T> {
   (value: Partial<T>, writer: Writer, opts?: EncodeOptions): void
 }
 
+export interface DecodeOptions<T> {
+  /**
+   * Runtime-specified limits for lengths of repeated/map fields
+   */
+  limits?: Partial<Record<keyof T, number>>
+}
+
 export interface DecodeFunction<T> {
-  (reader: Reader, length?: number): T
+  (reader: Reader, length?: number, opts?: DecodeOptions<T>): T
 }
 
 export interface Codec<T> {

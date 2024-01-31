@@ -144,4 +144,20 @@ describe('maps', () => {
 
     testEncodings(obj, MapTypes, './test/fixtures/maps.proto', 'MapTypes')
   })
+
+  it('should limit map sizes using runtime options', () => {
+    const obj: MapTypes = {
+      stringMap: new Map<string, string>([['key', 'value'], ['foo', 'bar']]),
+      intMap: new Map<number, number>(),
+      boolMap: new Map<boolean, boolean>(),
+      messageMap: new Map<string, SubMessage>()
+    }
+
+    const buf = MapTypes.encode(obj)
+    expect(() => MapTypes.decode(buf, {
+      limits: {
+        stringMap: 1
+      }
+    })).to.throw(/too many elements/)
+  })
 })

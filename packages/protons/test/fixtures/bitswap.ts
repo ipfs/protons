@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -85,7 +85,7 @@ export namespace Message {
             if (opts.lengthDelimited !== false) {
               w.ldelim()
             }
-          }, (reader, length) => {
+          }, (reader, length, opts = {}) => {
             const obj: any = {
               block: uint8ArrayAlloc(0),
               priority: 0,
@@ -137,8 +137,8 @@ export namespace Message {
         return encodeMessage(obj, Entry.codec())
       }
 
-      export const decode = (buf: Uint8Array | Uint8ArrayList): Entry => {
-        return decodeMessage(buf, Entry.codec())
+      export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Entry>): Entry => {
+        return decodeMessage(buf, Entry.codec(), opts)
       }
     }
 
@@ -166,7 +166,7 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             entries: [],
             full: false
@@ -179,6 +179,10 @@ export namespace Message {
 
             switch (tag >>> 3) {
               case 1: {
+                if (opts.limits?.entries != null && obj.entries.length === opts.limits.entries) {
+                  throw new CodeError('decode error - map field "entries" had too many elements', 'ERR_MAX_LENGTH')
+                }
+
                 obj.entries.push(Message.Wantlist.Entry.codec().decode(reader, reader.uint32()))
                 break
               }
@@ -204,8 +208,8 @@ export namespace Message {
       return encodeMessage(obj, Wantlist.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): Wantlist => {
-      return decodeMessage(buf, Wantlist.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Wantlist>): Wantlist => {
+      return decodeMessage(buf, Wantlist.codec(), opts)
     }
   }
 
@@ -237,7 +241,7 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             prefix: uint8ArrayAlloc(0),
             data: uint8ArrayAlloc(0)
@@ -275,8 +279,8 @@ export namespace Message {
       return encodeMessage(obj, Block.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): Block => {
-      return decodeMessage(buf, Block.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Block>): Block => {
+      return decodeMessage(buf, Block.codec(), opts)
     }
   }
 
@@ -324,7 +328,7 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length) => {
+        }, (reader, length, opts = {}) => {
           const obj: any = {
             cid: uint8ArrayAlloc(0),
             type: BlockPresenceType.Have
@@ -362,8 +366,8 @@ export namespace Message {
       return encodeMessage(obj, BlockPresence.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList): BlockPresence => {
-      return decodeMessage(buf, BlockPresence.codec())
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<BlockPresence>): BlockPresence => {
+      return decodeMessage(buf, BlockPresence.codec(), opts)
     }
   }
 
@@ -410,7 +414,7 @@ export namespace Message {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           blocks: [],
           payload: [],
@@ -429,14 +433,26 @@ export namespace Message {
               break
             }
             case 2: {
+              if (opts.limits?.blocks != null && obj.blocks.length === opts.limits.blocks) {
+                throw new CodeError('decode error - map field "blocks" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.blocks.push(reader.bytes())
               break
             }
             case 3: {
+              if (opts.limits?.payload != null && obj.payload.length === opts.limits.payload) {
+                throw new CodeError('decode error - map field "payload" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.payload.push(Message.Block.codec().decode(reader, reader.uint32()))
               break
             }
             case 4: {
+              if (opts.limits?.blockPresences != null && obj.blockPresences.length === opts.limits.blockPresences) {
+                throw new CodeError('decode error - map field "blockPresences" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
               obj.blockPresences.push(Message.BlockPresence.codec().decode(reader, reader.uint32()))
               break
             }
@@ -462,7 +478,7 @@ export namespace Message {
     return encodeMessage(obj, Message.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Message => {
-    return decodeMessage(buf, Message.codec())
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Message => {
+    return decodeMessage(buf, Message.codec(), opts)
   }
 }
