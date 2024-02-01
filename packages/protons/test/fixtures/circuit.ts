@@ -203,11 +203,15 @@ export namespace CircuitRelay {
               break
             }
             case 2: {
-              obj.srcPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32())
+              obj.srcPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.srcPeer
+              })
               break
             }
             case 3: {
-              obj.dstPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32())
+              obj.dstPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.dstPeer
+              })
               break
             }
             case 4: {

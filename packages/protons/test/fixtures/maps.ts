@@ -4,11 +4,29 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
+import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
+export enum EnumValue {
+  NO_VALUE = 'NO_VALUE',
+  VALUE_1 = 'VALUE_1',
+  VALUE_2 = 'VALUE_2'
+}
+
+enum __EnumValueValues {
+  NO_VALUE = 0,
+  VALUE_1 = 1,
+  VALUE_2 = 2
+}
+
+export namespace EnumValue {
+  export const codec = (): Codec<EnumValue> => {
+    return enumeration<EnumValue>(__EnumValueValues)
+  }
+}
 export interface SubMessage {
   foo: string
+  bar: number[]
 }
 
 export namespace SubMessage {
@@ -26,12 +44,20 @@ export namespace SubMessage {
           w.string(obj.foo)
         }
 
+        if (obj.bar != null) {
+          for (const value of obj.bar) {
+            w.uint32(16)
+            w.uint32(value)
+          }
+        }
+
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
       }, (reader, length, opts = {}) => {
         const obj: any = {
-          foo: ''
+          foo: '',
+          bar: []
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -42,6 +68,14 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               obj.foo = reader.string()
+              break
+            }
+            case 2: {
+              if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
+                throw new CodeError('decode error - map field "bar" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
+              obj.bar.push(reader.uint32())
               break
             }
             default: {
@@ -72,6 +106,7 @@ export interface MapTypes {
   intMap: Map<number, number>
   boolMap: Map<boolean, boolean>
   messageMap: Map<string, SubMessage>
+  enumMap: Map<string, EnumValue>
 }
 
 export namespace MapTypes {
@@ -332,7 +367,9 @@ export namespace MapTypes {
                 break
               }
               case 2: {
-                obj.value = SubMessage.codec().decode(reader, reader.uint32())
+                obj.value = SubMessage.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.value
+                })
                 break
               }
               default: {
@@ -355,6 +392,77 @@ export namespace MapTypes {
 
     export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$messageMapEntry>): MapTypes$messageMapEntry => {
       return decodeMessage(buf, MapTypes$messageMapEntry.codec(), opts)
+    }
+  }
+
+  export interface MapTypes$enumMapEntry {
+    key: string
+    value: EnumValue
+  }
+
+  export namespace MapTypes$enumMapEntry {
+    let _codec: Codec<MapTypes$enumMapEntry>
+
+    export const codec = (): Codec<MapTypes$enumMapEntry> => {
+      if (_codec == null) {
+        _codec = message<MapTypes$enumMapEntry>((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork()
+          }
+
+          if ((obj.key != null && obj.key !== '')) {
+            w.uint32(10)
+            w.string(obj.key)
+          }
+
+          if (obj.value != null && __EnumValueValues[obj.value] !== 0) {
+            w.uint32(16)
+            EnumValue.codec().encode(obj.value, w)
+          }
+
+          if (opts.lengthDelimited !== false) {
+            w.ldelim()
+          }
+        }, (reader, length, opts = {}) => {
+          const obj: any = {
+            key: '',
+            value: EnumValue.NO_VALUE
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                obj.key = reader.string()
+                break
+              }
+              case 2: {
+                obj.value = EnumValue.codec().decode(reader)
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
+          return obj
+        })
+      }
+
+      return _codec
+    }
+
+    export const encode = (obj: Partial<MapTypes$enumMapEntry>): Uint8Array => {
+      return encodeMessage(obj, MapTypes$enumMapEntry.codec())
+    }
+
+    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$enumMapEntry>): MapTypes$enumMapEntry => {
+      return decodeMessage(buf, MapTypes$enumMapEntry.codec(), opts)
     }
   }
 
@@ -395,6 +503,13 @@ export namespace MapTypes {
           }
         }
 
+        if (obj.enumMap != null && obj.enumMap.size !== 0) {
+          for (const [key, value] of obj.enumMap.entries()) {
+            w.uint32(42)
+            MapTypes.MapTypes$enumMapEntry.codec().encode({ key, value }, w)
+          }
+        }
+
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
@@ -403,7 +518,8 @@ export namespace MapTypes {
           stringMap: new Map<string, string>(),
           intMap: new Map<number, number>(),
           boolMap: new Map<boolean, boolean>(),
-          messageMap: new Map<string, undefined>()
+          messageMap: new Map<string, undefined>(),
+          enumMap: new Map<string, undefined>()
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -444,8 +560,21 @@ export namespace MapTypes {
                 throw new CodeError('decode error - map field "messageMap" had too many elements', 'ERR_MAX_SIZE')
               }
 
-              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32())
+              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32(), {
+                limits: {
+                  value: opts.limits?.messageMap$value
+                }
+              })
               obj.messageMap.set(entry.key, entry.value)
+              break
+            }
+            case 5: {
+              if (opts.limits?.enumMap != null && obj.enumMap.size === opts.limits.enumMap) {
+                throw new CodeError('decode error - map field "enumMap" had too many elements', 'ERR_MAX_SIZE')
+              }
+
+              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(reader, reader.uint32())
+              obj.enumMap.set(entry.key, entry.value)
               break
             }
             default: {

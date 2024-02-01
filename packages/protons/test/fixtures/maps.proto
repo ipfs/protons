@@ -1,7 +1,14 @@
 syntax = "proto3";
 
+enum EnumValue {
+  NO_VALUE = 0;
+  VALUE_1 = 1;
+  VALUE_2 = 2;
+}
+
 message SubMessage {
   string foo = 1;
+  repeated uint32 bar = 2;
 }
 
 message MapTypes {
@@ -9,4 +16,5 @@ message MapTypes {
   map<int32, int32> intMap = 2;
   map<bool, bool> boolMap = 3;
   map<string, SubMessage> messageMap = 4;
+  map<string, EnumValue> enumMap = 5;
 }

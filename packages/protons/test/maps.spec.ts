@@ -3,7 +3,7 @@
 import { expect } from 'aegir/chai'
 import Long from 'long'
 import protobufjs from 'protobufjs'
-import { MapTypes, type SubMessage } from './fixtures/maps.js'
+import { MapTypes, type SubMessage, type EnumValue } from './fixtures/maps.js'
 
 function longifyBigInts (obj: any): any {
   const output = {
@@ -128,7 +128,8 @@ describe('maps', () => {
       stringMap: new Map<string, string>(),
       intMap: new Map<number, number>(),
       boolMap: new Map<boolean, boolean>(),
-      messageMap: new Map<string, SubMessage>()
+      messageMap: new Map<string, SubMessage>(),
+      enumMap: new Map<string, EnumValue>()
     }
 
     testEncodings(obj, MapTypes, './test/fixtures/maps.proto', 'MapTypes')
@@ -139,7 +140,8 @@ describe('maps', () => {
       stringMap: new Map<string, string>([['key', 'value']]),
       intMap: new Map<number, number>(), // protobuf.js only supports strings as keys
       boolMap: new Map<boolean, boolean>(), // protobuf.js only supports strings as keys
-      messageMap: new Map<string, SubMessage>([['key', { foo: 'bar' }]])
+      messageMap: new Map<string, SubMessage>([['key', { foo: 'bar', bar: [] }]]),
+      enumMap: new Map<string, EnumValue>()
     }
 
     testEncodings(obj, MapTypes, './test/fixtures/maps.proto', 'MapTypes')
@@ -150,13 +152,33 @@ describe('maps', () => {
       stringMap: new Map<string, string>([['key', 'value'], ['foo', 'bar']]),
       intMap: new Map<number, number>(),
       boolMap: new Map<boolean, boolean>(),
-      messageMap: new Map<string, SubMessage>()
+      messageMap: new Map<string, SubMessage>(),
+      enumMap: new Map<string, EnumValue>()
     }
 
     const buf = MapTypes.encode(obj)
     expect(() => MapTypes.decode(buf, {
       limits: {
         stringMap: 1
+      }
+    })).to.throw(/too many elements/)
+  })
+
+  it('should limit nested message collection sizes using runtime options', () => {
+    const obj: MapTypes = {
+      stringMap: new Map<string, string>(),
+      intMap: new Map<number, number>(),
+      boolMap: new Map<boolean, boolean>(),
+      messageMap: new Map<string, SubMessage>([['foo', { foo: 'hello', bar: [1, 2, 3, 4, 5] }]]),
+      enumMap: new Map<string, EnumValue>()
+    }
+
+    const buf = MapTypes.encode(obj)
+    expect(() => MapTypes.decode(buf, {
+      limits: {
+        messageMap$value: {
+          bar: 1
+        }
       }
     })).to.throw(/too many elements/)
   })

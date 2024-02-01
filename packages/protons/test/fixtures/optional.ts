@@ -284,7 +284,9 @@ export namespace Optional {
               break
             }
             case 17: {
-              obj.subMessage = OptionalSubMessage.codec().decode(reader, reader.uint32())
+              obj.subMessage = OptionalSubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.subMessage
+              })
               break
             }
             default: {

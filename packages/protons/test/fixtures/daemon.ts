@@ -126,35 +126,51 @@ export namespace Request {
               break
             }
             case 2: {
-              obj.connect = ConnectRequest.codec().decode(reader, reader.uint32())
+              obj.connect = ConnectRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.connect
+              })
               break
             }
             case 3: {
-              obj.streamOpen = StreamOpenRequest.codec().decode(reader, reader.uint32())
+              obj.streamOpen = StreamOpenRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.streamOpen
+              })
               break
             }
             case 4: {
-              obj.streamHandler = StreamHandlerRequest.codec().decode(reader, reader.uint32())
+              obj.streamHandler = StreamHandlerRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.streamHandler
+              })
               break
             }
             case 5: {
-              obj.dht = DHTRequest.codec().decode(reader, reader.uint32())
+              obj.dht = DHTRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.dht
+              })
               break
             }
             case 6: {
-              obj.connManager = ConnManagerRequest.codec().decode(reader, reader.uint32())
+              obj.connManager = ConnManagerRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.connManager
+              })
               break
             }
             case 7: {
-              obj.disconnect = DisconnectRequest.codec().decode(reader, reader.uint32())
+              obj.disconnect = DisconnectRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.disconnect
+              })
               break
             }
             case 8: {
-              obj.pubsub = PSRequest.codec().decode(reader, reader.uint32())
+              obj.pubsub = PSRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.pubsub
+              })
               break
             }
             case 9: {
-              obj.peerStore = PeerstoreRequest.codec().decode(reader, reader.uint32())
+              obj.peerStore = PeerstoreRequest.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.peerStore
+              })
               break
             }
             default: {
@@ -279,19 +295,27 @@ export namespace Response {
               break
             }
             case 2: {
-              obj.error = ErrorResponse.codec().decode(reader, reader.uint32())
+              obj.error = ErrorResponse.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.error
+              })
               break
             }
             case 3: {
-              obj.streamInfo = StreamInfo.codec().decode(reader, reader.uint32())
+              obj.streamInfo = StreamInfo.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.streamInfo
+              })
               break
             }
             case 4: {
-              obj.identify = IdentifyResponse.codec().decode(reader, reader.uint32())
+              obj.identify = IdentifyResponse.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.identify
+              })
               break
             }
             case 5: {
-              obj.dht = DHTResponse.codec().decode(reader, reader.uint32())
+              obj.dht = DHTResponse.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.dht
+              })
               break
             }
             case 6: {
@@ -299,15 +323,21 @@ export namespace Response {
                 throw new CodeError('decode error - map field "peers" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32()))
+              obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.peers$
+              }))
               break
             }
             case 7: {
-              obj.pubsub = PSResponse.codec().decode(reader, reader.uint32())
+              obj.pubsub = PSResponse.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.pubsub
+              })
               break
             }
             case 8: {
-              obj.peerStore = PeerstoreResponse.codec().decode(reader, reader.uint32())
+              obj.peerStore = PeerstoreResponse.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.peerStore
+              })
               break
             }
             default: {
@@ -1021,7 +1051,9 @@ export namespace DHTResponse {
               break
             }
             case 2: {
-              obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
+              obj.peer = PeerInfo.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.peer
+              })
               break
             }
             case 3: {
@@ -1742,7 +1774,9 @@ export namespace PeerstoreResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = PeerInfo.codec().decode(reader, reader.uint32())
+              obj.peer = PeerInfo.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.peer
+              })
               break
             }
             case 2: {

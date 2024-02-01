@@ -183,7 +183,9 @@ export namespace Message {
                   throw new CodeError('decode error - map field "entries" had too many elements', 'ERR_MAX_LENGTH')
                 }
 
-                obj.entries.push(Message.Wantlist.Entry.codec().decode(reader, reader.uint32()))
+                obj.entries.push(Message.Wantlist.Entry.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.entries$
+                }))
                 break
               }
               case 2: {
@@ -429,7 +431,9 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              obj.wantlist = Message.Wantlist.codec().decode(reader, reader.uint32())
+              obj.wantlist = Message.Wantlist.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.wantlist
+              })
               break
             }
             case 2: {
@@ -445,7 +449,9 @@ export namespace Message {
                 throw new CodeError('decode error - map field "payload" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.payload.push(Message.Block.codec().decode(reader, reader.uint32()))
+              obj.payload.push(Message.Block.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.payload$
+              }))
               break
             }
             case 4: {
@@ -453,7 +459,9 @@ export namespace Message {
                 throw new CodeError('decode error - map field "blockPresences" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.blockPresences.push(Message.BlockPresence.codec().decode(reader, reader.uint32()))
+              obj.blockPresences.push(Message.BlockPresence.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.blockPresences$
+              }))
               break
             }
             case 5: {

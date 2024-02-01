@@ -268,7 +268,9 @@ export namespace AllTheTypes {
               break
             }
             case 13: {
-              obj.field13 = SubMessage.codec().decode(reader, reader.uint32())
+              obj.field13 = SubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.field13
+              })
               break
             }
             case 14: {

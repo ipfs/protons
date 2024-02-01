@@ -324,7 +324,9 @@ export namespace Message {
                 throw new CodeError('decode error - map field "closerPeers" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
+              obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.closerPeers$
+              }))
               break
             }
             case 9: {
@@ -332,7 +334,9 @@ export namespace Message {
                 throw new CodeError('decode error - map field "providerPeers" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32()))
+              obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.providerPeers$
+              }))
               break
             }
             default: {

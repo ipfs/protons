@@ -1,7 +1,7 @@
 import { createWriter } from './utils/writer.js'
 import type { Codec } from './codec.js'
 
-export function encodeMessage <T> (message: T, codec: Codec<T>): Uint8Array {
+export function encodeMessage <T> (message: Partial<T>, codec: Pick<Codec<T>, 'encode'>): Uint8Array {
   const w = createWriter()
 
   codec.encode(message, w, {

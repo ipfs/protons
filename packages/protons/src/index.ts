@@ -88,6 +88,80 @@
  * })
  * ```
  *
+ * #### Limiting repeating fields of nested messages at runtime
+ *
+ * Sub messages with repeating elements can be limited in a similar way:
+ *
+ * ```protobuf
+ * message SubMessage {
+ *   repeated uint32 repeatedField = 1;
+ * }
+ *
+ * message MyMessage {
+ *   SubMessage message = 1;
+ * }
+ * ```
+ *
+ * ```TypeScript
+ * const message = MyMessage.decode(buf, {
+ *   limits: {
+ *     messages: {
+ *       repeatedField: 5 // the SubMessage can not have more than 5 repeatedField entries
+ *     }
+ *   }
+ * })
+ * ```
+ *
+ * #### Limiting repeating fields of repeating messages at runtime
+ *
+ * Sub messages defined in repeating elements can be limited by appending `$` to the field name in the runtime limit options:
+ *
+ * ```protobuf
+ * message SubMessage {
+ *  repeated uint32 repeatedField = 1;
+ * }
+ *
+ * message MyMessage {
+ *   repeated SubMessage messages = 1;
+ * }
+ * ```
+ *
+ * ```TypeScript
+ * const message = MyMessage.decode(buf, {
+ *   limits: {
+ *     messages: 5 // max 5x SubMessages
+ *     messages$: {
+ *       repeatedField: 5 // no SubMessage can have more than 5 repeatedField entries
+ *     }
+ *   }
+ * })
+ * ```
+ *
+ * #### Limiting repeating fields of map entries at runtime
+ *
+ * Repeating fields in map entries can be limited by appending `$value` to the field name in the runtime limit options:
+ *
+ * ```protobuf
+ * message SubMessage {
+ *  repeated uint32 repeatedField = 1;
+ * }
+ *
+ * message MyMessage {
+ *   map<string, SubMessage> messages = 1;
+ * }
+ * ```
+ *
+ * ```TypeScript
+ * const message = MyMessage.decode(buf, {
+ *   limits: {
+ *     messages: 5 // max 5x SubMessages in the map
+ *     messages$value: {
+ *       repeatedField: 5 // no SubMessage in the map can have more than 5 repeatedField entries
+ *     }
+ *   }
+ * })
+ * ```
+ *
  * ### Overriding 64 bit types
  *
  * By default 64 bit types are implemented as [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)s.
@@ -806,7 +880,47 @@ export interface ${messageDef.name} {
         // override setting type on js object
         const jsTypeOverride = findJsTypeOverride(fieldDef.type, fieldDef)
 
-        const parseValue = `${decoderGenerators[type] == null ? `${codec}.decode(reader${type === 'message' ? ', reader.uint32()' : ''})` : decoderGenerators[type](jsTypeOverride)}`
+        let fieldOpts = ''
+
+        if (fieldDef.message) {
+          let suffix = ''
+
+          if (fieldDef.repeated) {
+            suffix = '$'
+          }
+
+          fieldOpts = `, {
+                limits: opts.limits?.${fieldName}${suffix}
+              }`
+        }
+
+        if (fieldDef.map) {
+          fieldOpts = `, {
+                limits: {
+                  value: opts.limits?.${fieldName}$value
+                }
+              }`
+
+          // do not pass limit opts to map value types that are enums or
+          // primitives - only support messages
+          if (types[fieldDef.valueType] != null) {
+            // primmitive type
+            fieldOpts = ''
+          } else {
+            const valueType = findDef(fieldDef.valueType, messageDef, moduleDef)
+
+            if (isEnumDef(valueType)) {
+              // enum type
+              fieldOpts = ''
+            }
+          }
+        }
+
+        const parseValue = `${decoderGenerators[type] == null
+          ? `${codec}.decode(reader${type === 'message'
+            ? `, reader.uint32()${fieldOpts}`
+            : ''})`
+        : decoderGenerators[type](jsTypeOverride)}`
 
         if (fieldDef.map) {
           moduleDef.addImport('protons-runtime', 'CodeError')

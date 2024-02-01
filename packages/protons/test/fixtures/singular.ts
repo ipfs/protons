@@ -305,7 +305,9 @@ export namespace Singular {
               break
             }
             case 17: {
-              obj.subMessage = SingularSubMessage.codec().decode(reader, reader.uint32())
+              obj.subMessage = SingularSubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.subMessage
+              })
               break
             }
             default: {
