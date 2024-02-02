@@ -1,3 +1,16 @@
+## protons [7.5.0](https://github.com/ipfs/protons/compare/protons-7.4.0...protons-7.5.0) (2024-02-02)
+
+
+### Features
+
+* allow limiting nested repeating fields ([#129](https://github.com/ipfs/protons/issues/129)) ([a81f997](https://github.com/ipfs/protons/commit/a81f997a490cdcc7c59d00fe5e8b666e54230745))
+
+
+
+### Dependencies
+
+* **protons-runtime:** upgraded to 5.4.0
+
 ## protons [7.4.0](https://github.com/ipfs/protons/compare/protons-v7.3.4...protons-7.4.0) (2024-01-31)
 
 
