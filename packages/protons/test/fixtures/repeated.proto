@@ -1,11 +1,21 @@
 syntax = "proto3";
 
+message SubSubMessage {
+  repeated string foo = 1;
+  optional uint32 nonRepeating = 2;
+}
+
 message SubMessage {
-  string foo = 1;
+  repeated string foo = 1;
+  optional uint32 nonRepeating = 2;
+  optional SubSubMessage message = 3;
+  repeated SubSubMessage messages = 4;
 }
 
 message RepeatedTypes {
   repeated uint32 number = 1;
   repeated uint32 limitedNumber = 2 [(protons.options).limit = 1];
-  repeated SubMessage message = 3;
+  repeated SubMessage messages = 3;
+  optional SubMessage message = 4;
+  optional uint32 nonRepeating = 5;
 }

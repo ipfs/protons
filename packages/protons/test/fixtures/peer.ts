@@ -78,7 +78,9 @@ export namespace Peer {
                 throw new CodeError('decode error - map field "addresses" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.addresses.push(Address.codec().decode(reader, reader.uint32()))
+              obj.addresses.push(Address.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.addresses$
+              }))
               break
             }
             case 2: {
@@ -94,7 +96,9 @@ export namespace Peer {
                 throw new CodeError('decode error - map field "metadata" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.metadata.push(Metadata.codec().decode(reader, reader.uint32()))
+              obj.metadata.push(Metadata.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.metadata$
+              }))
               break
             }
             case 4: {

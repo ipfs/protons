@@ -94,6 +94,80 @@ const message = MyMessage.decode(buf, {
 })
 ```
 
+#### Limiting repeating fields of nested messages at runtime
+
+Sub messages with repeating elements can be limited in a similar way:
+
+```protobuf
+message SubMessage {
+  repeated uint32 repeatedField = 1;
+}
+
+message MyMessage {
+  SubMessage message = 1;
+}
+```
+
+```TypeScript
+const message = MyMessage.decode(buf, {
+  limits: {
+    messages: {
+      repeatedField: 5 // the SubMessage can not have more than 5 repeatedField entries
+    }
+  }
+})
+```
+
+#### Limiting repeating fields of repeating messages at runtime
+
+Sub messages defined in repeating elements can be limited by appending `$` to the field name in the runtime limit options:
+
+```protobuf
+message SubMessage {
+ repeated uint32 repeatedField = 1;
+}
+
+message MyMessage {
+  repeated SubMessage messages = 1;
+}
+```
+
+```TypeScript
+const message = MyMessage.decode(buf, {
+  limits: {
+    messages: 5 // max 5x SubMessages
+    messages$: {
+      repeatedField: 5 // no SubMessage can have more than 5 repeatedField entries
+    }
+  }
+})
+```
+
+#### Limiting repeating fields of map entries at runtime
+
+Repeating fields in map entries can be limited by appending `$value` to the field name in the runtime limit options:
+
+```protobuf
+message SubMessage {
+ repeated uint32 repeatedField = 1;
+}
+
+message MyMessage {
+  map<string, SubMessage> messages = 1;
+}
+```
+
+```TypeScript
+const message = MyMessage.decode(buf, {
+  limits: {
+    messages: 5 // max 5x SubMessages in the map
+    messages$value: {
+      repeatedField: 5 // no SubMessage in the map can have more than 5 repeatedField entries
+    }
+  }
+})
+```
+
 ### Overriding 64 bit types
 
 By default 64 bit types are implemented as [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)s.

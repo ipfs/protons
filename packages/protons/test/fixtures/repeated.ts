@@ -7,8 +7,87 @@
 import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
+export interface SubSubMessage {
+  foo: string[]
+  nonRepeating?: number
+}
+
+export namespace SubSubMessage {
+  let _codec: Codec<SubSubMessage>
+
+  export const codec = (): Codec<SubSubMessage> => {
+    if (_codec == null) {
+      _codec = message<SubSubMessage>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if (obj.foo != null) {
+          for (const value of obj.foo) {
+            w.uint32(10)
+            w.string(value)
+          }
+        }
+
+        if (obj.nonRepeating != null) {
+          w.uint32(16)
+          w.uint32(obj.nonRepeating)
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length, opts = {}) => {
+        const obj: any = {
+          foo: []
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.foo != null && obj.foo.length === opts.limits.foo) {
+                throw new CodeError('decode error - map field "foo" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
+              obj.foo.push(reader.string())
+              break
+            }
+            case 2: {
+              obj.nonRepeating = reader.uint32()
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        return obj
+      })
+    }
+
+    return _codec
+  }
+
+  export const encode = (obj: Partial<SubSubMessage>): Uint8Array => {
+    return encodeMessage(obj, SubSubMessage.codec())
+  }
+
+  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubSubMessage>): SubSubMessage => {
+    return decodeMessage(buf, SubSubMessage.codec(), opts)
+  }
+}
+
 export interface SubMessage {
-  foo: string
+  foo: string[]
+  nonRepeating?: number
+  message?: SubSubMessage
+  messages: SubSubMessage[]
 }
 
 export namespace SubMessage {
@@ -21,9 +100,28 @@ export namespace SubMessage {
           w.fork()
         }
 
-        if ((obj.foo != null && obj.foo !== '')) {
-          w.uint32(10)
-          w.string(obj.foo)
+        if (obj.foo != null) {
+          for (const value of obj.foo) {
+            w.uint32(10)
+            w.string(value)
+          }
+        }
+
+        if (obj.nonRepeating != null) {
+          w.uint32(16)
+          w.uint32(obj.nonRepeating)
+        }
+
+        if (obj.message != null) {
+          w.uint32(26)
+          SubSubMessage.codec().encode(obj.message, w)
+        }
+
+        if (obj.messages != null) {
+          for (const value of obj.messages) {
+            w.uint32(34)
+            SubSubMessage.codec().encode(value, w)
+          }
         }
 
         if (opts.lengthDelimited !== false) {
@@ -31,7 +129,8 @@ export namespace SubMessage {
         }
       }, (reader, length, opts = {}) => {
         const obj: any = {
-          foo: ''
+          foo: [],
+          messages: []
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -41,7 +140,31 @@ export namespace SubMessage {
 
           switch (tag >>> 3) {
             case 1: {
-              obj.foo = reader.string()
+              if (opts.limits?.foo != null && obj.foo.length === opts.limits.foo) {
+                throw new CodeError('decode error - map field "foo" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
+              obj.foo.push(reader.string())
+              break
+            }
+            case 2: {
+              obj.nonRepeating = reader.uint32()
+              break
+            }
+            case 3: {
+              obj.message = SubSubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.message
+              })
+              break
+            }
+            case 4: {
+              if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
+                throw new CodeError('decode error - map field "messages" had too many elements', 'ERR_MAX_LENGTH')
+              }
+
+              obj.messages.push(SubSubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.messages$
+              }))
               break
             }
             default: {
@@ -70,7 +193,9 @@ export namespace SubMessage {
 export interface RepeatedTypes {
   number: number[]
   limitedNumber: number[]
-  message: SubMessage[]
+  messages: SubMessage[]
+  message?: SubMessage
+  nonRepeating?: number
 }
 
 export namespace RepeatedTypes {
@@ -97,11 +222,21 @@ export namespace RepeatedTypes {
           }
         }
 
-        if (obj.message != null) {
-          for (const value of obj.message) {
+        if (obj.messages != null) {
+          for (const value of obj.messages) {
             w.uint32(26)
             SubMessage.codec().encode(value, w)
           }
+        }
+
+        if (obj.message != null) {
+          w.uint32(34)
+          SubMessage.codec().encode(obj.message, w)
+        }
+
+        if (obj.nonRepeating != null) {
+          w.uint32(40)
+          w.uint32(obj.nonRepeating)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -111,7 +246,7 @@ export namespace RepeatedTypes {
         const obj: any = {
           number: [],
           limitedNumber: [],
-          message: []
+          messages: []
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -141,11 +276,23 @@ export namespace RepeatedTypes {
               break
             }
             case 3: {
-              if (opts.limits?.message != null && obj.message.length === opts.limits.message) {
-                throw new CodeError('decode error - map field "message" had too many elements', 'ERR_MAX_LENGTH')
+              if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
+                throw new CodeError('decode error - map field "messages" had too many elements', 'ERR_MAX_LENGTH')
               }
 
-              obj.message.push(SubMessage.codec().decode(reader, reader.uint32()))
+              obj.messages.push(SubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.messages$
+              }))
+              break
+            }
+            case 4: {
+              obj.message = SubMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.message
+              })
+              break
+            }
+            case 5: {
+              obj.nonRepeating = reader.uint32()
               break
             }
             default: {
