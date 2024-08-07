@@ -1,3 +1,9 @@
+## [3.1.0](https://github.com/ipfs/protons/compare/v3.0.1...v3.1.0) (2024-08-07)
+
+### Features
+
+* add error names ([#140](https://github.com/ipfs/protons/issues/140)) ([2a3b047](https://github.com/ipfs/protons/commit/2a3b0470d037237da67627cfa9c8f2027af9917d))
+
 ## [3.0.1](https://github.com/ipfs/protons/compare/v3.0.0...v3.0.1) (2024-08-07)
 
 ### Dependencies
