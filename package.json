@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs/protons#readme",

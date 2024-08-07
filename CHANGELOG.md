@@ -1,3 +1,9 @@
+## [3.0.1](https://github.com/ipfs/protons/compare/v3.0.0...v3.0.1) (2024-08-07)
+
+### Dependencies
+
+* bump @bufbuild/protobuf from 1.10.0 to 2.0.0 ([#139](https://github.com/ipfs/protons/issues/139)) ([bbe93a2](https://github.com/ipfs/protons/commit/bbe93a21b45d52982e96c78b3da422147185842e))
+
 ## [3.0.0](https://github.com/ipfs/protons/compare/v2.0.3...v3.0.0) (2024-08-07)
 
 ### ⚠ BREAKING CHANGES
