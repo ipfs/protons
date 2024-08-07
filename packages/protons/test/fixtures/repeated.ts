@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, MaxLengthError, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface SubSubMessage {
@@ -50,7 +50,7 @@ export namespace SubSubMessage {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.foo != null && obj.foo.length === opts.limits.foo) {
-                throw new CodeError('decode error - map field "foo" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "foo" had too many elements')
               }
 
               obj.foo.push(reader.string())
@@ -141,7 +141,7 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.foo != null && obj.foo.length === opts.limits.foo) {
-                throw new CodeError('decode error - map field "foo" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "foo" had too many elements')
               }
 
               obj.foo.push(reader.string())
@@ -159,7 +159,7 @@ export namespace SubMessage {
             }
             case 4: {
               if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
-                throw new CodeError('decode error - map field "messages" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "messages" had too many elements')
               }
 
               obj.messages.push(SubSubMessage.codec().decode(reader, reader.uint32(), {
@@ -257,7 +257,7 @@ export namespace RepeatedTypes {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.number != null && obj.number.length === opts.limits.number) {
-                throw new CodeError('decode error - map field "number" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "number" had too many elements')
               }
 
               obj.number.push(reader.uint32())
@@ -265,11 +265,11 @@ export namespace RepeatedTypes {
             }
             case 2: {
               if (opts.limits?.limitedNumber != null && obj.limitedNumber.length === opts.limits.limitedNumber) {
-                throw new CodeError('decode error - map field "limitedNumber" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "limitedNumber" had too many elements')
               }
 
               if (obj.limitedNumber.length === 1) {
-                throw new CodeError('decode error - repeated field "limitedNumber" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - repeated field "limitedNumber" had too many elements')
               }
 
               obj.limitedNumber.push(reader.uint32())
@@ -277,7 +277,7 @@ export namespace RepeatedTypes {
             }
             case 3: {
               if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
-                throw new CodeError('decode error - map field "messages" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "messages" had too many elements')
               }
 
               obj.messages.push(SubMessage.codec().decode(reader, reader.uint32(), {

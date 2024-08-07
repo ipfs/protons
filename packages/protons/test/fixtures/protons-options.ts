@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, MaxLengthError, MaxSizeError, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface MessageWithSizeLimitedRepeatedField {
@@ -44,11 +44,11 @@ export namespace MessageWithSizeLimitedRepeatedField {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.repeatedField != null && obj.repeatedField.length === opts.limits.repeatedField) {
-                throw new CodeError('decode error - map field "repeatedField" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "repeatedField" had too many elements')
               }
 
               if (obj.repeatedField.length === 1) {
-                throw new CodeError('decode error - repeated field "repeatedField" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
               }
 
               obj.repeatedField.push(reader.string())
@@ -185,11 +185,11 @@ export namespace MessageWithSizeLimitedMap {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.mapField != null && obj.mapField.size === opts.limits.mapField) {
-                throw new CodeError('decode error - map field "mapField" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
 
               if (obj.mapField.size === 1) {
-                throw new CodeError('decode error - map field "mapField" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
 
               const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(reader, reader.uint32())

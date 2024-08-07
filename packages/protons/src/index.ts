@@ -195,6 +195,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
 import { main as pbjs } from 'protobufjs-cli/pbjs.js'
+import { NoMessagesFoundError, ParseError } from 'protons-runtime'
 
 export enum CODEC_TYPES {
   VARINT = 0,
@@ -210,6 +211,11 @@ function pathWithExtension (input: string, extension: string, outputDir?: string
   return path.join(output, path.basename(input).split('.').slice(0, -1).join('.') + extension)
 }
 
+/**
+ * This will be removed in a future release
+ *
+ * @deprecated
+ */
 export class CodeError extends Error {
   public code: string
 
@@ -659,7 +665,7 @@ function compileMessage (messageDef: MessageDef, moduleDef: ModuleDef, flags?: F
       const message = `enum ${messageDef.name} does not contain a value that maps to zero as it's first element, this is required in proto3 - see https://protobuf.dev/programming-guides/proto3/#enum`
 
       if (flags?.strict === true) {
-        throw new CodeError(message, 'ERR_PARSE_ERROR')
+        throw new ParseError(message)
       } else {
         // eslint-disable-next-line no-console
         console.info(`[WARN] ${message}`)
@@ -923,18 +929,18 @@ export interface ${messageDef.name} {
         : decoderGenerators[type](jsTypeOverride)}`
 
         if (fieldDef.map) {
-          moduleDef.addImport('protons-runtime', 'CodeError')
+          moduleDef.addImport('protons-runtime', 'MaxSizeError')
 
           let limit = `
               if (opts.limits?.${fieldName} != null && obj.${fieldName}.size === opts.limits.${fieldName}) {
-                throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "${fieldName}" had too many elements')
               }
 `
 
           if (fieldDef.lengthLimit != null) {
             limit += `
               if (obj.${fieldName}.size === ${fieldDef.lengthLimit}) {
-                throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "${fieldName}" had too many elements')
               }
 `
           }
@@ -945,18 +951,18 @@ export interface ${messageDef.name} {
               break
             }`
         } else if (fieldDef.repeated) {
-          moduleDef.addImport('protons-runtime', 'CodeError')
+          moduleDef.addImport('protons-runtime', 'MaxLengthError')
 
           let limit = `
               if (opts.limits?.${fieldName} != null && obj.${fieldName}.length === opts.limits.${fieldName}) {
-                throw new CodeError('decode error - map field "${fieldName}" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "${fieldName}" had too many elements')
               }
 `
 
           if (fieldDef.lengthLimit != null) {
             limit += `
               if (obj.${fieldName}.length === ${fieldDef.lengthLimit}) {
-                throw new CodeError('decode error - repeated field "${fieldName}" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - repeated field "${fieldName}" had too many elements')
               }
 `
           }
@@ -1110,7 +1116,7 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
   const defs = def.nested
 
   if (defs == null) {
-    throw new CodeError('No top-level messages found in protobuf', 'ERR_NO_MESSAGES_FOUND')
+    throw new NoMessagesFoundError('No top-level messages found in protobuf')
   }
 
   function defineMessage (defs: Record<string, ClassDef>, parent?: ClassDef, flags?: Flags): void {
@@ -1138,7 +1144,7 @@ function defineModule (def: ClassDef, flags: Flags): ModuleDef {
             const message = `field "${name}" is required, this is not allowed in proto3. Please convert your proto2 definitions to proto3 - see https://github.com/ipfs/protons/wiki/Required-fields-and-protobuf-3`
 
             if (flags?.strict === true) {
-              throw new CodeError(message, 'ERR_PARSE_ERROR')
+              throw new ParseError(message)
             } else {
               fieldDef.proto2Required = true
 
