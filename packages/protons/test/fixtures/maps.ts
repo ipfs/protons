@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum EnumValue {
@@ -72,7 +72,7 @@ export namespace SubMessage {
             }
             case 2: {
               if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
-                throw new CodeError('decode error - map field "bar" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "bar" had too many elements')
               }
 
               obj.bar.push(reader.uint32())
@@ -530,7 +530,7 @@ export namespace MapTypes {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.stringMap != null && obj.stringMap.size === opts.limits.stringMap) {
-                throw new CodeError('decode error - map field "stringMap" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "stringMap" had too many elements')
               }
 
               const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(reader, reader.uint32())
@@ -539,7 +539,7 @@ export namespace MapTypes {
             }
             case 2: {
               if (opts.limits?.intMap != null && obj.intMap.size === opts.limits.intMap) {
-                throw new CodeError('decode error - map field "intMap" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "intMap" had too many elements')
               }
 
               const entry = MapTypes.MapTypes$intMapEntry.codec().decode(reader, reader.uint32())
@@ -548,7 +548,7 @@ export namespace MapTypes {
             }
             case 3: {
               if (opts.limits?.boolMap != null && obj.boolMap.size === opts.limits.boolMap) {
-                throw new CodeError('decode error - map field "boolMap" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "boolMap" had too many elements')
               }
 
               const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(reader, reader.uint32())
@@ -557,7 +557,7 @@ export namespace MapTypes {
             }
             case 4: {
               if (opts.limits?.messageMap != null && obj.messageMap.size === opts.limits.messageMap) {
-                throw new CodeError('decode error - map field "messageMap" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "messageMap" had too many elements')
               }
 
               const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32(), {
@@ -570,7 +570,7 @@ export namespace MapTypes {
             }
             case 5: {
               if (opts.limits?.enumMap != null && obj.enumMap.size === opts.limits.enumMap) {
-                throw new CodeError('decode error - map field "enumMap" had too many elements', 'ERR_MAX_SIZE')
+                throw new MaxSizeError('Decode error - map field "enumMap" had too many elements')
               }
 
               const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(reader, reader.uint32())

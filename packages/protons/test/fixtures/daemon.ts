@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -320,7 +320,7 @@ export namespace Response {
             }
             case 6: {
               if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
-                throw new CodeError('decode error - map field "peers" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "peers" had too many elements')
               }
 
               obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32(), {
@@ -411,7 +411,7 @@ export namespace IdentifyResponse {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
               }
 
               obj.addrs.push(reader.bytes())
@@ -494,7 +494,7 @@ export namespace ConnectRequest {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
               }
 
               obj.addrs.push(reader.bytes())
@@ -581,7 +581,7 @@ export namespace StreamOpenRequest {
             }
             case 2: {
               if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
-                throw new CodeError('decode error - map field "proto" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "proto" had too many elements')
               }
 
               obj.proto.push(reader.string())
@@ -662,7 +662,7 @@ export namespace StreamHandlerRequest {
             }
             case 2: {
               if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
-                throw new CodeError('decode error - map field "proto" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "proto" had too many elements')
               }
 
               obj.proto.push(reader.string())
@@ -1131,7 +1131,7 @@ export namespace PeerInfo {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
               }
 
               obj.addrs.push(reader.bytes())
@@ -1507,7 +1507,7 @@ export namespace PSMessage {
             }
             case 4: {
               if (opts.limits?.topicIDs != null && obj.topicIDs.length === opts.limits.topicIDs) {
-                throw new CodeError('decode error - map field "topicIDs" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "topicIDs" had too many elements')
               }
 
               obj.topicIDs.push(reader.string())
@@ -1590,7 +1590,7 @@ export namespace PSResponse {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.topics != null && obj.topics.length === opts.limits.topics) {
-                throw new CodeError('decode error - map field "topics" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "topics" had too many elements')
               }
 
               obj.topics.push(reader.string())
@@ -1598,7 +1598,7 @@ export namespace PSResponse {
             }
             case 2: {
               if (opts.limits?.peerIDs != null && obj.peerIDs.length === opts.limits.peerIDs) {
-                throw new CodeError('decode error - map field "peerIDs" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "peerIDs" had too many elements')
               }
 
               obj.peerIDs.push(reader.bytes())
@@ -1703,7 +1703,7 @@ export namespace PeerstoreRequest {
             }
             case 3: {
               if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
-                throw new CodeError('decode error - map field "protos" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "protos" had too many elements')
               }
 
               obj.protos.push(reader.string())
@@ -1781,7 +1781,7 @@ export namespace PeerstoreResponse {
             }
             case 2: {
               if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
-                throw new CodeError('decode error - map field "protos" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "protos" had too many elements')
               }
 
               obj.protos.push(reader.string())

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum AnEnum {
@@ -275,7 +275,7 @@ export namespace AllTheTypes {
             }
             case 14: {
               if (opts.limits?.field14 != null && obj.field14.length === opts.limits.field14) {
-                throw new CodeError('decode error - map field "field14" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "field14" had too many elements')
               }
 
               obj.field14.push(reader.string())

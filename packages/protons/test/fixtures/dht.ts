@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, enumeration, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Record {
@@ -212,7 +212,7 @@ export namespace Message {
               }
               case 2: {
                 if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                  throw new CodeError('decode error - map field "addrs" had too many elements', 'ERR_MAX_LENGTH')
+                  throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
                 }
 
                 obj.addrs.push(reader.bytes())
@@ -321,7 +321,7 @@ export namespace Message {
             }
             case 8: {
               if (opts.limits?.closerPeers != null && obj.closerPeers.length === opts.limits.closerPeers) {
-                throw new CodeError('decode error - map field "closerPeers" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "closerPeers" had too many elements')
               }
 
               obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32(), {
@@ -331,7 +331,7 @@ export namespace Message {
             }
             case 9: {
               if (opts.limits?.providerPeers != null && obj.providerPeers.length === opts.limits.providerPeers) {
-                throw new CodeError('decode error - map field "providerPeers" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "providerPeers" had too many elements')
               }
 
               obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32(), {

@@ -339,12 +339,63 @@ export interface Reader {
   sfixed64String(): string
 }
 
+/**
+ * This will be removed in a future release
+ *
+ * @deprecated
+ */
 export class CodeError extends Error {
   public code: string
 
-  constructor (message: string, code: string, options?: ErrorOptions) {
-    super(message, options)
+  constructor (message: string, code: string) {
+    super(message)
 
     this.code = code
   }
+}
+
+/**
+ * Thrown when a repeated field has too many elements
+ */
+export class MaxLengthError extends Error {
+  /**
+   * This will be removed in a future release
+   *
+   * @deprecated use the `.name` property instead
+   */
+  public code = 'ERR_MAX_LENGTH'
+  public name = 'MaxLengthError'
+}
+
+/**
+ * Thrown when a map has too many elements
+ */
+export class MaxSizeError extends Error {
+  /**
+   * This will be removed in a future release
+   *
+   * @deprecated use the `.name` property instead
+   */
+  public code = 'ERR_MAX_SIZE'
+  public name = 'MaxSizeError'
+}
+
+export class ParseError extends Error {
+  /**
+   * This will be removed in a future release
+   *
+   * @deprecated use the `.name` property instead
+   */
+  public code = 'ERR_PARSE_ERROR'
+  public name = 'ParseError'
+}
+
+export class NoMessagesFoundError extends Error {
+  /**
+   * This will be removed in a future release
+   *
+   * @deprecated use the `.name` property instead
+   */
+  public code = 'ERR_NO_MESSAGES_FOUND'
+  public name = 'NoMessagesFoundError'
 }

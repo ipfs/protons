@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, CodeError, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, MaxLengthError, message } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -75,7 +75,7 @@ export namespace Peer {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.addresses != null && obj.addresses.length === opts.limits.addresses) {
-                throw new CodeError('decode error - map field "addresses" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "addresses" had too many elements')
               }
 
               obj.addresses.push(Address.codec().decode(reader, reader.uint32(), {
@@ -85,7 +85,7 @@ export namespace Peer {
             }
             case 2: {
               if (opts.limits?.protocols != null && obj.protocols.length === opts.limits.protocols) {
-                throw new CodeError('decode error - map field "protocols" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "protocols" had too many elements')
               }
 
               obj.protocols.push(reader.string())
@@ -93,7 +93,7 @@ export namespace Peer {
             }
             case 3: {
               if (opts.limits?.metadata != null && obj.metadata.length === opts.limits.metadata) {
-                throw new CodeError('decode error - map field "metadata" had too many elements', 'ERR_MAX_LENGTH')
+                throw new MaxLengthError('Decode error - map field "metadata" had too many elements')
               }
 
               obj.metadata.push(Metadata.codec().decode(reader, reader.uint32(), {
