@@ -49,14 +49,14 @@
   },
   "dependencies": {
     "meow": "^13.1.0",
-    "protobufjs-cli": "^1.0.0"
+    "protobufjs-cli": "^1.0.0",
+    "protons-runtime": "^5.0.0"
   },
   "devDependencies": {
     "aegir": "^44.1.0",
     "long": "^5.2.0",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
-    "protons-runtime": "^5.0.0",
     "uint8arraylist": "^2.4.3",
     "uint8arrays": "^5.0.1"
   }
