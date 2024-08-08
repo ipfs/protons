@@ -41,7 +41,9 @@
     "clean": "aegir clean",
     "lint": "aegir lint",
     "dep-check": "aegir dep-check",
-    "build": "aegir build"
+    "doc-check": "aegir doc-check",
+    "build": "aegir build",
+    "release": "aegir release"
   },
   "dependencies": {
     "uint8-varint": "^2.0.2",
