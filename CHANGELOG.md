@@ -1,3 +1,9 @@
+## [3.1.1](https://github.com/ipfs/protons/compare/v3.1.0...v3.1.1) (2024-08-08)
+
+### Bug Fixes
+
+* add publish script ([68e1092](https://github.com/ipfs/protons/commit/68e109298e34c1fdb58252288d5c0ddad00ec1a3))
+
 ## [3.1.0](https://github.com/ipfs/protons/compare/v3.0.1...v3.1.0) (2024-08-07)
 
 ### Features
