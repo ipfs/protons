@@ -9,6 +9,21 @@
 
 # About
 
+<!--
+
+!IMPORTANT!
+
+Everything in this README between "# About" and "# Install" is automatically
+generated and will be overwritten the next time the doc generator is run.
+
+To make changes to this section, please update the @packageDocumentation section
+of src/index.js or src/index.ts
+
+To experiment with formatting, please run "npm run docs" from the root of this
+repo and examine the changes made.
+
+-->
+
 `protons` is a high performance implementation of [Protocol Buffers v3](https://protobuf.dev/programming-guides/proto3/).
 
 It transpiles code to TypeScript and supports BigInts for 64 bit types.
