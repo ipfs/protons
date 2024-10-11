@@ -4,7 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, message } from 'protons-runtime'
+import { type Codec, decodeMessage, type DecodeOptions, encodeMessage, MaxLengthError, message } from 'protons-runtime'
+import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface CustomOptionNumber {
@@ -130,6 +131,8 @@ export interface CustomOptionString {
   f64: string
   sf64: string
   bytes: string
+  byteList: string[]
+  regularBytes: Uint8Array
 }
 
 export namespace CustomOptionString {
@@ -174,7 +177,19 @@ export namespace CustomOptionString {
 
         if ((obj.bytes != null && obj.bytes !== '')) {
           w.uint32(58)
-          w.int64String(obj.bytes)
+          w.bytes(new TextEncoder().encode(obj.bytes))
+        }
+
+        if (obj.byteList != null) {
+          for (const value of obj.byteList) {
+            w.uint32(66)
+            w.bytes(new TextEncoder().encode(value))
+          }
+        }
+
+        if ((obj.regularBytes != null && obj.regularBytes.byteLength > 0)) {
+          w.uint32(74)
+          w.bytes(obj.regularBytes)
         }
 
         if (opts.lengthDelimited !== false) {
@@ -188,7 +203,9 @@ export namespace CustomOptionString {
           si64: '',
           f64: '',
           sf64: '',
-          bytes: ''
+          bytes: '',
+          byteList: [],
+          regularBytes: uint8ArrayAlloc(0)
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -223,6 +240,18 @@ export namespace CustomOptionString {
             }
             case 7: {
               obj.bytes = new TextDecoder().decode(reader.bytes())
+              break
+            }
+            case 8: {
+              if (opts.limits?.byteList != null && obj.byteList.length === opts.limits.byteList) {
+                throw new MaxLengthError('Decode error - map field "byteList" had too many elements')
+              }
+
+              obj.byteList.push(new TextDecoder().decode(reader.bytes()))
+              break
+            }
+            case 9: {
+              obj.regularBytes = reader.bytes()
               break
             }
             default: {

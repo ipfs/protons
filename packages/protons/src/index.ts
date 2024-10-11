@@ -259,10 +259,10 @@ const encoderGenerators: Record<string, (val: string, jsTypeOverride?: 'number' 
   bool: (val) => `w.bool(${val})`,
   bytes: (val, jsTypeOverride) => {
     if (jsTypeOverride === 'string') {
-      return `w.int64String(${val})`
+      return `w.bytes(new TextEncoder().encode(${val}))`
     }
 
-    return `w.bytes(new TextEncoder().encode(${val}))`
+    return `w.bytes(${val})`
   },
   double: (val) => `w.double(${val})`,
   fixed32: (val) => `w.fixed32(${val})`,

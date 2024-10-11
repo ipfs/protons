@@ -26,7 +26,9 @@ describe('custom options', () => {
       si64: '5',
       f64: '5',
       sf64: '5',
-      bytes: ''
+      bytes: '',
+      byteList: [],
+      regularBytes: new Uint8Array(0)
     }
 
     expect(CustomOptionString.decode(CustomOptionString.encode(obj)))
