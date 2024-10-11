@@ -244,14 +244,26 @@ const types: Record<string, string> = {
   uint64: 'bigint'
 }
 
-const jsTypeOverrides: Record<string, 'number' | 'string'> = {
-  JS_NUMBER: 'number',
-  JS_STRING: 'string'
+const jsTypeOverrides: Record<string, { type: 'number' | 'string', allowed: string[] }> = {
+  JS_NUMBER: {
+    type: 'number',
+    allowed: ['int64', 'uint64', 'sint64', 'fixed64', 'sfixed64']
+  },
+  JS_STRING: {
+    type: 'string',
+    allowed: ['int64', 'uint64', 'sint64', 'fixed64', 'sfixed64', 'bytes']
+  }
 }
 
 const encoderGenerators: Record<string, (val: string, jsTypeOverride?: 'number' | 'string') => string> = {
   bool: (val) => `w.bool(${val})`,
-  bytes: (val) => `w.bytes(${val})`,
+  bytes: (val, jsTypeOverride) => {
+    if (jsTypeOverride === 'string') {
+      return `w.int64String(${val})`
+    }
+
+    return `w.bytes(new TextEncoder().encode(${val}))`
+  },
   double: (val) => `w.double(${val})`,
   fixed32: (val) => `w.fixed32(${val})`,
   fixed64: (val, jsTypeOverride) => {
@@ -319,7 +331,13 @@ const encoderGenerators: Record<string, (val: string, jsTypeOverride?: 'number' 
 
 const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string') => string> = {
   bool: () => 'reader.bool()',
-  bytes: () => 'reader.bytes()',
+  bytes: (jsTypeOverride) => {
+    if (jsTypeOverride === 'string') {
+      return 'new TextDecoder().decode(reader.bytes())'
+    }
+
+    return 'reader.bytes()'
+  },
   double: () => 'reader.double()',
   fixed32: () => 'reader.fixed32()',
   fixed64: (jsTypeOverride) => {
@@ -432,12 +450,14 @@ const defaultValueTestGeneratorsJsTypeOverrides: Record<string, (field: string) 
 }
 
 function findJsTypeOverride (defaultType: string, fieldDef: FieldDef): 'number' | 'string' | undefined {
-  if (fieldDef.options?.jstype != null && jsTypeOverrides[fieldDef.options?.jstype] != null) {
-    if (!['int64', 'uint64', 'sint64', 'fixed64', 'sfixed64'].includes(defaultType)) {
-      throw new Error(`jstype is only allowed on int64, uint64, sint64, fixed64 or sfixed64 fields - got "${defaultType}"`)
+  const override = jsTypeOverrides[fieldDef.options?.jstype]
+
+  if (override != null) {
+    if (!override.allowed.includes(defaultType)) {
+      throw new Error(`jstype is only allowed on ${override.allowed.join(', ')} fields - got "${defaultType}"`)
     }
 
-    return jsTypeOverrides[fieldDef.options?.jstype]
+    return override.type
   }
 }
 
@@ -517,7 +537,7 @@ function createDefaultObject (fields: Record<string, FieldDef>, messageDef: Mess
           defaultValueGenerator = defaultValueGeneratorsJsTypeOverrides[jsTypeOverride]
         }
 
-        if (type === 'bytes') {
+        if (type === 'bytes' && jsTypeOverride !== 'string') {
           moduleDef.addImport('uint8arrays/alloc', 'alloc', 'uint8ArrayAlloc')
         }
 

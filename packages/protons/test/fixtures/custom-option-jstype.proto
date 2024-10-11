@@ -16,4 +16,5 @@ message CustomOptionString {
   sint64 si64 = 4 [jstype = JS_STRING];
   fixed64 f64 = 5 [jstype = JS_STRING];
   sfixed64 sf64 = 6 [jstype = JS_STRING];
+  bytes bytes = 7 [jstype = JS_STRING];
 }

@@ -129,6 +129,7 @@ export interface CustomOptionString {
   si64: string
   f64: string
   sf64: string
+  bytes: string
 }
 
 export namespace CustomOptionString {
@@ -171,6 +172,11 @@ export namespace CustomOptionString {
           w.sfixed64String(obj.sf64)
         }
 
+        if ((obj.bytes != null && obj.bytes !== '')) {
+          w.uint32(58)
+          w.int64String(obj.bytes)
+        }
+
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
@@ -181,7 +187,8 @@ export namespace CustomOptionString {
           ui64: '',
           si64: '',
           f64: '',
-          sf64: ''
+          sf64: '',
+          bytes: ''
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -212,6 +219,10 @@ export namespace CustomOptionString {
             }
             case 6: {
               obj.sf64 = reader.sfixed64String()
+              break
+            }
+            case 7: {
+              obj.bytes = new TextDecoder().decode(reader.bytes())
               break
             }
             default: {
