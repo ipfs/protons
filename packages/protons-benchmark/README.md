@@ -43,7 +43,7 @@ $ npm start
 [15:02:32] tsc [completed]
 
 > protons-benchmark@0.0.0 start
-> node dist/src/index.js
+> node dist/src/implementations/index.js
 
 pbjs x 19,188 ops/sec ±0.38% (98 runs sampled)
 protons x 19,001 ops/sec ±0.33% (95 runs sampled)
@@ -51,6 +51,38 @@ protobuf.js x 19,558 ops/sec ±0.30% (91 runs sampled)
 @protobuf-ts x 17,216 ops/sec ±0.32% (95 runs sampled)
 protobuf-es x 15,673 ops/sec ±0.48% (93 runs sampled)
 Fastest is protobuf.js
+```
+
+Or in a Deno:
+
+```console
+$ npm run start:deno
+
+> protons-benchmark@0.0.0 start:deno
+> deno --allow-env dist/src/implementations/index.js
+
+pbjs x 20,665 ops/sec ±0.55% (93 runs sampled)
+protons x 19,791 ops/sec ±0.51% (95 runs sampled)
+protobuf.js x 20,222 ops/sec ±0.56% (93 runs sampled)
+@protobuf-ts x 18,185 ops/sec ±0.62% (95 runs sampled)
+protobuf-es x 18,327 ops/sec ±0.68% (92 runs sampled)
+Fastest is pbjs
+```
+
+Or in a Bun:
+
+```console
+$ npm run start:bun
+
+> protons-benchmark@0.0.0 start:bun
+> bun dist/src/implementations/index.js
+
+pbjs x 28,574 ops/sec ±0.59% (91 runs sampled)
+protons x 28,162 ops/sec ±0.53% (92 runs sampled)
+protobuf.js x 27,920 ops/sec ±0.83% (97 runs sampled)
+@protobuf-ts x 26,250 ops/sec ±0.96% (93 runs sampled)
+protobuf-es x 25,727 ops/sec ±0.51% (94 runs sampled)
+Fastest is pbjs
 ```
 
 Or in a browser:
