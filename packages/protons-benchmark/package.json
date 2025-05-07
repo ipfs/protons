@@ -53,7 +53,7 @@
     "@protobuf-ts/plugin": "^2.8.1",
     "@protobuf-ts/runtime": "^2.8.1",
     "@types/benchmark": "^2.1.1",
-    "aegir": "^45.0.1",
+    "aegir": "^46.0.0",
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",
