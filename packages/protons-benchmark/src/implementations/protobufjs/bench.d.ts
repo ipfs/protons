@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as $protobuf from "protobufjs";
 /** Properties of a Foo. */
 export interface IFoo {
