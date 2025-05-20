@@ -4,7 +4,7 @@ import fs from 'fs'
 import { expect } from 'aegir/chai'
 import Long from 'long'
 import pbjs from 'pbjs'
-import protobufjs, { type Type as PBType } from 'protobufjs'
+import protobufjs from 'protobufjs'
 import { Basic, Empty } from './fixtures/basic.js'
 import { Message as Bitswap } from './fixtures/bitswap.js'
 import { CircuitRelay } from './fixtures/circuit.js'
@@ -12,6 +12,7 @@ import { Optional, OptionalEnum } from './fixtures/optional.js'
 import { Peer } from './fixtures/peer.js'
 import { Singular, SingularEnum } from './fixtures/singular.js'
 import { AllTheTypes, AnEnum } from './fixtures/test.js'
+import type { Type as PBType } from 'protobufjs'
 
 function longifyBigInts (obj: any): any {
   const output = {

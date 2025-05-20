@@ -3,7 +3,8 @@
 import { expect } from 'aegir/chai'
 import Long from 'long'
 import protobufjs from 'protobufjs'
-import { MapTypes, type SubMessage, type EnumValue } from './fixtures/maps.js'
+import { MapTypes } from './fixtures/maps.js'
+import type { SubMessage, EnumValue } from './fixtures/maps.js'
 
 function longifyBigInts (obj: any): any {
   const output = {
@@ -55,7 +56,7 @@ function objectifyMaps (obj: any): any {
   for (const key of Object.keys(output)) {
     if (output[key] instanceof Map) {
       const obj: Record<any, any> = {}
-      const entries: Array<[key: any, value: any]> = output[key].entries()
+      const entries: MapIterator<[any, any]> = output[key].entries()
 
       for (const [key, value] of entries) {
         obj[key] = value

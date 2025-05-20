@@ -1,9 +1,7 @@
 {
   "extends": "aegir/src/config/tsconfig.aegir.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "moduleResolution": "Node16",
-    "module": "Node16"
+    "outDir": "dist"
   },
   "include": [
     "bin",

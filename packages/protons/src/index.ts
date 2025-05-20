@@ -815,7 +815,7 @@ export interface ${messageDef.name} {
           // message fields are only written if they have values. But if a message
           // is part of a repeated field, and consists of only default values it
           // won't be written, so write a zero-length buffer if that's the case
-          writeField = () => `w.uint32(${id})
+          writeField = (): string => `w.uint32(${id})
           ${typeName}.codec().encode(${valueVar}, w)`
         }
 
@@ -1270,7 +1270,9 @@ export async function generate (source: string, flags: Flags): Promise<void> {
     '/* eslint-disable complexity */',
     '/* eslint-disable @typescript-eslint/no-namespace */',
     '/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */',
-    '/* eslint-disable @typescript-eslint/no-empty-interface */'
+    '/* eslint-disable @typescript-eslint/no-empty-interface */',
+    '/* eslint-disable import/consistent-type-specifier-style */',
+    '/* eslint-disable @typescript-eslint/no-unused-vars */'
   ]
 
   const imports = []
@@ -1298,18 +1300,34 @@ export async function generate (source: string, flags: Flags): Promise<void> {
       return 0
     })
 
+  // add imports
   for (const imp of importedModules) {
-    const allTypes = imp[1].reduce((acc, curr) => {
-      return acc && curr.type
-    }, true)
+    const symbols = imp[1]
+      .filter(imp => !imp.type)
+      .sort((a, b) => {
+        return a.symbol.localeCompare(b.symbol)
+      }).map(imp => {
+        return `${imp.symbol}${imp.alias != null ? ` as ${imp.alias}` : ''}`
+      }).join(', ')
 
-    const symbols = imp[1].sort((a, b) => {
-      return a.symbol.localeCompare(b.symbol)
-    }).map(imp => {
-      return `${!allTypes && imp.type ? 'type ' : ''}${imp.symbol}${imp.alias != null ? ` as ${imp.alias}` : ''}`
-    }).join(', ')
+    if (symbols.length > 0) {
+      imports.push(`import { ${symbols} } from '${imp[0]}'`)
+    }
+  }
 
-    imports.push(`import ${allTypes ? 'type ' : ''}{ ${symbols} } from '${imp[0]}'`)
+  // add type imports
+  for (const imp of importedModules) {
+    const symbols = imp[1]
+      .filter(imp => imp.type)
+      .sort((a, b) => {
+        return a.symbol.localeCompare(b.symbol)
+      }).map(imp => {
+        return `${imp.symbol}${imp.alias != null ? ` as ${imp.alias}` : ''}`
+      }).join(', ')
+
+    if (symbols.length > 0) {
+      imports.push(`import type { ${symbols} } from '${imp[0]}'`)
+    }
   }
 
   const lines = [
