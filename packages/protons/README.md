@@ -88,7 +88,7 @@ To protect decoders from malicious payloads, it's possible to limit the maximum 
 
 You can either do this at compile time by using the [protons.options](https://github.com/protocolbuffers/protobuf/blob/6f1d88107f268b8ebdad6690d116e74c403e366e/docs/options.md?plain=1#L490-L493) extension:
 
-```protobuf
+```
 message MyMessage {
   // repeatedField cannot have more than 10 entries
   repeated uint32 repeatedField = 1 [(protons.options).limit = 10];
@@ -113,7 +113,7 @@ const message = MyMessage.decode(buf, {
 
 Sub messages with repeating elements can be limited in a similar way:
 
-```protobuf
+```
 message SubMessage {
   repeated uint32 repeatedField = 1;
 }
@@ -137,7 +137,7 @@ const message = MyMessage.decode(buf, {
 
 Sub messages defined in repeating elements can be limited by appending `$` to the field name in the runtime limit options:
 
-```protobuf
+```
 message SubMessage {
  repeated uint32 repeatedField = 1;
 }
@@ -162,7 +162,7 @@ const message = MyMessage.decode(buf, {
 
 Repeating fields in map entries can be limited by appending `$value` to the field name in the runtime limit options:
 
-```protobuf
+```
 message SubMessage {
  repeated uint32 repeatedField = 1;
 }
@@ -191,7 +191,7 @@ Sometimes this is undesirable due to [performance issues](https://betterprogramm
 
 It's possible to override the JavaScript type 64 bit fields will deserialize to:
 
-```protobuf
+```
 message MyMessage {
   repeated int64 bigintField = 1;
   repeated int64 numberField = 2 [jstype = JS_NUMBER];
