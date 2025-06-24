@@ -25,6 +25,7 @@ export namespace AnEnum {
     return enumeration<AnEnum>(__AnEnumValues)
   }
 }
+
 export interface SubMessage {
   foo: string
 }

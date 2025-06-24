@@ -46,7 +46,8 @@
     "build": "aegir build",
     "test": "aegir test -t node",
     "test:node": "aegir test -t node --cov",
-    "release": "aegir release"
+    "release": "aegir release",
+    "generate": "node ./dist/bin/protons.js test/fixtures/*.proto"
   },
   "dependencies": {
     "meow": "^13.1.0",

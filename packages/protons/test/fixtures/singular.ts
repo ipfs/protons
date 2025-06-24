@@ -28,6 +28,7 @@ export namespace SingularEnum {
     return enumeration<SingularEnum>(__SingularEnumValues)
   }
 }
+
 export interface SingularSubMessage {
   foo: string
   bar: number

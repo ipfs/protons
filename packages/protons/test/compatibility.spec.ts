@@ -88,7 +88,7 @@ function normalizeProtonbufjs (obj: any, target: any): any {
   for (const key of Object.keys(output)) {
     // protobujs sets unset message fields to `null`, protons does not set the field at all
     if (output[key] === null && target[key] == null) {
-      delete output[key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
+      delete output[key]
     }
   }
 

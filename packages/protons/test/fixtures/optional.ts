@@ -27,6 +27,7 @@ export namespace OptionalEnum {
     return enumeration<OptionalEnum>(__OptionalEnumValues)
   }
 }
+
 export interface OptionalSubMessage {
   foo?: string
   bar?: number

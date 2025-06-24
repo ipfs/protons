@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+enum EnumType {
+  Val1 = 0;
+  Val2 = 1;
+}
+
+message OneOfMessage {
+  oneof myOneOfProp {
+    string fieldOne = 1;
+    string fieldTwo = 2;
+  }
+  oneof myOneOfEnum {
+    EnumType fieldThree = 3;
+    EnumType fieldFour = 4;
+  }
+  string fieldFive = 5;
+}
+
+message MessageWithoutOneOfs {
+  string fieldOne = 1;
+  string fieldTwo = 2;
+  EnumType fieldThree = 3;
+  EnumType fieldFour = 4;
+  string fieldFive = 5;
+}

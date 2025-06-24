@@ -27,6 +27,7 @@ export namespace EnumValue {
     return enumeration<EnumValue>(__EnumValueValues)
   }
 }
+
 export interface SubMessage {
   foo: string
   bar: number[]
