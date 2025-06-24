@@ -46,7 +46,7 @@ class Op<T> {
 }
 
 /* istanbul ignore next */
-function noop (): void {} // eslint-disable-line no-empty-function
+function noop (): void {}
 
 /**
  * Constructs a new writer state instance

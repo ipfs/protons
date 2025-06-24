@@ -1353,7 +1353,7 @@ export async function generate (source: string, flags: Flags): Promise<void> {
   await fs.writeFile(outputPath, content + '\n')
 }
 
-function configureOnOfs (classDef: any) {
+function configureOnOfs (classDef: any): void {
   const oneOfs: Record<string, { oneof: string[] }> = classDef.oneofs ?? {}
 
   for (const [, { oneof: fields }] of Object.entries(oneOfs)) {
