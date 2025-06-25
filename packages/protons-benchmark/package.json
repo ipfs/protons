@@ -45,6 +45,8 @@
     "build": "aegir build --no-bundle && cp -R src/implementations/protobufjs dist/src/implementations/protobufjs",
     "prestart": "npm run build",
     "start": "node dist/src/implementations/index.js",
+    "start:bun": "bun dist/src/implementations/index.js",
+    "start:deno": "deno --allow-env dist/src/implementations/index.js",
     "start:browser": "npx playwright-test dist/src/implementations/index.js --runner benchmark"
   },
   "dependencies": {
