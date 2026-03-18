@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { expect } from 'aegir/chai'
 import { CustomOptionNumber, CustomOptionString } from './fixtures/custom-option-jstype.ts'
 

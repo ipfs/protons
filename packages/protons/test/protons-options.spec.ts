@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { expect } from 'aegir/chai'
 import { MessageWithSizeLimitedMap, MessageWithSizeLimitedRepeatedField } from './fixtures/protons-options.ts'
 

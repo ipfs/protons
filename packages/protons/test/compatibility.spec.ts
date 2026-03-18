@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import fs from 'fs'
 import { expect } from 'aegir/chai'
 import Long from 'long'
