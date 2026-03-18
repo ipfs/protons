@@ -1,13 +1,13 @@
 import type { Writer, Reader } from './index.ts'
 
 // https://developers.google.com/protocol-buffers/docs/encoding#structure
-export enum CODEC_TYPES {
-  VARINT = 0,
-  BIT64,
-  LENGTH_DELIMITED,
-  START_GROUP,
-  END_GROUP,
-  BIT32
+export const CODEC_TYPES = {
+  VARINT: 0,
+  BIT64: 1,
+  LENGTH_DELIMITED: 2,
+  START_GROUP: 3,
+  END_GROUP: 4,
+  BIT32: 5
 }
 
 export interface EncodeOptions {
@@ -59,18 +59,45 @@ export interface DecodeFunction<T> {
   (reader: Reader, length?: number, opts?: DecodeOptions<T>): T
 }
 
-export interface Codec<T> {
-  name: string
-  type: CODEC_TYPES
-  encode: EncodeFunction<T>
-  decode: DecodeFunction<T>
+export interface StreamingDecodeOptions<T> extends DecodeOptions<T> {
+  /**
+   * If true, yield a value event for repeated elements/maps, otherwise only
+   * yield events for collection members
+   *
+   * @default false
+   */
+  emitCollections?: false
 }
 
-export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>): Codec<T> {
+export interface StreamingDecodeWithCollectionsOptions<T> extends DecodeOptions<T> {
+  /**
+   * If true, yield a value event for repeated elements/maps, otherwise only
+   * yield events for collection members
+   *
+   * @default false
+   */
+  emitCollections: true
+}
+
+export interface StreamFunction<T, StreamEvent, StreamCollectionsEvent> {
+  (reader: Reader, length?: number, opts?: StreamingDecodeOptions<T>): Generator<StreamEvent>
+  (reader: Reader, length?: number, opts?: StreamingDecodeWithCollectionsOptions<T>): Generator<StreamCollectionsEvent>
+}
+
+export interface Codec<T, StreamEvent, StreamCollectionsEvent> {
+  name: string
+  type: number
+  encode: EncodeFunction<T>
+  decode: DecodeFunction<T>
+  stream: StreamFunction<T, StreamEvent, StreamCollectionsEvent>
+}
+
+export function createCodec <T, StreamEvent, StreamCollectionsEvent> (name: string, type: number, encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T, StreamEvent, StreamCollectionsEvent>): Codec<T, StreamEvent, StreamCollectionsEvent> {
   return {
     name,
     type,
     encode,
-    decode
+    decode,
+    stream
   }
 }

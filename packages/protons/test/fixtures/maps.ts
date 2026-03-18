@@ -1,7 +1,13 @@
+/* eslint-disable import/export */
 /* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable import/consistent-type-specifier-style */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message } from 'protons-runtime'
-import type { Codec, DecodeOptions } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum EnumValue {
@@ -17,7 +23,7 @@ enum __EnumValueValues {
 }
 
 export namespace EnumValue {
-  export const codec = (): Codec<EnumValue> => {
+  export const codec = (): Codec<EnumValue, any, any> => {
     return enumeration<EnumValue>(__EnumValueValues)
   }
 }
@@ -28,11 +34,11 @@ export interface SubMessage {
 }
 
 export namespace SubMessage {
-  let _codec: Codec<SubMessage>
+  let _codec: Codec<SubMessage, SubMessageStreamEvent, SubMessageStreamCollectionsEvent>
 
-  export const codec = (): Codec<SubMessage> => {
+  export const codec = (): Codec<SubMessage, SubMessageStreamEvent, SubMessageStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<SubMessage>((obj, w, opts = {}) => {
+      _codec = message<SubMessage, SubMessageStreamEvent, SubMessageStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -84,18 +90,87 @@ export namespace SubMessage {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          foo: '',
+          bar: []
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'foo',
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
+                throw new MaxLengthError('Decode error - map field "bar" had too many elements')
+              }
+
+              yield {
+                field: 'bar$value',
+                index: 0,
+                value: reader.uint32()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<SubMessage>): Uint8Array => {
+  export interface SubMessageFooFieldEvent {
+    field: 'foo'
+    value: string
+  }
+
+  export interface SubMessageBarFieldEvent {
+    field: 'bar'
+    value: number[]
+  }
+
+  export interface SubMessageBarValueEvent {
+    field: 'bar$value'
+    index: number
+    value: number
+  }
+
+  export type SubMessageStreamEvent = SubMessageFooFieldEvent | SubMessageBarValueEvent
+  export type SubMessageStreamCollectionsEvent = SubMessageBarFieldEvent
+
+  export function encode (obj: Partial<SubMessage>): Uint8Array {
     return encodeMessage(obj, SubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): SubMessage => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): SubMessage {
     return decodeMessage(buf, SubMessage.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<SubMessage>): Generator<SubMessageStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<SubMessage>): Generator<SubMessageStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, SubMessage.codec(), opts)
   }
 }
 
@@ -114,11 +189,11 @@ export namespace MapTypes {
   }
 
   export namespace MapTypes$stringMapEntry {
-    let _codec: Codec<MapTypes$stringMapEntry>
+    let _codec: Codec<MapTypes$stringMapEntry, MapTypes$stringMapEntryStreamEvent, MapTypes$stringMapEntryStreamCollectionsEvent>
 
-    export const codec = (): Codec<MapTypes$stringMapEntry> => {
+    export const codec = (): Codec<MapTypes$stringMapEntry, MapTypes$stringMapEntryStreamEvent, MapTypes$stringMapEntryStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<MapTypes$stringMapEntry>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$stringMapEntry, MapTypes$stringMapEntryStreamEvent, MapTypes$stringMapEntryStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -164,18 +239,76 @@ export namespace MapTypes {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            key: '',
+            value: ''
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'key',
+                  value: reader.string()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'value',
+                  value: reader.string()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<MapTypes$stringMapEntry>): Uint8Array => {
+    export interface MapTypes$stringMapEntryKeyFieldEvent {
+      field: 'key'
+      value: string
+    }
+
+    export interface MapTypes$stringMapEntryValueFieldEvent {
+      field: 'value'
+      value: string
+    }
+
+    export type MapTypes$stringMapEntryStreamEvent = MapTypes$stringMapEntryKeyFieldEvent | MapTypes$stringMapEntryValueFieldEvent
+    export type MapTypes$stringMapEntryStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<MapTypes$stringMapEntry>): Uint8Array {
       return encodeMessage(obj, MapTypes$stringMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$stringMapEntry>): MapTypes$stringMapEntry => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$stringMapEntry>): MapTypes$stringMapEntry {
       return decodeMessage(buf, MapTypes$stringMapEntry.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MapTypes$stringMapEntry>): Generator<MapTypes$stringMapEntryStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MapTypes$stringMapEntry>): Generator<MapTypes$stringMapEntryStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, MapTypes$stringMapEntry.codec(), opts)
     }
   }
 
@@ -185,11 +318,11 @@ export namespace MapTypes {
   }
 
   export namespace MapTypes$intMapEntry {
-    let _codec: Codec<MapTypes$intMapEntry>
+    let _codec: Codec<MapTypes$intMapEntry, MapTypes$intMapEntryStreamEvent, MapTypes$intMapEntryStreamCollectionsEvent>
 
-    export const codec = (): Codec<MapTypes$intMapEntry> => {
+    export const codec = (): Codec<MapTypes$intMapEntry, MapTypes$intMapEntryStreamEvent, MapTypes$intMapEntryStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<MapTypes$intMapEntry>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$intMapEntry, MapTypes$intMapEntryStreamEvent, MapTypes$intMapEntryStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -235,18 +368,76 @@ export namespace MapTypes {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            key: 0,
+            value: 0
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'key',
+                  value: reader.int32()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'value',
+                  value: reader.int32()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<MapTypes$intMapEntry>): Uint8Array => {
+    export interface MapTypes$intMapEntryKeyFieldEvent {
+      field: 'key'
+      value: number
+    }
+
+    export interface MapTypes$intMapEntryValueFieldEvent {
+      field: 'value'
+      value: number
+    }
+
+    export type MapTypes$intMapEntryStreamEvent = MapTypes$intMapEntryKeyFieldEvent | MapTypes$intMapEntryValueFieldEvent
+    export type MapTypes$intMapEntryStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<MapTypes$intMapEntry>): Uint8Array {
       return encodeMessage(obj, MapTypes$intMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$intMapEntry>): MapTypes$intMapEntry => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$intMapEntry>): MapTypes$intMapEntry {
       return decodeMessage(buf, MapTypes$intMapEntry.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MapTypes$intMapEntry>): Generator<MapTypes$intMapEntryStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MapTypes$intMapEntry>): Generator<MapTypes$intMapEntryStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, MapTypes$intMapEntry.codec(), opts)
     }
   }
 
@@ -256,11 +447,11 @@ export namespace MapTypes {
   }
 
   export namespace MapTypes$boolMapEntry {
-    let _codec: Codec<MapTypes$boolMapEntry>
+    let _codec: Codec<MapTypes$boolMapEntry, MapTypes$boolMapEntryStreamEvent, MapTypes$boolMapEntryStreamCollectionsEvent>
 
-    export const codec = (): Codec<MapTypes$boolMapEntry> => {
+    export const codec = (): Codec<MapTypes$boolMapEntry, MapTypes$boolMapEntryStreamEvent, MapTypes$boolMapEntryStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<MapTypes$boolMapEntry>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$boolMapEntry, MapTypes$boolMapEntryStreamEvent, MapTypes$boolMapEntryStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -306,18 +497,76 @@ export namespace MapTypes {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            key: false,
+            value: false
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'key',
+                  value: reader.bool()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'value',
+                  value: reader.bool()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<MapTypes$boolMapEntry>): Uint8Array => {
+    export interface MapTypes$boolMapEntryKeyFieldEvent {
+      field: 'key'
+      value: boolean
+    }
+
+    export interface MapTypes$boolMapEntryValueFieldEvent {
+      field: 'value'
+      value: boolean
+    }
+
+    export type MapTypes$boolMapEntryStreamEvent = MapTypes$boolMapEntryKeyFieldEvent | MapTypes$boolMapEntryValueFieldEvent
+    export type MapTypes$boolMapEntryStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<MapTypes$boolMapEntry>): Uint8Array {
       return encodeMessage(obj, MapTypes$boolMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$boolMapEntry>): MapTypes$boolMapEntry => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$boolMapEntry>): MapTypes$boolMapEntry {
       return decodeMessage(buf, MapTypes$boolMapEntry.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MapTypes$boolMapEntry>): Generator<MapTypes$boolMapEntryStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MapTypes$boolMapEntry>): Generator<MapTypes$boolMapEntryStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, MapTypes$boolMapEntry.codec(), opts)
     }
   }
 
@@ -327,11 +576,11 @@ export namespace MapTypes {
   }
 
   export namespace MapTypes$messageMapEntry {
-    let _codec: Codec<MapTypes$messageMapEntry>
+    let _codec: Codec<MapTypes$messageMapEntry, MapTypes$messageMapEntryStreamEvent, MapTypes$messageMapEntryStreamCollectionsEvent>
 
-    export const codec = (): Codec<MapTypes$messageMapEntry> => {
+    export const codec = (): Codec<MapTypes$messageMapEntry, MapTypes$messageMapEntryStreamEvent, MapTypes$messageMapEntryStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<MapTypes$messageMapEntry>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$messageMapEntry, MapTypes$messageMapEntryStreamEvent, MapTypes$messageMapEntryStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -378,18 +627,77 @@ export namespace MapTypes {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            key: ''
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'key',
+                  value: reader.string()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'value',
+                  value: SubMessage.codec().decode(reader, reader.uint32(), {
+                    limits: opts.limits?.value
+                  })
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<MapTypes$messageMapEntry>): Uint8Array => {
+    export interface MapTypes$messageMapEntryKeyFieldEvent {
+      field: 'key'
+      value: string
+    }
+
+    export interface MapTypes$messageMapEntryValueFieldEvent {
+      field: 'value'
+      value: SubMessage
+    }
+
+    export type MapTypes$messageMapEntryStreamEvent = MapTypes$messageMapEntryKeyFieldEvent | MapTypes$messageMapEntryValueFieldEvent
+    export type MapTypes$messageMapEntryStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<MapTypes$messageMapEntry>): Uint8Array {
       return encodeMessage(obj, MapTypes$messageMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$messageMapEntry>): MapTypes$messageMapEntry => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$messageMapEntry>): MapTypes$messageMapEntry {
       return decodeMessage(buf, MapTypes$messageMapEntry.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MapTypes$messageMapEntry>): Generator<MapTypes$messageMapEntryStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MapTypes$messageMapEntry>): Generator<MapTypes$messageMapEntryStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, MapTypes$messageMapEntry.codec(), opts)
     }
   }
 
@@ -399,11 +707,11 @@ export namespace MapTypes {
   }
 
   export namespace MapTypes$enumMapEntry {
-    let _codec: Codec<MapTypes$enumMapEntry>
+    let _codec: Codec<MapTypes$enumMapEntry, MapTypes$enumMapEntryStreamEvent, MapTypes$enumMapEntryStreamCollectionsEvent>
 
-    export const codec = (): Codec<MapTypes$enumMapEntry> => {
+    export const codec = (): Codec<MapTypes$enumMapEntry, MapTypes$enumMapEntryStreamEvent, MapTypes$enumMapEntryStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<MapTypes$enumMapEntry>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$enumMapEntry, MapTypes$enumMapEntryStreamEvent, MapTypes$enumMapEntryStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -449,26 +757,84 @@ export namespace MapTypes {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            key: '',
+            value: EnumValue.NO_VALUE
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'key',
+                  value: reader.string()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'value',
+                  value: EnumValue.codec().decode(reader)
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<MapTypes$enumMapEntry>): Uint8Array => {
+    export interface MapTypes$enumMapEntryKeyFieldEvent {
+      field: 'key'
+      value: string
+    }
+
+    export interface MapTypes$enumMapEntryValueFieldEvent {
+      field: 'value'
+      value: EnumValue
+    }
+
+    export type MapTypes$enumMapEntryStreamEvent = MapTypes$enumMapEntryKeyFieldEvent | MapTypes$enumMapEntryValueFieldEvent
+    export type MapTypes$enumMapEntryStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<MapTypes$enumMapEntry>): Uint8Array {
       return encodeMessage(obj, MapTypes$enumMapEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$enumMapEntry>): MapTypes$enumMapEntry => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$enumMapEntry>): MapTypes$enumMapEntry {
       return decodeMessage(buf, MapTypes$enumMapEntry.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MapTypes$enumMapEntry>): Generator<MapTypes$enumMapEntryStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MapTypes$enumMapEntry>): Generator<MapTypes$enumMapEntryStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, MapTypes$enumMapEntry.codec(), opts)
     }
   }
 
-  let _codec: Codec<MapTypes>
+  let _codec: Codec<MapTypes, MapTypesStreamEvent, MapTypesStreamCollectionsEvent>
 
-  export const codec = (): Codec<MapTypes> => {
+  export const codec = (): Codec<MapTypes, MapTypesStreamEvent, MapTypesStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<MapTypes>((obj, w, opts = {}) => {
+      _codec = message<MapTypes, MapTypesStreamEvent, MapTypesStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -583,17 +949,183 @@ export namespace MapTypes {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          stringMap: new Map<string, string>(),
+          intMap: new Map<number, number>(),
+          boolMap: new Map<boolean, boolean>(),
+          messageMap: new Map<string, undefined>(),
+          enumMap: new Map<string, undefined>()
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.stringMap != null && obj.stringMap.size === opts.limits.stringMap) {
+                throw new MaxSizeError('Decode error - map field "stringMap" had too many elements')
+              }
+
+              const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(reader, reader.uint32())
+
+              yield {
+                field: 'stringMap',
+                key: entry.key,
+                value: entry.value
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.intMap != null && obj.intMap.size === opts.limits.intMap) {
+                throw new MaxSizeError('Decode error - map field "intMap" had too many elements')
+              }
+
+              const entry = MapTypes.MapTypes$intMapEntry.codec().decode(reader, reader.uint32())
+
+              yield {
+                field: 'intMap',
+                key: entry.key,
+                value: entry.value
+              }
+              break
+            }
+            case 3: {
+              if (opts.limits?.boolMap != null && obj.boolMap.size === opts.limits.boolMap) {
+                throw new MaxSizeError('Decode error - map field "boolMap" had too many elements')
+              }
+
+              const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(reader, reader.uint32())
+
+              yield {
+                field: 'boolMap',
+                key: entry.key,
+                value: entry.value
+              }
+              break
+            }
+            case 4: {
+              if (opts.limits?.messageMap != null && obj.messageMap.size === opts.limits.messageMap) {
+                throw new MaxSizeError('Decode error - map field "messageMap" had too many elements')
+              }
+
+              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32(), {
+                  limits: {
+                    value: opts.limits?.messageMap$value
+                  }
+                })
+
+              yield {
+                field: 'messageMap',
+                key: entry.key,
+                value: entry.value
+              }
+              break
+            }
+            case 5: {
+              if (opts.limits?.enumMap != null && obj.enumMap.size === opts.limits.enumMap) {
+                throw new MaxSizeError('Decode error - map field "enumMap" had too many elements')
+              }
+
+              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(reader, reader.uint32())
+
+              yield {
+                field: 'enumMap',
+                key: entry.key,
+                value: entry.value
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<MapTypes>): Uint8Array => {
+  export interface MapTypesStringMapFieldEvent {
+    field: 'stringMap'
+    value: Map<string, string>
+  }
+
+  export interface MapTypesStringMapEntryEvent {
+    field: 'stringMap$entry'
+    key: string
+    value: string
+  }
+
+  export interface MapTypesIntMapFieldEvent {
+    field: 'intMap'
+    value: Map<number, number>
+  }
+
+  export interface MapTypesIntMapEntryEvent {
+    field: 'intMap$entry'
+    key: number
+    value: number
+  }
+
+  export interface MapTypesBoolMapFieldEvent {
+    field: 'boolMap'
+    value: Map<boolean, boolean>
+  }
+
+  export interface MapTypesBoolMapEntryEvent {
+    field: 'boolMap$entry'
+    key: boolean
+    value: boolean
+  }
+
+  export interface MapTypesMessageMapFieldEvent {
+    field: 'messageMap'
+    value: Map<string, SubMessage>
+  }
+
+  export interface MapTypesMessageMapEntryEvent {
+    field: 'messageMap$entry'
+    key: string
+    value: SubMessage
+  }
+
+  export interface MapTypesEnumMapFieldEvent {
+    field: 'enumMap'
+    value: Map<string, EnumValue>
+  }
+
+  export interface MapTypesEnumMapEntryEvent {
+    field: 'enumMap$entry'
+    key: string
+    value: EnumValue
+  }
+
+  export type MapTypesStreamEvent = MapTypesStringMapEntryEvent | MapTypesIntMapEntryEvent | MapTypesBoolMapEntryEvent | MapTypesMessageMapEntryEvent | MapTypesEnumMapEntryEvent
+  export type MapTypesStreamCollectionsEvent = MapTypesStringMapFieldEvent | MapTypesIntMapFieldEvent | MapTypesBoolMapFieldEvent | MapTypesMessageMapFieldEvent | MapTypesEnumMapFieldEvent
+
+  export function encode (obj: Partial<MapTypes>): Uint8Array {
     return encodeMessage(obj, MapTypes.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes>): MapTypes => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes>): MapTypes {
     return decodeMessage(buf, MapTypes.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MapTypes>): Generator<MapTypesStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MapTypes>): Generator<MapTypesStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, MapTypes.codec(), opts)
   }
 }

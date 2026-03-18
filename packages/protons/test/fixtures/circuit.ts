@@ -1,6 +1,14 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
+/* eslint-disable import/export */
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable import/consistent-type-specifier-style */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
-import type { Codec, DecodeOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface CircuitRelay {
@@ -50,7 +58,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Status {
-    export const codec = (): Codec<Status> => {
+    export const codec = (): Codec<Status, any, any> => {
       return enumeration<Status>(__StatusValues)
     }
   }
@@ -70,7 +78,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, any, any> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -81,11 +89,11 @@ export namespace CircuitRelay {
   }
 
   export namespace Peer {
-    let _codec: Codec<Peer>
+    let _codec: Codec<Peer, PeerStreamEvent, PeerStreamCollectionsEvent>
 
-    export const codec = (): Codec<Peer> => {
+    export const codec = (): Codec<Peer, PeerStreamEvent, PeerStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<Peer>((obj, w, opts = {}) => {
+        _codec = message<Peer, PeerStreamEvent, PeerStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -137,26 +145,95 @@ export namespace CircuitRelay {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            id: uint8ArrayAlloc(0),
+            addrs: []
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'id',
+                  value: reader.bytes()
+                }
+                break
+              }
+              case 2: {
+                if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                  throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                }
+
+                yield {
+                  field: 'addrs$value',
+                  index: 0,
+                  value: reader.bytes()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<Peer>): Uint8Array => {
+    export interface PeerIdFieldEvent {
+      field: 'id'
+      value: Uint8Array
+    }
+
+    export interface PeerAddrsFieldEvent {
+      field: 'addrs'
+      value: Uint8Array[]
+    }
+
+    export interface PeerAddrsValueEvent {
+      field: 'addrs$value'
+      index: number
+      value: Uint8Array
+    }
+
+    export type PeerStreamEvent = PeerIdFieldEvent | PeerAddrsValueEvent
+    export type PeerStreamCollectionsEvent = PeerAddrsFieldEvent
+
+    export function encode (obj: Partial<Peer>): Uint8Array {
       return encodeMessage(obj, Peer.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer {
       return decodeMessage(buf, Peer.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Peer>): Generator<PeerStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Peer>): Generator<PeerStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, Peer.codec(), opts)
     }
   }
 
-  let _codec: Codec<CircuitRelay>
+  let _codec: Codec<CircuitRelay, CircuitRelayStreamEvent, CircuitRelayStreamCollectionsEvent>
 
-  export const codec = (): Codec<CircuitRelay> => {
+  export const codec = (): Codec<CircuitRelay, CircuitRelayStreamEvent, CircuitRelayStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay>((obj, w, opts = {}) => {
+      _codec = message<CircuitRelay, CircuitRelayStreamEvent, CircuitRelayStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -221,17 +298,100 @@ export namespace CircuitRelay {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'type',
+                value: CircuitRelay.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: 'srcPeer',
+                value: CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.srcPeer
+                })
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: 'dstPeer',
+                value: CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.dstPeer
+                })
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: 'code',
+                value: CircuitRelay.Status.codec().decode(reader)
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<CircuitRelay>): Uint8Array => {
+  export interface CircuitRelayTypeFieldEvent {
+    field: 'type'
+    value: CircuitRelay.Type
+  }
+
+  export interface CircuitRelaySrcPeerFieldEvent {
+    field: 'srcPeer'
+    value: CircuitRelay.Peer
+  }
+
+  export interface CircuitRelayDstPeerFieldEvent {
+    field: 'dstPeer'
+    value: CircuitRelay.Peer
+  }
+
+  export interface CircuitRelayCodeFieldEvent {
+    field: 'code'
+    value: CircuitRelay.Status
+  }
+
+  export type CircuitRelayStreamEvent = CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerFieldEvent | CircuitRelayDstPeerFieldEvent | CircuitRelayCodeFieldEvent
+  export type CircuitRelayStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<CircuitRelay>): Uint8Array {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): CircuitRelay => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): CircuitRelay {
     return decodeMessage(buf, CircuitRelay.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<CircuitRelay>): Generator<CircuitRelayStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<CircuitRelay>): Generator<CircuitRelayStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, CircuitRelay.codec(), opts)
   }
 }

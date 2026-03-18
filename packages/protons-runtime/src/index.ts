@@ -14,7 +14,7 @@ import type { Codec } from './codec.ts'
 
 export interface FieldDef {
   name: string
-  codec: Codec<any>
+  codec: Codec<any, any, any>
   optional?: true
   repeats?: true
   packed?: true
@@ -28,11 +28,15 @@ export {
   encodeMessage
 } from './encode.ts'
 
+export {
+  streamMessage
+} from './stream.ts'
+
 export { enumeration } from './codecs/enum.ts'
 export { message } from './codecs/message.ts'
 export { createReader as reader } from './utils/reader.ts'
 export { createWriter as writer } from './utils/writer.ts'
-export type { Codec, EncodeOptions, DecodeOptions } from './codec.ts'
+export type { Codec, EncodeOptions, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from './codec.ts'
 
 export interface Writer {
   /**

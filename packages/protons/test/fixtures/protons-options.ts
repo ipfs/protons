@@ -1,5 +1,13 @@
-import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message } from 'protons-runtime'
-import type { Codec, DecodeOptions } from 'protons-runtime'
+/* eslint-disable import/export */
+/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable import/consistent-type-specifier-style */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface MessageWithSizeLimitedRepeatedField {
@@ -7,11 +15,11 @@ export interface MessageWithSizeLimitedRepeatedField {
 }
 
 export namespace MessageWithSizeLimitedRepeatedField {
-  let _codec: Codec<MessageWithSizeLimitedRepeatedField>
+  let _codec: Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldStreamEvent, MessageWithSizeLimitedRepeatedFieldStreamCollectionsEvent>
 
-  export const codec = (): Codec<MessageWithSizeLimitedRepeatedField> => {
+  export const codec = (): Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldStreamEvent, MessageWithSizeLimitedRepeatedFieldStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<MessageWithSizeLimitedRepeatedField>((obj, w, opts = {}) => {
+      _codec = message<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldStreamEvent, MessageWithSizeLimitedRepeatedFieldStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -57,18 +65,78 @@ export namespace MessageWithSizeLimitedRepeatedField {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          repeatedField: []
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.repeatedField != null && obj.repeatedField.length === opts.limits.repeatedField) {
+                throw new MaxLengthError('Decode error - map field "repeatedField" had too many elements')
+              }
+
+              if (obj.repeatedField.length === 1) {
+                throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
+              }
+
+              yield {
+                field: 'repeatedField$value',
+                index: 0,
+                value: reader.string()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<MessageWithSizeLimitedRepeatedField>): Uint8Array => {
+  export interface MessageWithSizeLimitedRepeatedFieldRepeatedFieldFieldEvent {
+    field: 'repeatedField'
+    value: string[]
+  }
+
+  export interface MessageWithSizeLimitedRepeatedFieldRepeatedFieldValueEvent {
+    field: 'repeatedField$value'
+    index: number
+    value: string
+  }
+
+  export type MessageWithSizeLimitedRepeatedFieldStreamEvent = MessageWithSizeLimitedRepeatedFieldRepeatedFieldValueEvent
+  export type MessageWithSizeLimitedRepeatedFieldStreamCollectionsEvent = MessageWithSizeLimitedRepeatedFieldRepeatedFieldFieldEvent
+
+  export function encode (obj: Partial<MessageWithSizeLimitedRepeatedField>): Uint8Array {
     return encodeMessage(obj, MessageWithSizeLimitedRepeatedField.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedRepeatedField>): MessageWithSizeLimitedRepeatedField => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedRepeatedField>): MessageWithSizeLimitedRepeatedField {
     return decodeMessage(buf, MessageWithSizeLimitedRepeatedField.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MessageWithSizeLimitedRepeatedField>): Generator<MessageWithSizeLimitedRepeatedFieldStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MessageWithSizeLimitedRepeatedField>): Generator<MessageWithSizeLimitedRepeatedFieldStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, MessageWithSizeLimitedRepeatedField.codec(), opts)
   }
 }
 
@@ -83,11 +151,11 @@ export namespace MessageWithSizeLimitedMap {
   }
 
   export namespace MessageWithSizeLimitedMap$mapFieldEntry {
-    let _codec: Codec<MessageWithSizeLimitedMap$mapFieldEntry>
+    let _codec: Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryStreamEvent, MessageWithSizeLimitedMap$mapFieldEntryStreamCollectionsEvent>
 
-    export const codec = (): Codec<MessageWithSizeLimitedMap$mapFieldEntry> => {
+    export const codec = (): Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryStreamEvent, MessageWithSizeLimitedMap$mapFieldEntryStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<MessageWithSizeLimitedMap$mapFieldEntry>((obj, w, opts = {}) => {
+        _codec = message<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryStreamEvent, MessageWithSizeLimitedMap$mapFieldEntryStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -133,26 +201,84 @@ export namespace MessageWithSizeLimitedMap {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            key: '',
+            value: ''
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'key',
+                  value: reader.string()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'value',
+                  value: reader.string()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntry>): Uint8Array => {
+    export interface MessageWithSizeLimitedMap$mapFieldEntryKeyFieldEvent {
+      field: 'key'
+      value: string
+    }
+
+    export interface MessageWithSizeLimitedMap$mapFieldEntryValueFieldEvent {
+      field: 'value'
+      value: string
+    }
+
+    export type MessageWithSizeLimitedMap$mapFieldEntryStreamEvent = MessageWithSizeLimitedMap$mapFieldEntryKeyFieldEvent | MessageWithSizeLimitedMap$mapFieldEntryValueFieldEvent
+    export type MessageWithSizeLimitedMap$mapFieldEntryStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntry>): Uint8Array {
       return encodeMessage(obj, MessageWithSizeLimitedMap$mapFieldEntry.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedMap$mapFieldEntry>): MessageWithSizeLimitedMap$mapFieldEntry => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedMap$mapFieldEntry>): MessageWithSizeLimitedMap$mapFieldEntry {
       return decodeMessage(buf, MessageWithSizeLimitedMap$mapFieldEntry.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MessageWithSizeLimitedMap$mapFieldEntry>): Generator<MessageWithSizeLimitedMap$mapFieldEntryStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MessageWithSizeLimitedMap$mapFieldEntry>): Generator<MessageWithSizeLimitedMap$mapFieldEntryStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, MessageWithSizeLimitedMap$mapFieldEntry.codec(), opts)
     }
   }
 
-  let _codec: Codec<MessageWithSizeLimitedMap>
+  let _codec: Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapStreamEvent, MessageWithSizeLimitedMapStreamCollectionsEvent>
 
-  export const codec = (): Codec<MessageWithSizeLimitedMap> => {
+  export const codec = (): Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapStreamEvent, MessageWithSizeLimitedMapStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<MessageWithSizeLimitedMap>((obj, w, opts = {}) => {
+      _codec = message<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapStreamEvent, MessageWithSizeLimitedMapStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -199,17 +325,79 @@ export namespace MessageWithSizeLimitedMap {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          mapField: new Map<string, string>()
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.mapField != null && obj.mapField.size === opts.limits.mapField) {
+                throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
+              }
+
+              if (obj.mapField.size === 1) {
+                throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
+              }
+
+              const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(reader, reader.uint32())
+
+              yield {
+                field: 'mapField',
+                key: entry.key,
+                value: entry.value
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<MessageWithSizeLimitedMap>): Uint8Array => {
+  export interface MessageWithSizeLimitedMapMapFieldFieldEvent {
+    field: 'mapField'
+    value: Map<string, string>
+  }
+
+  export interface MessageWithSizeLimitedMapMapFieldEntryEvent {
+    field: 'mapField$entry'
+    key: string
+    value: string
+  }
+
+  export type MessageWithSizeLimitedMapStreamEvent = MessageWithSizeLimitedMapMapFieldEntryEvent
+  export type MessageWithSizeLimitedMapStreamCollectionsEvent = MessageWithSizeLimitedMapMapFieldFieldEvent
+
+  export function encode (obj: Partial<MessageWithSizeLimitedMap>): Uint8Array {
     return encodeMessage(obj, MessageWithSizeLimitedMap.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedMap>): MessageWithSizeLimitedMap => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithSizeLimitedMap>): MessageWithSizeLimitedMap {
     return decodeMessage(buf, MessageWithSizeLimitedMap.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MessageWithSizeLimitedMap>): Generator<MessageWithSizeLimitedMapStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MessageWithSizeLimitedMap>): Generator<MessageWithSizeLimitedMapStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, MessageWithSizeLimitedMap.codec(), opts)
   }
 }

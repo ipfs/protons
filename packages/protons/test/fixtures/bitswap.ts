@@ -1,8 +1,14 @@
+/* eslint-disable import/export */
 /* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable import/consistent-type-specifier-style */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
-import type { Codec, DecodeOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Message {
@@ -31,7 +37,7 @@ export namespace Message {
     }
 
     export namespace WantType {
-      export const codec = (): Codec<WantType> => {
+      export const codec = (): Codec<WantType, any, any> => {
         return enumeration<WantType>(__WantTypeValues)
       }
     }
@@ -45,11 +51,11 @@ export namespace Message {
     }
 
     export namespace Entry {
-      let _codec: Codec<Entry>
+      let _codec: Codec<Entry, EntryStreamEvent, EntryStreamCollectionsEvent>
 
-      export const codec = (): Codec<Entry> => {
+      export const codec = (): Codec<Entry, EntryStreamEvent, EntryStreamCollectionsEvent> => {
         if (_codec == null) {
-          _codec = message<Entry>((obj, w, opts = {}) => {
+          _codec = message<Entry, EntryStreamEvent, EntryStreamCollectionsEvent>((obj, w, opts = {}) => {
             if (opts.lengthDelimited !== false) {
               w.fork()
             }
@@ -124,26 +130,122 @@ export namespace Message {
             }
 
             return obj
+          }, function * (reader, length, opts = {}) {
+            let obj: any
+
+            if (opts.emitCollections === true) {
+              obj = {
+              block: uint8ArrayAlloc(0),
+              priority: 0,
+              wantType: WantType.Block,
+              sendDontHave: false
+            }
+            } else {
+              obj = {}
+            }
+
+            const end = length == null ? reader.len : reader.pos + length
+
+            while (reader.pos < end) {
+              const tag = reader.uint32()
+
+              switch (tag >>> 3) {
+                case 1: {
+                  yield {
+                    field: 'block',
+                    value: reader.bytes()
+                  }
+                  break
+                }
+                case 2: {
+                  yield {
+                    field: 'priority',
+                    value: reader.int32()
+                  }
+                  break
+                }
+                case 3: {
+                  yield {
+                    field: 'cancel',
+                    value: reader.bool()
+                  }
+                  break
+                }
+                case 4: {
+                  yield {
+                    field: 'wantType',
+                    value: Message.Wantlist.WantType.codec().decode(reader)
+                  }
+                  break
+                }
+                case 5: {
+                  yield {
+                    field: 'sendDontHave',
+                    value: reader.bool()
+                  }
+                  break
+                }
+                default: {
+                  reader.skipType(tag & 7)
+                  break
+                }
+              }
+            }
+
           })
         }
 
         return _codec
       }
 
-      export const encode = (obj: Partial<Entry>): Uint8Array => {
+      export interface EntryBlockFieldEvent {
+        field: 'block'
+        value: Uint8Array
+      }
+
+      export interface EntryPriorityFieldEvent {
+        field: 'priority'
+        value: number
+      }
+
+      export interface EntryCancelFieldEvent {
+        field: 'cancel'
+        value: boolean
+      }
+
+      export interface EntryWantTypeFieldEvent {
+        field: 'wantType'
+        value: Message.Wantlist.WantType
+      }
+
+      export interface EntrySendDontHaveFieldEvent {
+        field: 'sendDontHave'
+        value: boolean
+      }
+
+      export type EntryStreamEvent = EntryBlockFieldEvent | EntryPriorityFieldEvent | EntryCancelFieldEvent | EntryWantTypeFieldEvent | EntrySendDontHaveFieldEvent
+      export type EntryStreamCollectionsEvent = {}
+
+      export function encode (obj: Partial<Entry>): Uint8Array {
         return encodeMessage(obj, Entry.codec())
       }
 
-      export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Entry>): Entry => {
+      export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Entry>): Entry {
         return decodeMessage(buf, Entry.codec(), opts)
+      }
+
+      export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Entry>): Generator<EntryStreamEvent>
+      export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Entry>): Generator<EntryStreamCollectionsEvent>
+      export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+        return streamMessage(buf, Entry.codec(), opts)
       }
     }
 
-    let _codec: Codec<Wantlist>
+    let _codec: Codec<Wantlist, WantlistStreamEvent, WantlistStreamCollectionsEvent>
 
-    export const codec = (): Codec<Wantlist> => {
+    export const codec = (): Codec<Wantlist, WantlistStreamEvent, WantlistStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<Wantlist>((obj, w, opts = {}) => {
+        _codec = message<Wantlist, WantlistStreamEvent, WantlistStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -197,18 +299,89 @@ export namespace Message {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            entries: [],
+            full: false
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                if (opts.limits?.entries != null && obj.entries.length === opts.limits.entries) {
+                  throw new MaxLengthError('Decode error - map field "entries" had too many elements')
+                }
+
+                yield {
+                  field: 'entries$value',
+                  index: 0,
+                  value: Message.Wantlist.Entry.codec().decode(reader, reader.uint32(), {
+                    limits: opts.limits?.entries$
+                  })
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'full',
+                  value: reader.bool()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<Wantlist>): Uint8Array => {
+    export interface WantlistEntriesFieldEvent {
+      field: 'entries'
+      value: Message.Wantlist.Entry[]
+    }
+
+    export interface WantlistEntriesValueEvent {
+      field: 'entries$value'
+      index: number
+      value: Message.Wantlist.Entry
+    }
+
+    export interface WantlistFullFieldEvent {
+      field: 'full'
+      value: boolean
+    }
+
+    export type WantlistStreamEvent = WantlistEntriesValueEvent | WantlistFullFieldEvent
+    export type WantlistStreamCollectionsEvent = WantlistEntriesFieldEvent
+
+    export function encode (obj: Partial<Wantlist>): Uint8Array {
       return encodeMessage(obj, Wantlist.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Wantlist>): Wantlist => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Wantlist>): Wantlist {
       return decodeMessage(buf, Wantlist.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Wantlist>): Generator<WantlistStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Wantlist>): Generator<WantlistStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, Wantlist.codec(), opts)
     }
   }
 
@@ -218,11 +391,11 @@ export namespace Message {
   }
 
   export namespace Block {
-    let _codec: Codec<Block>
+    let _codec: Codec<Block, BlockStreamEvent, BlockStreamCollectionsEvent>
 
-    export const codec = (): Codec<Block> => {
+    export const codec = (): Codec<Block, BlockStreamEvent, BlockStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<Block>((obj, w, opts = {}) => {
+        _codec = message<Block, BlockStreamEvent, BlockStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -268,18 +441,76 @@ export namespace Message {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            prefix: uint8ArrayAlloc(0),
+            data: uint8ArrayAlloc(0)
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'prefix',
+                  value: reader.bytes()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'data',
+                  value: reader.bytes()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<Block>): Uint8Array => {
+    export interface BlockPrefixFieldEvent {
+      field: 'prefix'
+      value: Uint8Array
+    }
+
+    export interface BlockDataFieldEvent {
+      field: 'data'
+      value: Uint8Array
+    }
+
+    export type BlockStreamEvent = BlockPrefixFieldEvent | BlockDataFieldEvent
+    export type BlockStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<Block>): Uint8Array {
       return encodeMessage(obj, Block.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Block>): Block => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Block>): Block {
       return decodeMessage(buf, Block.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Block>): Generator<BlockStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Block>): Generator<BlockStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, Block.codec(), opts)
     }
   }
 
@@ -294,7 +525,7 @@ export namespace Message {
   }
 
   export namespace BlockPresenceType {
-    export const codec = (): Codec<BlockPresenceType> => {
+    export const codec = (): Codec<BlockPresenceType, any, any> => {
       return enumeration<BlockPresenceType>(__BlockPresenceTypeValues)
     }
   }
@@ -305,11 +536,11 @@ export namespace Message {
   }
 
   export namespace BlockPresence {
-    let _codec: Codec<BlockPresence>
+    let _codec: Codec<BlockPresence, BlockPresenceStreamEvent, BlockPresenceStreamCollectionsEvent>
 
-    export const codec = (): Codec<BlockPresence> => {
+    export const codec = (): Codec<BlockPresence, BlockPresenceStreamEvent, BlockPresenceStreamCollectionsEvent> => {
       if (_codec == null) {
-        _codec = message<BlockPresence>((obj, w, opts = {}) => {
+        _codec = message<BlockPresence, BlockPresenceStreamEvent, BlockPresenceStreamCollectionsEvent>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -355,26 +586,84 @@ export namespace Message {
           }
 
           return obj
+        }, function * (reader, length, opts = {}) {
+          let obj: any
+
+          if (opts.emitCollections === true) {
+            obj = {
+            cid: uint8ArrayAlloc(0),
+            type: BlockPresenceType.Have
+          }
+          } else {
+            obj = {}
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: 'cid',
+                  value: reader.bytes()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: 'type',
+                  value: Message.BlockPresenceType.codec().decode(reader)
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
+
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<BlockPresence>): Uint8Array => {
+    export interface BlockPresenceCidFieldEvent {
+      field: 'cid'
+      value: Uint8Array
+    }
+
+    export interface BlockPresenceTypeFieldEvent {
+      field: 'type'
+      value: Message.BlockPresenceType
+    }
+
+    export type BlockPresenceStreamEvent = BlockPresenceCidFieldEvent | BlockPresenceTypeFieldEvent
+    export type BlockPresenceStreamCollectionsEvent = {}
+
+    export function encode (obj: Partial<BlockPresence>): Uint8Array {
       return encodeMessage(obj, BlockPresence.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<BlockPresence>): BlockPresence => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<BlockPresence>): BlockPresence {
       return decodeMessage(buf, BlockPresence.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<BlockPresence>): Generator<BlockPresenceStreamEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<BlockPresence>): Generator<BlockPresenceStreamCollectionsEvent>
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+      return streamMessage(buf, BlockPresence.codec(), opts)
     }
   }
 
-  let _codec: Codec<Message>
+  let _codec: Codec<Message, MessageStreamEvent, MessageStreamCollectionsEvent>
 
-  export const codec = (): Codec<Message> => {
+  export const codec = (): Codec<Message, MessageStreamEvent, MessageStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Message>((obj, w, opts = {}) => {
+      _codec = message<Message, MessageStreamEvent, MessageStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -473,17 +762,152 @@ export namespace Message {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          blocks: [],
+          payload: [],
+          blockPresences: [],
+          pendingBytes: 0
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'wantlist',
+                value: Message.Wantlist.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.wantlist
+                })
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.blocks != null && obj.blocks.length === opts.limits.blocks) {
+                throw new MaxLengthError('Decode error - map field "blocks" had too many elements')
+              }
+
+              yield {
+                field: 'blocks$value',
+                index: 0,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 3: {
+              if (opts.limits?.payload != null && obj.payload.length === opts.limits.payload) {
+                throw new MaxLengthError('Decode error - map field "payload" had too many elements')
+              }
+
+              yield {
+                field: 'payload$value',
+                index: 0,
+                value: Message.Block.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.payload$
+                })
+              }
+              break
+            }
+            case 4: {
+              if (opts.limits?.blockPresences != null && obj.blockPresences.length === opts.limits.blockPresences) {
+                throw new MaxLengthError('Decode error - map field "blockPresences" had too many elements')
+              }
+
+              yield {
+                field: 'blockPresences$value',
+                index: 0,
+                value: Message.BlockPresence.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.blockPresences$
+                })
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: 'pendingBytes',
+                value: reader.int32()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Message>): Uint8Array => {
+  export interface MessageWantlistFieldEvent {
+    field: 'wantlist'
+    value: Message.Wantlist
+  }
+
+  export interface MessageBlocksFieldEvent {
+    field: 'blocks'
+    value: Uint8Array[]
+  }
+
+  export interface MessageBlocksValueEvent {
+    field: 'blocks$value'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface MessagePayloadFieldEvent {
+    field: 'payload'
+    value: Message.Block[]
+  }
+
+  export interface MessagePayloadValueEvent {
+    field: 'payload$value'
+    index: number
+    value: Message.Block
+  }
+
+  export interface MessageBlockPresencesFieldEvent {
+    field: 'blockPresences'
+    value: Message.BlockPresence[]
+  }
+
+  export interface MessageBlockPresencesValueEvent {
+    field: 'blockPresences$value'
+    index: number
+    value: Message.BlockPresence
+  }
+
+  export interface MessagePendingBytesFieldEvent {
+    field: 'pendingBytes'
+    value: number
+  }
+
+  export type MessageStreamEvent = MessageWantlistFieldEvent | MessageBlocksValueEvent | MessagePayloadValueEvent | MessageBlockPresencesValueEvent | MessagePendingBytesFieldEvent
+  export type MessageStreamCollectionsEvent = MessageBlocksFieldEvent | MessagePayloadFieldEvent | MessageBlockPresencesFieldEvent
+
+  export function encode (obj: Partial<Message>): Uint8Array {
     return encodeMessage(obj, Message.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Message => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Message {
     return decodeMessage(buf, Message.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Message>): Generator<MessageStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Message>): Generator<MessageStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Message.codec(), opts)
   }
 }

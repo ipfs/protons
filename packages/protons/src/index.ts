@@ -199,18 +199,36 @@ import { promisify } from 'util'
 import { main as pbjs } from 'protobufjs-cli/pbjs.js'
 import { NoMessagesFoundError, ParseError } from 'protons-runtime'
 
-export enum CODEC_TYPES {
-  VARINT = 0,
-  BIT64,
-  LENGTH_DELIMITED,
-  START_GROUP,
-  END_GROUP,
-  BIT32
+export const CODEC_TYPES = {
+  VARINT: 0,
+  BIT64: 1,
+  LENGTH_DELIMITED: 2,
+  START_GROUP: 3,
+  END_GROUP: 4,
+  BIT32: 5
+}
+
+interface StreamEvent {
+  name: string
+  fields: string[]
+  collection: boolean
 }
 
 function pathWithExtension (input: string, extension: string, outputDir?: string): string {
   const output = outputDir ?? path.dirname(input)
   return path.join(output, path.basename(input).split('.').slice(0, -1).join('.') + extension)
+}
+
+function camelize (input: string): string {
+  return `${input.substring(0, 1).toUpperCase()}${input.substring(1)}`
+}
+
+function interfacesOrEmpty (evts: StreamEvent[]): string {
+  if (evts.length === 0) {
+    return '{}'
+  }
+
+  return evts.map(evt => evt.name).join(' | ')
 }
 
 /**
@@ -493,7 +511,7 @@ function findDef (typeName: string, classDef: MessageDef, moduleDef: ModuleDef):
   throw new Error(`Could not resolve type name "${typeName}"`)
 }
 
-function createDefaultObject (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef): string {
+function createDefaultObject (fields: Record<string, FieldDef>, messageDef: MessageDef, moduleDef: ModuleDef, indent = ''): string {
   const output = Object.entries(fields)
     .map(([name, fieldDef]) => {
       if (fieldDef.map) {
@@ -556,12 +574,37 @@ function createDefaultObject (fields: Record<string, FieldDef>, messageDef: Mess
       return `${name}: ${defaultValue}`
     })
     .filter(Boolean)
-    .join(',\n          ')
+    .join(`,\n          ${indent}`)
 
   if (output !== '') {
     return `
-          ${output}
-        `
+          ${indent}${output}
+        ${indent}`
+  }
+
+  return ''
+}
+
+function createLimitObject (fields: Record<string, FieldDef>): string {
+  const output = Object.entries(fields)
+    .map(([name, fieldDef]) => {
+      if (fieldDef.map) {
+        return `${name}: 0`
+      }
+
+      if (fieldDef.repeated) {
+        return `${name}: 0`
+      }
+
+      return ''
+    })
+    .filter(Boolean)
+    .join(',\n            ')
+
+  if (output !== '') {
+    return `
+            ${output}
+          `
   }
 
   return ''
@@ -585,7 +628,7 @@ const encoders: Record<string, string> = {
   uint64: 'uint64'
 }
 
-const codecTypes: Record<string, CODEC_TYPES> = {
+const codecTypes: Record<string, number> = {
   bool: CODEC_TYPES.VARINT,
   bytes: CODEC_TYPES.LENGTH_DELIMITED,
   double: CODEC_TYPES.BIT64,
@@ -693,7 +736,7 @@ enum __${messageDef.name}Values {
 }
 
 export namespace ${messageDef.name} {
-  export const codec = (): Codec<${messageDef.name}> => {
+  export const codec = (): Codec<${messageDef.name}, any, any> => {
     return enumeration<${messageDef.name}>(__${messageDef.name}Values)
   }
 }
@@ -717,9 +760,12 @@ export namespace ${messageDef.name} {
   // import relevant modules
   moduleDef.addImport('protons-runtime', 'encodeMessage')
   moduleDef.addImport('protons-runtime', 'decodeMessage')
+  moduleDef.addImport('protons-runtime', 'streamMessage')
   moduleDef.addImport('protons-runtime', 'message')
   moduleDef.addTypeImport('protons-runtime', 'Codec')
   moduleDef.addTypeImport('protons-runtime', 'DecodeOptions')
+  moduleDef.addTypeImport('protons-runtime', 'StreamingDecodeOptions')
+  moduleDef.addTypeImport('protons-runtime', 'StreamingDecodeWithCollectionsOptions')
   moduleDef.addTypeImport('uint8arraylist', 'Uint8ArrayList')
 
   const interfaceFields = defineFields(fields, messageDef, moduleDef)
@@ -870,6 +916,7 @@ export interface ${messageDef.name} {
 
   const enforceOneOfEncoding = createOneOfEncoding(messageDef)
   const enforceOneOfDecoding = createOneOfDecoding(messageDef)
+  const streamEvents: StreamEvent[] = []
 
   const decodeFields = Object.entries(fields)
     .map(([fieldName, fieldDef]) => {
@@ -990,12 +1037,196 @@ export interface ${messageDef.name} {
     })
     .join('\n            ')
 
-  interfaceCodecDef = `
-  let _codec: Codec<${messageDef.name}>
+  const streamFields = Object.entries(fields)
+    .map(([fieldName, fieldDef]) => {
+      let valueDef = `${findJsTypeName(fieldDef.type, messageDef, moduleDef, fieldDef)}${fieldDef.repeated ? '[]' : ''}`
 
-  export const codec = (): Codec<${messageDef.name}> => {
+      if (fieldDef.map) {
+        valueDef = `Map<${findJsTypeName(fieldDef.keyType, messageDef, moduleDef, fieldDef)}, ${findJsTypeName(fieldDef.valueType, messageDef, moduleDef, fieldDef)}>`
+      }
+
+      streamEvents.push({
+        name: `${messageDef.name}${camelize(fieldName)}FieldEvent`,
+        fields: [
+          `field: '${fieldName}'`,
+          `value: ${valueDef}`
+        ],
+        collection: fieldDef.map || fieldDef.repeated
+      })
+
+      if (fieldDef.map) {
+        streamEvents.push({
+          name: `${messageDef.name}${camelize(fieldName)}EntryEvent`,
+          fields: [
+            `field: '${fieldName}$entry'`,
+            `key: ${findJsTypeName(fieldDef.keyType, messageDef, moduleDef, fieldDef)}`,
+            `value: ${findJsTypeName(fieldDef.valueType, messageDef, moduleDef, fieldDef)}`
+          ],
+          collection: false
+        })
+      } else if (fieldDef.repeated) {
+        streamEvents.push({
+          name: `${messageDef.name}${camelize(fieldName)}ValueEvent`,
+          fields: [
+            `field: '${fieldName}$value'`,
+            'index: number',
+            `value: ${findJsTypeName(fieldDef.type, messageDef, moduleDef, fieldDef)}`
+          ],
+          collection: false
+        })
+      }
+
+      function createStreamField (fieldName: string, fieldDef: FieldDef): string {
+        let codec: string = encoders[fieldDef.type]
+        let type: string = fieldDef.type
+
+        if (codec == null) {
+          if (fieldDef.enum) {
+            moduleDef.addImport('protons-runtime', 'enumeration')
+            type = 'enum'
+          } else {
+            moduleDef.addImport('protons-runtime', 'message')
+            type = 'message'
+          }
+
+          const typeName = findJsTypeName(fieldDef.type, messageDef, moduleDef, fieldDef)
+          codec = `${typeName}.codec()`
+        }
+
+        // override setting type on js object
+        const jsTypeOverride = findJsTypeOverride(fieldDef.type, fieldDef)
+
+        let fieldOpts = ''
+
+        if (fieldDef.message) {
+          let suffix = ''
+
+          if (fieldDef.repeated) {
+            suffix = '$'
+          }
+
+          fieldOpts = `, {
+                  limits: opts.limits?.${fieldName}${suffix}
+                }`
+        }
+
+        if (fieldDef.map) {
+          fieldOpts = `, {
+                  limits: {
+                    value: opts.limits?.${fieldName}$value
+                  }
+                }`
+
+          // do not pass limit opts to map value types that are enums or
+          // primitives - only support messages
+          if (types[fieldDef.valueType] != null) {
+            // primmitive type
+            fieldOpts = ''
+          } else {
+            const valueType = findDef(fieldDef.valueType, messageDef, moduleDef)
+
+            if (isEnumDef(valueType)) {
+              // enum type
+              fieldOpts = ''
+            }
+          }
+        }
+
+        const parseValue = `${decoderGenerators[type] == null
+          ? `${codec}.decode(reader${type === 'message'
+            ? `, reader.uint32()${fieldOpts}`
+            : ''})`
+        : decoderGenerators[type](jsTypeOverride)}`
+
+        if (fieldDef.map) {
+          moduleDef.addImport('protons-runtime', 'MaxSizeError')
+
+          let limit = `
+              if (opts.limits?.${fieldName} != null && (opts.emitCollections === true ? obj.${fieldName}.size === opts.limits.${fieldName} : obj.${fieldName} === opts.limits.${fieldName})) {
+                throw new MaxSizeError('Decode error - map field "${fieldName}" had too many elements')
+              }
+`
+
+          if (fieldDef.lengthLimit != null) {
+            limit += `
+              if (opts.emitCollections === true ? obj.${fieldName}.size === ${fieldDef.lengthLimit} : obj.${fieldName} === ${fieldDef.lengthLimit}) {
+                throw new MaxSizeError('Decode error - map field "${fieldName}" had too many elements')
+              }
+`
+          }
+
+          return `case ${fieldDef.id}: {${limit}
+              const entry = ${parseValue}
+
+              yield {
+                field: '${fieldName}',
+                key: entry.key,
+                value: entry.value
+              }
+
+              if (opts.emitCollections === true) {
+                obj.${fieldName}.set(entry.key, entry.value)
+              } else {
+                obj.${fieldName}++
+              }
+
+              break
+            }`
+        } else if (fieldDef.repeated) {
+          moduleDef.addImport('protons-runtime', 'MaxLengthError')
+
+          let limit = `
+              if (opts.limits?.${fieldName} != null && (opts.emitCollections === true ? obj.${fieldName}.length === opts.limits.${fieldName} : obj.${fieldName} === opts.limits.${fieldName})) {
+                throw new MaxLengthError('Decode error - map field "${fieldName}" had too many elements')
+              }
+`
+
+          if (fieldDef.lengthLimit != null) {
+            limit += `
+              if (opts.emitCollections === true ? obj.${fieldName}.length === ${fieldDef.lengthLimit} : obj.${fieldName} === ${fieldDef.lengthLimit}) {
+                throw new MaxLengthError('Decode error - repeated field "${fieldName}" had too many elements')
+              }
+`
+          }
+
+          return `case ${fieldDef.id}: {${limit}
+              const value = ${parseValue}
+
+              yield {
+                field: '${fieldName}$value',
+                index: opts.emitCollections === true ? obj.${fieldName}.length : obj.${fieldName},
+                value
+              }
+
+              if (opts.emitCollections === true) {
+                obj.${fieldName}.push(value)
+              } else {
+                obj.${fieldName}++
+              }
+
+              break
+            }`
+        }
+
+        return `case ${fieldDef.id}: {
+              yield {
+                field: '${fieldName}',
+                value: ${parseValue}
+              }
+              break
+            }`
+      }
+
+      return createStreamField(fieldName, fieldDef)
+    })
+    .join('\n            ')
+
+  interfaceCodecDef = `
+  let _codec: Codec<${messageDef.name}, ${messageDef.name}StreamEvent, ${messageDef.name}StreamCollectionsEvent>
+
+  export const codec = (): Codec<${messageDef.name}, ${messageDef.name}StreamEvent, ${messageDef.name}StreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<${messageDef.name}>((obj, w, opts = {}) => {
+      _codec = message<${messageDef.name}, ${messageDef.name}StreamEvent, ${messageDef.name}StreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1020,18 +1251,63 @@ ${enforceOneOfEncoding}${encodeFields === '' ? '' : `${encodeFields}\n`}
         }
 ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {${createDefaultObject(fields, messageDef, moduleDef, ' ')}}
+        } else {
+          obj = {${createLimitObject(fields)}}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {${streamFields === '' ? '' : `\n            ${streamFields}`}
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<${messageDef.name}>): Uint8Array => {
+  ${streamEvents.map(evt => `export interface ${evt.name} {
+    ${evt.fields.join('\n    ')}
+  }`).join('\n\n  ')}
+
+  export type ${messageDef.name}StreamEvent = ${interfacesOrEmpty(streamEvents.filter(evt => !evt.collection))}
+  export type ${messageDef.name}StreamCollectionsEvent = ${interfacesOrEmpty(streamEvents.filter(evt => evt.collection))}
+
+  export function encode (obj: Partial<${messageDef.name}>): Uint8Array {
     return encodeMessage(obj, ${messageDef.name}.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<${messageDef.name}>): ${messageDef.name} => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<${messageDef.name}>): ${messageDef.name} {
     return decodeMessage(buf, ${messageDef.name}.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<${messageDef.name}>): Generator<${messageDef.name}StreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<${messageDef.name}>): Generator<${messageDef.name}StreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, ${messageDef.name}.codec(), opts)
   }`
 
   return `

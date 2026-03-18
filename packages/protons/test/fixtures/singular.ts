@@ -1,8 +1,14 @@
+/* eslint-disable import/export */
 /* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable import/consistent-type-specifier-style */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
-import type { Codec, DecodeOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum SingularEnum {
@@ -18,7 +24,7 @@ enum __SingularEnumValues {
 }
 
 export namespace SingularEnum {
-  export const codec = (): Codec<SingularEnum> => {
+  export const codec = (): Codec<SingularEnum, any, any> => {
     return enumeration<SingularEnum>(__SingularEnumValues)
   }
 }
@@ -29,11 +35,11 @@ export interface SingularSubMessage {
 }
 
 export namespace SingularSubMessage {
-  let _codec: Codec<SingularSubMessage>
+  let _codec: Codec<SingularSubMessage, SingularSubMessageStreamEvent, SingularSubMessageStreamCollectionsEvent>
 
-  export const codec = (): Codec<SingularSubMessage> => {
+  export const codec = (): Codec<SingularSubMessage, SingularSubMessageStreamEvent, SingularSubMessageStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<SingularSubMessage>((obj, w, opts = {}) => {
+      _codec = message<SingularSubMessage, SingularSubMessageStreamEvent, SingularSubMessageStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -79,18 +85,76 @@ export namespace SingularSubMessage {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          foo: '',
+          bar: 0
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'foo',
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: 'bar',
+                value: reader.int32()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<SingularSubMessage>): Uint8Array => {
+  export interface SingularSubMessageFooFieldEvent {
+    field: 'foo'
+    value: string
+  }
+
+  export interface SingularSubMessageBarFieldEvent {
+    field: 'bar'
+    value: number
+  }
+
+  export type SingularSubMessageStreamEvent = SingularSubMessageFooFieldEvent | SingularSubMessageBarFieldEvent
+  export type SingularSubMessageStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<SingularSubMessage>): Uint8Array {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SingularSubMessage>): SingularSubMessage => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SingularSubMessage>): SingularSubMessage {
     return decodeMessage(buf, SingularSubMessage.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<SingularSubMessage>): Generator<SingularSubMessageStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<SingularSubMessage>): Generator<SingularSubMessageStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, SingularSubMessage.codec(), opts)
   }
 }
 
@@ -115,11 +179,11 @@ export interface Singular {
 }
 
 export namespace Singular {
-  let _codec: Codec<Singular>
+  let _codec: Codec<Singular, SingularStreamEvent, SingularStreamCollectionsEvent>
 
-  export const codec = (): Codec<Singular> => {
+  export const codec = (): Codec<Singular, SingularStreamEvent, SingularStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Singular>((obj, w, opts = {}) => {
+      _codec = message<Singular, SingularStreamEvent, SingularStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -316,17 +380,271 @@ export namespace Singular {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+          double: 0,
+          float: 0,
+          int32: 0,
+          int64: 0n,
+          uint32: 0,
+          uint64: 0n,
+          sint32: 0,
+          sint64: 0n,
+          fixed32: 0,
+          fixed64: 0n,
+          sfixed32: 0,
+          sfixed64: 0n,
+          bool: false,
+          string: '',
+          bytes: uint8ArrayAlloc(0),
+          enum: SingularEnum.NO_VALUE
+        }
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'double',
+                value: reader.double()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: 'float',
+                value: reader.float()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: 'int32',
+                value: reader.int32()
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: 'int64',
+                value: reader.int64()
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: 'uint32',
+                value: reader.uint32()
+              }
+              break
+            }
+            case 6: {
+              yield {
+                field: 'uint64',
+                value: reader.uint64()
+              }
+              break
+            }
+            case 7: {
+              yield {
+                field: 'sint32',
+                value: reader.sint32()
+              }
+              break
+            }
+            case 8: {
+              yield {
+                field: 'sint64',
+                value: reader.sint64()
+              }
+              break
+            }
+            case 9: {
+              yield {
+                field: 'fixed32',
+                value: reader.fixed32()
+              }
+              break
+            }
+            case 10: {
+              yield {
+                field: 'fixed64',
+                value: reader.fixed64()
+              }
+              break
+            }
+            case 11: {
+              yield {
+                field: 'sfixed32',
+                value: reader.sfixed32()
+              }
+              break
+            }
+            case 12: {
+              yield {
+                field: 'sfixed64',
+                value: reader.sfixed64()
+              }
+              break
+            }
+            case 13: {
+              yield {
+                field: 'bool',
+                value: reader.bool()
+              }
+              break
+            }
+            case 14: {
+              yield {
+                field: 'string',
+                value: reader.string()
+              }
+              break
+            }
+            case 15: {
+              yield {
+                field: 'bytes',
+                value: reader.bytes()
+              }
+              break
+            }
+            case 16: {
+              yield {
+                field: 'enum',
+                value: SingularEnum.codec().decode(reader)
+              }
+              break
+            }
+            case 17: {
+              yield {
+                field: 'subMessage',
+                value: SingularSubMessage.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.subMessage
+                })
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Singular>): Uint8Array => {
+  export interface SingularDoubleFieldEvent {
+    field: 'double'
+    value: number
+  }
+
+  export interface SingularFloatFieldEvent {
+    field: 'float'
+    value: number
+  }
+
+  export interface SingularInt32FieldEvent {
+    field: 'int32'
+    value: number
+  }
+
+  export interface SingularInt64FieldEvent {
+    field: 'int64'
+    value: bigint
+  }
+
+  export interface SingularUint32FieldEvent {
+    field: 'uint32'
+    value: number
+  }
+
+  export interface SingularUint64FieldEvent {
+    field: 'uint64'
+    value: bigint
+  }
+
+  export interface SingularSint32FieldEvent {
+    field: 'sint32'
+    value: number
+  }
+
+  export interface SingularSint64FieldEvent {
+    field: 'sint64'
+    value: bigint
+  }
+
+  export interface SingularFixed32FieldEvent {
+    field: 'fixed32'
+    value: number
+  }
+
+  export interface SingularFixed64FieldEvent {
+    field: 'fixed64'
+    value: bigint
+  }
+
+  export interface SingularSfixed32FieldEvent {
+    field: 'sfixed32'
+    value: number
+  }
+
+  export interface SingularSfixed64FieldEvent {
+    field: 'sfixed64'
+    value: bigint
+  }
+
+  export interface SingularBoolFieldEvent {
+    field: 'bool'
+    value: boolean
+  }
+
+  export interface SingularStringFieldEvent {
+    field: 'string'
+    value: string
+  }
+
+  export interface SingularBytesFieldEvent {
+    field: 'bytes'
+    value: Uint8Array
+  }
+
+  export interface SingularEnumFieldEvent {
+    field: 'enum'
+    value: SingularEnum
+  }
+
+  export interface SingularSubMessageFieldEvent {
+    field: 'subMessage'
+    value: SingularSubMessage
+  }
+
+  export type SingularStreamEvent = SingularDoubleFieldEvent | SingularFloatFieldEvent | SingularInt32FieldEvent | SingularInt64FieldEvent | SingularUint32FieldEvent | SingularUint64FieldEvent | SingularSint32FieldEvent | SingularSint64FieldEvent | SingularFixed32FieldEvent | SingularFixed64FieldEvent | SingularSfixed32FieldEvent | SingularSfixed64FieldEvent | SingularBoolFieldEvent | SingularStringFieldEvent | SingularBytesFieldEvent | SingularEnumFieldEvent | SingularSubMessageFieldEvent
+  export type SingularStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<Singular>): Uint8Array {
     return encodeMessage(obj, Singular.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Singular>): Singular => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Singular>): Singular {
     return decodeMessage(buf, Singular.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Singular>): Generator<SingularStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Singular>): Generator<SingularStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Singular.codec(), opts)
   }
 }

@@ -56,6 +56,7 @@
   },
   "devDependencies": {
     "aegir": "^47.0.5",
+    "it-all": "^3.0.9",
     "long": "^5.2.0",
     "pbjs": "^0.0.14",
     "protobufjs": "^7.0.0",

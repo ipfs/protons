@@ -1,7 +1,13 @@
+/* eslint-disable import/export */
 /* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable import/consistent-type-specifier-style */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
-import type { Codec, DecodeOptions } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum OptionalEnum {
@@ -17,7 +23,7 @@ enum __OptionalEnumValues {
 }
 
 export namespace OptionalEnum {
-  export const codec = (): Codec<OptionalEnum> => {
+  export const codec = (): Codec<OptionalEnum, any, any> => {
     return enumeration<OptionalEnum>(__OptionalEnumValues)
   }
 }
@@ -28,11 +34,11 @@ export interface OptionalSubMessage {
 }
 
 export namespace OptionalSubMessage {
-  let _codec: Codec<OptionalSubMessage>
+  let _codec: Codec<OptionalSubMessage, OptionalSubMessageStreamEvent, OptionalSubMessageStreamCollectionsEvent>
 
-  export const codec = (): Codec<OptionalSubMessage> => {
+  export const codec = (): Codec<OptionalSubMessage, OptionalSubMessageStreamEvent, OptionalSubMessageStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<OptionalSubMessage>((obj, w, opts = {}) => {
+      _codec = message<OptionalSubMessage, OptionalSubMessageStreamEvent, OptionalSubMessageStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -75,18 +81,73 @@ export namespace OptionalSubMessage {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'foo',
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: 'bar',
+                value: reader.int32()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<OptionalSubMessage>): Uint8Array => {
+  export interface OptionalSubMessageFooFieldEvent {
+    field: 'foo'
+    value: string
+  }
+
+  export interface OptionalSubMessageBarFieldEvent {
+    field: 'bar'
+    value: number
+  }
+
+  export type OptionalSubMessageStreamEvent = OptionalSubMessageFooFieldEvent | OptionalSubMessageBarFieldEvent
+  export type OptionalSubMessageStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<OptionalSubMessage>): Uint8Array {
     return encodeMessage(obj, OptionalSubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OptionalSubMessage>): OptionalSubMessage => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OptionalSubMessage>): OptionalSubMessage {
     return decodeMessage(buf, OptionalSubMessage.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<OptionalSubMessage>): Generator<OptionalSubMessageStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<OptionalSubMessage>): Generator<OptionalSubMessageStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, OptionalSubMessage.codec(), opts)
   }
 }
 
@@ -111,11 +172,11 @@ export interface Optional {
 }
 
 export namespace Optional {
-  let _codec: Codec<Optional>
+  let _codec: Codec<Optional, OptionalStreamEvent, OptionalStreamCollectionsEvent>
 
-  export const codec = (): Codec<Optional> => {
+  export const codec = (): Codec<Optional, OptionalStreamEvent, OptionalStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Optional>((obj, w, opts = {}) => {
+      _codec = message<Optional, OptionalStreamEvent, OptionalStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -295,17 +356,254 @@ export namespace Optional {
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'double',
+                value: reader.double()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: 'float',
+                value: reader.float()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: 'int32',
+                value: reader.int32()
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: 'int64',
+                value: reader.int64()
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: 'uint32',
+                value: reader.uint32()
+              }
+              break
+            }
+            case 6: {
+              yield {
+                field: 'uint64',
+                value: reader.uint64()
+              }
+              break
+            }
+            case 7: {
+              yield {
+                field: 'sint32',
+                value: reader.sint32()
+              }
+              break
+            }
+            case 8: {
+              yield {
+                field: 'sint64',
+                value: reader.sint64()
+              }
+              break
+            }
+            case 9: {
+              yield {
+                field: 'fixed32',
+                value: reader.fixed32()
+              }
+              break
+            }
+            case 10: {
+              yield {
+                field: 'fixed64',
+                value: reader.fixed64()
+              }
+              break
+            }
+            case 11: {
+              yield {
+                field: 'sfixed32',
+                value: reader.sfixed32()
+              }
+              break
+            }
+            case 12: {
+              yield {
+                field: 'sfixed64',
+                value: reader.sfixed64()
+              }
+              break
+            }
+            case 13: {
+              yield {
+                field: 'bool',
+                value: reader.bool()
+              }
+              break
+            }
+            case 14: {
+              yield {
+                field: 'string',
+                value: reader.string()
+              }
+              break
+            }
+            case 15: {
+              yield {
+                field: 'bytes',
+                value: reader.bytes()
+              }
+              break
+            }
+            case 16: {
+              yield {
+                field: 'enum',
+                value: OptionalEnum.codec().decode(reader)
+              }
+              break
+            }
+            case 17: {
+              yield {
+                field: 'subMessage',
+                value: OptionalSubMessage.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.subMessage
+                })
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Optional>): Uint8Array => {
+  export interface OptionalDoubleFieldEvent {
+    field: 'double'
+    value: number
+  }
+
+  export interface OptionalFloatFieldEvent {
+    field: 'float'
+    value: number
+  }
+
+  export interface OptionalInt32FieldEvent {
+    field: 'int32'
+    value: number
+  }
+
+  export interface OptionalInt64FieldEvent {
+    field: 'int64'
+    value: bigint
+  }
+
+  export interface OptionalUint32FieldEvent {
+    field: 'uint32'
+    value: number
+  }
+
+  export interface OptionalUint64FieldEvent {
+    field: 'uint64'
+    value: bigint
+  }
+
+  export interface OptionalSint32FieldEvent {
+    field: 'sint32'
+    value: number
+  }
+
+  export interface OptionalSint64FieldEvent {
+    field: 'sint64'
+    value: bigint
+  }
+
+  export interface OptionalFixed32FieldEvent {
+    field: 'fixed32'
+    value: number
+  }
+
+  export interface OptionalFixed64FieldEvent {
+    field: 'fixed64'
+    value: bigint
+  }
+
+  export interface OptionalSfixed32FieldEvent {
+    field: 'sfixed32'
+    value: number
+  }
+
+  export interface OptionalSfixed64FieldEvent {
+    field: 'sfixed64'
+    value: bigint
+  }
+
+  export interface OptionalBoolFieldEvent {
+    field: 'bool'
+    value: boolean
+  }
+
+  export interface OptionalStringFieldEvent {
+    field: 'string'
+    value: string
+  }
+
+  export interface OptionalBytesFieldEvent {
+    field: 'bytes'
+    value: Uint8Array
+  }
+
+  export interface OptionalEnumFieldEvent {
+    field: 'enum'
+    value: OptionalEnum
+  }
+
+  export interface OptionalSubMessageFieldEvent {
+    field: 'subMessage'
+    value: OptionalSubMessage
+  }
+
+  export type OptionalStreamEvent = OptionalDoubleFieldEvent | OptionalFloatFieldEvent | OptionalInt32FieldEvent | OptionalInt64FieldEvent | OptionalUint32FieldEvent | OptionalUint64FieldEvent | OptionalSint32FieldEvent | OptionalSint64FieldEvent | OptionalFixed32FieldEvent | OptionalFixed64FieldEvent | OptionalSfixed32FieldEvent | OptionalSfixed64FieldEvent | OptionalBoolFieldEvent | OptionalStringFieldEvent | OptionalBytesFieldEvent | OptionalEnumFieldEvent | OptionalSubMessageFieldEvent
+  export type OptionalStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<Optional>): Uint8Array {
     return encodeMessage(obj, Optional.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Optional>): Optional => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Optional>): Optional {
     return decodeMessage(buf, Optional.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Optional>): Generator<OptionalStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Optional>): Generator<OptionalStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Optional.codec(), opts)
   }
 }
