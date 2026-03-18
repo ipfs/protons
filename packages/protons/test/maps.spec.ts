@@ -1,10 +1,8 @@
-/* eslint-env mocha */
-
 import { expect } from 'aegir/chai'
 import Long from 'long'
 import protobufjs from 'protobufjs'
-import { MapTypes } from './fixtures/maps.js'
-import type { SubMessage, EnumValue } from './fixtures/maps.js'
+import { MapTypes } from './fixtures/maps.ts'
+import type { SubMessage, EnumValue } from './fixtures/maps.ts'
 
 function longifyBigInts (obj: any): any {
   const output = {

@@ -1,8 +1,8 @@
 import { decodeUint8Array, encodingLength } from 'uint8-varint'
-import { readFloatLE, readDoubleLE } from './float.js'
-import { LongBits } from './longbits.js'
-import * as utf8 from './utf8.js'
-import type { Reader } from '../index.js'
+import { readFloatLE, readDoubleLE } from './float.ts'
+import { LongBits } from './longbits.ts'
+import * as utf8 from './utf8.ts'
+import type { Reader } from '../index.ts'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 /* istanbul ignore next */

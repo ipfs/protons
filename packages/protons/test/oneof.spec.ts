@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import { expect } from 'aegir/chai'
 import Long from 'long'
 import protobufjs from 'protobufjs'

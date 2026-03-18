@@ -1,11 +1,11 @@
 import { encodeUint8Array, encodingLength } from 'uint8-varint'
 import { allocUnsafe } from 'uint8arrays/alloc'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-import { writeFloatLE, writeDoubleLE } from './float.js'
-import { LongBits } from './longbits.js'
-import pool from './pool.js'
-import * as utf8 from './utf8.js'
-import type { Writer } from '../index.js'
+import { writeFloatLE, writeDoubleLE } from './float.ts'
+import { LongBits } from './longbits.ts'
+import pool from './pool.ts'
+import * as utf8 from './utf8.ts'
+import type { Writer } from '../index.ts'
 
 interface WriterOperation<T> {
   (val: T, buf: Uint8Array, pos: number): any

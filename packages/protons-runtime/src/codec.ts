@@ -1,4 +1,4 @@
-import type { Writer, Reader } from './index.js'
+import type { Writer, Reader } from './index.ts'
 
 // https://developers.google.com/protocol-buffers/docs/encoding#structure
 export enum CODEC_TYPES {
