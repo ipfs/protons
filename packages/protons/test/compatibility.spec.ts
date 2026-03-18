@@ -1,17 +1,15 @@
-/* eslint-env mocha */
-
 import fs from 'fs'
 import { expect } from 'aegir/chai'
 import Long from 'long'
 import pbjs from 'pbjs'
 import protobufjs from 'protobufjs'
-import { Basic, Empty } from './fixtures/basic.js'
-import { Message as Bitswap } from './fixtures/bitswap.js'
-import { CircuitRelay } from './fixtures/circuit.js'
-import { Optional, OptionalEnum } from './fixtures/optional.js'
-import { Peer } from './fixtures/peer.js'
-import { Singular, SingularEnum } from './fixtures/singular.js'
-import { AllTheTypes, AnEnum } from './fixtures/test.js'
+import { Basic, Empty } from './fixtures/basic.ts'
+import { Message as Bitswap } from './fixtures/bitswap.ts'
+import { CircuitRelay } from './fixtures/circuit.ts'
+import { Optional, OptionalEnum } from './fixtures/optional.ts'
+import { Peer } from './fixtures/peer.ts'
+import { Singular, SingularEnum } from './fixtures/singular.ts'
+import { AllTheTypes, AnEnum } from './fixtures/test.ts'
 import type { Type as PBType } from 'protobufjs'
 
 function longifyBigInts (obj: any): any {

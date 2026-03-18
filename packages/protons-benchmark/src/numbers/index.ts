@@ -5,8 +5,8 @@ $ node dist/src/numbers/index.js
 $ npx playwright-test dist/src/numbers/index.js --runner benchmark
 */
 
-import { readBenchmark } from './read.js'
-import { writeBenchmark } from './write.js'
+import { readBenchmark } from './read.ts'
+import { writeBenchmark } from './write.ts'
 
 console.info('-- read --')
 await readBenchmark()

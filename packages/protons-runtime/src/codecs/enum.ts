@@ -1,5 +1,5 @@
-import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { DecodeFunction, EncodeFunction, Codec } from '../codec.js'
+import { createCodec, CODEC_TYPES } from '../codec.ts'
+import type { DecodeFunction, EncodeFunction, Codec } from '../codec.ts'
 
 export function enumeration <T> (v: any): Codec<T> {
   function findValue (val: string | number): number {

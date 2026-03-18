@@ -1,5 +1,5 @@
-import { createReader } from './utils/reader.js'
-import type { Codec, DecodeOptions } from './codec.js'
+import { createReader } from './utils/reader.ts'
+import type { Codec, DecodeOptions } from './codec.ts'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export function decodeMessage <T> (buf: Uint8Array | Uint8ArrayList, codec: Pick<Codec<T>, 'decode'>, opts?: DecodeOptions<T>): T {

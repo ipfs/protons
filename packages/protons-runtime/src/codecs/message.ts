@@ -1,5 +1,5 @@
-import { createCodec, CODEC_TYPES } from '../codec.js'
-import type { EncodeFunction, DecodeFunction, Codec } from '../codec.js'
+import { createCodec, CODEC_TYPES } from '../codec.ts'
+import type { EncodeFunction, DecodeFunction, Codec } from '../codec.ts'
 
 export interface Factory<A, T> {
   new (obj: A): T
