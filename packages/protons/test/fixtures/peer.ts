@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
@@ -125,12 +119,16 @@ export namespace Peer {
 
         if (opts.emitCollections === true) {
           obj = {
-          addresses: [],
-          protocols: [],
-          metadata: []
-        }
+            addresses: [],
+            protocols: [],
+            metadata: []
+          }
         } else {
-          obj = {}
+          obj = {
+            addresses: 0,
+            protocols: 0,
+            metadata: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -140,43 +138,70 @@ export namespace Peer {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.addresses != null && obj.addresses.length === opts.limits.addresses) {
+              if (opts.limits?.addresses != null && (opts.emitCollections === true ? obj.addresses.length === opts.limits.addresses : obj.addresses === opts.limits.addresses)) {
                 throw new MaxLengthError('Decode error - map field "addresses" had too many elements')
               }
 
+              const value = Address.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.addresses$
+              })
+
               yield {
                 field: 'addresses$value',
-                index: 0,
-                value: Address.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.addresses$
-                })
+                index: opts.emitCollections === true ? obj.addresses.length : obj.addresses,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.addresses.push(value)
+              } else {
+                obj.addresses++
+              }
+
               break
             }
             case 2: {
-              if (opts.limits?.protocols != null && obj.protocols.length === opts.limits.protocols) {
+              if (opts.limits?.protocols != null && (opts.emitCollections === true ? obj.protocols.length === opts.limits.protocols : obj.protocols === opts.limits.protocols)) {
                 throw new MaxLengthError('Decode error - map field "protocols" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'protocols$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.protocols.length : obj.protocols,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.protocols.push(value)
+              } else {
+                obj.protocols++
+              }
+
               break
             }
             case 3: {
-              if (opts.limits?.metadata != null && obj.metadata.length === opts.limits.metadata) {
+              if (opts.limits?.metadata != null && (opts.emitCollections === true ? obj.metadata.length === opts.limits.metadata : obj.metadata === opts.limits.metadata)) {
                 throw new MaxLengthError('Decode error - map field "metadata" had too many elements')
               }
 
+              const value = Metadata.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.metadata$
+              })
+
               yield {
                 field: 'metadata$value',
-                index: 0,
-                value: Metadata.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.metadata$
-                })
+                index: opts.emitCollections === true ? obj.metadata.length : obj.metadata,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.metadata.push(value)
+              } else {
+                obj.metadata++
+              }
+
               break
             }
             case 4: {
@@ -200,6 +225,16 @@ export namespace Peer {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -327,8 +362,8 @@ export namespace Address {
 
         if (opts.emitCollections === true) {
           obj = {
-          multiaddr: uint8ArrayAlloc(0)
-        }
+            multiaddr: uint8ArrayAlloc(0)
+          }
         } else {
           obj = {}
         }
@@ -360,6 +395,16 @@ export namespace Address {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -455,9 +500,9 @@ export namespace Metadata {
 
         if (opts.emitCollections === true) {
           obj = {
-          key: '',
-          value: uint8ArrayAlloc(0)
-        }
+            key: '',
+            value: uint8ArrayAlloc(0)
+          }
         } else {
           obj = {}
         }
@@ -489,6 +534,16 @@ export namespace Metadata {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

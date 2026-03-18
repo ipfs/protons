@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
@@ -76,8 +70,8 @@ export namespace SubMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-           foo: ''
-         }
+            foo: ''
+          }
         } else {
           obj = {}
         }
@@ -369,8 +363,8 @@ export namespace AllTheTypes {
 
         if (opts.emitCollections === true) {
           obj = {
-           field14: []
-         }
+            field14: []
+          }
         } else {
           obj = {
             field14: 0

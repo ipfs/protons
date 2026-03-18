@@ -1,11 +1,3 @@
-/* eslint-disable import/export */
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -70,10 +62,12 @@ export namespace MessageWithSizeLimitedRepeatedField {
 
         if (opts.emitCollections === true) {
           obj = {
-          repeatedField: []
-        }
+            repeatedField: []
+          }
         } else {
-          obj = {}
+          obj = {
+            repeatedField: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -83,19 +77,28 @@ export namespace MessageWithSizeLimitedRepeatedField {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.repeatedField != null && obj.repeatedField.length === opts.limits.repeatedField) {
+              if (opts.limits?.repeatedField != null && (opts.emitCollections === true ? obj.repeatedField.length === opts.limits.repeatedField : obj.repeatedField === opts.limits.repeatedField)) {
                 throw new MaxLengthError('Decode error - map field "repeatedField" had too many elements')
               }
 
-              if (obj.repeatedField.length === 1) {
+              if (opts.emitCollections === true ? obj.repeatedField.length === 1 : obj.repeatedField === 1) {
                 throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'repeatedField$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.repeatedField.length : obj.repeatedField,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.repeatedField.push(value)
+              } else {
+                obj.repeatedField++
+              }
+
               break
             }
             default: {
@@ -105,6 +108,16 @@ export namespace MessageWithSizeLimitedRepeatedField {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -206,9 +219,9 @@ export namespace MessageWithSizeLimitedMap {
 
           if (opts.emitCollections === true) {
             obj = {
-            key: '',
-            value: ''
-          }
+              key: '',
+              value: ''
+            }
           } else {
             obj = {}
           }
@@ -240,6 +253,16 @@ export namespace MessageWithSizeLimitedMap {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -330,10 +353,12 @@ export namespace MessageWithSizeLimitedMap {
 
         if (opts.emitCollections === true) {
           obj = {
-          mapField: new Map<string, string>()
-        }
+            mapField: new Map<string, string>()
+          }
         } else {
-          obj = {}
+          obj = {
+            mapField: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -343,11 +368,11 @@ export namespace MessageWithSizeLimitedMap {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.mapField != null && obj.mapField.size === opts.limits.mapField) {
+              if (opts.limits?.mapField != null && (opts.emitCollections === true ? obj.mapField.size === opts.limits.mapField : obj.mapField === opts.limits.mapField)) {
                 throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
 
-              if (obj.mapField.size === 1) {
+              if (opts.emitCollections === true ? obj.mapField.size === 1 : obj.mapField === 1) {
                 throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
 
@@ -358,6 +383,13 @@ export namespace MessageWithSizeLimitedMap {
                 key: entry.key,
                 value: entry.value
               }
+
+              if (opts.emitCollections === true) {
+                obj.mapField.set(entry.key, entry.value)
+              } else {
+                obj.mapField++
+              }
+
               break
             }
             default: {
@@ -367,6 +399,16 @@ export namespace MessageWithSizeLimitedMap {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

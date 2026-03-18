@@ -1,11 +1,3 @@
-/* eslint-disable import/export */
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
@@ -150,11 +142,13 @@ export namespace CircuitRelay {
 
           if (opts.emitCollections === true) {
             obj = {
-            id: uint8ArrayAlloc(0),
-            addrs: []
-          }
+              id: uint8ArrayAlloc(0),
+              addrs: []
+            }
           } else {
-            obj = {}
+            obj = {
+              addrs: 0
+            }
           }
 
           const end = length == null ? reader.len : reader.pos + length
@@ -171,15 +165,24 @@ export namespace CircuitRelay {
                 break
               }
               case 2: {
-                if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                if (opts.limits?.addrs != null && (opts.emitCollections === true ? obj.addrs.length === opts.limits.addrs : obj.addrs === opts.limits.addrs)) {
                   throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
                 }
 
+                const value = reader.bytes()
+
                 yield {
                   field: 'addrs$value',
-                  index: 0,
-                  value: reader.bytes()
+                  index: opts.emitCollections === true ? obj.addrs.length : obj.addrs,
+                  value
                 }
+
+                if (opts.emitCollections === true) {
+                  obj.addrs.push(value)
+                } else {
+                  obj.addrs++
+                }
+
                 break
               }
               default: {
@@ -189,6 +192,16 @@ export namespace CircuitRelay {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -352,6 +365,16 @@ export namespace CircuitRelay {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

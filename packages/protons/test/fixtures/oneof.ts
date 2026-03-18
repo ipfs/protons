@@ -1,11 +1,3 @@
-/* eslint-disable import/export */
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -150,8 +142,8 @@ export namespace OneOfMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-          fieldFive: ''
-        }
+            fieldFive: ''
+          }
         } else {
           obj = {}
         }
@@ -220,6 +212,16 @@ export namespace OneOfMessage {
           delete obj.fieldFour
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -363,12 +365,12 @@ export namespace MessageWithoutOneOfs {
 
         if (opts.emitCollections === true) {
           obj = {
-          fieldOne: '',
-          fieldTwo: '',
-          fieldThree: EnumType.Val1,
-          fieldFour: EnumType.Val1,
-          fieldFive: ''
-        }
+            fieldOne: '',
+            fieldTwo: '',
+            fieldThree: EnumType.Val1,
+            fieldFour: EnumType.Val1,
+            fieldFive: ''
+          }
         } else {
           obj = {}
         }
@@ -421,6 +423,16 @@ export namespace MessageWithoutOneOfs {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

@@ -1,5 +1,5 @@
-import { encodeMessage, decodeMessage, message, enumeration } from 'protons-runtime'
-import type { Codec } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
+import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Foo {
@@ -7,11 +7,11 @@ export interface Foo {
 }
 
 export namespace Foo {
-  let _codec: Codec<Foo>
+  let _codec: Codec<Foo, FooStreamEvent, FooStreamCollectionsEvent>
 
-  export const codec = (): Codec<Foo> => {
+  export const codec = (): Codec<Foo, FooStreamEvent, FooStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Foo>((obj, w, opts = {}) => {
+      _codec = message<Foo, FooStreamEvent, FooStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -24,7 +24,7 @@ export namespace Foo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -33,28 +33,83 @@ export namespace Foo {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.baz = reader.uint32()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'baz',
+                value: reader.uint32()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Foo): Uint8Array => {
+  export interface FooBazFieldEvent {
+    field: 'baz'
+    value: number
+  }
+
+  export type FooStreamEvent = FooBazFieldEvent
+  export type FooStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<Foo>): Uint8Array {
     return encodeMessage(obj, Foo.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Foo => {
-    return decodeMessage(buf, Foo.codec())
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Foo>): Foo {
+    return decodeMessage(buf, Foo.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Foo>): Generator<FooStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Foo>): Generator<FooStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Foo.codec(), opts)
   }
 }
 
@@ -63,26 +118,24 @@ export interface Bar {
 }
 
 export namespace Bar {
-  let _codec: Codec<Bar>
+  let _codec: Codec<Bar, BarStreamEvent, BarStreamCollectionsEvent>
 
-  export const codec = (): Codec<Bar> => {
+  export const codec = (): Codec<Bar, BarStreamEvent, BarStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Bar>((obj, w, opts = {}) => {
+      _codec = message<Bar, BarStreamEvent, BarStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
 
         if (obj.tmp != null) {
           w.uint32(10)
-          Foo.codec().encode(obj.tmp, w, {
-            writeDefaults: false
-          })
+          Foo.codec().encode(obj.tmp, w)
         }
 
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -91,28 +144,87 @@ export namespace Bar {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
-              obj.tmp = Foo.codec().decode(reader, reader.uint32())
+            case 1: {
+              obj.tmp = Foo.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.tmp
+              })
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'tmp',
+                value: Foo.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.tmp
+                })
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Bar): Uint8Array => {
+  export interface BarTmpFieldEvent {
+    field: 'tmp'
+    value: Foo
+  }
+
+  export type BarStreamEvent = BarTmpFieldEvent
+  export type BarStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<Bar>): Uint8Array {
     return encodeMessage(obj, Bar.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Bar => {
-    return decodeMessage(buf, Bar.codec())
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Bar>): Bar {
+    return decodeMessage(buf, Bar.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Bar>): Generator<BarStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Bar>): Generator<BarStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Bar.codec(), opts)
   }
 }
 
@@ -129,20 +241,21 @@ enum __FOOValues {
 }
 
 export namespace FOO {
-  export const codec = (): Codec<FOO> => {
+  export const codec = (): Codec<FOO, any, any> => {
     return enumeration<FOO>(__FOOValues)
   }
 }
+
 export interface Yo {
   lol: FOO[]
 }
 
 export namespace Yo {
-  let _codec: Codec<Yo>
+  let _codec: Codec<Yo, YoStreamEvent, YoStreamCollectionsEvent>
 
-  export const codec = (): Codec<Yo> => {
+  export const codec = (): Codec<Yo, YoStreamEvent, YoStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Yo>((obj, w, opts = {}) => {
+      _codec = message<Yo, YoStreamEvent, YoStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -157,7 +270,7 @@ export namespace Yo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {
           lol: []
         }
@@ -168,28 +281,111 @@ export namespace Yo {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
+              if (opts.limits?.lol != null && obj.lol.length === opts.limits.lol) {
+                throw new MaxLengthError('Decode error - map field "lol" had too many elements')
+              }
+
               obj.lol.push(FOO.codec().decode(reader))
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {
+            lol: []
+          }
+        } else {
+          obj = {
+            lol: 0
+          }
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.lol != null && (opts.emitCollections === true ? obj.lol.length === opts.limits.lol : obj.lol === opts.limits.lol)) {
+                throw new MaxLengthError('Decode error - map field "lol" had too many elements')
+              }
+
+              const value = FOO.codec().decode(reader)
+
+              yield {
+                field: 'lol$value',
+                index: opts.emitCollections === true ? obj.lol.length : obj.lol,
+                value
+              }
+
+              if (opts.emitCollections === true) {
+                obj.lol.push(value)
+              } else {
+                obj.lol++
+              }
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Yo): Uint8Array => {
+  export interface YoLolFieldEvent {
+    field: 'lol'
+    value: FOO[]
+  }
+
+  export interface YoLolValueEvent {
+    field: 'lol$value'
+    index: number
+    value: FOO
+  }
+
+  export type YoStreamEvent = YoLolValueEvent
+  export type YoStreamCollectionsEvent = YoLolFieldEvent
+
+  export function encode (obj: Partial<Yo>): Uint8Array {
     return encodeMessage(obj, Yo.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Yo => {
-    return decodeMessage(buf, Yo.codec())
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Yo>): Yo {
+    return decodeMessage(buf, Yo.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Yo>): Generator<YoStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Yo>): Generator<YoStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Yo.codec(), opts)
   }
 }
 
@@ -199,11 +395,11 @@ export interface Lol {
 }
 
 export namespace Lol {
-  let _codec: Codec<Lol>
+  let _codec: Codec<Lol, LolStreamEvent, LolStreamCollectionsEvent>
 
-  export const codec = (): Codec<Lol> => {
+  export const codec = (): Codec<Lol, LolStreamEvent, LolStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Lol>((obj, w, opts = {}) => {
+      _codec = message<Lol, LolStreamEvent, LolStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -215,15 +411,13 @@ export namespace Lol {
 
         if (obj.b != null) {
           w.uint32(18)
-          Bar.codec().encode(obj.b, w, {
-            writeDefaults: false
-          })
+          Bar.codec().encode(obj.b, w)
         }
 
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -232,31 +426,103 @@ export namespace Lol {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.lol = reader.string()
               break
-            case 2:
-              obj.b = Bar.codec().decode(reader, reader.uint32())
+            }
+            case 2: {
+              obj.b = Bar.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.b
+              })
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: 'lol',
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: 'b',
+                value: Bar.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.b
+                })
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Lol): Uint8Array => {
+  export interface LolLolFieldEvent {
+    field: 'lol'
+    value: string
+  }
+
+  export interface LolBFieldEvent {
+    field: 'b'
+    value: Bar
+  }
+
+  export type LolStreamEvent = LolLolFieldEvent | LolBFieldEvent
+  export type LolStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<Lol>): Uint8Array {
     return encodeMessage(obj, Lol.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Lol => {
-    return decodeMessage(buf, Lol.codec())
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Lol>): Lol {
+    return decodeMessage(buf, Lol.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Lol>): Generator<LolStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Lol>): Generator<LolStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Lol.codec(), opts)
   }
 }
 
@@ -268,20 +534,18 @@ export interface Test {
 }
 
 export namespace Test {
-  let _codec: Codec<Test>
+  let _codec: Codec<Test, TestStreamEvent, TestStreamCollectionsEvent>
 
-  export const codec = (): Codec<Test> => {
+  export const codec = (): Codec<Test, TestStreamEvent, TestStreamCollectionsEvent> => {
     if (_codec == null) {
-      _codec = message<Test>((obj, w, opts = {}) => {
+      _codec = message<Test, TestStreamEvent, TestStreamCollectionsEvent>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
 
         if (obj.meh != null) {
           w.uint32(50)
-          Lol.codec().encode(obj.meh, w, {
-            writeDefaults: false
-          })
+          Lol.codec().encode(obj.meh, w)
         }
 
         if (obj.hello != null) {
@@ -302,7 +566,7 @@ export namespace Test {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length) => {
+      }, (reader, length, opts = {}) => {
         const obj: any = {}
 
         const end = length == null ? reader.len : reader.pos + length
@@ -311,36 +575,134 @@ export namespace Test {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
-            case 6:
-              obj.meh = Lol.codec().decode(reader, reader.uint32())
+            case 6: {
+              obj.meh = Lol.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.meh
+              })
               break
-            case 3:
+            }
+            case 3: {
               obj.hello = reader.uint32()
               break
-            case 1:
+            }
+            case 1: {
               obj.foo = reader.string()
               break
-            case 7:
+            }
+            case 7: {
               obj.payload = reader.bytes()
               break
-            default:
+            }
+            default: {
               reader.skipType(tag & 7)
               break
+            }
           }
         }
 
         return obj
+      }, function * (reader, length, opts = {}) {
+        let obj: any
+
+        if (opts.emitCollections === true) {
+          obj = {}
+        } else {
+          obj = {}
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 6: {
+              yield {
+                field: 'meh',
+                value: Lol.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.meh
+                })
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: 'hello',
+                value: reader.uint32()
+              }
+              break
+            }
+            case 1: {
+              yield {
+                field: 'foo',
+                value: reader.string()
+              }
+              break
+            }
+            case 7: {
+              yield {
+                field: 'payload',
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Test): Uint8Array => {
+  export interface TestMehFieldEvent {
+    field: 'meh'
+    value: Lol
+  }
+
+  export interface TestHelloFieldEvent {
+    field: 'hello'
+    value: number
+  }
+
+  export interface TestFooFieldEvent {
+    field: 'foo'
+    value: string
+  }
+
+  export interface TestPayloadFieldEvent {
+    field: 'payload'
+    value: Uint8Array
+  }
+
+  export type TestStreamEvent = TestMehFieldEvent | TestHelloFieldEvent | TestFooFieldEvent | TestPayloadFieldEvent
+  export type TestStreamCollectionsEvent = {}
+
+  export function encode (obj: Partial<Test>): Uint8Array {
     return encodeMessage(obj, Test.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList): Test => {
-    return decodeMessage(buf, Test.codec())
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Test>): Test {
+    return decodeMessage(buf, Test.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Test>): Generator<TestStreamEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Test>): Generator<TestStreamCollectionsEvent>
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    return streamMessage(buf, Test.codec(), opts)
   }
 }

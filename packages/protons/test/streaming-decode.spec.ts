@@ -1,6 +1,6 @@
 import { expect } from 'aegir/chai'
-import { AllTheTypes, AnEnum } from './fixtures/test.ts'
 import all from 'it-all'
+import { AllTheTypes, AnEnum } from './fixtures/test.ts'
 
 describe('streaming-decode', () => {
   it('should yield collections when asked to', async () => {

@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
@@ -95,11 +89,13 @@ export namespace SubMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-          foo: '',
-          bar: []
-        }
+            foo: '',
+            bar: []
+          }
         } else {
-          obj = {}
+          obj = {
+            bar: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -116,15 +112,24 @@ export namespace SubMessage {
               break
             }
             case 2: {
-              if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
+              if (opts.limits?.bar != null && (opts.emitCollections === true ? obj.bar.length === opts.limits.bar : obj.bar === opts.limits.bar)) {
                 throw new MaxLengthError('Decode error - map field "bar" had too many elements')
               }
 
+              const value = reader.uint32()
+
               yield {
                 field: 'bar$value',
-                index: 0,
-                value: reader.uint32()
+                index: opts.emitCollections === true ? obj.bar.length : obj.bar,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.bar.push(value)
+              } else {
+                obj.bar++
+              }
+
               break
             }
             default: {
@@ -134,6 +139,16 @@ export namespace SubMessage {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -244,9 +259,9 @@ export namespace MapTypes {
 
           if (opts.emitCollections === true) {
             obj = {
-            key: '',
-            value: ''
-          }
+              key: '',
+              value: ''
+            }
           } else {
             obj = {}
           }
@@ -278,6 +293,16 @@ export namespace MapTypes {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -373,9 +398,9 @@ export namespace MapTypes {
 
           if (opts.emitCollections === true) {
             obj = {
-            key: 0,
-            value: 0
-          }
+              key: 0,
+              value: 0
+            }
           } else {
             obj = {}
           }
@@ -407,6 +432,16 @@ export namespace MapTypes {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -502,9 +537,9 @@ export namespace MapTypes {
 
           if (opts.emitCollections === true) {
             obj = {
-            key: false,
-            value: false
-          }
+              key: false,
+              value: false
+            }
           } else {
             obj = {}
           }
@@ -536,6 +571,16 @@ export namespace MapTypes {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -632,8 +677,8 @@ export namespace MapTypes {
 
           if (opts.emitCollections === true) {
             obj = {
-            key: ''
-          }
+              key: ''
+            }
           } else {
             obj = {}
           }
@@ -667,6 +712,16 @@ export namespace MapTypes {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -762,9 +817,9 @@ export namespace MapTypes {
 
           if (opts.emitCollections === true) {
             obj = {
-            key: '',
-            value: EnumValue.NO_VALUE
-          }
+              key: '',
+              value: EnumValue.NO_VALUE
+            }
           } else {
             obj = {}
           }
@@ -796,6 +851,16 @@ export namespace MapTypes {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -954,14 +1019,20 @@ export namespace MapTypes {
 
         if (opts.emitCollections === true) {
           obj = {
-          stringMap: new Map<string, string>(),
-          intMap: new Map<number, number>(),
-          boolMap: new Map<boolean, boolean>(),
-          messageMap: new Map<string, undefined>(),
-          enumMap: new Map<string, undefined>()
-        }
+            stringMap: new Map<string, string>(),
+            intMap: new Map<number, number>(),
+            boolMap: new Map<boolean, boolean>(),
+            messageMap: new Map<string, undefined>(),
+            enumMap: new Map<string, undefined>()
+          }
         } else {
-          obj = {}
+          obj = {
+            stringMap: 0,
+            intMap: 0,
+            boolMap: 0,
+            messageMap: 0,
+            enumMap: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -971,7 +1042,7 @@ export namespace MapTypes {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.stringMap != null && obj.stringMap.size === opts.limits.stringMap) {
+              if (opts.limits?.stringMap != null && (opts.emitCollections === true ? obj.stringMap.size === opts.limits.stringMap : obj.stringMap === opts.limits.stringMap)) {
                 throw new MaxSizeError('Decode error - map field "stringMap" had too many elements')
               }
 
@@ -982,10 +1053,17 @@ export namespace MapTypes {
                 key: entry.key,
                 value: entry.value
               }
+
+              if (opts.emitCollections === true) {
+                obj.stringMap.set(entry.key, entry.value)
+              } else {
+                obj.stringMap++
+              }
+
               break
             }
             case 2: {
-              if (opts.limits?.intMap != null && obj.intMap.size === opts.limits.intMap) {
+              if (opts.limits?.intMap != null && (opts.emitCollections === true ? obj.intMap.size === opts.limits.intMap : obj.intMap === opts.limits.intMap)) {
                 throw new MaxSizeError('Decode error - map field "intMap" had too many elements')
               }
 
@@ -996,10 +1074,17 @@ export namespace MapTypes {
                 key: entry.key,
                 value: entry.value
               }
+
+              if (opts.emitCollections === true) {
+                obj.intMap.set(entry.key, entry.value)
+              } else {
+                obj.intMap++
+              }
+
               break
             }
             case 3: {
-              if (opts.limits?.boolMap != null && obj.boolMap.size === opts.limits.boolMap) {
+              if (opts.limits?.boolMap != null && (opts.emitCollections === true ? obj.boolMap.size === opts.limits.boolMap : obj.boolMap === opts.limits.boolMap)) {
                 throw new MaxSizeError('Decode error - map field "boolMap" had too many elements')
               }
 
@@ -1010,28 +1095,42 @@ export namespace MapTypes {
                 key: entry.key,
                 value: entry.value
               }
+
+              if (opts.emitCollections === true) {
+                obj.boolMap.set(entry.key, entry.value)
+              } else {
+                obj.boolMap++
+              }
+
               break
             }
             case 4: {
-              if (opts.limits?.messageMap != null && obj.messageMap.size === opts.limits.messageMap) {
+              if (opts.limits?.messageMap != null && (opts.emitCollections === true ? obj.messageMap.size === opts.limits.messageMap : obj.messageMap === opts.limits.messageMap)) {
                 throw new MaxSizeError('Decode error - map field "messageMap" had too many elements')
               }
 
               const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32(), {
-                  limits: {
-                    value: opts.limits?.messageMap$value
-                  }
-                })
+                limits: {
+                  value: opts.limits?.messageMap$value
+                }
+              })
 
               yield {
                 field: 'messageMap',
                 key: entry.key,
                 value: entry.value
               }
+
+              if (opts.emitCollections === true) {
+                obj.messageMap.set(entry.key, entry.value)
+              } else {
+                obj.messageMap++
+              }
+
               break
             }
             case 5: {
-              if (opts.limits?.enumMap != null && obj.enumMap.size === opts.limits.enumMap) {
+              if (opts.limits?.enumMap != null && (opts.emitCollections === true ? obj.enumMap.size === opts.limits.enumMap : obj.enumMap === opts.limits.enumMap)) {
                 throw new MaxSizeError('Decode error - map field "enumMap" had too many elements')
               }
 
@@ -1042,6 +1141,13 @@ export namespace MapTypes {
                 key: entry.key,
                 value: entry.value
               }
+
+              if (opts.emitCollections === true) {
+                obj.enumMap.set(entry.key, entry.value)
+              } else {
+                obj.enumMap++
+              }
+
               break
             }
             default: {
@@ -1051,6 +1157,16 @@ export namespace MapTypes {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

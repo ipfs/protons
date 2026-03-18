@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
@@ -76,8 +70,8 @@ export namespace SubSubMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-           foo: []
-         }
+            foo: []
+          }
         } else {
           obj = {
             foo: 0
@@ -272,9 +266,9 @@ export namespace SubMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-           foo: [],
-           messages: []
-         }
+            foo: [],
+            messages: []
+          }
         } else {
           obj = {
             foo: 0,
@@ -331,8 +325,8 @@ export namespace SubMessage {
               }
 
               const value = SubSubMessage.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.messages$
-                })
+                limits: opts.limits?.messages$
+              })
 
               yield {
                 field: 'messages$value',
@@ -539,10 +533,10 @@ export namespace RepeatedTypes {
 
         if (opts.emitCollections === true) {
           obj = {
-           number: [],
-           limitedNumber: [],
-           messages: []
-         }
+            number: [],
+            limitedNumber: [],
+            messages: []
+          }
         } else {
           obj = {
             number: 0,
@@ -609,8 +603,8 @@ export namespace RepeatedTypes {
               }
 
               const value = SubMessage.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.messages$
-                })
+                limits: opts.limits?.messages$
+              })
 
               yield {
                 field: 'messages$value',

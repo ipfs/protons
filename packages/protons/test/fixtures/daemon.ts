@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
@@ -189,8 +183,8 @@ export namespace Request {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.IDENTIFY
-        }
+            type: Type.IDENTIFY
+          }
         } else {
           obj = {}
         }
@@ -287,6 +281,16 @@ export namespace Request {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -513,11 +517,13 @@ export namespace Response {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.OK,
-          peers: []
-        }
+            type: Type.OK,
+            peers: []
+          }
         } else {
-          obj = {}
+          obj = {
+            peers: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -570,17 +576,26 @@ export namespace Response {
               break
             }
             case 6: {
-              if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
+              if (opts.limits?.peers != null && (opts.emitCollections === true ? obj.peers.length === opts.limits.peers : obj.peers === opts.limits.peers)) {
                 throw new MaxLengthError('Decode error - map field "peers" had too many elements')
               }
 
+              const value = PeerInfo.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.peers$
+              })
+
               yield {
                 field: 'peers$value',
-                index: 0,
-                value: PeerInfo.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.peers$
-                })
+                index: opts.emitCollections === true ? obj.peers.length : obj.peers,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.peers.push(value)
+              } else {
+                obj.peers++
+              }
+
               break
             }
             case 7: {
@@ -608,6 +623,16 @@ export namespace Response {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -745,11 +770,13 @@ export namespace IdentifyResponse {
 
         if (opts.emitCollections === true) {
           obj = {
-          id: uint8ArrayAlloc(0),
-          addrs: []
-        }
+            id: uint8ArrayAlloc(0),
+            addrs: []
+          }
         } else {
-          obj = {}
+          obj = {
+            addrs: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -766,15 +793,24 @@ export namespace IdentifyResponse {
               break
             }
             case 2: {
-              if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+              if (opts.limits?.addrs != null && (opts.emitCollections === true ? obj.addrs.length === opts.limits.addrs : obj.addrs === opts.limits.addrs)) {
                 throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
               }
 
+              const value = reader.bytes()
+
               yield {
                 field: 'addrs$value',
-                index: 0,
-                value: reader.bytes()
+                index: opts.emitCollections === true ? obj.addrs.length : obj.addrs,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.addrs.push(value)
+              } else {
+                obj.addrs++
+              }
+
               break
             }
             default: {
@@ -784,6 +820,16 @@ export namespace IdentifyResponse {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -901,11 +947,13 @@ export namespace ConnectRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          peer: uint8ArrayAlloc(0),
-          addrs: []
-        }
+            peer: uint8ArrayAlloc(0),
+            addrs: []
+          }
         } else {
-          obj = {}
+          obj = {
+            addrs: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -922,15 +970,24 @@ export namespace ConnectRequest {
               break
             }
             case 2: {
-              if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+              if (opts.limits?.addrs != null && (opts.emitCollections === true ? obj.addrs.length === opts.limits.addrs : obj.addrs === opts.limits.addrs)) {
                 throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
               }
 
+              const value = reader.bytes()
+
               yield {
                 field: 'addrs$value',
-                index: 0,
-                value: reader.bytes()
+                index: opts.emitCollections === true ? obj.addrs.length : obj.addrs,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.addrs.push(value)
+              } else {
+                obj.addrs++
+              }
+
               break
             }
             case 3: {
@@ -947,6 +1004,16 @@ export namespace ConnectRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -1069,11 +1136,13 @@ export namespace StreamOpenRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          peer: uint8ArrayAlloc(0),
-          proto: []
-        }
+            peer: uint8ArrayAlloc(0),
+            proto: []
+          }
         } else {
-          obj = {}
+          obj = {
+            proto: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -1090,15 +1159,24 @@ export namespace StreamOpenRequest {
               break
             }
             case 2: {
-              if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
+              if (opts.limits?.proto != null && (opts.emitCollections === true ? obj.proto.length === opts.limits.proto : obj.proto === opts.limits.proto)) {
                 throw new MaxLengthError('Decode error - map field "proto" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'proto$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.proto.length : obj.proto,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.proto.push(value)
+              } else {
+                obj.proto++
+              }
+
               break
             }
             case 3: {
@@ -1115,6 +1193,16 @@ export namespace StreamOpenRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -1227,11 +1315,13 @@ export namespace StreamHandlerRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          addr: uint8ArrayAlloc(0),
-          proto: []
-        }
+            addr: uint8ArrayAlloc(0),
+            proto: []
+          }
         } else {
-          obj = {}
+          obj = {
+            proto: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -1248,15 +1338,24 @@ export namespace StreamHandlerRequest {
               break
             }
             case 2: {
-              if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
+              if (opts.limits?.proto != null && (opts.emitCollections === true ? obj.proto.length === opts.limits.proto : obj.proto === opts.limits.proto)) {
                 throw new MaxLengthError('Decode error - map field "proto" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'proto$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.proto.length : obj.proto,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.proto.push(value)
+              } else {
+                obj.proto++
+              }
+
               break
             }
             default: {
@@ -1266,6 +1365,16 @@ export namespace StreamHandlerRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -1356,8 +1465,8 @@ export namespace ErrorResponse {
 
         if (opts.emitCollections === true) {
           obj = {
-          msg: ''
-        }
+            msg: ''
+          }
         } else {
           obj = {}
         }
@@ -1382,6 +1491,16 @@ export namespace ErrorResponse {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -1483,10 +1602,10 @@ export namespace StreamInfo {
 
         if (opts.emitCollections === true) {
           obj = {
-          peer: uint8ArrayAlloc(0),
-          addr: uint8ArrayAlloc(0),
-          proto: ''
-        }
+            peer: uint8ArrayAlloc(0),
+            addr: uint8ArrayAlloc(0),
+            proto: ''
+          }
         } else {
           obj = {}
         }
@@ -1525,6 +1644,16 @@ export namespace StreamInfo {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -1704,8 +1833,8 @@ export namespace DHTRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.FIND_PEER
-        }
+            type: Type.FIND_PEER
+          }
         } else {
           obj = {}
         }
@@ -1772,6 +1901,16 @@ export namespace DHTRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -1921,8 +2060,8 @@ export namespace DHTResponse {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.BEGIN
-        }
+            type: Type.BEGIN
+          }
         } else {
           obj = {}
         }
@@ -1963,6 +2102,16 @@ export namespace DHTResponse {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -2069,11 +2218,13 @@ export namespace PeerInfo {
 
         if (opts.emitCollections === true) {
           obj = {
-          id: uint8ArrayAlloc(0),
-          addrs: []
-        }
+            id: uint8ArrayAlloc(0),
+            addrs: []
+          }
         } else {
-          obj = {}
+          obj = {
+            addrs: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -2090,15 +2241,24 @@ export namespace PeerInfo {
               break
             }
             case 2: {
-              if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+              if (opts.limits?.addrs != null && (opts.emitCollections === true ? obj.addrs.length === opts.limits.addrs : obj.addrs === opts.limits.addrs)) {
                 throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
               }
 
+              const value = reader.bytes()
+
               yield {
                 field: 'addrs$value',
-                index: 0,
-                value: reader.bytes()
+                index: opts.emitCollections === true ? obj.addrs.length : obj.addrs,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.addrs.push(value)
+              } else {
+                obj.addrs++
+              }
+
               break
             }
             default: {
@@ -2108,6 +2268,16 @@ export namespace PeerInfo {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -2246,8 +2416,8 @@ export namespace ConnManagerRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.TAG_PEER
-        }
+            type: Type.TAG_PEER
+          }
         } else {
           obj = {}
         }
@@ -2293,6 +2463,16 @@ export namespace ConnManagerRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -2387,8 +2567,8 @@ export namespace DisconnectRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          peer: uint8ArrayAlloc(0)
-        }
+            peer: uint8ArrayAlloc(0)
+          }
         } else {
           obj = {}
         }
@@ -2413,6 +2593,16 @@ export namespace DisconnectRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -2532,8 +2722,8 @@ export namespace PSRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.GET_TOPICS
-        }
+            type: Type.GET_TOPICS
+          }
         } else {
           obj = {}
         }
@@ -2572,6 +2762,16 @@ export namespace PSRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -2717,10 +2917,12 @@ export namespace PSMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-          topicIDs: []
-        }
+            topicIDs: []
+          }
         } else {
-          obj = {}
+          obj = {
+            topicIDs: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -2751,15 +2953,24 @@ export namespace PSMessage {
               break
             }
             case 4: {
-              if (opts.limits?.topicIDs != null && obj.topicIDs.length === opts.limits.topicIDs) {
+              if (opts.limits?.topicIDs != null && (opts.emitCollections === true ? obj.topicIDs.length === opts.limits.topicIDs : obj.topicIDs === opts.limits.topicIDs)) {
                 throw new MaxLengthError('Decode error - map field "topicIDs" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'topicIDs$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.topicIDs.length : obj.topicIDs,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.topicIDs.push(value)
+              } else {
+                obj.topicIDs++
+              }
+
               break
             }
             case 5: {
@@ -2783,6 +2994,16 @@ export namespace PSMessage {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -2916,11 +3137,14 @@ export namespace PSResponse {
 
         if (opts.emitCollections === true) {
           obj = {
-          topics: [],
-          peerIDs: []
-        }
+            topics: [],
+            peerIDs: []
+          }
         } else {
-          obj = {}
+          obj = {
+            topics: 0,
+            peerIDs: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -2930,27 +3154,45 @@ export namespace PSResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.topics != null && obj.topics.length === opts.limits.topics) {
+              if (opts.limits?.topics != null && (opts.emitCollections === true ? obj.topics.length === opts.limits.topics : obj.topics === opts.limits.topics)) {
                 throw new MaxLengthError('Decode error - map field "topics" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'topics$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.topics.length : obj.topics,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.topics.push(value)
+              } else {
+                obj.topics++
+              }
+
               break
             }
             case 2: {
-              if (opts.limits?.peerIDs != null && obj.peerIDs.length === opts.limits.peerIDs) {
+              if (opts.limits?.peerIDs != null && (opts.emitCollections === true ? obj.peerIDs.length === opts.limits.peerIDs : obj.peerIDs === opts.limits.peerIDs)) {
                 throw new MaxLengthError('Decode error - map field "peerIDs" had too many elements')
               }
 
+              const value = reader.bytes()
+
               yield {
                 field: 'peerIDs$value',
-                index: 0,
-                value: reader.bytes()
+                index: opts.emitCollections === true ? obj.peerIDs.length : obj.peerIDs,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.peerIDs.push(value)
+              } else {
+                obj.peerIDs++
+              }
+
               break
             }
             default: {
@@ -2960,6 +3202,16 @@ export namespace PSResponse {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -3101,11 +3353,13 @@ export namespace PeerstoreRequest {
 
         if (opts.emitCollections === true) {
           obj = {
-          type: Type.INVALID,
-          protos: []
-        }
+            type: Type.INVALID,
+            protos: []
+          }
         } else {
-          obj = {}
+          obj = {
+            protos: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -3129,15 +3383,24 @@ export namespace PeerstoreRequest {
               break
             }
             case 3: {
-              if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
+              if (opts.limits?.protos != null && (opts.emitCollections === true ? obj.protos.length === opts.limits.protos : obj.protos === opts.limits.protos)) {
                 throw new MaxLengthError('Decode error - map field "protos" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'protos$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.protos.length : obj.protos,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.protos.push(value)
+              } else {
+                obj.protos++
+              }
+
               break
             }
             default: {
@@ -3147,6 +3410,16 @@ export namespace PeerstoreRequest {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -3260,10 +3533,12 @@ export namespace PeerstoreResponse {
 
         if (opts.emitCollections === true) {
           obj = {
-          protos: []
-        }
+            protos: []
+          }
         } else {
-          obj = {}
+          obj = {
+            protos: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -3282,15 +3557,24 @@ export namespace PeerstoreResponse {
               break
             }
             case 2: {
-              if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
+              if (opts.limits?.protos != null && (opts.emitCollections === true ? obj.protos.length === opts.limits.protos : obj.protos === opts.limits.protos)) {
                 throw new MaxLengthError('Decode error - map field "protos" had too many elements')
               }
 
+              const value = reader.string()
+
               yield {
                 field: 'protos$value',
-                index: 0,
-                value: reader.string()
+                index: opts.emitCollections === true ? obj.protos.length : obj.protos,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.protos.push(value)
+              } else {
+                obj.protos++
+              }
+
               break
             }
             default: {
@@ -3300,6 +3584,16 @@ export namespace PeerstoreResponse {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

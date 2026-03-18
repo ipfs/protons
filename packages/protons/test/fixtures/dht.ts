@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
@@ -150,6 +144,16 @@ export namespace Record {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -329,10 +333,12 @@ export namespace Message {
 
           if (opts.emitCollections === true) {
             obj = {
-            addrs: []
-          }
+              addrs: []
+            }
           } else {
-            obj = {}
+            obj = {
+              addrs: 0
+            }
           }
 
           const end = length == null ? reader.len : reader.pos + length
@@ -349,15 +355,24 @@ export namespace Message {
                 break
               }
               case 2: {
-                if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
+                if (opts.limits?.addrs != null && (opts.emitCollections === true ? obj.addrs.length === opts.limits.addrs : obj.addrs === opts.limits.addrs)) {
                   throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
                 }
 
+                const value = reader.bytes()
+
                 yield {
                   field: 'addrs$value',
-                  index: 0,
-                  value: reader.bytes()
+                  index: opts.emitCollections === true ? obj.addrs.length : obj.addrs,
+                  value
                 }
+
+                if (opts.emitCollections === true) {
+                  obj.addrs.push(value)
+                } else {
+                  obj.addrs++
+                }
+
                 break
               }
               case 3: {
@@ -374,6 +389,16 @@ export namespace Message {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -526,11 +551,14 @@ export namespace Message {
 
         if (opts.emitCollections === true) {
           obj = {
-          closerPeers: [],
-          providerPeers: []
-        }
+            closerPeers: [],
+            providerPeers: []
+          }
         } else {
-          obj = {}
+          obj = {
+            closerPeers: 0,
+            providerPeers: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -568,31 +596,49 @@ export namespace Message {
               break
             }
             case 8: {
-              if (opts.limits?.closerPeers != null && obj.closerPeers.length === opts.limits.closerPeers) {
+              if (opts.limits?.closerPeers != null && (opts.emitCollections === true ? obj.closerPeers.length === opts.limits.closerPeers : obj.closerPeers === opts.limits.closerPeers)) {
                 throw new MaxLengthError('Decode error - map field "closerPeers" had too many elements')
               }
 
+              const value = Message.Peer.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.closerPeers$
+              })
+
               yield {
                 field: 'closerPeers$value',
-                index: 0,
-                value: Message.Peer.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.closerPeers$
-                })
+                index: opts.emitCollections === true ? obj.closerPeers.length : obj.closerPeers,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.closerPeers.push(value)
+              } else {
+                obj.closerPeers++
+              }
+
               break
             }
             case 9: {
-              if (opts.limits?.providerPeers != null && obj.providerPeers.length === opts.limits.providerPeers) {
+              if (opts.limits?.providerPeers != null && (opts.emitCollections === true ? obj.providerPeers.length === opts.limits.providerPeers : obj.providerPeers === opts.limits.providerPeers)) {
                 throw new MaxLengthError('Decode error - map field "providerPeers" had too many elements')
               }
 
+              const value = Message.Peer.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.providerPeers$
+              })
+
               yield {
                 field: 'providerPeers$value',
-                index: 0,
-                value: Message.Peer.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.providerPeers$
-                })
+                index: opts.emitCollections === true ? obj.providerPeers.length : obj.providerPeers,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.providerPeers.push(value)
+              } else {
+                obj.providerPeers++
+              }
+
               break
             }
             default: {
@@ -602,6 +648,16 @@ export namespace Message {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

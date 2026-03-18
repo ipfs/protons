@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
@@ -135,11 +129,11 @@ export namespace Message {
 
             if (opts.emitCollections === true) {
               obj = {
-              block: uint8ArrayAlloc(0),
-              priority: 0,
-              wantType: WantType.Block,
-              sendDontHave: false
-            }
+                block: uint8ArrayAlloc(0),
+                priority: 0,
+                wantType: WantType.Block,
+                sendDontHave: false
+              }
             } else {
               obj = {}
             }
@@ -192,6 +186,16 @@ export namespace Message {
               }
             }
 
+            if (opts.emitCollections === true) {
+              for (const [key, value] of Object.entries(obj)) {
+                if (Array.isArray(value) || value instanceof Map) {
+                  yield {
+                    field: key,
+                    value
+                  }
+                }
+              }
+            }
           })
         }
 
@@ -304,11 +308,13 @@ export namespace Message {
 
           if (opts.emitCollections === true) {
             obj = {
-            entries: [],
-            full: false
-          }
+              entries: [],
+              full: false
+            }
           } else {
-            obj = {}
+            obj = {
+              entries: 0
+            }
           }
 
           const end = length == null ? reader.len : reader.pos + length
@@ -318,17 +324,26 @@ export namespace Message {
 
             switch (tag >>> 3) {
               case 1: {
-                if (opts.limits?.entries != null && obj.entries.length === opts.limits.entries) {
+                if (opts.limits?.entries != null && (opts.emitCollections === true ? obj.entries.length === opts.limits.entries : obj.entries === opts.limits.entries)) {
                   throw new MaxLengthError('Decode error - map field "entries" had too many elements')
                 }
 
+                const value = Message.Wantlist.Entry.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.entries$
+                })
+
                 yield {
                   field: 'entries$value',
-                  index: 0,
-                  value: Message.Wantlist.Entry.codec().decode(reader, reader.uint32(), {
-                    limits: opts.limits?.entries$
-                  })
+                  index: opts.emitCollections === true ? obj.entries.length : obj.entries,
+                  value
                 }
+
+                if (opts.emitCollections === true) {
+                  obj.entries.push(value)
+                } else {
+                  obj.entries++
+                }
+
                 break
               }
               case 2: {
@@ -345,6 +360,16 @@ export namespace Message {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -446,9 +471,9 @@ export namespace Message {
 
           if (opts.emitCollections === true) {
             obj = {
-            prefix: uint8ArrayAlloc(0),
-            data: uint8ArrayAlloc(0)
-          }
+              prefix: uint8ArrayAlloc(0),
+              data: uint8ArrayAlloc(0)
+            }
           } else {
             obj = {}
           }
@@ -480,6 +505,16 @@ export namespace Message {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -591,9 +626,9 @@ export namespace Message {
 
           if (opts.emitCollections === true) {
             obj = {
-            cid: uint8ArrayAlloc(0),
-            type: BlockPresenceType.Have
-          }
+              cid: uint8ArrayAlloc(0),
+              type: BlockPresenceType.Have
+            }
           } else {
             obj = {}
           }
@@ -625,6 +660,16 @@ export namespace Message {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -767,13 +812,17 @@ export namespace Message {
 
         if (opts.emitCollections === true) {
           obj = {
-          blocks: [],
-          payload: [],
-          blockPresences: [],
-          pendingBytes: 0
-        }
+            blocks: [],
+            payload: [],
+            blockPresences: [],
+            pendingBytes: 0
+          }
         } else {
-          obj = {}
+          obj = {
+            blocks: 0,
+            payload: 0,
+            blockPresences: 0
+          }
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -792,43 +841,70 @@ export namespace Message {
               break
             }
             case 2: {
-              if (opts.limits?.blocks != null && obj.blocks.length === opts.limits.blocks) {
+              if (opts.limits?.blocks != null && (opts.emitCollections === true ? obj.blocks.length === opts.limits.blocks : obj.blocks === opts.limits.blocks)) {
                 throw new MaxLengthError('Decode error - map field "blocks" had too many elements')
               }
 
+              const value = reader.bytes()
+
               yield {
                 field: 'blocks$value',
-                index: 0,
-                value: reader.bytes()
+                index: opts.emitCollections === true ? obj.blocks.length : obj.blocks,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.blocks.push(value)
+              } else {
+                obj.blocks++
+              }
+
               break
             }
             case 3: {
-              if (opts.limits?.payload != null && obj.payload.length === opts.limits.payload) {
+              if (opts.limits?.payload != null && (opts.emitCollections === true ? obj.payload.length === opts.limits.payload : obj.payload === opts.limits.payload)) {
                 throw new MaxLengthError('Decode error - map field "payload" had too many elements')
               }
 
+              const value = Message.Block.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.payload$
+              })
+
               yield {
                 field: 'payload$value',
-                index: 0,
-                value: Message.Block.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.payload$
-                })
+                index: opts.emitCollections === true ? obj.payload.length : obj.payload,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.payload.push(value)
+              } else {
+                obj.payload++
+              }
+
               break
             }
             case 4: {
-              if (opts.limits?.blockPresences != null && obj.blockPresences.length === opts.limits.blockPresences) {
+              if (opts.limits?.blockPresences != null && (opts.emitCollections === true ? obj.blockPresences.length === opts.limits.blockPresences : obj.blockPresences === opts.limits.blockPresences)) {
                 throw new MaxLengthError('Decode error - map field "blockPresences" had too many elements')
               }
 
+              const value = Message.BlockPresence.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.blockPresences$
+              })
+
               yield {
                 field: 'blockPresences$value',
-                index: 0,
-                value: Message.BlockPresence.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.blockPresences$
-                })
+                index: opts.emitCollections === true ? obj.blockPresences.length : obj.blockPresences,
+                value
               }
+
+              if (opts.emitCollections === true) {
+                obj.blockPresences.push(value)
+              } else {
+                obj.blockPresences++
+              }
+
               break
             }
             case 5: {
@@ -845,6 +921,16 @@ export namespace Message {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

@@ -1,11 +1,3 @@
-/* eslint-disable import/export */
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -60,8 +52,8 @@ export namespace MessageWithRequired {
 
         if (opts.emitCollections === true) {
           obj = {
-          scalarField: 0
-        }
+            scalarField: 0
+          }
         } else {
           obj = {}
         }
@@ -86,6 +78,16 @@ export namespace MessageWithRequired {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 

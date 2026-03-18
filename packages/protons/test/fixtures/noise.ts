@@ -1,11 +1,3 @@
-/* eslint-disable import/export */
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
@@ -86,10 +78,10 @@ export namespace pb {
 
           if (opts.emitCollections === true) {
             obj = {
-            identityKey: uint8ArrayAlloc(0),
-            identitySig: uint8ArrayAlloc(0),
-            data: uint8ArrayAlloc(0)
-          }
+              identityKey: uint8ArrayAlloc(0),
+              identitySig: uint8ArrayAlloc(0),
+              data: uint8ArrayAlloc(0)
+            }
           } else {
             obj = {}
           }
@@ -128,6 +120,16 @@ export namespace pb {
             }
           }
 
+          if (opts.emitCollections === true) {
+            for (const [key, value] of Object.entries(obj)) {
+              if (Array.isArray(value) || value instanceof Map) {
+                yield {
+                  field: key,
+                  value
+                }
+              }
+            }
+          }
         })
       }
 
@@ -218,13 +220,21 @@ export namespace pb {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
-
-  
 
   export type pbStreamEvent = {}
   export type pbStreamCollectionsEvent = {}

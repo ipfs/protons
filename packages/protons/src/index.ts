@@ -1557,7 +1557,8 @@ export async function generate (source: string, flags: Flags): Promise<void> {
     '/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */',
     '/* eslint-disable @typescript-eslint/no-empty-interface */',
     '/* eslint-disable import/consistent-type-specifier-style */',
-    '/* eslint-disable @typescript-eslint/no-unused-vars */'
+    '/* eslint-disable @typescript-eslint/no-unused-vars */',
+    '/* eslint-disable require-yield */'
   ]
 
   const imports = []

@@ -1,10 +1,4 @@
-/* eslint-disable import/export */
 /* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-unnecessary-boolean-literal-compare */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable import/consistent-type-specifier-style */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
@@ -90,9 +84,9 @@ export namespace SingularSubMessage {
 
         if (opts.emitCollections === true) {
           obj = {
-          foo: '',
-          bar: 0
-        }
+            foo: '',
+            bar: 0
+          }
         } else {
           obj = {}
         }
@@ -124,6 +118,16 @@ export namespace SingularSubMessage {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
@@ -385,23 +389,23 @@ export namespace Singular {
 
         if (opts.emitCollections === true) {
           obj = {
-          double: 0,
-          float: 0,
-          int32: 0,
-          int64: 0n,
-          uint32: 0,
-          uint64: 0n,
-          sint32: 0,
-          sint64: 0n,
-          fixed32: 0,
-          fixed64: 0n,
-          sfixed32: 0,
-          sfixed64: 0n,
-          bool: false,
-          string: '',
-          bytes: uint8ArrayAlloc(0),
-          enum: SingularEnum.NO_VALUE
-        }
+            double: 0,
+            float: 0,
+            int32: 0,
+            int64: 0n,
+            uint32: 0,
+            uint64: 0n,
+            sint32: 0,
+            sint64: 0n,
+            fixed32: 0,
+            fixed64: 0n,
+            sfixed32: 0,
+            sfixed64: 0n,
+            bool: false,
+            string: '',
+            bytes: uint8ArrayAlloc(0),
+            enum: SingularEnum.NO_VALUE
+          }
         } else {
           obj = {}
         }
@@ -540,6 +544,16 @@ export namespace Singular {
           }
         }
 
+        if (opts.emitCollections === true) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (Array.isArray(value) || value instanceof Map) {
+              yield {
+                field: key,
+                value
+              }
+            }
+          }
+        }
       })
     }
 
