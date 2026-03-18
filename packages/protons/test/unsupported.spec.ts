@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { expect } from 'aegir/chai'
-import { generate } from '../src/index.js'
+import { generate } from '../src/index.ts'
 
 describe('unsupported', () => {
   it('should refuse to generate source from proto2 definition', async () => {

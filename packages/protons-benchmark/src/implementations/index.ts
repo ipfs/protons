@@ -8,11 +8,11 @@ $ npx playwright-test dist/src/index.js --runner benchmark
 import { create, toBinary, fromBinary } from '@bufbuild/protobuf'
 import { expect } from 'aegir/chai'
 import Benchmark from 'benchmark'
-import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.js'
-import { TestSchema as ProtobufEsTest } from './protobuf-es/bench_pb.js'
-import { Test as ProtobufTsTest } from './protobuf-ts/bench.js'
-import { Test as ProtobufjsTest } from './protobufjs/bench.js'
-import { Test as ProtonsTest } from './protons/bench.js'
+import { encodeTest as pbjsEncodeTest, decodeTest as pbjsDecodeTest } from './pbjs/bench.ts'
+import { TestSchema as ProtobufEsTest } from './protobuf-es/bench_pb.ts'
+import { Test as ProtobufTsTest } from './protobuf-ts/bench.ts'
+import { Test as ProtobufjsTest } from './protobufjs/bench.ts'
+import { Test as ProtonsTest } from './protons/bench.ts'
 
 const message = {
   meh: {

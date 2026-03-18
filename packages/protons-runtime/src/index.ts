@@ -10,7 +10,7 @@
  * ```
  */
 
-import type { Codec } from './codec.js'
+import type { Codec } from './codec.ts'
 
 export interface FieldDef {
   name: string
@@ -22,17 +22,17 @@ export interface FieldDef {
 
 export {
   decodeMessage
-} from './decode.js'
+} from './decode.ts'
 
 export {
   encodeMessage
-} from './encode.js'
+} from './encode.ts'
 
-export { enumeration } from './codecs/enum.js'
-export { message } from './codecs/message.js'
-export { createReader as reader } from './utils/reader.js'
-export { createWriter as writer } from './utils/writer.js'
-export type { Codec, EncodeOptions, DecodeOptions } from './codec.js'
+export { enumeration } from './codecs/enum.ts'
+export { message } from './codecs/message.ts'
+export { createReader as reader } from './utils/reader.ts'
+export { createWriter as writer } from './utils/writer.ts'
+export type { Codec, EncodeOptions, DecodeOptions } from './codec.ts'
 
 export interface Writer {
   /**

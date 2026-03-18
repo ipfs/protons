@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { expect } from 'aegir/chai'
-import { MessageWithRequired } from './fixtures/proto2.js'
+import { MessageWithRequired } from './fixtures/proto2.ts'
 
 describe('proto2 support', () => {
   it('should write a required field with a default value', () => {

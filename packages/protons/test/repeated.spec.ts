@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { expect } from 'aegir/chai'
-import { RepeatedTypes } from './fixtures/repeated.js'
+import { RepeatedTypes } from './fixtures/repeated.ts'
 
 describe('repeated', () => {
   it('should encode repeated fields', () => {

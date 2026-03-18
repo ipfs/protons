@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { expect } from 'aegir/chai'
-import { CustomOptionNumber, CustomOptionString } from './fixtures/custom-option-jstype.js'
+import { CustomOptionNumber, CustomOptionString } from './fixtures/custom-option-jstype.ts'
 
 describe('custom options', () => {
   it('should allow overriding 64 bit numbers with numbers', () => {

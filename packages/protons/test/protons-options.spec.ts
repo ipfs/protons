@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import { expect } from 'aegir/chai'
-import { MessageWithSizeLimitedMap, MessageWithSizeLimitedRepeatedField } from './fixtures/protons-options.js'
+import { MessageWithSizeLimitedMap, MessageWithSizeLimitedRepeatedField } from './fixtures/protons-options.ts'
 
 describe('protons options', () => {
   it('should not decode message with map that is too big', () => {

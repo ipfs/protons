@@ -33,7 +33,7 @@
  * In your code import the generated classes and use them to transform to/from bytes:
  *
  * ```js
- * import { Foo } from './foo.js'
+ * import { Foo } from './foo.ts'
  *
  * const foo = {
  *   message: 'hello world'

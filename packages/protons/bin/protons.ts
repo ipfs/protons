@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import meow from 'meow'
-import { generate } from '../src/index.js'
+import { generate } from '../src/index.ts'
 
 async function main (): Promise<void> {
   const cli = meow(`
