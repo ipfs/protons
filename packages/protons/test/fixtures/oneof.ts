@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -137,18 +137,95 @@ export namespace OneOfMessage {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldOne`,
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldTwo`,
+                value: reader.string()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldThree`,
+                value: EnumType.codec().decode(reader)
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFour`,
+                value: EnumType.codec().decode(reader)
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFive`,
+                value: reader.string()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<OneOfMessage>): Uint8Array => {
+  export interface OneOfMessageFieldOneFieldEvent {
+    field: 'fieldOne'
+    value: string
+  }
+
+  export interface OneOfMessageFieldTwoFieldEvent {
+    field: 'fieldTwo'
+    value: string
+  }
+
+  export interface OneOfMessageFieldThreeFieldEvent {
+    field: 'fieldThree'
+    value: EnumType
+  }
+
+  export interface OneOfMessageFieldFourFieldEvent {
+    field: 'fieldFour'
+    value: EnumType
+  }
+
+  export interface OneOfMessageFieldFiveFieldEvent {
+    field: 'fieldFive'
+    value: string
+  }
+
+  export function encode (obj: Partial<OneOfMessage>): Uint8Array {
     return encodeMessage(obj, OneOfMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OneOfMessage>): OneOfMessage => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OneOfMessage>): OneOfMessage {
     return decodeMessage(buf, OneOfMessage.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OneOfMessage>): Generator<OneOfMessageFieldOneFieldEvent | OneOfMessageFieldTwoFieldEvent | OneOfMessageFieldThreeFieldEvent | OneOfMessageFieldFourFieldEvent | OneOfMessageFieldFiveFieldEvent> {
+    return streamMessage(buf, OneOfMessage.codec(), opts)
   }
 }
 
@@ -241,17 +318,94 @@ export namespace MessageWithoutOneOfs {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldOne`,
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldTwo`,
+                value: reader.string()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldThree`,
+                value: EnumType.codec().decode(reader)
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFour`,
+                value: EnumType.codec().decode(reader)
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFive`,
+                value: reader.string()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<MessageWithoutOneOfs>): Uint8Array => {
+  export interface MessageWithoutOneOfsFieldOneFieldEvent {
+    field: 'fieldOne'
+    value: string
+  }
+
+  export interface MessageWithoutOneOfsFieldTwoFieldEvent {
+    field: 'fieldTwo'
+    value: string
+  }
+
+  export interface MessageWithoutOneOfsFieldThreeFieldEvent {
+    field: 'fieldThree'
+    value: EnumType
+  }
+
+  export interface MessageWithoutOneOfsFieldFourFieldEvent {
+    field: 'fieldFour'
+    value: EnumType
+  }
+
+  export interface MessageWithoutOneOfsFieldFiveFieldEvent {
+    field: 'fieldFive'
+    value: string
+  }
+
+  export function encode (obj: Partial<MessageWithoutOneOfs>): Uint8Array {
     return encodeMessage(obj, MessageWithoutOneOfs.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithoutOneOfs>): MessageWithoutOneOfs => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithoutOneOfs>): MessageWithoutOneOfs {
     return decodeMessage(buf, MessageWithoutOneOfs.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithoutOneOfs>): Generator<MessageWithoutOneOfsFieldOneFieldEvent | MessageWithoutOneOfsFieldTwoFieldEvent | MessageWithoutOneOfsFieldThreeFieldEvent | MessageWithoutOneOfsFieldFourFieldEvent | MessageWithoutOneOfsFieldFiveFieldEvent> {
+    return streamMessage(buf, MessageWithoutOneOfs.codec(), opts)
   }
 }

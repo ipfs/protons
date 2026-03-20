@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -47,17 +47,46 @@ export namespace MessageWithRequired {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}scalarField`,
+                value: reader.int32()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<MessageWithRequired>): Uint8Array => {
+  export interface MessageWithRequiredScalarFieldFieldEvent {
+    field: 'scalarField'
+    value: number
+  }
+
+  export function encode (obj: Partial<MessageWithRequired>): Uint8Array {
     return encodeMessage(obj, MessageWithRequired.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRequired>): MessageWithRequired => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRequired>): MessageWithRequired {
     return decodeMessage(buf, MessageWithRequired.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRequired>): Generator<MessageWithRequiredScalarFieldFieldEvent> {
+    return streamMessage(buf, MessageWithRequired.codec(), opts)
   }
 }

@@ -28,6 +28,10 @@ export {
   encodeMessage
 } from './encode.ts'
 
+export {
+  streamMessage
+} from './stream.ts'
+
 export { enumeration } from './codecs/enum.ts'
 export { message } from './codecs/message.ts'
 export { createReader as reader } from './utils/reader.ts'

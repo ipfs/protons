@@ -1,13 +1,13 @@
 import type { Writer, Reader } from './index.ts'
 
 // https://developers.google.com/protocol-buffers/docs/encoding#structure
-export enum CODEC_TYPES {
-  VARINT = 0,
-  BIT64,
-  LENGTH_DELIMITED,
-  START_GROUP,
-  END_GROUP,
-  BIT32
+export const CODEC_TYPES = {
+  VARINT: 0,
+  BIT64: 1,
+  LENGTH_DELIMITED: 2,
+  START_GROUP: 3,
+  END_GROUP: 4,
+  BIT32: 5
 }
 
 export interface EncodeOptions {
@@ -59,18 +59,24 @@ export interface DecodeFunction<T> {
   (reader: Reader, length?: number, opts?: DecodeOptions<T>): T
 }
 
-export interface Codec<T> {
-  name: string
-  type: CODEC_TYPES
-  encode: EncodeFunction<T>
-  decode: DecodeFunction<T>
+export interface StreamFunction<T> {
+  (reader: Reader, length?: number, prefix?: string, opts?: DecodeOptions<T>): Generator<any>
 }
 
-export function createCodec <T> (name: string, type: CODEC_TYPES, encode: EncodeFunction<T>, decode: DecodeFunction<T>): Codec<T> {
+export interface Codec<T> {
+  name: string
+  type: number
+  encode: EncodeFunction<T>
+  decode: DecodeFunction<T>
+  stream: StreamFunction<T>
+}
+
+export function createCodec <T> (name: string, type: number, encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T>): Codec<T> {
   return {
     name,
     type,
     encode,
-    decode
+    decode,
+    stream
   }
 }

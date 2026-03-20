@@ -1,6 +1,4 @@
-/* eslint-disable complexity */
-
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -178,18 +176,237 @@ export namespace Request {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: Request.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}connect`, {
+                limits: opts.limits?.connect
+              })
+
+              break
+            }
+            case 3: {
+              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}streamOpen`, {
+                limits: opts.limits?.streamOpen
+              })
+
+              break
+            }
+            case 4: {
+              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}streamHandler`, {
+                limits: opts.limits?.streamHandler
+              })
+
+              break
+            }
+            case 5: {
+              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dht`, {
+                limits: opts.limits?.dht
+              })
+
+              break
+            }
+            case 6: {
+              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}connManager`, {
+                limits: opts.limits?.connManager
+              })
+
+              break
+            }
+            case 7: {
+              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}disconnect`, {
+                limits: opts.limits?.disconnect
+              })
+
+              break
+            }
+            case 8: {
+              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}pubsub`, {
+                limits: opts.limits?.pubsub
+              })
+
+              break
+            }
+            case 9: {
+              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peerStore`, {
+                limits: opts.limits?.peerStore
+              })
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Request>): Uint8Array => {
+  export interface RequestTypeFieldEvent {
+    field: 'type'
+    value: Request.Type
+  }
+
+  export interface RequestConnectConnectRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface RequestConnectConnectRequestAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface RequestConnectConnectRequestTimeoutFieldEvent {
+    field: 'timeout'
+    value: bigint
+  }
+
+  export interface RequestStreamOpenStreamOpenRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface RequestStreamOpenStreamOpenRequestProtoFieldEvent {
+    field: 'proto$entry'
+    index: number
+    value: string
+  }
+
+  export interface RequestStreamOpenStreamOpenRequestTimeoutFieldEvent {
+    field: 'timeout'
+    value: bigint
+  }
+
+  export interface RequestStreamHandlerStreamHandlerRequestAddrFieldEvent {
+    field: 'addr'
+    value: Uint8Array
+  }
+
+  export interface RequestStreamHandlerStreamHandlerRequestProtoFieldEvent {
+    field: 'proto$entry'
+    index: number
+    value: string
+  }
+
+  export interface RequestDhtDHTRequestTypeFieldEvent {
+    field: 'type'
+    value: DHTRequest.Type
+  }
+
+  export interface RequestDhtDHTRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface RequestDhtDHTRequestCidFieldEvent {
+    field: 'cid'
+    value: Uint8Array
+  }
+
+  export interface RequestDhtDHTRequestKeyFieldEvent {
+    field: 'key'
+    value: Uint8Array
+  }
+
+  export interface RequestDhtDHTRequestValueFieldEvent {
+    field: 'value'
+    value: Uint8Array
+  }
+
+  export interface RequestDhtDHTRequestCountFieldEvent {
+    field: 'count'
+    value: number
+  }
+
+  export interface RequestDhtDHTRequestTimeoutFieldEvent {
+    field: 'timeout'
+    value: bigint
+  }
+
+  export interface RequestConnManagerConnManagerRequestTypeFieldEvent {
+    field: 'type'
+    value: ConnManagerRequest.Type
+  }
+
+  export interface RequestConnManagerConnManagerRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface RequestConnManagerConnManagerRequestTagFieldEvent {
+    field: 'tag'
+    value: string
+  }
+
+  export interface RequestConnManagerConnManagerRequestWeightFieldEvent {
+    field: 'weight'
+    value: bigint
+  }
+
+  export interface RequestDisconnectDisconnectRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface RequestPubsubPSRequestTypeFieldEvent {
+    field: 'type'
+    value: PSRequest.Type
+  }
+
+  export interface RequestPubsubPSRequestTopicFieldEvent {
+    field: 'topic'
+    value: string
+  }
+
+  export interface RequestPubsubPSRequestDataFieldEvent {
+    field: 'data'
+    value: Uint8Array
+  }
+
+  export interface RequestPeerStorePeerstoreRequestTypeFieldEvent {
+    field: 'type'
+    value: PeerstoreRequest.Type
+  }
+
+  export interface RequestPeerStorePeerstoreRequestIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface RequestPeerStorePeerstoreRequestProtosFieldEvent {
+    field: 'protos$entry'
+    index: number
+    value: string
+  }
+
+  export function encode (obj: Partial<Request>): Uint8Array {
     return encodeMessage(obj, Request.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Request>): Request => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Request>): Request {
     return decodeMessage(buf, Request.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Request>): Generator<RequestTypeFieldEvent | RequestConnectConnectRequestPeerFieldEvent | RequestConnectConnectRequestAddrsFieldEvent | RequestConnectConnectRequestTimeoutFieldEvent | RequestStreamOpenStreamOpenRequestPeerFieldEvent | RequestStreamOpenStreamOpenRequestProtoFieldEvent | RequestStreamOpenStreamOpenRequestTimeoutFieldEvent | RequestStreamHandlerStreamHandlerRequestAddrFieldEvent | RequestStreamHandlerStreamHandlerRequestProtoFieldEvent | RequestDhtDHTRequestTypeFieldEvent | RequestDhtDHTRequestPeerFieldEvent | RequestDhtDHTRequestCidFieldEvent | RequestDhtDHTRequestKeyFieldEvent | RequestDhtDHTRequestValueFieldEvent | RequestDhtDHTRequestCountFieldEvent | RequestDhtDHTRequestTimeoutFieldEvent | RequestConnManagerConnManagerRequestTypeFieldEvent | RequestConnManagerConnManagerRequestPeerFieldEvent | RequestConnManagerConnManagerRequestTagFieldEvent | RequestConnManagerConnManagerRequestWeightFieldEvent | RequestDisconnectDisconnectRequestPeerFieldEvent | RequestPubsubPSRequestTypeFieldEvent | RequestPubsubPSRequestTopicFieldEvent | RequestPubsubPSRequestDataFieldEvent | RequestPeerStorePeerstoreRequestTypeFieldEvent | RequestPeerStorePeerstoreRequestIdFieldEvent | RequestPeerStorePeerstoreRequestProtosFieldEvent> {
+    return streamMessage(buf, Request.codec(), opts)
   }
 }
 
@@ -317,7 +534,7 @@ export namespace Response {
             }
             case 6: {
               if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
-                throw new MaxLengthError('Decode error - map field "peers" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "peers" had too many elements')
               }
 
               obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32(), {
@@ -345,18 +562,192 @@ export namespace Response {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          peers: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: Response.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}error`, {
+                limits: opts.limits?.error
+              })
+
+              break
+            }
+            case 3: {
+              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}streamInfo`, {
+                limits: opts.limits?.streamInfo
+              })
+
+              break
+            }
+            case 4: {
+              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}identify`, {
+                limits: opts.limits?.identify
+              })
+
+              break
+            }
+            case 5: {
+              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dht`, {
+                limits: opts.limits?.dht
+              })
+
+              break
+            }
+            case 6: {
+              if (opts.limits?.peers != null && obj.peers === opts.limits.peers) {
+                throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
+              }
+
+              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peers`, {
+                limits: opts.limits?.peers$
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.peers
+                }
+              }
+
+              obj.peers++
+
+              break
+            }
+            case 7: {
+              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}pubsub`, {
+                limits: opts.limits?.pubsub
+              })
+
+              break
+            }
+            case 8: {
+              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peerStore`, {
+                limits: opts.limits?.peerStore
+              })
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Response>): Uint8Array => {
+  export interface ResponseTypeFieldEvent {
+    field: 'type'
+    value: Response.Type
+  }
+
+  export interface ResponseErrorErrorResponseMsgFieldEvent {
+    field: 'msg'
+    value: string
+  }
+
+  export interface ResponseStreamInfoStreamInfoPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface ResponseStreamInfoStreamInfoAddrFieldEvent {
+    field: 'addr'
+    value: Uint8Array
+  }
+
+  export interface ResponseStreamInfoStreamInfoProtoFieldEvent {
+    field: 'proto'
+    value: string
+  }
+
+  export interface ResponseIdentifyIdentifyResponseIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface ResponseIdentifyIdentifyResponseAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface ResponseDhtDHTResponseTypeFieldEvent {
+    field: 'type'
+    value: DHTResponse.Type
+  }
+
+  export interface ResponseDhtDHTResponsePeerPeerInfoIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface ResponseDhtDHTResponsePeerPeerInfoAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface ResponseDhtDHTResponseValueFieldEvent {
+    field: 'value'
+    value: Uint8Array
+  }
+
+  export interface ResponsePubsubPSResponseTopicsFieldEvent {
+    field: 'topics$entry'
+    index: number
+    value: string
+  }
+
+  export interface ResponsePubsubPSResponsePeerIDsFieldEvent {
+    field: 'peerIDs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface ResponsePeerStorePeerstoreResponsePeerPeerInfoIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface ResponsePeerStorePeerstoreResponsePeerPeerInfoAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface ResponsePeerStorePeerstoreResponseProtosFieldEvent {
+    field: 'protos$entry'
+    index: number
+    value: string
+  }
+
+  export function encode (obj: Partial<Response>): Uint8Array {
     return encodeMessage(obj, Response.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Response>): Response => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Response>): Response {
     return decodeMessage(buf, Response.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Response>): Generator<ResponseTypeFieldEvent | ResponseErrorErrorResponseMsgFieldEvent | ResponseStreamInfoStreamInfoPeerFieldEvent | ResponseStreamInfoStreamInfoAddrFieldEvent | ResponseStreamInfoStreamInfoProtoFieldEvent | ResponseIdentifyIdentifyResponseIdFieldEvent | ResponseIdentifyIdentifyResponseAddrsFieldEvent | ResponseDhtDHTResponseTypeFieldEvent | ResponseDhtDHTResponsePeerPeerInfoIdFieldEvent | ResponseDhtDHTResponsePeerPeerInfoAddrsFieldEvent | ResponseDhtDHTResponseValueFieldEvent | ResponsePubsubPSResponseTopicsFieldEvent | ResponsePubsubPSResponsePeerIDsFieldEvent | ResponsePeerStorePeerstoreResponsePeerPeerInfoIdFieldEvent | ResponsePeerStorePeerstoreResponsePeerPeerInfoAddrsFieldEvent | ResponsePeerStorePeerstoreResponseProtosFieldEvent> {
+    return streamMessage(buf, Response.codec(), opts)
   }
 }
 
@@ -408,7 +799,7 @@ export namespace IdentifyResponse {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
 
               obj.addrs.push(reader.bytes())
@@ -422,18 +813,72 @@ export namespace IdentifyResponse {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          addrs: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}id`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
+                throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                index: obj.addrs,
+                value: reader.bytes()
+              }
+
+              obj.addrs++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<IdentifyResponse>): Uint8Array => {
+  export interface IdentifyResponseIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface IdentifyResponseAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<IdentifyResponse>): Uint8Array {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<IdentifyResponse>): IdentifyResponse => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<IdentifyResponse>): IdentifyResponse {
     return decodeMessage(buf, IdentifyResponse.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<IdentifyResponse>): Generator<IdentifyResponseIdFieldEvent | IdentifyResponseAddrsFieldEvent> {
+    return streamMessage(buf, IdentifyResponse.codec(), opts)
   }
 }
 
@@ -491,7 +936,7 @@ export namespace ConnectRequest {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
 
               obj.addrs.push(reader.bytes())
@@ -509,18 +954,84 @@ export namespace ConnectRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          addrs: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peer`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
+                throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                index: obj.addrs,
+                value: reader.bytes()
+              }
+
+              obj.addrs++
+
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}timeout`,
+                value: reader.int64()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<ConnectRequest>): Uint8Array => {
+  export interface ConnectRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface ConnectRequestAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface ConnectRequestTimeoutFieldEvent {
+    field: 'timeout'
+    value: bigint
+  }
+
+  export function encode (obj: Partial<ConnectRequest>): Uint8Array {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnectRequest>): ConnectRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnectRequest>): ConnectRequest {
     return decodeMessage(buf, ConnectRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnectRequest>): Generator<ConnectRequestPeerFieldEvent | ConnectRequestAddrsFieldEvent | ConnectRequestTimeoutFieldEvent> {
+    return streamMessage(buf, ConnectRequest.codec(), opts)
   }
 }
 
@@ -578,7 +1089,7 @@ export namespace StreamOpenRequest {
             }
             case 2: {
               if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
-                throw new MaxLengthError('Decode error - map field "proto" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
               }
 
               obj.proto.push(reader.string())
@@ -596,18 +1107,84 @@ export namespace StreamOpenRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          proto: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peer`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.proto != null && obj.proto === opts.limits.proto) {
+                throw new MaxLengthError('Streaming decode error - repeated field "proto" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}proto`,
+                index: obj.proto,
+                value: reader.string()
+              }
+
+              obj.proto++
+
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}timeout`,
+                value: reader.int64()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<StreamOpenRequest>): Uint8Array => {
+  export interface StreamOpenRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface StreamOpenRequestProtoFieldEvent {
+    field: 'proto$entry'
+    index: number
+    value: string
+  }
+
+  export interface StreamOpenRequestTimeoutFieldEvent {
+    field: 'timeout'
+    value: bigint
+  }
+
+  export function encode (obj: Partial<StreamOpenRequest>): Uint8Array {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamOpenRequest>): StreamOpenRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamOpenRequest>): StreamOpenRequest {
     return decodeMessage(buf, StreamOpenRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamOpenRequest>): Generator<StreamOpenRequestPeerFieldEvent | StreamOpenRequestProtoFieldEvent | StreamOpenRequestTimeoutFieldEvent> {
+    return streamMessage(buf, StreamOpenRequest.codec(), opts)
   }
 }
 
@@ -659,7 +1236,7 @@ export namespace StreamHandlerRequest {
             }
             case 2: {
               if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
-                throw new MaxLengthError('Decode error - map field "proto" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
               }
 
               obj.proto.push(reader.string())
@@ -673,18 +1250,72 @@ export namespace StreamHandlerRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          proto: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}addr`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.proto != null && obj.proto === opts.limits.proto) {
+                throw new MaxLengthError('Streaming decode error - repeated field "proto" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}proto`,
+                index: obj.proto,
+                value: reader.string()
+              }
+
+              obj.proto++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<StreamHandlerRequest>): Uint8Array => {
+  export interface StreamHandlerRequestAddrFieldEvent {
+    field: 'addr'
+    value: Uint8Array
+  }
+
+  export interface StreamHandlerRequestProtoFieldEvent {
+    field: 'proto$entry'
+    index: number
+    value: string
+  }
+
+  export function encode (obj: Partial<StreamHandlerRequest>): Uint8Array {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamHandlerRequest>): StreamHandlerRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamHandlerRequest>): StreamHandlerRequest {
     return decodeMessage(buf, StreamHandlerRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamHandlerRequest>): Generator<StreamHandlerRequestAddrFieldEvent | StreamHandlerRequestProtoFieldEvent> {
+    return streamMessage(buf, StreamHandlerRequest.codec(), opts)
   }
 }
 
@@ -733,18 +1364,47 @@ export namespace ErrorResponse {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}msg`,
+                value: reader.string()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<ErrorResponse>): Uint8Array => {
+  export interface ErrorResponseMsgFieldEvent {
+    field: 'msg'
+    value: string
+  }
+
+  export function encode (obj: Partial<ErrorResponse>): Uint8Array {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ErrorResponse>): ErrorResponse => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ErrorResponse>): ErrorResponse {
     return decodeMessage(buf, ErrorResponse.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ErrorResponse>): Generator<ErrorResponseMsgFieldEvent> {
+    return streamMessage(buf, ErrorResponse.codec(), opts)
   }
 }
 
@@ -815,18 +1475,71 @@ export namespace StreamInfo {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peer`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}addr`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}proto`,
+                value: reader.string()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<StreamInfo>): Uint8Array => {
+  export interface StreamInfoPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface StreamInfoAddrFieldEvent {
+    field: 'addr'
+    value: Uint8Array
+  }
+
+  export interface StreamInfoProtoFieldEvent {
+    field: 'proto'
+    value: string
+  }
+
+  export function encode (obj: Partial<StreamInfo>): Uint8Array {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamInfo>): StreamInfo => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamInfo>): StreamInfo {
     return decodeMessage(buf, StreamInfo.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<StreamInfo>): Generator<StreamInfoPeerFieldEvent | StreamInfoAddrFieldEvent | StreamInfoProtoFieldEvent> {
+    return streamMessage(buf, StreamInfo.codec(), opts)
   }
 }
 
@@ -965,18 +1678,119 @@ export namespace DHTRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: DHTRequest.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peer`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}cid`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}key`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}value`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 6: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}count`,
+                value: reader.int32()
+              }
+              break
+            }
+            case 7: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}timeout`,
+                value: reader.int64()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<DHTRequest>): Uint8Array => {
+  export interface DHTRequestTypeFieldEvent {
+    field: 'type'
+    value: DHTRequest.Type
+  }
+
+  export interface DHTRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface DHTRequestCidFieldEvent {
+    field: 'cid'
+    value: Uint8Array
+  }
+
+  export interface DHTRequestKeyFieldEvent {
+    field: 'key'
+    value: Uint8Array
+  }
+
+  export interface DHTRequestValueFieldEvent {
+    field: 'value'
+    value: Uint8Array
+  }
+
+  export interface DHTRequestCountFieldEvent {
+    field: 'count'
+    value: number
+  }
+
+  export interface DHTRequestTimeoutFieldEvent {
+    field: 'timeout'
+    value: bigint
+  }
+
+  export function encode (obj: Partial<DHTRequest>): Uint8Array {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTRequest>): DHTRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTRequest>): DHTRequest {
     return decodeMessage(buf, DHTRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTRequest>): Generator<DHTRequestTypeFieldEvent | DHTRequestPeerFieldEvent | DHTRequestCidFieldEvent | DHTRequestKeyFieldEvent | DHTRequestValueFieldEvent | DHTRequestCountFieldEvent | DHTRequestTimeoutFieldEvent> {
+    return streamMessage(buf, DHTRequest.codec(), opts)
   }
 }
 
@@ -1065,18 +1879,77 @@ export namespace DHTResponse {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: DHTResponse.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peer`, {
+                limits: opts.limits?.peer
+              })
+
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}value`,
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<DHTResponse>): Uint8Array => {
+  export interface DHTResponseTypeFieldEvent {
+    field: 'type'
+    value: DHTResponse.Type
+  }
+
+  export interface DHTResponsePeerPeerInfoIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface DHTResponsePeerPeerInfoAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface DHTResponseValueFieldEvent {
+    field: 'value'
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<DHTResponse>): Uint8Array {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTResponse>): DHTResponse => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTResponse>): DHTResponse {
     return decodeMessage(buf, DHTResponse.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTResponse>): Generator<DHTResponseTypeFieldEvent | DHTResponsePeerPeerInfoIdFieldEvent | DHTResponsePeerPeerInfoAddrsFieldEvent | DHTResponseValueFieldEvent> {
+    return streamMessage(buf, DHTResponse.codec(), opts)
   }
 }
 
@@ -1128,7 +2001,7 @@ export namespace PeerInfo {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
 
               obj.addrs.push(reader.bytes())
@@ -1142,18 +2015,72 @@ export namespace PeerInfo {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          addrs: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}id`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
+                throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                index: obj.addrs,
+                value: reader.bytes()
+              }
+
+              obj.addrs++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<PeerInfo>): Uint8Array => {
+  export interface PeerInfoIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface PeerInfoAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<PeerInfo>): Uint8Array {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerInfo>): PeerInfo => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerInfo>): PeerInfo {
     return decodeMessage(buf, PeerInfo.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerInfo>): Generator<PeerInfoIdFieldEvent | PeerInfoAddrsFieldEvent> {
+    return streamMessage(buf, PeerInfo.codec(), opts)
   }
 }
 
@@ -1250,18 +2177,83 @@ export namespace ConnManagerRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: ConnManagerRequest.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peer`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}tag`,
+                value: reader.string()
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}weight`,
+                value: reader.int64()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<ConnManagerRequest>): Uint8Array => {
+  export interface ConnManagerRequestTypeFieldEvent {
+    field: 'type'
+    value: ConnManagerRequest.Type
+  }
+
+  export interface ConnManagerRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export interface ConnManagerRequestTagFieldEvent {
+    field: 'tag'
+    value: string
+  }
+
+  export interface ConnManagerRequestWeightFieldEvent {
+    field: 'weight'
+    value: bigint
+  }
+
+  export function encode (obj: Partial<ConnManagerRequest>): Uint8Array {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnManagerRequest>): ConnManagerRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnManagerRequest>): ConnManagerRequest {
     return decodeMessage(buf, ConnManagerRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<ConnManagerRequest>): Generator<ConnManagerRequestTypeFieldEvent | ConnManagerRequestPeerFieldEvent | ConnManagerRequestTagFieldEvent | ConnManagerRequestWeightFieldEvent> {
+    return streamMessage(buf, ConnManagerRequest.codec(), opts)
   }
 }
 
@@ -1310,18 +2302,47 @@ export namespace DisconnectRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peer`,
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<DisconnectRequest>): Uint8Array => {
+  export interface DisconnectRequestPeerFieldEvent {
+    field: 'peer'
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<DisconnectRequest>): Uint8Array {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DisconnectRequest>): DisconnectRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DisconnectRequest>): DisconnectRequest {
     return decodeMessage(buf, DisconnectRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DisconnectRequest>): Generator<DisconnectRequestPeerFieldEvent> {
+    return streamMessage(buf, DisconnectRequest.codec(), opts)
   }
 }
 
@@ -1410,18 +2431,71 @@ export namespace PSRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: PSRequest.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}topic`,
+                value: reader.string()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}data`,
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<PSRequest>): Uint8Array => {
+  export interface PSRequestTypeFieldEvent {
+    field: 'type'
+    value: PSRequest.Type
+  }
+
+  export interface PSRequestTopicFieldEvent {
+    field: 'topic'
+    value: string
+  }
+
+  export interface PSRequestDataFieldEvent {
+    field: 'data'
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<PSRequest>): Uint8Array {
     return encodeMessage(obj, PSRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSRequest>): PSRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSRequest>): PSRequest {
     return decodeMessage(buf, PSRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSRequest>): Generator<PSRequestTypeFieldEvent | PSRequestTopicFieldEvent | PSRequestDataFieldEvent> {
+    return streamMessage(buf, PSRequest.codec(), opts)
   }
 }
 
@@ -1504,7 +2578,7 @@ export namespace PSMessage {
             }
             case 4: {
               if (opts.limits?.topicIDs != null && obj.topicIDs.length === opts.limits.topicIDs) {
-                throw new MaxLengthError('Decode error - map field "topicIDs" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "topicIDs" had too many elements')
               }
 
               obj.topicIDs.push(reader.string())
@@ -1526,18 +2600,120 @@ export namespace PSMessage {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          topicIDs: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}from`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}data`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}seqno`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 4: {
+              if (opts.limits?.topicIDs != null && obj.topicIDs === opts.limits.topicIDs) {
+                throw new MaxLengthError('Streaming decode error - repeated field "topicIDs" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}topicIDs`,
+                index: obj.topicIDs,
+                value: reader.string()
+              }
+
+              obj.topicIDs++
+
+              break
+            }
+            case 5: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}signature`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 6: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}key`,
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<PSMessage>): Uint8Array => {
+  export interface PSMessageFromFieldEvent {
+    field: 'from'
+    value: Uint8Array
+  }
+
+  export interface PSMessageDataFieldEvent {
+    field: 'data'
+    value: Uint8Array
+  }
+
+  export interface PSMessageSeqnoFieldEvent {
+    field: 'seqno'
+    value: Uint8Array
+  }
+
+  export interface PSMessageTopicIDsFieldEvent {
+    field: 'topicIDs$entry'
+    index: number
+    value: string
+  }
+
+  export interface PSMessageSignatureFieldEvent {
+    field: 'signature'
+    value: Uint8Array
+  }
+
+  export interface PSMessageKeyFieldEvent {
+    field: 'key'
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<PSMessage>): Uint8Array {
     return encodeMessage(obj, PSMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSMessage>): PSMessage => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSMessage>): PSMessage {
     return decodeMessage(buf, PSMessage.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSMessage>): Generator<PSMessageFromFieldEvent | PSMessageDataFieldEvent | PSMessageSeqnoFieldEvent | PSMessageTopicIDsFieldEvent | PSMessageSignatureFieldEvent | PSMessageKeyFieldEvent> {
+    return streamMessage(buf, PSMessage.codec(), opts)
   }
 }
 
@@ -1587,7 +2763,7 @@ export namespace PSResponse {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.topics != null && obj.topics.length === opts.limits.topics) {
-                throw new MaxLengthError('Decode error - map field "topics" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "topics" had too many elements')
               }
 
               obj.topics.push(reader.string())
@@ -1595,7 +2771,7 @@ export namespace PSResponse {
             }
             case 2: {
               if (opts.limits?.peerIDs != null && obj.peerIDs.length === opts.limits.peerIDs) {
-                throw new MaxLengthError('Decode error - map field "peerIDs" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "peerIDs" had too many elements')
               }
 
               obj.peerIDs.push(reader.bytes())
@@ -1609,18 +2785,82 @@ export namespace PSResponse {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          topics: 0,
+          peerIDs: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.topics != null && obj.topics === opts.limits.topics) {
+                throw new MaxLengthError('Streaming decode error - repeated field "topics" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}topics`,
+                index: obj.topics,
+                value: reader.string()
+              }
+
+              obj.topics++
+
+              break
+            }
+            case 2: {
+              if (opts.limits?.peerIDs != null && obj.peerIDs === opts.limits.peerIDs) {
+                throw new MaxLengthError('Streaming decode error - repeated field "peerIDs" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}peerIDs`,
+                index: obj.peerIDs,
+                value: reader.bytes()
+              }
+
+              obj.peerIDs++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<PSResponse>): Uint8Array => {
+  export interface PSResponseTopicsFieldEvent {
+    field: 'topics$entry'
+    index: number
+    value: string
+  }
+
+  export interface PSResponsePeerIDsFieldEvent {
+    field: 'peerIDs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<PSResponse>): Uint8Array {
     return encodeMessage(obj, PSResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSResponse>): PSResponse => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSResponse>): PSResponse {
     return decodeMessage(buf, PSResponse.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PSResponse>): Generator<PSResponseTopicsFieldEvent | PSResponsePeerIDsFieldEvent> {
+    return streamMessage(buf, PSResponse.codec(), opts)
   }
 }
 
@@ -1700,7 +2940,7 @@ export namespace PeerstoreRequest {
             }
             case 3: {
               if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
-                throw new MaxLengthError('Decode error - map field "protos" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
               }
 
               obj.protos.push(reader.string())
@@ -1714,18 +2954,84 @@ export namespace PeerstoreRequest {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          protos: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: PeerstoreRequest.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}id`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 3: {
+              if (opts.limits?.protos != null && obj.protos === opts.limits.protos) {
+                throw new MaxLengthError('Streaming decode error - repeated field "protos" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}protos`,
+                index: obj.protos,
+                value: reader.string()
+              }
+
+              obj.protos++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<PeerstoreRequest>): Uint8Array => {
+  export interface PeerstoreRequestTypeFieldEvent {
+    field: 'type'
+    value: PeerstoreRequest.Type
+  }
+
+  export interface PeerstoreRequestIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface PeerstoreRequestProtosFieldEvent {
+    field: 'protos$entry'
+    index: number
+    value: string
+  }
+
+  export function encode (obj: Partial<PeerstoreRequest>): Uint8Array {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreRequest>): PeerstoreRequest => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreRequest>): PeerstoreRequest {
     return decodeMessage(buf, PeerstoreRequest.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreRequest>): Generator<PeerstoreRequestTypeFieldEvent | PeerstoreRequestIdFieldEvent | PeerstoreRequestProtosFieldEvent> {
+    return streamMessage(buf, PeerstoreRequest.codec(), opts)
   }
 }
 
@@ -1778,7 +3084,7 @@ export namespace PeerstoreResponse {
             }
             case 2: {
               if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
-                throw new MaxLengthError('Decode error - map field "protos" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
               }
 
               obj.protos.push(reader.string())
@@ -1792,17 +3098,77 @@ export namespace PeerstoreResponse {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          protos: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peer`, {
+                limits: opts.limits?.peer
+              })
+
+              break
+            }
+            case 2: {
+              if (opts.limits?.protos != null && obj.protos === opts.limits.protos) {
+                throw new MaxLengthError('Streaming decode error - repeated field "protos" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}protos`,
+                index: obj.protos,
+                value: reader.string()
+              }
+
+              obj.protos++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<PeerstoreResponse>): Uint8Array => {
+  export interface PeerstoreResponsePeerPeerInfoIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface PeerstoreResponsePeerPeerInfoAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface PeerstoreResponseProtosFieldEvent {
+    field: 'protos$entry'
+    index: number
+    value: string
+  }
+
+  export function encode (obj: Partial<PeerstoreResponse>): Uint8Array {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreResponse>): PeerstoreResponse => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreResponse>): PeerstoreResponse {
     return decodeMessage(buf, PeerstoreResponse.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreResponse>): Generator<PeerstoreResponsePeerPeerInfoIdFieldEvent | PeerstoreResponsePeerPeerInfoAddrsFieldEvent | PeerstoreResponseProtosFieldEvent> {
+    return streamMessage(buf, PeerstoreResponse.codec(), opts)
   }
 }

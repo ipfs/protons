@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -123,7 +123,7 @@ export namespace CircuitRelay {
               }
               case 2: {
                 if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                  throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                  throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
 
                 obj.addrs.push(reader.bytes())
@@ -137,18 +137,72 @@ export namespace CircuitRelay {
           }
 
           return obj
+        }, function * (reader, length, prefix, opts = {}) {
+          const obj = {
+            addrs: 0
+          }
+
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: `${prefix != null ? `${prefix}.` : ''}id`,
+                  value: reader.bytes()
+                }
+                break
+              }
+              case 2: {
+                if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
+                }
+
+                yield {
+                  field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                  index: obj.addrs,
+                  value: reader.bytes()
+                }
+
+                obj.addrs++
+
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<Peer>): Uint8Array => {
+    export interface PeerIdFieldEvent {
+      field: 'id'
+      value: Uint8Array
+    }
+
+    export interface PeerAddrsFieldEvent {
+      field: 'addrs$entry'
+      index: number
+      value: Uint8Array
+    }
+
+    export function encode (obj: Partial<Peer>): Uint8Array {
       return encodeMessage(obj, Peer.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer {
       return decodeMessage(buf, Peer.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Generator<PeerIdFieldEvent | PeerAddrsFieldEvent> {
+      return streamMessage(buf, Peer.codec(), opts)
     }
   }
 
@@ -221,17 +275,94 @@ export namespace CircuitRelay {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                value: CircuitRelay.Type.codec().decode(reader)
+              }
+              break
+            }
+            case 2: {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}srcPeer`, {
+                limits: opts.limits?.srcPeer
+              })
+
+              break
+            }
+            case 3: {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dstPeer`, {
+                limits: opts.limits?.dstPeer
+              })
+
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}.` : ''}code`,
+                value: CircuitRelay.Status.codec().decode(reader)
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<CircuitRelay>): Uint8Array => {
+  export interface CircuitRelayTypeFieldEvent {
+    field: 'type'
+    value: CircuitRelay.Type
+  }
+
+  export interface CircuitRelaySrcPeerPeerIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface CircuitRelaySrcPeerPeerAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface CircuitRelayDstPeerPeerIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface CircuitRelayDstPeerPeerAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface CircuitRelayCodeFieldEvent {
+    field: 'code'
+    value: CircuitRelay.Status
+  }
+
+  export function encode (obj: Partial<CircuitRelay>): Uint8Array {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): CircuitRelay => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): CircuitRelay {
     return decodeMessage(buf, CircuitRelay.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): Generator<CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerPeerIdFieldEvent | CircuitRelaySrcPeerPeerAddrsFieldEvent | CircuitRelayDstPeerPeerIdFieldEvent | CircuitRelayDstPeerPeerAddrsFieldEvent | CircuitRelayCodeFieldEvent> {
+    return streamMessage(buf, CircuitRelay.codec(), opts)
   }
 }

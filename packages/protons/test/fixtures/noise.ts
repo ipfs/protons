@@ -1,4 +1,6 @@
-import { decodeMessage, encodeMessage, message } from 'protons-runtime'
+/* eslint-disable require-yield */
+
+import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -73,18 +75,71 @@ export namespace pb {
           }
 
           return obj
+        }, function * (reader, length, prefix, opts = {}) {
+          const end = length == null ? reader.len : reader.pos + length
+
+          while (reader.pos < end) {
+            const tag = reader.uint32()
+
+            switch (tag >>> 3) {
+              case 1: {
+                yield {
+                  field: `${prefix != null ? `${prefix}.` : ''}identityKey`,
+                  value: reader.bytes()
+                }
+                break
+              }
+              case 2: {
+                yield {
+                  field: `${prefix != null ? `${prefix}.` : ''}identitySig`,
+                  value: reader.bytes()
+                }
+                break
+              }
+              case 3: {
+                yield {
+                  field: `${prefix != null ? `${prefix}.` : ''}data`,
+                  value: reader.bytes()
+                }
+                break
+              }
+              default: {
+                reader.skipType(tag & 7)
+                break
+              }
+            }
+          }
         })
       }
 
       return _codec
     }
 
-    export const encode = (obj: Partial<NoiseHandshakePayload>): Uint8Array => {
+    export interface NoiseHandshakePayloadIdentityKeyFieldEvent {
+      field: 'identityKey'
+      value: Uint8Array
+    }
+
+    export interface NoiseHandshakePayloadIdentitySigFieldEvent {
+      field: 'identitySig'
+      value: Uint8Array
+    }
+
+    export interface NoiseHandshakePayloadDataFieldEvent {
+      field: 'data'
+      value: Uint8Array
+    }
+
+    export function encode (obj: Partial<NoiseHandshakePayload>): Uint8Array {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
-    export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<NoiseHandshakePayload>): NoiseHandshakePayload => {
+    export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<NoiseHandshakePayload>): NoiseHandshakePayload {
       return decodeMessage(buf, NoiseHandshakePayload.codec(), opts)
+    }
+
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<NoiseHandshakePayload>): Generator<NoiseHandshakePayloadIdentityKeyFieldEvent | NoiseHandshakePayloadIdentitySigFieldEvent | NoiseHandshakePayloadDataFieldEvent> {
+      return streamMessage(buf, NoiseHandshakePayload.codec(), opts)
     }
   }
 
@@ -117,17 +172,34 @@ export namespace pb {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<pb>): Uint8Array => {
+  export function encode (obj: Partial<pb>): Uint8Array {
     return encodeMessage(obj, pb.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<pb>): pb => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<pb>): pb {
     return decodeMessage(buf, pb.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<pb>): Generator<{}> {
+    return streamMessage(buf, pb.codec(), opts)
   }
 }
