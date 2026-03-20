@@ -1,6 +1,6 @@
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface CircuitRelay {
@@ -50,7 +50,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Status {
-    export const codec = (): Codec<Status, any, any> => {
+    export const codec = (): Codec<Status> => {
       return enumeration<Status>(__StatusValues)
     }
   }
@@ -70,7 +70,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type, any, any> => {
+    export const codec = (): Codec<Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -81,11 +81,11 @@ export namespace CircuitRelay {
   }
 
   export namespace Peer {
-    let _codec: Codec<Peer, PeerStreamEvent, PeerStreamCollectionsEvent>
+    let _codec: Codec<Peer>
 
-    export const codec = (): Codec<Peer, PeerStreamEvent, PeerStreamCollectionsEvent> => {
+    export const codec = (): Codec<Peer> => {
       if (_codec == null) {
-        _codec = message<Peer, PeerStreamEvent, PeerStreamCollectionsEvent>((obj, w, opts = {}) => {
+        _codec = message<Peer>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -123,7 +123,7 @@ export namespace CircuitRelay {
               }
               case 2: {
                 if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
-                  throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                  throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
 
                 obj.addrs.push(reader.bytes())
@@ -137,18 +137,9 @@ export namespace CircuitRelay {
           }
 
           return obj
-        }, function * (reader, length, opts = {}) {
-          let obj: any
-
-          if (opts.emitCollections === true) {
-            obj = {
-              id: uint8ArrayAlloc(0),
-              addrs: []
-            }
-          } else {
-            obj = {
-              addrs: 0
-            }
+        }, function * (reader, length, prefix, opts = {}) {
+          const obj = {
+            addrs: 0
           }
 
           const end = length == null ? reader.len : reader.pos + length
@@ -159,28 +150,23 @@ export namespace CircuitRelay {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: 'id',
+                  field: `${prefix != null ? `${prefix}.` : ''}id`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
-                if (opts.limits?.addrs != null && (opts.emitCollections === true ? obj.addrs.length === opts.limits.addrs : obj.addrs === opts.limits.addrs)) {
-                  throw new MaxLengthError('Decode error - map field "addrs" had too many elements')
+                if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
+                  throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
 
                 const value = reader.bytes()
+                obj.addrs++
 
                 yield {
-                  field: 'addrs$value',
-                  index: opts.emitCollections === true ? obj.addrs.length : obj.addrs,
+                  field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                  index: obj.addrs,
                   value
-                }
-
-                if (opts.emitCollections === true) {
-                  obj.addrs.push(value)
-                } else {
-                  obj.addrs++
                 }
 
                 break
@@ -188,17 +174,6 @@ export namespace CircuitRelay {
               default: {
                 reader.skipType(tag & 7)
                 break
-              }
-            }
-          }
-
-          if (opts.emitCollections === true) {
-            for (const [key, value] of Object.entries(obj)) {
-              if (Array.isArray(value) || value instanceof Map) {
-                yield {
-                  field: key,
-                  value
-                }
               }
             }
           }
@@ -214,18 +189,10 @@ export namespace CircuitRelay {
     }
 
     export interface PeerAddrsFieldEvent {
-      field: 'addrs'
-      value: Uint8Array[]
-    }
-
-    export interface PeerAddrsValueEvent {
-      field: 'addrs$value'
+      field: 'addrs$entry'
       index: number
       value: Uint8Array
     }
-
-    export type PeerStreamEvent = PeerIdFieldEvent | PeerAddrsValueEvent
-    export type PeerStreamCollectionsEvent = PeerAddrsFieldEvent
 
     export function encode (obj: Partial<Peer>): Uint8Array {
       return encodeMessage(obj, Peer.codec())
@@ -235,18 +202,16 @@ export namespace CircuitRelay {
       return decodeMessage(buf, Peer.codec(), opts)
     }
 
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Peer>): Generator<PeerStreamEvent>
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Peer>): Generator<PeerStreamCollectionsEvent>
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Generator<PeerIdFieldEvent | PeerAddrsFieldEvent> {
       return streamMessage(buf, Peer.codec(), opts)
     }
   }
 
-  let _codec: Codec<CircuitRelay, CircuitRelayStreamEvent, CircuitRelayStreamCollectionsEvent>
+  let _codec: Codec<CircuitRelay>
 
-  export const codec = (): Codec<CircuitRelay, CircuitRelayStreamEvent, CircuitRelayStreamCollectionsEvent> => {
+  export const codec = (): Codec<CircuitRelay> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay, CircuitRelayStreamEvent, CircuitRelayStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<CircuitRelay>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -311,15 +276,7 @@ export namespace CircuitRelay {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -328,14 +285,14 @@ export namespace CircuitRelay {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'type',
+                field: `${prefix != null ? `${prefix}.` : ''}type`,
                 value: CircuitRelay.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: 'srcPeer',
+                field: `${prefix != null ? `${prefix}.` : ''}srcPeer`,
                 value: CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.srcPeer
                 })
@@ -344,7 +301,7 @@ export namespace CircuitRelay {
             }
             case 3: {
               yield {
-                field: 'dstPeer',
+                field: `${prefix != null ? `${prefix}.` : ''}dstPeer`,
                 value: CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.dstPeer
                 })
@@ -353,7 +310,7 @@ export namespace CircuitRelay {
             }
             case 4: {
               yield {
-                field: 'code',
+                field: `${prefix != null ? `${prefix}.` : ''}code`,
                 value: CircuitRelay.Status.codec().decode(reader)
               }
               break
@@ -361,17 +318,6 @@ export namespace CircuitRelay {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -386,23 +332,32 @@ export namespace CircuitRelay {
     value: CircuitRelay.Type
   }
 
-  export interface CircuitRelaySrcPeerFieldEvent {
-    field: 'srcPeer'
-    value: CircuitRelay.Peer
+  export interface CircuitRelaySrcPeerPeerIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
   }
 
-  export interface CircuitRelayDstPeerFieldEvent {
-    field: 'dstPeer'
-    value: CircuitRelay.Peer
+  export interface CircuitRelaySrcPeerPeerAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface CircuitRelayDstPeerPeerIdFieldEvent {
+    field: 'id'
+    value: Uint8Array
+  }
+
+  export interface CircuitRelayDstPeerPeerAddrsFieldEvent {
+    field: 'addrs$entry'
+    index: number
+    value: Uint8Array
   }
 
   export interface CircuitRelayCodeFieldEvent {
     field: 'code'
     value: CircuitRelay.Status
   }
-
-  export type CircuitRelayStreamEvent = CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerFieldEvent | CircuitRelayDstPeerFieldEvent | CircuitRelayCodeFieldEvent
-  export type CircuitRelayStreamCollectionsEvent = {}
 
   export function encode (obj: Partial<CircuitRelay>): Uint8Array {
     return encodeMessage(obj, CircuitRelay.codec())
@@ -412,9 +367,7 @@ export namespace CircuitRelay {
     return decodeMessage(buf, CircuitRelay.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<CircuitRelay>): Generator<CircuitRelayStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<CircuitRelay>): Generator<CircuitRelayStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): Generator<CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerPeerIdFieldEvent | CircuitRelaySrcPeerPeerAddrsFieldEvent | CircuitRelayDstPeerPeerIdFieldEvent | CircuitRelayDstPeerPeerAddrsFieldEvent | CircuitRelayCodeFieldEvent> {
     return streamMessage(buf, CircuitRelay.codec(), opts)
   }
 }

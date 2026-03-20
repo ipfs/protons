@@ -1,5 +1,7 @@
+/* eslint-disable require-yield */
+
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Basic {
@@ -8,11 +10,11 @@ export interface Basic {
 }
 
 export namespace Basic {
-  let _codec: Codec<Basic, BasicStreamEvent, BasicStreamCollectionsEvent>
+  let _codec: Codec<Basic>
 
-  export const codec = (): Codec<Basic, BasicStreamEvent, BasicStreamCollectionsEvent> => {
+  export const codec = (): Codec<Basic> => {
     if (_codec == null) {
-      _codec = message<Basic, BasicStreamEvent, BasicStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Basic>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -57,17 +59,7 @@ export namespace Basic {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            num: 0
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -76,14 +68,14 @@ export namespace Basic {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'foo',
+                field: `${prefix != null ? `${prefix}.` : ''}foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: 'num',
+                field: `${prefix != null ? `${prefix}.` : ''}num`,
                 value: reader.int32()
               }
               break
@@ -91,17 +83,6 @@ export namespace Basic {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -121,9 +102,6 @@ export namespace Basic {
     value: number
   }
 
-  export type BasicStreamEvent = BasicFooFieldEvent | BasicNumFieldEvent
-  export type BasicStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<Basic>): Uint8Array {
     return encodeMessage(obj, Basic.codec())
   }
@@ -132,9 +110,7 @@ export namespace Basic {
     return decodeMessage(buf, Basic.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Basic>): Generator<BasicStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Basic>): Generator<BasicStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Basic>): Generator<BasicFooFieldEvent | BasicNumFieldEvent> {
     return streamMessage(buf, Basic.codec(), opts)
   }
 }
@@ -142,11 +118,11 @@ export namespace Basic {
 export interface Empty {}
 
 export namespace Empty {
-  let _codec: Codec<Empty, EmptyStreamEvent, EmptyStreamCollectionsEvent>
+  let _codec: Codec<Empty>
 
-  export const codec = (): Codec<Empty, EmptyStreamEvent, EmptyStreamCollectionsEvent> => {
+  export const codec = (): Codec<Empty> => {
     if (_codec == null) {
-      _codec = message<Empty, EmptyStreamEvent, EmptyStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Empty>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -171,15 +147,7 @@ export namespace Empty {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -192,25 +160,11 @@ export namespace Empty {
             }
           }
         }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
-            }
-          }
-        }
       })
     }
 
     return _codec
   }
-
-  export type EmptyStreamEvent = {}
-  export type EmptyStreamCollectionsEvent = {}
 
   export function encode (obj: Partial<Empty>): Uint8Array {
     return encodeMessage(obj, Empty.codec())
@@ -220,9 +174,7 @@ export namespace Empty {
     return decodeMessage(buf, Empty.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Empty>): Generator<EmptyStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Empty>): Generator<EmptyStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Empty>): Generator<{}> {
     return streamMessage(buf, Empty.codec(), opts)
   }
 }

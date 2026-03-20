@@ -1,5 +1,5 @@
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface MessageWithRequired {
@@ -7,11 +7,11 @@ export interface MessageWithRequired {
 }
 
 export namespace MessageWithRequired {
-  let _codec: Codec<MessageWithRequired, MessageWithRequiredStreamEvent, MessageWithRequiredStreamCollectionsEvent>
+  let _codec: Codec<MessageWithRequired>
 
-  export const codec = (): Codec<MessageWithRequired, MessageWithRequiredStreamEvent, MessageWithRequiredStreamCollectionsEvent> => {
+  export const codec = (): Codec<MessageWithRequired> => {
     if (_codec == null) {
-      _codec = message<MessageWithRequired, MessageWithRequiredStreamEvent, MessageWithRequiredStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<MessageWithRequired>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -47,17 +47,7 @@ export namespace MessageWithRequired {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            scalarField: 0
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -66,7 +56,7 @@ export namespace MessageWithRequired {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'scalarField',
+                field: `${prefix != null ? `${prefix}.` : ''}scalarField`,
                 value: reader.int32()
               }
               break
@@ -74,17 +64,6 @@ export namespace MessageWithRequired {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -99,9 +78,6 @@ export namespace MessageWithRequired {
     value: number
   }
 
-  export type MessageWithRequiredStreamEvent = MessageWithRequiredScalarFieldFieldEvent
-  export type MessageWithRequiredStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<MessageWithRequired>): Uint8Array {
     return encodeMessage(obj, MessageWithRequired.codec())
   }
@@ -110,9 +86,7 @@ export namespace MessageWithRequired {
     return decodeMessage(buf, MessageWithRequired.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MessageWithRequired>): Generator<MessageWithRequiredStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MessageWithRequired>): Generator<MessageWithRequiredStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRequired>): Generator<MessageWithRequiredScalarFieldFieldEvent> {
     return streamMessage(buf, MessageWithRequired.codec(), opts)
   }
 }

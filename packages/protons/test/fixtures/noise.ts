@@ -1,6 +1,8 @@
+/* eslint-disable require-yield */
+
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface pb {}
@@ -13,11 +15,11 @@ export namespace pb {
   }
 
   export namespace NoiseHandshakePayload {
-    let _codec: Codec<NoiseHandshakePayload, NoiseHandshakePayloadStreamEvent, NoiseHandshakePayloadStreamCollectionsEvent>
+    let _codec: Codec<NoiseHandshakePayload>
 
-    export const codec = (): Codec<NoiseHandshakePayload, NoiseHandshakePayloadStreamEvent, NoiseHandshakePayloadStreamCollectionsEvent> => {
+    export const codec = (): Codec<NoiseHandshakePayload> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload, NoiseHandshakePayloadStreamEvent, NoiseHandshakePayloadStreamCollectionsEvent>((obj, w, opts = {}) => {
+        _codec = message<NoiseHandshakePayload>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -73,19 +75,7 @@ export namespace pb {
           }
 
           return obj
-        }, function * (reader, length, opts = {}) {
-          let obj: any
-
-          if (opts.emitCollections === true) {
-            obj = {
-              identityKey: uint8ArrayAlloc(0),
-              identitySig: uint8ArrayAlloc(0),
-              data: uint8ArrayAlloc(0)
-            }
-          } else {
-            obj = {}
-          }
-
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           while (reader.pos < end) {
@@ -94,21 +84,21 @@ export namespace pb {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: 'identityKey',
+                  field: `${prefix != null ? `${prefix}.` : ''}identityKey`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: 'identitySig',
+                  field: `${prefix != null ? `${prefix}.` : ''}identitySig`,
                   value: reader.bytes()
                 }
                 break
               }
               case 3: {
                 yield {
-                  field: 'data',
+                  field: `${prefix != null ? `${prefix}.` : ''}data`,
                   value: reader.bytes()
                 }
                 break
@@ -116,17 +106,6 @@ export namespace pb {
               default: {
                 reader.skipType(tag & 7)
                 break
-              }
-            }
-          }
-
-          if (opts.emitCollections === true) {
-            for (const [key, value] of Object.entries(obj)) {
-              if (Array.isArray(value) || value instanceof Map) {
-                yield {
-                  field: key,
-                  value
-                }
               }
             }
           }
@@ -151,9 +130,6 @@ export namespace pb {
       value: Uint8Array
     }
 
-    export type NoiseHandshakePayloadStreamEvent = NoiseHandshakePayloadIdentityKeyFieldEvent | NoiseHandshakePayloadIdentitySigFieldEvent | NoiseHandshakePayloadDataFieldEvent
-    export type NoiseHandshakePayloadStreamCollectionsEvent = {}
-
     export function encode (obj: Partial<NoiseHandshakePayload>): Uint8Array {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
@@ -162,18 +138,16 @@ export namespace pb {
       return decodeMessage(buf, NoiseHandshakePayload.codec(), opts)
     }
 
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<NoiseHandshakePayload>): Generator<NoiseHandshakePayloadStreamEvent>
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<NoiseHandshakePayload>): Generator<NoiseHandshakePayloadStreamCollectionsEvent>
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<NoiseHandshakePayload>): Generator<NoiseHandshakePayloadIdentityKeyFieldEvent | NoiseHandshakePayloadIdentitySigFieldEvent | NoiseHandshakePayloadDataFieldEvent> {
       return streamMessage(buf, NoiseHandshakePayload.codec(), opts)
     }
   }
 
-  let _codec: Codec<pb, pbStreamEvent, pbStreamCollectionsEvent>
+  let _codec: Codec<pb>
 
-  export const codec = (): Codec<pb, pbStreamEvent, pbStreamCollectionsEvent> => {
+  export const codec = (): Codec<pb> => {
     if (_codec == null) {
-      _codec = message<pb, pbStreamEvent, pbStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<pb>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -198,15 +172,7 @@ export namespace pb {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -219,25 +185,11 @@ export namespace pb {
             }
           }
         }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
-            }
-          }
-        }
       })
     }
 
     return _codec
   }
-
-  export type pbStreamEvent = {}
-  export type pbStreamCollectionsEvent = {}
 
   export function encode (obj: Partial<pb>): Uint8Array {
     return encodeMessage(obj, pb.codec())
@@ -247,9 +199,7 @@ export namespace pb {
     return decodeMessage(buf, pb.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<pb>): Generator<pbStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<pb>): Generator<pbStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<pb>): Generator<{}> {
     return streamMessage(buf, pb.codec(), opts)
   }
 }

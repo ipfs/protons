@@ -1,8 +1,6 @@
-/* eslint-disable complexity */
-
 import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum SingularEnum {
@@ -18,7 +16,7 @@ enum __SingularEnumValues {
 }
 
 export namespace SingularEnum {
-  export const codec = (): Codec<SingularEnum, any, any> => {
+  export const codec = (): Codec<SingularEnum> => {
     return enumeration<SingularEnum>(__SingularEnumValues)
   }
 }
@@ -29,11 +27,11 @@ export interface SingularSubMessage {
 }
 
 export namespace SingularSubMessage {
-  let _codec: Codec<SingularSubMessage, SingularSubMessageStreamEvent, SingularSubMessageStreamCollectionsEvent>
+  let _codec: Codec<SingularSubMessage>
 
-  export const codec = (): Codec<SingularSubMessage, SingularSubMessageStreamEvent, SingularSubMessageStreamCollectionsEvent> => {
+  export const codec = (): Codec<SingularSubMessage> => {
     if (_codec == null) {
-      _codec = message<SingularSubMessage, SingularSubMessageStreamEvent, SingularSubMessageStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<SingularSubMessage>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -79,18 +77,7 @@ export namespace SingularSubMessage {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            foo: '',
-            bar: 0
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -99,14 +86,14 @@ export namespace SingularSubMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'foo',
+                field: `${prefix != null ? `${prefix}.` : ''}foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: 'bar',
+                field: `${prefix != null ? `${prefix}.` : ''}bar`,
                 value: reader.int32()
               }
               break
@@ -114,17 +101,6 @@ export namespace SingularSubMessage {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -144,9 +120,6 @@ export namespace SingularSubMessage {
     value: number
   }
 
-  export type SingularSubMessageStreamEvent = SingularSubMessageFooFieldEvent | SingularSubMessageBarFieldEvent
-  export type SingularSubMessageStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<SingularSubMessage>): Uint8Array {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
@@ -155,9 +128,7 @@ export namespace SingularSubMessage {
     return decodeMessage(buf, SingularSubMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<SingularSubMessage>): Generator<SingularSubMessageStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<SingularSubMessage>): Generator<SingularSubMessageStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SingularSubMessage>): Generator<SingularSubMessageFooFieldEvent | SingularSubMessageBarFieldEvent> {
     return streamMessage(buf, SingularSubMessage.codec(), opts)
   }
 }
@@ -183,11 +154,11 @@ export interface Singular {
 }
 
 export namespace Singular {
-  let _codec: Codec<Singular, SingularStreamEvent, SingularStreamCollectionsEvent>
+  let _codec: Codec<Singular>
 
-  export const codec = (): Codec<Singular, SingularStreamEvent, SingularStreamCollectionsEvent> => {
+  export const codec = (): Codec<Singular> => {
     if (_codec == null) {
-      _codec = message<Singular, SingularStreamEvent, SingularStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Singular>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -384,32 +355,7 @@ export namespace Singular {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            double: 0,
-            float: 0,
-            int32: 0,
-            int64: 0n,
-            uint32: 0,
-            uint64: 0n,
-            sint32: 0,
-            sint64: 0n,
-            fixed32: 0,
-            fixed64: 0n,
-            sfixed32: 0,
-            sfixed64: 0n,
-            bool: false,
-            string: '',
-            bytes: uint8ArrayAlloc(0),
-            enum: SingularEnum.NO_VALUE
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -418,119 +364,119 @@ export namespace Singular {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'double',
+                field: `${prefix != null ? `${prefix}.` : ''}double`,
                 value: reader.double()
               }
               break
             }
             case 2: {
               yield {
-                field: 'float',
+                field: `${prefix != null ? `${prefix}.` : ''}float`,
                 value: reader.float()
               }
               break
             }
             case 3: {
               yield {
-                field: 'int32',
+                field: `${prefix != null ? `${prefix}.` : ''}int32`,
                 value: reader.int32()
               }
               break
             }
             case 4: {
               yield {
-                field: 'int64',
+                field: `${prefix != null ? `${prefix}.` : ''}int64`,
                 value: reader.int64()
               }
               break
             }
             case 5: {
               yield {
-                field: 'uint32',
+                field: `${prefix != null ? `${prefix}.` : ''}uint32`,
                 value: reader.uint32()
               }
               break
             }
             case 6: {
               yield {
-                field: 'uint64',
+                field: `${prefix != null ? `${prefix}.` : ''}uint64`,
                 value: reader.uint64()
               }
               break
             }
             case 7: {
               yield {
-                field: 'sint32',
+                field: `${prefix != null ? `${prefix}.` : ''}sint32`,
                 value: reader.sint32()
               }
               break
             }
             case 8: {
               yield {
-                field: 'sint64',
+                field: `${prefix != null ? `${prefix}.` : ''}sint64`,
                 value: reader.sint64()
               }
               break
             }
             case 9: {
               yield {
-                field: 'fixed32',
+                field: `${prefix != null ? `${prefix}.` : ''}fixed32`,
                 value: reader.fixed32()
               }
               break
             }
             case 10: {
               yield {
-                field: 'fixed64',
+                field: `${prefix != null ? `${prefix}.` : ''}fixed64`,
                 value: reader.fixed64()
               }
               break
             }
             case 11: {
               yield {
-                field: 'sfixed32',
+                field: `${prefix != null ? `${prefix}.` : ''}sfixed32`,
                 value: reader.sfixed32()
               }
               break
             }
             case 12: {
               yield {
-                field: 'sfixed64',
+                field: `${prefix != null ? `${prefix}.` : ''}sfixed64`,
                 value: reader.sfixed64()
               }
               break
             }
             case 13: {
               yield {
-                field: 'bool',
+                field: `${prefix != null ? `${prefix}.` : ''}bool`,
                 value: reader.bool()
               }
               break
             }
             case 14: {
               yield {
-                field: 'string',
+                field: `${prefix != null ? `${prefix}.` : ''}string`,
                 value: reader.string()
               }
               break
             }
             case 15: {
               yield {
-                field: 'bytes',
+                field: `${prefix != null ? `${prefix}.` : ''}bytes`,
                 value: reader.bytes()
               }
               break
             }
             case 16: {
               yield {
-                field: 'enum',
+                field: `${prefix != null ? `${prefix}.` : ''}enum`,
                 value: SingularEnum.codec().decode(reader)
               }
               break
             }
             case 17: {
               yield {
-                field: 'subMessage',
+                field: `${prefix != null ? `${prefix}.` : ''}subMessage`,
                 value: SingularSubMessage.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.subMessage
                 })
@@ -540,17 +486,6 @@ export namespace Singular {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -640,13 +575,15 @@ export namespace Singular {
     value: SingularEnum
   }
 
-  export interface SingularSubMessageFieldEvent {
-    field: 'subMessage'
-    value: SingularSubMessage
+  export interface SingularSubMessageSingularSubMessageFooFieldEvent {
+    field: 'foo'
+    value: string
   }
 
-  export type SingularStreamEvent = SingularDoubleFieldEvent | SingularFloatFieldEvent | SingularInt32FieldEvent | SingularInt64FieldEvent | SingularUint32FieldEvent | SingularUint64FieldEvent | SingularSint32FieldEvent | SingularSint64FieldEvent | SingularFixed32FieldEvent | SingularFixed64FieldEvent | SingularSfixed32FieldEvent | SingularSfixed64FieldEvent | SingularBoolFieldEvent | SingularStringFieldEvent | SingularBytesFieldEvent | SingularEnumFieldEvent | SingularSubMessageFieldEvent
-  export type SingularStreamCollectionsEvent = {}
+  export interface SingularSubMessageSingularSubMessageBarFieldEvent {
+    field: 'bar'
+    value: number
+  }
 
   export function encode (obj: Partial<Singular>): Uint8Array {
     return encodeMessage(obj, Singular.codec())
@@ -656,9 +593,7 @@ export namespace Singular {
     return decodeMessage(buf, Singular.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Singular>): Generator<SingularStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Singular>): Generator<SingularStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Singular>): Generator<SingularDoubleFieldEvent | SingularFloatFieldEvent | SingularInt32FieldEvent | SingularInt64FieldEvent | SingularUint32FieldEvent | SingularUint64FieldEvent | SingularSint32FieldEvent | SingularSint64FieldEvent | SingularFixed32FieldEvent | SingularFixed64FieldEvent | SingularSfixed32FieldEvent | SingularSfixed64FieldEvent | SingularBoolFieldEvent | SingularStringFieldEvent | SingularBytesFieldEvent | SingularEnumFieldEvent | SingularSubMessageSingularSubMessageFooFieldEvent | SingularSubMessageSingularSubMessageBarFieldEvent> {
     return streamMessage(buf, Singular.codec(), opts)
   }
 }

@@ -1,5 +1,7 @@
+/* eslint-disable require-yield */
+
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Foo {
@@ -7,11 +9,11 @@ export interface Foo {
 }
 
 export namespace Foo {
-  let _codec: Codec<Foo, FooStreamEvent, FooStreamCollectionsEvent>
+  let _codec: Codec<Foo>
 
-  export const codec = (): Codec<Foo, FooStreamEvent, FooStreamCollectionsEvent> => {
+  export const codec = (): Codec<Foo> => {
     if (_codec == null) {
-      _codec = message<Foo, FooStreamEvent, FooStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Foo>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -45,15 +47,7 @@ export namespace Foo {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -62,7 +56,7 @@ export namespace Foo {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'baz',
+                field: `${prefix != null ? `${prefix}.` : ''}baz`,
                 value: reader.uint32()
               }
               break
@@ -70,17 +64,6 @@ export namespace Foo {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -95,9 +78,6 @@ export namespace Foo {
     value: number
   }
 
-  export type FooStreamEvent = FooBazFieldEvent
-  export type FooStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<Foo>): Uint8Array {
     return encodeMessage(obj, Foo.codec())
   }
@@ -106,9 +86,7 @@ export namespace Foo {
     return decodeMessage(buf, Foo.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Foo>): Generator<FooStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Foo>): Generator<FooStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Foo>): Generator<FooBazFieldEvent> {
     return streamMessage(buf, Foo.codec(), opts)
   }
 }
@@ -118,11 +96,11 @@ export interface Bar {
 }
 
 export namespace Bar {
-  let _codec: Codec<Bar, BarStreamEvent, BarStreamCollectionsEvent>
+  let _codec: Codec<Bar>
 
-  export const codec = (): Codec<Bar, BarStreamEvent, BarStreamCollectionsEvent> => {
+  export const codec = (): Codec<Bar> => {
     if (_codec == null) {
-      _codec = message<Bar, BarStreamEvent, BarStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Bar>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -158,15 +136,7 @@ export namespace Bar {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -175,7 +145,7 @@ export namespace Bar {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'tmp',
+                field: `${prefix != null ? `${prefix}.` : ''}tmp`,
                 value: Foo.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.tmp
                 })
@@ -188,30 +158,16 @@ export namespace Bar {
             }
           }
         }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
-            }
-          }
-        }
       })
     }
 
     return _codec
   }
 
-  export interface BarTmpFieldEvent {
-    field: 'tmp'
-    value: Foo
+  export interface BarTmpFooBazFieldEvent {
+    field: 'baz'
+    value: number
   }
-
-  export type BarStreamEvent = BarTmpFieldEvent
-  export type BarStreamCollectionsEvent = {}
 
   export function encode (obj: Partial<Bar>): Uint8Array {
     return encodeMessage(obj, Bar.codec())
@@ -221,9 +177,7 @@ export namespace Bar {
     return decodeMessage(buf, Bar.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Bar>): Generator<BarStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Bar>): Generator<BarStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Bar>): Generator<BarTmpFooBazFieldEvent> {
     return streamMessage(buf, Bar.codec(), opts)
   }
 }
@@ -241,7 +195,7 @@ enum __FOOValues {
 }
 
 export namespace FOO {
-  export const codec = (): Codec<FOO, any, any> => {
+  export const codec = (): Codec<FOO> => {
     return enumeration<FOO>(__FOOValues)
   }
 }
@@ -251,11 +205,11 @@ export interface Yo {
 }
 
 export namespace Yo {
-  let _codec: Codec<Yo, YoStreamEvent, YoStreamCollectionsEvent>
+  let _codec: Codec<Yo>
 
-  export const codec = (): Codec<Yo, YoStreamEvent, YoStreamCollectionsEvent> => {
+  export const codec = (): Codec<Yo> => {
     if (_codec == null) {
-      _codec = message<Yo, YoStreamEvent, YoStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Yo>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -283,7 +237,7 @@ export namespace Yo {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.lol != null && obj.lol.length === opts.limits.lol) {
-                throw new MaxLengthError('Decode error - map field "lol" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "lol" had too many elements')
               }
 
               obj.lol.push(FOO.codec().decode(reader))
@@ -297,17 +251,9 @@ export namespace Yo {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            lol: []
-          }
-        } else {
-          obj = {
-            lol: 0
-          }
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          lol: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -317,22 +263,17 @@ export namespace Yo {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.lol != null && (opts.emitCollections === true ? obj.lol.length === opts.limits.lol : obj.lol === opts.limits.lol)) {
-                throw new MaxLengthError('Decode error - map field "lol" had too many elements')
+              if (opts.limits?.lol != null && obj.lol === opts.limits.lol) {
+                throw new MaxLengthError('Decode error - repeated field "lol" had too many elements')
               }
 
               const value = FOO.codec().decode(reader)
+              obj.lol++
 
               yield {
-                field: 'lol$value',
-                index: opts.emitCollections === true ? obj.lol.length : obj.lol,
+                field: `${prefix != null ? `${prefix}.` : ''}lol`,
+                index: obj.lol,
                 value
-              }
-
-              if (opts.emitCollections === true) {
-                obj.lol.push(value)
-              } else {
-                obj.lol++
               }
 
               break
@@ -343,36 +284,11 @@ export namespace Yo {
             }
           }
         }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
-            }
-          }
-        }
       })
     }
 
     return _codec
   }
-
-  export interface YoLolFieldEvent {
-    field: 'lol'
-    value: FOO[]
-  }
-
-  export interface YoLolValueEvent {
-    field: 'lol$value'
-    index: number
-    value: FOO
-  }
-
-  export type YoStreamEvent = YoLolValueEvent
-  export type YoStreamCollectionsEvent = YoLolFieldEvent
 
   export function encode (obj: Partial<Yo>): Uint8Array {
     return encodeMessage(obj, Yo.codec())
@@ -382,9 +298,7 @@ export namespace Yo {
     return decodeMessage(buf, Yo.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Yo>): Generator<YoStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Yo>): Generator<YoStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Yo>): Generator<{}> {
     return streamMessage(buf, Yo.codec(), opts)
   }
 }
@@ -395,11 +309,11 @@ export interface Lol {
 }
 
 export namespace Lol {
-  let _codec: Codec<Lol, LolStreamEvent, LolStreamCollectionsEvent>
+  let _codec: Codec<Lol>
 
-  export const codec = (): Codec<Lol, LolStreamEvent, LolStreamCollectionsEvent> => {
+  export const codec = (): Codec<Lol> => {
     if (_codec == null) {
-      _codec = message<Lol, LolStreamEvent, LolStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Lol>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -444,15 +358,7 @@ export namespace Lol {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -461,14 +367,14 @@ export namespace Lol {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'lol',
+                field: `${prefix != null ? `${prefix}.` : ''}lol`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: 'b',
+                field: `${prefix != null ? `${prefix}.` : ''}b`,
                 value: Bar.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.b
                 })
@@ -478,17 +384,6 @@ export namespace Lol {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -503,13 +398,10 @@ export namespace Lol {
     value: string
   }
 
-  export interface LolBFieldEvent {
-    field: 'b'
-    value: Bar
+  export interface LolBBarTmpFooBazFieldEvent {
+    field: 'baz'
+    value: number
   }
-
-  export type LolStreamEvent = LolLolFieldEvent | LolBFieldEvent
-  export type LolStreamCollectionsEvent = {}
 
   export function encode (obj: Partial<Lol>): Uint8Array {
     return encodeMessage(obj, Lol.codec())
@@ -519,9 +411,7 @@ export namespace Lol {
     return decodeMessage(buf, Lol.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Lol>): Generator<LolStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Lol>): Generator<LolStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Lol>): Generator<LolLolFieldEvent | LolBBarTmpFooBazFieldEvent> {
     return streamMessage(buf, Lol.codec(), opts)
   }
 }
@@ -534,11 +424,11 @@ export interface Test {
 }
 
 export namespace Test {
-  let _codec: Codec<Test, TestStreamEvent, TestStreamCollectionsEvent>
+  let _codec: Codec<Test>
 
-  export const codec = (): Codec<Test, TestStreamEvent, TestStreamCollectionsEvent> => {
+  export const codec = (): Codec<Test> => {
     if (_codec == null) {
-      _codec = message<Test, TestStreamEvent, TestStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<Test>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -601,15 +491,7 @@ export namespace Test {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {}
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -618,7 +500,7 @@ export namespace Test {
           switch (tag >>> 3) {
             case 6: {
               yield {
-                field: 'meh',
+                field: `${prefix != null ? `${prefix}.` : ''}meh`,
                 value: Lol.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.meh
                 })
@@ -627,21 +509,21 @@ export namespace Test {
             }
             case 3: {
               yield {
-                field: 'hello',
+                field: `${prefix != null ? `${prefix}.` : ''}hello`,
                 value: reader.uint32()
               }
               break
             }
             case 1: {
               yield {
-                field: 'foo',
+                field: `${prefix != null ? `${prefix}.` : ''}foo`,
                 value: reader.string()
               }
               break
             }
             case 7: {
               yield {
-                field: 'payload',
+                field: `${prefix != null ? `${prefix}.` : ''}payload`,
                 value: reader.bytes()
               }
               break
@@ -652,26 +534,20 @@ export namespace Test {
             }
           }
         }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
-            }
-          }
-        }
       })
     }
 
     return _codec
   }
 
-  export interface TestMehFieldEvent {
-    field: 'meh'
-    value: Lol
+  export interface TestMehLolLolFieldEvent {
+    field: 'lol'
+    value: string
+  }
+
+  export interface TestMehLolBBarTmpFooBazFieldEvent {
+    field: 'baz'
+    value: number
   }
 
   export interface TestHelloFieldEvent {
@@ -689,9 +565,6 @@ export namespace Test {
     value: Uint8Array
   }
 
-  export type TestStreamEvent = TestMehFieldEvent | TestHelloFieldEvent | TestFooFieldEvent | TestPayloadFieldEvent
-  export type TestStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<Test>): Uint8Array {
     return encodeMessage(obj, Test.codec())
   }
@@ -700,9 +573,7 @@ export namespace Test {
     return decodeMessage(buf, Test.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<Test>): Generator<TestStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<Test>): Generator<TestStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Test>): Generator<TestMehLolLolFieldEvent | TestMehLolBBarTmpFooBazFieldEvent | TestHelloFieldEvent | TestFooFieldEvent | TestPayloadFieldEvent> {
     return streamMessage(buf, Test.codec(), opts)
   }
 }

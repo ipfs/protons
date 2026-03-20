@@ -59,40 +59,19 @@ export interface DecodeFunction<T> {
   (reader: Reader, length?: number, opts?: DecodeOptions<T>): T
 }
 
-export interface StreamingDecodeOptions<T> extends DecodeOptions<T> {
-  /**
-   * If true, yield a value event for repeated elements/maps, otherwise only
-   * yield events for collection members
-   *
-   * @default false
-   */
-  emitCollections?: false
+export interface StreamFunction<T> {
+  (reader: Reader, length?: number, prefix?: string, opts?: DecodeOptions<T>): Generator<any>
 }
 
-export interface StreamingDecodeWithCollectionsOptions<T> extends DecodeOptions<T> {
-  /**
-   * If true, yield a value event for repeated elements/maps, otherwise only
-   * yield events for collection members
-   *
-   * @default false
-   */
-  emitCollections: true
-}
-
-export interface StreamFunction<T, StreamEvent, StreamCollectionsEvent> {
-  (reader: Reader, length?: number, opts?: StreamingDecodeOptions<T>): Generator<StreamEvent>
-  (reader: Reader, length?: number, opts?: StreamingDecodeWithCollectionsOptions<T>): Generator<StreamCollectionsEvent>
-}
-
-export interface Codec<T, StreamEvent, StreamCollectionsEvent> {
+export interface Codec<T> {
   name: string
   type: number
   encode: EncodeFunction<T>
   decode: DecodeFunction<T>
-  stream: StreamFunction<T, StreamEvent, StreamCollectionsEvent>
+  stream: StreamFunction<T>
 }
 
-export function createCodec <T, StreamEvent, StreamCollectionsEvent> (name: string, type: number, encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T, StreamEvent, StreamCollectionsEvent>): Codec<T, StreamEvent, StreamCollectionsEvent> {
+export function createCodec <T> (name: string, type: number, encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T>): Codec<T> {
   return {
     name,
     type,

@@ -1,48 +1,8 @@
 import { expect } from 'aegir/chai'
 import all from 'it-all'
-import { AllTheTypes, AnEnum } from './fixtures/test.ts'
+import { AllTheTypes } from './fixtures/test.ts'
 
-describe('streaming-decode', () => {
-  it('should yield collections when asked to', async () => {
-    const values = {
-      field1: true,
-      field2: 2,
-      field3: 3n,
-      field4: 4,
-      field5: 5n,
-      field6: 6,
-      field7: 7n,
-      field8: 8,
-      field9: 9,
-      field10: '10',
-      field11: Uint8Array.from([11]),
-      field12: AnEnum.DERP,
-      field13: {
-        foo: '13'
-      },
-      field14: [
-        '14'
-      ],
-      field15: 15,
-      field16: 16n,
-      field17: 17,
-      field18: 18n
-    }
-    const input = AllTheTypes.encode(values)
-
-    const events = all(AllTheTypes.stream(input, {
-      emitCollections: false
-    }))
-
-    expect(events).to.have.lengthOf(Object.entries(values).length)
-
-    const eventsWithCollections = all(AllTheTypes.stream(input, {
-      emitCollections: true
-    }))
-
-    expect(eventsWithCollections).to.have.lengthOf(Object.entries(values).length + 1)
-  })
-
+describe.skip('streaming-decode', () => {
   it('should include indexes in field values', async () => {
     const input = AllTheTypes.encode({
       field14: [

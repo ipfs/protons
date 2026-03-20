@@ -5,6 +5,6 @@ export interface Factory<A, T> {
   new (obj: A): T
 }
 
-export function message <T, StreamEvent, StreamCollectionEvent> (encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T, any, any>): Codec<T, StreamEvent, StreamCollectionEvent> {
+export function message <T> (encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T>): Codec<T> {
   return createCodec('message', CODEC_TYPES.LENGTH_DELIMITED, encode, decode, stream)
 }

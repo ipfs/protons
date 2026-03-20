@@ -1,7 +1,5 @@
-/* eslint-disable complexity */
-
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum AnEnum {
@@ -15,7 +13,7 @@ enum __AnEnumValues {
 }
 
 export namespace AnEnum {
-  export const codec = (): Codec<AnEnum, any, any> => {
+  export const codec = (): Codec<AnEnum> => {
     return enumeration<AnEnum>(__AnEnumValues)
   }
 }
@@ -25,11 +23,11 @@ export interface SubMessage {
 }
 
 export namespace SubMessage {
-  let _codec: Codec<SubMessage, SubMessageStreamEvent, SubMessageStreamCollectionsEvent>
+  let _codec: Codec<SubMessage>
 
-  export const codec = (): Codec<SubMessage, SubMessageStreamEvent, SubMessageStreamCollectionsEvent> => {
+  export const codec = (): Codec<SubMessage> => {
     if (_codec == null) {
-      _codec = message<SubMessage, SubMessageStreamEvent, SubMessageStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<SubMessage>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -65,17 +63,7 @@ export namespace SubMessage {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            foo: ''
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -84,7 +72,7 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'foo',
+                field: `${prefix != null ? `${prefix}.` : ''}foo`,
                 value: reader.string()
               }
               break
@@ -92,17 +80,6 @@ export namespace SubMessage {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -117,9 +94,6 @@ export namespace SubMessage {
     value: string
   }
 
-  export type SubMessageStreamEvent = SubMessageFooFieldEvent
-  export type SubMessageStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<SubMessage>): Uint8Array {
     return encodeMessage(obj, SubMessage.codec())
   }
@@ -128,9 +102,7 @@ export namespace SubMessage {
     return decodeMessage(buf, SubMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<SubMessage>): Generator<SubMessageStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<SubMessage>): Generator<SubMessageStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): Generator<SubMessageFooFieldEvent> {
     return streamMessage(buf, SubMessage.codec(), opts)
   }
 }
@@ -157,11 +129,11 @@ export interface AllTheTypes {
 }
 
 export namespace AllTheTypes {
-  let _codec: Codec<AllTheTypes, AllTheTypesStreamEvent, AllTheTypesStreamCollectionsEvent>
+  let _codec: Codec<AllTheTypes>
 
-  export const codec = (): Codec<AllTheTypes, AllTheTypesStreamEvent, AllTheTypesStreamCollectionsEvent> => {
+  export const codec = (): Codec<AllTheTypes> => {
     if (_codec == null) {
-      _codec = message<AllTheTypes, AllTheTypesStreamEvent, AllTheTypesStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<AllTheTypes>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -328,7 +300,7 @@ export namespace AllTheTypes {
             }
             case 14: {
               if (opts.limits?.field14 != null && obj.field14.length === opts.limits.field14) {
-                throw new MaxLengthError('Decode error - map field "field14" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "field14" had too many elements')
               }
 
               obj.field14.push(reader.string())
@@ -358,17 +330,9 @@ export namespace AllTheTypes {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            field14: []
-          }
-        } else {
-          obj = {
-            field14: 0
-          }
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          field14: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
@@ -379,91 +343,91 @@ export namespace AllTheTypes {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'field1',
+                field: `${prefix != null ? `${prefix}.` : ''}field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
               yield {
-                field: 'field2',
+                field: `${prefix != null ? `${prefix}.` : ''}field2`,
                 value: reader.int32()
               }
               break
             }
             case 3: {
               yield {
-                field: 'field3',
+                field: `${prefix != null ? `${prefix}.` : ''}field3`,
                 value: reader.int64()
               }
               break
             }
             case 4: {
               yield {
-                field: 'field4',
+                field: `${prefix != null ? `${prefix}.` : ''}field4`,
                 value: reader.uint32()
               }
               break
             }
             case 5: {
               yield {
-                field: 'field5',
+                field: `${prefix != null ? `${prefix}.` : ''}field5`,
                 value: reader.uint64()
               }
               break
             }
             case 6: {
               yield {
-                field: 'field6',
+                field: `${prefix != null ? `${prefix}.` : ''}field6`,
                 value: reader.sint32()
               }
               break
             }
             case 7: {
               yield {
-                field: 'field7',
+                field: `${prefix != null ? `${prefix}.` : ''}field7`,
                 value: reader.sint64()
               }
               break
             }
             case 8: {
               yield {
-                field: 'field8',
+                field: `${prefix != null ? `${prefix}.` : ''}field8`,
                 value: reader.double()
               }
               break
             }
             case 9: {
               yield {
-                field: 'field9',
+                field: `${prefix != null ? `${prefix}.` : ''}field9`,
                 value: reader.float()
               }
               break
             }
             case 10: {
               yield {
-                field: 'field10',
+                field: `${prefix != null ? `${prefix}.` : ''}field10`,
                 value: reader.string()
               }
               break
             }
             case 11: {
               yield {
-                field: 'field11',
+                field: `${prefix != null ? `${prefix}.` : ''}field11`,
                 value: reader.bytes()
               }
               break
             }
             case 12: {
               yield {
-                field: 'field12',
+                field: `${prefix != null ? `${prefix}.` : ''}field12`,
                 value: AnEnum.codec().decode(reader)
               }
               break
             }
             case 13: {
               yield {
-                field: 'field13',
+                field: `${prefix != null ? `${prefix}.` : ''}field13`,
                 value: SubMessage.codec().decode(reader, reader.uint32(), {
                   limits: opts.limits?.field13
                 })
@@ -471,50 +435,45 @@ export namespace AllTheTypes {
               break
             }
             case 14: {
-              if (opts.limits?.field14 != null && (opts.emitCollections === true ? obj.field14.length === opts.limits.field14 : obj.field14 === opts.limits.field14)) {
-                throw new MaxLengthError('Decode error - map field "field14" had too many elements')
+              if (opts.limits?.field14 != null && obj.field14 === opts.limits.field14) {
+                throw new MaxLengthError('Decode error - repeated field "field14" had too many elements')
               }
 
               const value = reader.string()
+              obj.field14++
 
               yield {
-                field: 'field14$value',
-                index: opts.emitCollections === true ? obj.field14.length : obj.field14,
+                field: `${prefix != null ? `${prefix}.` : ''}field14`,
+                index: obj.field14,
                 value
-              }
-
-              if (opts.emitCollections === true) {
-                obj.field14.push(value)
-              } else {
-                obj.field14++
               }
 
               break
             }
             case 15: {
               yield {
-                field: 'field15',
+                field: `${prefix != null ? `${prefix}.` : ''}field15`,
                 value: reader.fixed32()
               }
               break
             }
             case 16: {
               yield {
-                field: 'field16',
+                field: `${prefix != null ? `${prefix}.` : ''}field16`,
                 value: reader.fixed64()
               }
               break
             }
             case 17: {
               yield {
-                field: 'field17',
+                field: `${prefix != null ? `${prefix}.` : ''}field17`,
                 value: reader.sfixed32()
               }
               break
             }
             case 18: {
               yield {
-                field: 'field18',
+                field: `${prefix != null ? `${prefix}.` : ''}field18`,
                 value: reader.sfixed64()
               }
               break
@@ -522,17 +481,6 @@ export namespace AllTheTypes {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -602,18 +550,13 @@ export namespace AllTheTypes {
     value: AnEnum
   }
 
-  export interface AllTheTypesField13FieldEvent {
-    field: 'field13'
-    value: SubMessage
+  export interface AllTheTypesField13SubMessageFooFieldEvent {
+    field: 'foo'
+    value: string
   }
 
   export interface AllTheTypesField14FieldEvent {
-    field: 'field14'
-    value: string[]
-  }
-
-  export interface AllTheTypesField14ValueEvent {
-    field: 'field14$value'
+    field: 'field14$entry'
     index: number
     value: string
   }
@@ -638,9 +581,6 @@ export namespace AllTheTypes {
     value: bigint
   }
 
-  export type AllTheTypesStreamEvent = AllTheTypesField1FieldEvent | AllTheTypesField2FieldEvent | AllTheTypesField3FieldEvent | AllTheTypesField4FieldEvent | AllTheTypesField5FieldEvent | AllTheTypesField6FieldEvent | AllTheTypesField7FieldEvent | AllTheTypesField8FieldEvent | AllTheTypesField9FieldEvent | AllTheTypesField10FieldEvent | AllTheTypesField11FieldEvent | AllTheTypesField12FieldEvent | AllTheTypesField13FieldEvent | AllTheTypesField14ValueEvent | AllTheTypesField15FieldEvent | AllTheTypesField16FieldEvent | AllTheTypesField17FieldEvent | AllTheTypesField18FieldEvent
-  export type AllTheTypesStreamCollectionsEvent = AllTheTypesField14FieldEvent
-
   export function encode (obj: Partial<AllTheTypes>): Uint8Array {
     return encodeMessage(obj, AllTheTypes.codec())
   }
@@ -649,9 +589,7 @@ export namespace AllTheTypes {
     return decodeMessage(buf, AllTheTypes.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<AllTheTypes>): Generator<AllTheTypesStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<AllTheTypes>): Generator<AllTheTypesStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): Generator<AllTheTypesField1FieldEvent | AllTheTypesField2FieldEvent | AllTheTypesField3FieldEvent | AllTheTypesField4FieldEvent | AllTheTypesField5FieldEvent | AllTheTypesField6FieldEvent | AllTheTypesField7FieldEvent | AllTheTypesField8FieldEvent | AllTheTypesField9FieldEvent | AllTheTypesField10FieldEvent | AllTheTypesField11FieldEvent | AllTheTypesField12FieldEvent | AllTheTypesField13SubMessageFooFieldEvent | AllTheTypesField14FieldEvent | AllTheTypesField15FieldEvent | AllTheTypesField16FieldEvent | AllTheTypesField17FieldEvent | AllTheTypesField18FieldEvent> {
     return streamMessage(buf, AllTheTypes.codec(), opts)
   }
 }

@@ -1,5 +1,5 @@
 import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
-import type { Codec, DecodeOptions, StreamingDecodeOptions, StreamingDecodeWithCollectionsOptions } from 'protons-runtime'
+import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export enum EnumType {
@@ -13,7 +13,7 @@ enum __EnumTypeValues {
 }
 
 export namespace EnumType {
-  export const codec = (): Codec<EnumType, any, any> => {
+  export const codec = (): Codec<EnumType> => {
     return enumeration<EnumType>(__EnumTypeValues)
   }
 }
@@ -27,11 +27,11 @@ export interface OneOfMessage {
 }
 
 export namespace OneOfMessage {
-  let _codec: Codec<OneOfMessage, OneOfMessageStreamEvent, OneOfMessageStreamCollectionsEvent>
+  let _codec: Codec<OneOfMessage>
 
-  export const codec = (): Codec<OneOfMessage, OneOfMessageStreamEvent, OneOfMessageStreamCollectionsEvent> => {
+  export const codec = (): Codec<OneOfMessage> => {
     if (_codec == null) {
-      _codec = message<OneOfMessage, OneOfMessageStreamEvent, OneOfMessageStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<OneOfMessage>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -137,17 +137,7 @@ export namespace OneOfMessage {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            fieldFive: ''
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -156,35 +146,35 @@ export namespace OneOfMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'fieldOne',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: 'fieldTwo',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: 'fieldThree',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: 'fieldFour',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: 'fieldFive',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFive`,
                 value: reader.string()
               }
               break
@@ -192,33 +182,6 @@ export namespace OneOfMessage {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (obj.fieldTwo != null) {
-          delete obj.fieldOne
-        }
-
-        if (obj.fieldOne != null) {
-          delete obj.fieldTwo
-        }
-
-        if (obj.fieldFour != null) {
-          delete obj.fieldThree
-        }
-
-        if (obj.fieldThree != null) {
-          delete obj.fieldFour
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -253,9 +216,6 @@ export namespace OneOfMessage {
     value: string
   }
 
-  export type OneOfMessageStreamEvent = OneOfMessageFieldOneFieldEvent | OneOfMessageFieldTwoFieldEvent | OneOfMessageFieldThreeFieldEvent | OneOfMessageFieldFourFieldEvent | OneOfMessageFieldFiveFieldEvent
-  export type OneOfMessageStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<OneOfMessage>): Uint8Array {
     return encodeMessage(obj, OneOfMessage.codec())
   }
@@ -264,9 +224,7 @@ export namespace OneOfMessage {
     return decodeMessage(buf, OneOfMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<OneOfMessage>): Generator<OneOfMessageStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<OneOfMessage>): Generator<OneOfMessageStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<OneOfMessage>): Generator<OneOfMessageFieldOneFieldEvent | OneOfMessageFieldTwoFieldEvent | OneOfMessageFieldThreeFieldEvent | OneOfMessageFieldFourFieldEvent | OneOfMessageFieldFiveFieldEvent> {
     return streamMessage(buf, OneOfMessage.codec(), opts)
   }
 }
@@ -280,11 +238,11 @@ export interface MessageWithoutOneOfs {
 }
 
 export namespace MessageWithoutOneOfs {
-  let _codec: Codec<MessageWithoutOneOfs, MessageWithoutOneOfsStreamEvent, MessageWithoutOneOfsStreamCollectionsEvent>
+  let _codec: Codec<MessageWithoutOneOfs>
 
-  export const codec = (): Codec<MessageWithoutOneOfs, MessageWithoutOneOfsStreamEvent, MessageWithoutOneOfsStreamCollectionsEvent> => {
+  export const codec = (): Codec<MessageWithoutOneOfs> => {
     if (_codec == null) {
-      _codec = message<MessageWithoutOneOfs, MessageWithoutOneOfsStreamEvent, MessageWithoutOneOfsStreamCollectionsEvent>((obj, w, opts = {}) => {
+      _codec = message<MessageWithoutOneOfs>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -360,21 +318,7 @@ export namespace MessageWithoutOneOfs {
         }
 
         return obj
-      }, function * (reader, length, opts = {}) {
-        let obj: any
-
-        if (opts.emitCollections === true) {
-          obj = {
-            fieldOne: '',
-            fieldTwo: '',
-            fieldThree: EnumType.Val1,
-            fieldFour: EnumType.Val1,
-            fieldFive: ''
-          }
-        } else {
-          obj = {}
-        }
-
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         while (reader.pos < end) {
@@ -383,35 +327,35 @@ export namespace MessageWithoutOneOfs {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: 'fieldOne',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: 'fieldTwo',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: 'fieldThree',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: 'fieldFour',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: 'fieldFive',
+                field: `${prefix != null ? `${prefix}.` : ''}fieldFive`,
                 value: reader.string()
               }
               break
@@ -419,17 +363,6 @@ export namespace MessageWithoutOneOfs {
             default: {
               reader.skipType(tag & 7)
               break
-            }
-          }
-        }
-
-        if (opts.emitCollections === true) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (Array.isArray(value) || value instanceof Map) {
-              yield {
-                field: key,
-                value
-              }
             }
           }
         }
@@ -464,9 +397,6 @@ export namespace MessageWithoutOneOfs {
     value: string
   }
 
-  export type MessageWithoutOneOfsStreamEvent = MessageWithoutOneOfsFieldOneFieldEvent | MessageWithoutOneOfsFieldTwoFieldEvent | MessageWithoutOneOfsFieldThreeFieldEvent | MessageWithoutOneOfsFieldFourFieldEvent | MessageWithoutOneOfsFieldFiveFieldEvent
-  export type MessageWithoutOneOfsStreamCollectionsEvent = {}
-
   export function encode (obj: Partial<MessageWithoutOneOfs>): Uint8Array {
     return encodeMessage(obj, MessageWithoutOneOfs.codec())
   }
@@ -475,9 +405,7 @@ export namespace MessageWithoutOneOfs {
     return decodeMessage(buf, MessageWithoutOneOfs.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeOptions<MessageWithoutOneOfs>): Generator<MessageWithoutOneOfsStreamEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: StreamingDecodeWithCollectionsOptions<MessageWithoutOneOfs>): Generator<MessageWithoutOneOfsStreamCollectionsEvent>
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: any): Generator<any> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithoutOneOfs>): Generator<MessageWithoutOneOfsFieldOneFieldEvent | MessageWithoutOneOfsFieldTwoFieldEvent | MessageWithoutOneOfsFieldThreeFieldEvent | MessageWithoutOneOfsFieldFourFieldEvent | MessageWithoutOneOfsFieldFiveFieldEvent> {
     return streamMessage(buf, MessageWithoutOneOfs.codec(), opts)
   }
 }
