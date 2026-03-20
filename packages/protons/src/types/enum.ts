@@ -53,6 +53,10 @@ export class Enum implements Type {
     return `${this.jsType}.codec().decode(reader)`
   }
 
+  getStreamingDecoder (field: Field): string {
+    return `${this.jsType}.codec().stream(reader)`
+  }
+
   getEncoder (field: Field, accessor: string): string {
     return `${this.jsType}.codec().encode(${accessor}, w)`
   }

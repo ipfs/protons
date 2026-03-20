@@ -70,21 +70,20 @@ export namespace MessageWithSizeLimitedRepeatedField {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.repeatedField != null && obj.repeatedField === opts.limits.repeatedField) {
-                throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "repeatedField" had too many elements')
               }
 
               if (obj.repeatedField === 1) {
-                throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "repeatedField" had too many elements')
               }
-
-              const value = reader.string()
-              obj.repeatedField++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}repeatedField`,
                 index: obj.repeatedField,
-                value
+                value: reader.string()
               }
+
+              obj.repeatedField++
 
               break
             }
@@ -311,18 +310,13 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxLengthError('Decode error - repeated field "mapField" had too many elements')
               }
 
-              const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(reader, reader.uint32(), {
+              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}mapField`, {
                 limits: {
                   value: opts.limits?.mapField$value
                 }
               })
-              obj.mapField++
 
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}mapField`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.mapField++
 
               break
             }

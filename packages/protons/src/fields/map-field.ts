@@ -90,17 +90,12 @@ export class MapField extends Field {
 `
     }
 
-    const entryType = parent.findType(this.entryType)
+    const type = parent.findType(this.entryType)
 
     return `case ${this.id}: {${limit}
-              const entry = ${entryType.getDecoder(this)}
-              obj.${this.name}++
+              ${type.getStreamingDecoder(this, `\`\${prefix != null ? \`\${prefix}.\` : ''}${this.name}\``, '  ')}
 
-              yield {
-                field: \`\${prefix != null ? \`\${prefix}.\` : ''}${this.name}\`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.${this.name}++
 
               break
             }`

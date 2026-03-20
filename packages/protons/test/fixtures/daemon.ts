@@ -191,75 +191,59 @@ export namespace Request {
               break
             }
             case 2: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}connect`,
-                value: ConnectRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.connect
-                })
-              }
+              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}connect`, {
+                limits: opts.limits?.connect
+              })
+
               break
             }
             case 3: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}streamOpen`,
-                value: StreamOpenRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.streamOpen
-                })
-              }
+              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}streamOpen`, {
+                limits: opts.limits?.streamOpen
+              })
+
               break
             }
             case 4: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}streamHandler`,
-                value: StreamHandlerRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.streamHandler
-                })
-              }
+              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}streamHandler`, {
+                limits: opts.limits?.streamHandler
+              })
+
               break
             }
             case 5: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}dht`,
-                value: DHTRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.dht
-                })
-              }
+              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dht`, {
+                limits: opts.limits?.dht
+              })
+
               break
             }
             case 6: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}connManager`,
-                value: ConnManagerRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.connManager
-                })
-              }
+              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}connManager`, {
+                limits: opts.limits?.connManager
+              })
+
               break
             }
             case 7: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}disconnect`,
-                value: DisconnectRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.disconnect
-                })
-              }
+              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}disconnect`, {
+                limits: opts.limits?.disconnect
+              })
+
               break
             }
             case 8: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}pubsub`,
-                value: PSRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.pubsub
-                })
-              }
+              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}pubsub`, {
+                limits: opts.limits?.pubsub
+              })
+
               break
             }
             case 9: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}peerStore`,
-                value: PeerstoreRequest.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.peerStore
-                })
-              }
+              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peerStore`, {
+                limits: opts.limits?.peerStore
+              })
+
               break
             }
             default: {
@@ -597,75 +581,63 @@ export namespace Response {
               break
             }
             case 2: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}error`,
-                value: ErrorResponse.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.error
-                })
-              }
+              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}error`, {
+                limits: opts.limits?.error
+              })
+
               break
             }
             case 3: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}streamInfo`,
-                value: StreamInfo.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.streamInfo
-                })
-              }
+              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}streamInfo`, {
+                limits: opts.limits?.streamInfo
+              })
+
               break
             }
             case 4: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}identify`,
-                value: IdentifyResponse.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.identify
-                })
-              }
+              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}identify`, {
+                limits: opts.limits?.identify
+              })
+
               break
             }
             case 5: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}dht`,
-                value: DHTResponse.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.dht
-                })
-              }
+              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dht`, {
+                limits: opts.limits?.dht
+              })
+
               break
             }
             case 6: {
               if (opts.limits?.peers != null && obj.peers === opts.limits.peers) {
-                throw new MaxLengthError('Decode error - repeated field "peers" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
               }
 
-              const value = PeerInfo.codec().decode(reader, reader.uint32(), {
+              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peers`, {
                 limits: opts.limits?.peers$
-              })
-              obj.peers++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}peers`,
-                index: obj.peers,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.peers
+                }
               }
+
+              obj.peers++
 
               break
             }
             case 7: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}pubsub`,
-                value: PSResponse.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.pubsub
-                })
-              }
+              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}pubsub`, {
+                limits: opts.limits?.pubsub
+              })
+
               break
             }
             case 8: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}peerStore`,
-                value: PeerstoreResponse.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.peerStore
-                })
-              }
+              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peerStore`, {
+                limits: opts.limits?.peerStore
+              })
+
               break
             }
             default: {
@@ -861,17 +833,16 @@ export namespace IdentifyResponse {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
-                throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
               }
-
-              const value = reader.bytes()
-              obj.addrs++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}addrs`,
                 index: obj.addrs,
-                value
+                value: reader.bytes()
               }
+
+              obj.addrs++
 
               break
             }
@@ -1003,17 +974,16 @@ export namespace ConnectRequest {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
-                throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
               }
-
-              const value = reader.bytes()
-              obj.addrs++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}addrs`,
                 index: obj.addrs,
-                value
+                value: reader.bytes()
               }
+
+              obj.addrs++
 
               break
             }
@@ -1157,17 +1127,16 @@ export namespace StreamOpenRequest {
             }
             case 2: {
               if (opts.limits?.proto != null && obj.proto === opts.limits.proto) {
-                throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "proto" had too many elements')
               }
-
-              const value = reader.string()
-              obj.proto++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}proto`,
                 index: obj.proto,
-                value
+                value: reader.string()
               }
+
+              obj.proto++
 
               break
             }
@@ -1301,17 +1270,16 @@ export namespace StreamHandlerRequest {
             }
             case 2: {
               if (opts.limits?.proto != null && obj.proto === opts.limits.proto) {
-                throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "proto" had too many elements')
               }
-
-              const value = reader.string()
-              obj.proto++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}proto`,
                 index: obj.proto,
-                value
+                value: reader.string()
               }
+
+              obj.proto++
 
               break
             }
@@ -1926,12 +1894,10 @@ export namespace DHTResponse {
               break
             }
             case 2: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}peer`,
-                value: PeerInfo.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.peer
-                })
-              }
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peer`, {
+                limits: opts.limits?.peer
+              })
+
               break
             }
             case 3: {
@@ -2069,17 +2035,16 @@ export namespace PeerInfo {
             }
             case 2: {
               if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
-                throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
               }
-
-              const value = reader.bytes()
-              obj.addrs++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}addrs`,
                 index: obj.addrs,
-                value
+                value: reader.bytes()
               }
+
+              obj.addrs++
 
               break
             }
@@ -2669,17 +2634,16 @@ export namespace PSMessage {
             }
             case 4: {
               if (opts.limits?.topicIDs != null && obj.topicIDs === opts.limits.topicIDs) {
-                throw new MaxLengthError('Decode error - repeated field "topicIDs" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "topicIDs" had too many elements')
               }
-
-              const value = reader.string()
-              obj.topicIDs++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}topicIDs`,
                 index: obj.topicIDs,
-                value
+                value: reader.string()
               }
+
+              obj.topicIDs++
 
               break
             }
@@ -2835,33 +2799,31 @@ export namespace PSResponse {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.topics != null && obj.topics === opts.limits.topics) {
-                throw new MaxLengthError('Decode error - repeated field "topics" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "topics" had too many elements')
               }
-
-              const value = reader.string()
-              obj.topics++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}topics`,
                 index: obj.topics,
-                value
+                value: reader.string()
               }
+
+              obj.topics++
 
               break
             }
             case 2: {
               if (opts.limits?.peerIDs != null && obj.peerIDs === opts.limits.peerIDs) {
-                throw new MaxLengthError('Decode error - repeated field "peerIDs" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "peerIDs" had too many elements')
               }
-
-              const value = reader.bytes()
-              obj.peerIDs++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}peerIDs`,
                 index: obj.peerIDs,
-                value
+                value: reader.bytes()
               }
+
+              obj.peerIDs++
 
               break
             }
@@ -3019,17 +2981,16 @@ export namespace PeerstoreRequest {
             }
             case 3: {
               if (opts.limits?.protos != null && obj.protos === opts.limits.protos) {
-                throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "protos" had too many elements')
               }
-
-              const value = reader.string()
-              obj.protos++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}protos`,
                 index: obj.protos,
-                value
+                value: reader.string()
               }
+
+              obj.protos++
 
               break
             }
@@ -3149,27 +3110,24 @@ export namespace PeerstoreResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}peer`,
-                value: PeerInfo.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.peer
-                })
-              }
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}peer`, {
+                limits: opts.limits?.peer
+              })
+
               break
             }
             case 2: {
               if (opts.limits?.protos != null && obj.protos === opts.limits.protos) {
-                throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "protos" had too many elements')
               }
-
-              const value = reader.string()
-              obj.protos++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}protos`,
                 index: obj.protos,
-                value
+                value: reader.string()
               }
+
+              obj.protos++
 
               break
             }

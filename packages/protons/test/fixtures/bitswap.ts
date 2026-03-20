@@ -285,19 +285,19 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 if (opts.limits?.entries != null && obj.entries === opts.limits.entries) {
-                  throw new MaxLengthError('Decode error - repeated field "entries" had too many elements')
+                  throw new MaxLengthError('Streaming decode error - repeated field "entries" had too many elements')
                 }
 
-                const value = Message.Wantlist.Entry.codec().decode(reader, reader.uint32(), {
+                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}entries`, {
                   limits: opts.limits?.entries$
-                })
-                obj.entries++
-
-                yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}entries`,
-                  index: obj.entries,
-                  value
+                })) {
+                  yield {
+                    ...evt,
+                    index: obj.entries
+                  }
                 }
+
+                obj.entries++
 
                 break
               }
@@ -695,63 +695,60 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}wantlist`,
-                value: Message.Wantlist.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.wantlist
-                })
-              }
+              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}wantlist`, {
+                limits: opts.limits?.wantlist
+              })
+
               break
             }
             case 2: {
               if (opts.limits?.blocks != null && obj.blocks === opts.limits.blocks) {
-                throw new MaxLengthError('Decode error - repeated field "blocks" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "blocks" had too many elements')
               }
-
-              const value = reader.bytes()
-              obj.blocks++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}blocks`,
                 index: obj.blocks,
-                value
+                value: reader.bytes()
               }
+
+              obj.blocks++
 
               break
             }
             case 3: {
               if (opts.limits?.payload != null && obj.payload === opts.limits.payload) {
-                throw new MaxLengthError('Decode error - repeated field "payload" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "payload" had too many elements')
               }
 
-              const value = Message.Block.codec().decode(reader, reader.uint32(), {
+              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}payload`, {
                 limits: opts.limits?.payload$
-              })
-              obj.payload++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}payload`,
-                index: obj.payload,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.payload
+                }
               }
+
+              obj.payload++
 
               break
             }
             case 4: {
               if (opts.limits?.blockPresences != null && obj.blockPresences === opts.limits.blockPresences) {
-                throw new MaxLengthError('Decode error - repeated field "blockPresences" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "blockPresences" had too many elements')
               }
 
-              const value = Message.BlockPresence.codec().decode(reader, reader.uint32(), {
+              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}blockPresences`, {
                 limits: opts.limits?.blockPresences$
-              })
-              obj.blockPresences++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}blockPresences`,
-                index: obj.blockPresences,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.blockPresences
+                }
               }
+
+              obj.blockPresences++
 
               break
             }

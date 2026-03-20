@@ -76,17 +76,16 @@ export namespace SubSubMessage {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.foo != null && obj.foo === opts.limits.foo) {
-                throw new MaxLengthError('Decode error - repeated field "foo" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "foo" had too many elements')
               }
-
-              const value = reader.string()
-              obj.foo++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}foo`,
                 index: obj.foo,
-                value
+                value: reader.string()
               }
+
+              obj.foo++
 
               break
             }
@@ -239,17 +238,16 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.foo != null && obj.foo === opts.limits.foo) {
-                throw new MaxLengthError('Decode error - repeated field "foo" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "foo" had too many elements')
               }
-
-              const value = reader.string()
-              obj.foo++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}foo`,
                 index: obj.foo,
-                value
+                value: reader.string()
               }
+
+              obj.foo++
 
               break
             }
@@ -261,29 +259,27 @@ export namespace SubMessage {
               break
             }
             case 3: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}message`,
-                value: SubSubMessage.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.message
-                })
-              }
+              yield * SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}message`, {
+                limits: opts.limits?.message
+              })
+
               break
             }
             case 4: {
               if (opts.limits?.messages != null && obj.messages === opts.limits.messages) {
-                throw new MaxLengthError('Decode error - repeated field "messages" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              const value = SubSubMessage.codec().decode(reader, reader.uint32(), {
+              for (const evt of SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}messages`, {
                 limits: opts.limits?.messages$
-              })
-              obj.messages++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}messages`,
-                index: obj.messages,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.messages
+                }
               }
+
+              obj.messages++
 
               break
             }
@@ -462,65 +458,61 @@ export namespace RepeatedTypes {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.number != null && obj.number === opts.limits.number) {
-                throw new MaxLengthError('Decode error - repeated field "number" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "number" had too many elements')
               }
-
-              const value = reader.uint32()
-              obj.number++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}number`,
                 index: obj.number,
-                value
+                value: reader.uint32()
               }
+
+              obj.number++
 
               break
             }
             case 2: {
               if (opts.limits?.limitedNumber != null && obj.limitedNumber === opts.limits.limitedNumber) {
-                throw new MaxLengthError('Decode error - repeated field "limitedNumber" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "limitedNumber" had too many elements')
               }
 
               if (obj.limitedNumber === 1) {
-                throw new MaxLengthError('Decode error - repeated field "limitedNumber" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "limitedNumber" had too many elements')
               }
-
-              const value = reader.uint32()
-              obj.limitedNumber++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}limitedNumber`,
                 index: obj.limitedNumber,
-                value
+                value: reader.uint32()
               }
+
+              obj.limitedNumber++
 
               break
             }
             case 3: {
               if (opts.limits?.messages != null && obj.messages === opts.limits.messages) {
-                throw new MaxLengthError('Decode error - repeated field "messages" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              const value = SubMessage.codec().decode(reader, reader.uint32(), {
+              for (const evt of SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}messages`, {
                 limits: opts.limits?.messages$
-              })
-              obj.messages++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}messages`,
-                index: obj.messages,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.messages
+                }
               }
+
+              obj.messages++
 
               break
             }
             case 4: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}message`,
-                value: SubMessage.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.message
-                })
-              }
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}message`, {
+                limits: opts.limits?.message
+              })
+
               break
             }
             case 5: {

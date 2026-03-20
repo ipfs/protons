@@ -157,17 +157,16 @@ export namespace CircuitRelay {
               }
               case 2: {
                 if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
-                  throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
+                  throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
                 }
-
-                const value = reader.bytes()
-                obj.addrs++
 
                 yield {
                   field: `${prefix != null ? `${prefix}.` : ''}addrs`,
                   index: obj.addrs,
-                  value
+                  value: reader.bytes()
                 }
+
+                obj.addrs++
 
                 break
               }
@@ -291,21 +290,17 @@ export namespace CircuitRelay {
               break
             }
             case 2: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}srcPeer`,
-                value: CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.srcPeer
-                })
-              }
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}srcPeer`, {
+                limits: opts.limits?.srcPeer
+              })
+
               break
             }
             case 3: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}dstPeer`,
-                value: CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.dstPeer
-                })
-              }
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dstPeer`, {
+                limits: opts.limits?.dstPeer
+              })
+
               break
             }
             case 4: {

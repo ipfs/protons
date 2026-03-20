@@ -426,27 +426,24 @@ export namespace AllTheTypes {
               break
             }
             case 13: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field13`,
-                value: SubMessage.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.field13
-                })
-              }
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}field13`, {
+                limits: opts.limits?.field13
+              })
+
               break
             }
             case 14: {
               if (opts.limits?.field14 != null && obj.field14 === opts.limits.field14) {
-                throw new MaxLengthError('Decode error - repeated field "field14" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "field14" had too many elements')
               }
-
-              const value = reader.string()
-              obj.field14++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}field14`,
                 index: obj.field14,
-                value
+                value: reader.string()
               }
+
+              obj.field14++
 
               break
             }

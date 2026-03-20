@@ -7,6 +7,7 @@ export interface Type {
   pbType: string
   init(module: Module): void
   getDecoder(field: Field, indent?: string): string
+  getStreamingDecoder(field: Field, prefix: string, indent?: string): string
   getEncoder(field: Field, accessor: string): string
   getValueTest(field: Field, accessor: string): string
 }

@@ -1,3 +1,4 @@
+import { ArrayField } from '../fields/array-field.ts'
 import type { Type } from './index.ts'
 import type { Field } from '../fields/field.ts'
 
@@ -183,6 +184,20 @@ export class Primitive implements Type {
 
   getDecoder (field: Field): string {
     return decoderGenerators[this.pbType](field.jsTypeOverride)
+  }
+
+  getStreamingDecoder (field: Field, prefix: string, indent: string): string {
+    const generator = decoderGenerators[this.pbType](field.jsTypeOverride)
+
+    if (field instanceof ArrayField) {
+      return `yield {
+                field: ${prefix},
+                index: obj.${field.name},
+                value: ${generator}
+              }`
+    }
+
+    return generator
   }
 
   getValueTest (field: Field, accessor: string): string {

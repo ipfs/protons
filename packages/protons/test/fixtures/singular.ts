@@ -475,12 +475,10 @@ export namespace Singular {
               break
             }
             case 17: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}subMessage`,
-                value: SingularSubMessage.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.subMessage
-                })
-              }
+              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}subMessage`, {
+                limits: opts.limits?.subMessage
+              })
+
               break
             }
             default: {

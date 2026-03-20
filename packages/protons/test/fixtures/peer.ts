@@ -127,53 +127,52 @@ export namespace Peer {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.addresses != null && obj.addresses === opts.limits.addresses) {
-                throw new MaxLengthError('Decode error - repeated field "addresses" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
               }
 
-              const value = Address.codec().decode(reader, reader.uint32(), {
+              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}addresses`, {
                 limits: opts.limits?.addresses$
-              })
-              obj.addresses++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}addresses`,
-                index: obj.addresses,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.addresses
+                }
               }
+
+              obj.addresses++
 
               break
             }
             case 2: {
               if (opts.limits?.protocols != null && obj.protocols === opts.limits.protocols) {
-                throw new MaxLengthError('Decode error - repeated field "protocols" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "protocols" had too many elements')
               }
-
-              const value = reader.string()
-              obj.protocols++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}protocols`,
                 index: obj.protocols,
-                value
+                value: reader.string()
               }
+
+              obj.protocols++
 
               break
             }
             case 3: {
               if (opts.limits?.metadata != null && obj.metadata === opts.limits.metadata) {
-                throw new MaxLengthError('Decode error - repeated field "metadata" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
               }
 
-              const value = Metadata.codec().decode(reader, reader.uint32(), {
+              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}metadata`, {
                 limits: opts.limits?.metadata$
-              })
-              obj.metadata++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}metadata`,
-                index: obj.metadata,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.metadata
+                }
               }
+
+              obj.metadata++
 
               break
             }

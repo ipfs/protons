@@ -102,17 +102,16 @@ export namespace SubMessage {
             }
             case 2: {
               if (opts.limits?.bar != null && obj.bar === opts.limits.bar) {
-                throw new MaxLengthError('Decode error - repeated field "bar" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "bar" had too many elements')
               }
-
-              const value = reader.uint32()
-              obj.bar++
 
               yield {
                 field: `${prefix != null ? `${prefix}.` : ''}bar`,
                 index: obj.bar,
-                value
+                value: reader.uint32()
               }
+
+              obj.bar++
 
               break
             }
@@ -569,12 +568,10 @@ export namespace MapTypes {
                 break
               }
               case 2: {
-                yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}value`,
-                  value: SubMessage.codec().decode(reader, reader.uint32(), {
-                    limits: opts.limits?.value
-                  })
-                }
+                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}value`, {
+                  limits: opts.limits?.value
+                })
+
                 break
               }
               default: {
@@ -885,18 +882,13 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "stringMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(reader, reader.uint32(), {
+              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}stringMap`, {
                 limits: {
                   value: opts.limits?.stringMap$value
                 }
               })
-              obj.stringMap++
 
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}stringMap`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.stringMap++
 
               break
             }
@@ -905,18 +897,13 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "intMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$intMapEntry.codec().decode(reader, reader.uint32(), {
+              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}intMap`, {
                 limits: {
                   value: opts.limits?.intMap$value
                 }
               })
-              obj.intMap++
 
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}intMap`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.intMap++
 
               break
             }
@@ -925,18 +912,13 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "boolMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(reader, reader.uint32(), {
+              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}boolMap`, {
                 limits: {
                   value: opts.limits?.boolMap$value
                 }
               })
-              obj.boolMap++
 
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}boolMap`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.boolMap++
 
               break
             }
@@ -945,18 +927,13 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "messageMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32(), {
+              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}messageMap`, {
                 limits: {
                   value: opts.limits?.messageMap$value
                 }
               })
-              obj.messageMap++
 
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}messageMap`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.messageMap++
 
               break
             }
@@ -965,18 +942,13 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "enumMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(reader, reader.uint32(), {
+              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}enumMap`, {
                 limits: {
                   value: opts.limits?.enumMap$value
                 }
               })
-              obj.enumMap++
 
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}enumMap`,
-                key: entry.key,
-                value: entry.value
-              }
+              obj.enumMap++
 
               break
             }

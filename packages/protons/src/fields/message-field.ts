@@ -1,6 +1,6 @@
 import { Message } from '../types/message.ts'
 import { Field } from './field.ts'
-import type { Parent } from '../types/index.ts'
+import type { Parent, Type } from '../types/index.ts'
 
 export class MessageField extends Field {
   getInterfaceField (parent: Parent, indent = ''): string {
@@ -15,5 +15,15 @@ export class MessageField extends Field {
     }
 
     return type
+  }
+
+  getStreamingDecoder (parent: Parent): string {
+    const type: Type = parent.findType(this.type)
+
+    return `case ${this.id}: {
+              ${type.getStreamingDecoder(this, `\`\${prefix != null ? \`\${prefix}.\` : ''}${this.name}\``, '  ')}
+
+              break
+            }`
   }
 }

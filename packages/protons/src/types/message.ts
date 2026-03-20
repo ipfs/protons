@@ -180,6 +180,35 @@ ${indent}              }`
     return `${this.jsType}.codec().decode(reader, reader.uint32()${opts})`
   }
 
+  getStreamingDecoder (field: Field, prefix: string, indent = ''): string {
+    let opts = ''
+
+    if (field instanceof MessageField) {
+      opts = `, {
+${indent}              limits: opts.limits?.${field.name}
+${indent}            }`
+    } else if (field instanceof ArrayField) {
+      opts = `, {
+${indent}              limits: opts.limits?.${field.name}$
+${indent}            }`
+
+      return `for (const evt of ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})) {
+                yield {
+                  ...evt,
+                  index: obj.${field.name}
+                }
+              }`
+    } else if (field instanceof MapField) {
+      opts = `, {
+${indent}              limits: {
+${indent}                value: opts.limits?.${field.name}$value
+                }
+${indent}            }`
+    }
+
+    return `yield * ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})`
+  }
+
   getEncoder (field: Field, accessor: string): string {
     if (field instanceof ArrayField) {
       // message fields are only written if they have values. But if a message

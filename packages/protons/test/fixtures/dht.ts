@@ -322,17 +322,16 @@ export namespace Message {
               }
               case 2: {
                 if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
-                  throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
+                  throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
                 }
-
-                const value = reader.bytes()
-                obj.addrs++
 
                 yield {
                   field: `${prefix != null ? `${prefix}.` : ''}addrs`,
                   index: obj.addrs,
-                  value
+                  value: reader.bytes()
                 }
+
+                obj.addrs++
 
                 break
               }
@@ -528,37 +527,37 @@ export namespace Message {
             }
             case 8: {
               if (opts.limits?.closerPeers != null && obj.closerPeers === opts.limits.closerPeers) {
-                throw new MaxLengthError('Decode error - repeated field "closerPeers" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              const value = Message.Peer.codec().decode(reader, reader.uint32(), {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}closerPeers`, {
                 limits: opts.limits?.closerPeers$
-              })
-              obj.closerPeers++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}closerPeers`,
-                index: obj.closerPeers,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.closerPeers
+                }
               }
+
+              obj.closerPeers++
 
               break
             }
             case 9: {
               if (opts.limits?.providerPeers != null && obj.providerPeers === opts.limits.providerPeers) {
-                throw new MaxLengthError('Decode error - repeated field "providerPeers" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              const value = Message.Peer.codec().decode(reader, reader.uint32(), {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}providerPeers`, {
                 limits: opts.limits?.providerPeers$
-              })
-              obj.providerPeers++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}providerPeers`,
-                index: obj.providerPeers,
-                value
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.providerPeers
+                }
               }
+
+              obj.providerPeers++
 
               break
             }
