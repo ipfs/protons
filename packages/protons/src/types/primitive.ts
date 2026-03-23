@@ -165,10 +165,6 @@ const defaultValueTestGeneratorsJsTypeOverrides: Record<string, DefaultValueTest
   string: (field) => `(${field} != null && ${field} !== '')`
 }
 
-export function isPrimitiveType (pbType: string): boolean {
-  return [...Object.keys(decoderGenerators)].includes(pbType)
-}
-
 export class Primitive implements Type {
   public jsType: string
   public pbType: string

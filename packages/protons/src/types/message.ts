@@ -4,7 +4,7 @@ import { Field } from '../fields/field.ts'
 import { isMapFieldDef, MapField } from '../fields/map-field.ts'
 import { MessageField } from '../fields/message-field.ts'
 import { Enum } from './enum.ts'
-import { isPrimitiveType, Primitive } from './primitive.ts'
+import { Primitive } from './primitive.ts'
 import type { EnumDef } from './enum.ts'
 import type { Parent, Type } from './index.ts'
 import type { FieldDef } from '../fields/field.ts'
@@ -453,69 +453,88 @@ ${fields
             ${fields.join(delimiter)}`
   }
 
-  getStreamEvents (): StreamEvent[] {
+  getStreamEvents (fieldPrefix = ''): StreamEvent[] {
     const streamEvents: StreamEvent[] = []
+
+    const addMessageFields = (field: Field, message: Message, extraFields: string[]): void => {
+      // include sub messages
+      streamEvents.push(...message.getStreamEvents(field.name).map(evt => {
+        let type = evt.type
+
+        if (evt.type === 'field') {
+          type = (field instanceof MapField || field instanceof ArrayField) ? 'collection-message-member-field' : 'sub-message-field'
+        } else if (evt.type === 'collection-primitive-member') {
+          type = 'sub-message-collection-primitive-member'
+        } else if (evt.type === 'collection-message-member-field') {
+          type = 'sub-message-collection-message-member-field'
+        }
+
+        return {
+          ...evt,
+          name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}${evt.name}`,
+          type,
+          fields: [
+            ...evt.fields,
+            ...extraFields
+          ]
+        }
+      }))
+    }
 
     this.fields.forEach(field => {
       if (field instanceof MapField) {
         const keyType = this.findType(field.keyType)
         const valueType = this.findType(field.valueType)
 
-        if (isPrimitiveType(valueType.pbType)) {
+        if (valueType instanceof Primitive || valueType instanceof Enum) {
           streamEvents.push({
-            name: `${this.pbType}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
-              `field: '${field.name}$entry'`,
+              `field: '${fieldPrefix}${field.name}'`,
               `key: ${keyType.jsType}`,
               `value: ${valueType.jsType}`
             ],
             type: 'collection-primitive-member'
           })
+        } else if (valueType instanceof Message) {
+          addMessageFields(field, valueType, [
+            `key: ${keyType.jsType}`,
+            `value: ${valueType.jsType}`
+          ])
         }
       } else if (field instanceof ArrayField) {
         const type = this.findType(field.type)
 
-        if (isPrimitiveType(type.pbType)) {
+        if (type instanceof Primitive || type instanceof Enum) {
           streamEvents.push({
-            name: `${this.pbType}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
-              `field: '${field.name}$entry'`,
+              `field: '${fieldPrefix}${field.name}'`,
               'index: number',
               `value: ${type.jsType}`
             ],
             type: 'collection-primitive-member'
           })
+        } else if (type instanceof Message) {
+          addMessageFields(field, type, [
+            'index: number'
+          ])
         }
-      } else if (field instanceof MessageField) {
-        // include sub messages
-        streamEvents.push(...field.getMessage(this).getStreamEvents().map(evt => {
-          let type = evt.type
-
-          if (evt.type === 'field') {
-            type = 'sub-message-field'
-          } else if (evt.type === 'collection-primitive-member') {
-            type = 'sub-message-collection-primitive-member'
-          } else if (evt.type === 'collection-message-member-field') {
-            type = 'sub-message-collection-message-member-field'
-          }
-
-          return {
-            ...evt,
-            name: `${this.pbType}${camelize(field.name)}${evt.name}`,
-            type
-          }
-        }))
       } else {
         const type = this.findType(field.type)
 
-        streamEvents.push({
-          name: `${this.pbType}${camelize(field.name)}FieldEvent`,
-          fields: [
-            `field: '${field.name}'`,
-            `value: ${type.jsType}`
-          ],
-          type: 'field'
-        })
+        if (type instanceof Primitive || type instanceof Enum) {
+          streamEvents.push({
+            name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            fields: [
+              `field: '${fieldPrefix}${field.name}'`,
+              `value: ${type.jsType}`
+            ],
+            type: 'field'
+          })
+        } else if (type instanceof Message) {
+          addMessageFields(field, type, [])
+        }
       }
     })
 
