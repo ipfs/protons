@@ -1,3 +1,9 @@
+## [protons-runtime-v6.0.1](https://github.com/ipfs/protons/compare/protons-runtime-6.0.0...protons-runtime-6.0.1) (2026-03-24)
+
+### Bug Fixes
+
+* simplify generated code ([8810af6](https://github.com/ipfs/protons/commit/8810af61a87c0feda03b9185d44423a4490c6d77))
+
 ## [protons-runtime-v6.0.0](https://github.com/ipfs/protons/compare/protons-runtime-5.6.0...protons-runtime-6.0.0) (2026-03-24)
 
 ### ⚠ BREAKING CHANGES
