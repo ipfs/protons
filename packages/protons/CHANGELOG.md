@@ -1,3 +1,25 @@
+## [protons-v8.0.0](https://github.com/ipfs/protons/compare/protons-7.7.0...protons-8.0.0) (2026-03-24)
+
+### ⚠ BREAKING CHANGES
+
+* add streaming decode (#158)
+
+### Features
+
+* add streaming decode ([#158](https://github.com/ipfs/protons/issues/158)) ([36e915e](https://github.com/ipfs/protons/commit/36e915e8fe8e2ceaac507ee5f6a11669f2c05bbc))
+
+### Bug Fixes
+
+* update project config ([#159](https://github.com/ipfs/protons/issues/159)) ([5f574a0](https://github.com/ipfs/protons/commit/5f574a0161305fd4093a17936255c9b549ad9065))
+
+### Trivial Changes
+
+* import using .ts ([#157](https://github.com/ipfs/protons/issues/157)) ([604fd58](https://github.com/ipfs/protons/commit/604fd5849e40aa6268aedc698a88f4accc55c468))
+
+### Dependencies
+
+* bump meow from 13.2.0 to 14.1.0 ([#155](https://github.com/ipfs/protons/issues/155)) ([62079bf](https://github.com/ipfs/protons/commit/62079bf576e71c38d1959312beac113f67111afe))
+
 ## protons [7.5.0](https://github.com/ipfs/protons/compare/protons-7.4.0...protons-7.5.0) (2024-02-02)
 
 
