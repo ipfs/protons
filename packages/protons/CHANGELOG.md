@@ -1,3 +1,9 @@
+## [protons-v8.0.1](https://github.com/ipfs/protons/compare/protons-8.0.0...protons-8.0.1) (2026-03-24)
+
+### Bug Fixes
+
+* update sibling versions ([2cd6d52](https://github.com/ipfs/protons/commit/2cd6d521d4f2d8859728af6799e0aeb08068f966))
+
 ## [protons-v8.0.0](https://github.com/ipfs/protons/compare/protons-7.7.0...protons-8.0.0) (2026-03-24)
 
 ### ⚠ BREAKING CHANGES
