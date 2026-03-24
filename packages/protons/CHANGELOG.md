@@ -1,3 +1,9 @@
+## [protons-v8.0.2](https://github.com/ipfs/protons/compare/protons-8.0.1...protons-8.0.2) (2026-03-24)
+
+### Bug Fixes
+
+* simplify generated code ([8810af6](https://github.com/ipfs/protons/commit/8810af61a87c0feda03b9185d44423a4490c6d77))
+
 ## [protons-v8.0.1](https://github.com/ipfs/protons/compare/protons-8.0.0...protons-8.0.1) (2026-03-24)
 
 ### Bug Fixes
