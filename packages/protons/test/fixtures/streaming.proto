@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+message MessageWithArrayField {
+  optional bool field1 = 1;
+  optional uint32 field2 = 2;
+  repeated string arr = 3;
+}
+
+message NestedMessage {
+    string nestedValue = 1;
+  }
+
+message MessageWithNestedMessage {
+  bool field1 = 1;
+  NestedMessage nestedMessage = 2;
+}
+
+message MessageWithDeeplyNestedMessage {
+  bool field1 = 1;
+  MessageWithNestedMessage nestedMessage = 2;
+}
+
+message MessageWithRepeatedMessage {
+  bool field1 = 1;
+  repeated NestedMessage nestedMessages = 2;
+}
+
+message MessageWithMapMessage {
+  bool field1 = 1;
+  map<string, NestedMessage> nestedMessages = 2;
+}
+
+message MessageWithPrimitiveMap {
+  bool field1 = 1;
+  map<string, string> nestedStrings = 2;
+}

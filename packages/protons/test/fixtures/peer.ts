@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -70,7 +70,7 @@ export namespace Peer {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.addresses != null && obj.addresses.length === opts.limits.addresses) {
-                throw new MaxLengthError('Decode error - map field "addresses" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "addresses" had too many elements')
               }
 
               obj.addresses.push(Address.codec().decode(reader, reader.uint32(), {
@@ -80,7 +80,7 @@ export namespace Peer {
             }
             case 2: {
               if (opts.limits?.protocols != null && obj.protocols.length === opts.limits.protocols) {
-                throw new MaxLengthError('Decode error - map field "protocols" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "protocols" had too many elements')
               }
 
               obj.protocols.push(reader.string())
@@ -88,7 +88,7 @@ export namespace Peer {
             }
             case 3: {
               if (opts.limits?.metadata != null && obj.metadata.length === opts.limits.metadata) {
-                throw new MaxLengthError('Decode error - map field "metadata" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "metadata" had too many elements')
               }
 
               obj.metadata.push(Metadata.codec().decode(reader, reader.uint32(), {
@@ -112,18 +112,146 @@ export namespace Peer {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          addresses: 0,
+          protocols: 0,
+          metadata: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.addresses != null && obj.addresses === opts.limits.addresses) {
+                throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
+              }
+
+              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.addresses[]`, {
+                limits: opts.limits?.addresses$
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.addresses
+                }
+              }
+
+              obj.addresses++
+
+              break
+            }
+            case 2: {
+              if (opts.limits?.protocols != null && obj.protocols === opts.limits.protocols) {
+                throw new MaxLengthError('Streaming decode error - repeated field "protocols" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.protocols[]`,
+                index: obj.protocols,
+                value: reader.string()
+              }
+
+              obj.protocols++
+
+              break
+            }
+            case 3: {
+              if (opts.limits?.metadata != null && obj.metadata === opts.limits.metadata) {
+                throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
+              }
+
+              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.metadata[]`, {
+                limits: opts.limits?.metadata$
+              })) {
+                yield {
+                  ...evt,
+                  index: obj.metadata
+                }
+              }
+
+              obj.metadata++
+
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.pubKey`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.peerRecordEnvelope`,
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Peer>): Uint8Array => {
+  export interface PeerAddressesMultiaddrFieldEvent {
+    field: '$.addresses[].multiaddr'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface PeerAddressesIsCertifiedFieldEvent {
+    field: '$.addresses[].isCertified'
+    value: boolean
+    index: number
+  }
+
+  export interface PeerProtocolsFieldEvent {
+    field: '$.protocols[]'
+    index: number
+    value: string
+  }
+
+  export interface PeerMetadataKeyFieldEvent {
+    field: '$.metadata[].key'
+    value: string
+    index: number
+  }
+
+  export interface PeerMetadataValueFieldEvent {
+    field: '$.metadata[].value'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface PeerPubKeyFieldEvent {
+    field: '$.pubKey'
+    value: Uint8Array
+  }
+
+  export interface PeerPeerRecordEnvelopeFieldEvent {
+    field: '$.peerRecordEnvelope'
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<Peer>): Uint8Array {
     return encodeMessage(obj, Peer.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Peer {
     return decodeMessage(buf, Peer.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Generator<PeerAddressesMultiaddrFieldEvent | PeerAddressesIsCertifiedFieldEvent | PeerProtocolsFieldEvent | PeerMetadataKeyFieldEvent | PeerMetadataValueFieldEvent | PeerPubKeyFieldEvent | PeerPeerRecordEnvelopeFieldEvent> {
+    return streamMessage(buf, Peer.codec(), opts)
   }
 }
 
@@ -182,18 +310,59 @@ export namespace Address {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.multiaddr`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.isCertified`,
+                value: reader.bool()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Address>): Uint8Array => {
+  export interface AddressMultiaddrFieldEvent {
+    field: '$.multiaddr'
+    value: Uint8Array
+  }
+
+  export interface AddressIsCertifiedFieldEvent {
+    field: '$.isCertified'
+    value: boolean
+  }
+
+  export function encode (obj: Partial<Address>): Uint8Array {
     return encodeMessage(obj, Address.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Address>): Address => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Address>): Address {
     return decodeMessage(buf, Address.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Address>): Generator<AddressMultiaddrFieldEvent | AddressIsCertifiedFieldEvent> {
+    return streamMessage(buf, Address.codec(), opts)
   }
 }
 
@@ -253,17 +422,58 @@ export namespace Metadata {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                value: reader.string()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                value: reader.bytes()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<Metadata>): Uint8Array => {
+  export interface MetadataKeyFieldEvent {
+    field: '$.key'
+    value: string
+  }
+
+  export interface MetadataValueFieldEvent {
+    field: '$.value'
+    value: Uint8Array
+  }
+
+  export function encode (obj: Partial<Metadata>): Uint8Array {
     return encodeMessage(obj, Metadata.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Metadata>): Metadata => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Metadata>): Metadata {
     return decodeMessage(buf, Metadata.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Metadata>): Generator<MetadataKeyFieldEvent | MetadataValueFieldEvent> {
+    return streamMessage(buf, Metadata.codec(), opts)
   }
 }

@@ -1,6 +1,4 @@
-/* eslint-disable complexity */
-
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -65,18 +63,47 @@ export namespace SubMessage {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
+                value: reader.string()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<SubMessage>): Uint8Array => {
+  export interface SubMessageFooFieldEvent {
+    field: '$.foo'
+    value: string
+  }
+
+  export function encode (obj: Partial<SubMessage>): Uint8Array {
     return encodeMessage(obj, SubMessage.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): SubMessage => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): SubMessage {
     return decodeMessage(buf, SubMessage.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): Generator<SubMessageFooFieldEvent> {
+    return streamMessage(buf, SubMessage.codec(), opts)
   }
 }
 
@@ -273,7 +300,7 @@ export namespace AllTheTypes {
             }
             case 14: {
               if (opts.limits?.field14 != null && obj.field14.length === opts.limits.field14) {
-                throw new MaxLengthError('Decode error - map field "field14" had too many elements')
+                throw new MaxLengthError('Decode error - repeated field "field14" had too many elements')
               }
 
               obj.field14.push(reader.string())
@@ -303,17 +330,263 @@ export namespace AllTheTypes {
         }
 
         return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          field14: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                value: reader.bool()
+              }
+              break
+            }
+            case 2: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field2`,
+                value: reader.int32()
+              }
+              break
+            }
+            case 3: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field3`,
+                value: reader.int64()
+              }
+              break
+            }
+            case 4: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field4`,
+                value: reader.uint32()
+              }
+              break
+            }
+            case 5: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field5`,
+                value: reader.uint64()
+              }
+              break
+            }
+            case 6: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field6`,
+                value: reader.sint32()
+              }
+              break
+            }
+            case 7: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field7`,
+                value: reader.sint64()
+              }
+              break
+            }
+            case 8: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field8`,
+                value: reader.double()
+              }
+              break
+            }
+            case 9: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field9`,
+                value: reader.float()
+              }
+              break
+            }
+            case 10: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field10`,
+                value: reader.string()
+              }
+              break
+            }
+            case 11: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field11`,
+                value: reader.bytes()
+              }
+              break
+            }
+            case 12: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field12`,
+                value: AnEnum.codec().decode(reader)
+              }
+              break
+            }
+            case 13: {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.field13`, {
+                limits: opts.limits?.field13
+              })
+
+              break
+            }
+            case 14: {
+              if (opts.limits?.field14 != null && obj.field14 === opts.limits.field14) {
+                throw new MaxLengthError('Streaming decode error - repeated field "field14" had too many elements')
+              }
+
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field14[]`,
+                index: obj.field14,
+                value: reader.string()
+              }
+
+              obj.field14++
+
+              break
+            }
+            case 15: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field15`,
+                value: reader.fixed32()
+              }
+              break
+            }
+            case 16: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field16`,
+                value: reader.fixed64()
+              }
+              break
+            }
+            case 17: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field17`,
+                value: reader.sfixed32()
+              }
+              break
+            }
+            case 18: {
+              yield {
+                field: `${prefix != null ? `${prefix}` : '$'}.field18`,
+                value: reader.sfixed64()
+              }
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export const encode = (obj: Partial<AllTheTypes>): Uint8Array => {
+  export interface AllTheTypesField1FieldEvent {
+    field: '$.field1'
+    value: boolean
+  }
+
+  export interface AllTheTypesField2FieldEvent {
+    field: '$.field2'
+    value: number
+  }
+
+  export interface AllTheTypesField3FieldEvent {
+    field: '$.field3'
+    value: bigint
+  }
+
+  export interface AllTheTypesField4FieldEvent {
+    field: '$.field4'
+    value: number
+  }
+
+  export interface AllTheTypesField5FieldEvent {
+    field: '$.field5'
+    value: bigint
+  }
+
+  export interface AllTheTypesField6FieldEvent {
+    field: '$.field6'
+    value: number
+  }
+
+  export interface AllTheTypesField7FieldEvent {
+    field: '$.field7'
+    value: bigint
+  }
+
+  export interface AllTheTypesField8FieldEvent {
+    field: '$.field8'
+    value: number
+  }
+
+  export interface AllTheTypesField9FieldEvent {
+    field: '$.field9'
+    value: number
+  }
+
+  export interface AllTheTypesField10FieldEvent {
+    field: '$.field10'
+    value: string
+  }
+
+  export interface AllTheTypesField11FieldEvent {
+    field: '$.field11'
+    value: Uint8Array
+  }
+
+  export interface AllTheTypesField12FieldEvent {
+    field: '$.field12'
+    value: AnEnum
+  }
+
+  export interface AllTheTypesField13FooFieldEvent {
+    field: '$.field13.foo'
+    value: string
+  }
+
+  export interface AllTheTypesField14FieldEvent {
+    field: '$.field14[]'
+    index: number
+    value: string
+  }
+
+  export interface AllTheTypesField15FieldEvent {
+    field: '$.field15'
+    value: number
+  }
+
+  export interface AllTheTypesField16FieldEvent {
+    field: '$.field16'
+    value: bigint
+  }
+
+  export interface AllTheTypesField17FieldEvent {
+    field: '$.field17'
+    value: number
+  }
+
+  export interface AllTheTypesField18FieldEvent {
+    field: '$.field18'
+    value: bigint
+  }
+
+  export function encode (obj: Partial<AllTheTypes>): Uint8Array {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 
-  export const decode = (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): AllTheTypes => {
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): AllTheTypes {
     return decodeMessage(buf, AllTheTypes.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): Generator<AllTheTypesField1FieldEvent | AllTheTypesField2FieldEvent | AllTheTypesField3FieldEvent | AllTheTypesField4FieldEvent | AllTheTypesField5FieldEvent | AllTheTypesField6FieldEvent | AllTheTypesField7FieldEvent | AllTheTypesField8FieldEvent | AllTheTypesField9FieldEvent | AllTheTypesField10FieldEvent | AllTheTypesField11FieldEvent | AllTheTypesField12FieldEvent | AllTheTypesField13FooFieldEvent | AllTheTypesField14FieldEvent | AllTheTypesField15FieldEvent | AllTheTypesField16FieldEvent | AllTheTypesField17FieldEvent | AllTheTypesField18FieldEvent> {
+    return streamMessage(buf, AllTheTypes.codec(), opts)
   }
 }
