@@ -138,7 +138,7 @@
   "dependencies": {
     "meow": "^14.1.0",
     "protobufjs-cli": "^1.2.0",
-    "protons-runtime": "^5.0.0"
+    "protons-runtime": "^6.0.0"
   },
   "devDependencies": {
     "aegir": "^47.0.26",
