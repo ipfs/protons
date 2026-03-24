@@ -1,4 +1,4 @@
-# protons <!-- omit in toc -->
+# protons
 
 [![ipfs.tech](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](https://ipfs.tech)
 [![Discuss](https://img.shields.io/discourse/https/discuss.ipfs.tech/posts.svg?style=flat-square)](https://discuss.ipfs.tech)
@@ -69,7 +69,7 @@ console.info(decoded.message)
 
 ## Differences from protobuf.js
 
-This module uses the internal reader/writer from `protobuf.js` as it is highly optimised and there's no point reinventing the wheel.
+This module uses the internal reader/writer from `protobuf.js` as it is highly optimized and there's no point reinventing the wheel.
 
 It does have one or two differences:
 
@@ -227,8 +227,8 @@ $ npm i protons
 
 Licensed under either of
 
-- Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
-- MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
+- Apache 2.0, ([LICENSE-APACHE](https://github.com/ipfs/protons/blob/main/packages/protons/LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT ([LICENSE-MIT](https://github.com/ipfs/protons/blob/main/packages/protons/LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
 
 # Contribute
 
