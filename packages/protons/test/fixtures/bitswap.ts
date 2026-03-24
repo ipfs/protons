@@ -131,35 +131,35 @@ export namespace Message {
               switch (tag >>> 3) {
                 case 1: {
                   yield {
-                    field: `${prefix != null ? `${prefix}` : '$'}.block`,
+                    field: `${prefix}.block`,
                     value: reader.bytes()
                   }
                   break
                 }
                 case 2: {
                   yield {
-                    field: `${prefix != null ? `${prefix}` : '$'}.priority`,
+                    field: `${prefix}.priority`,
                     value: reader.int32()
                   }
                   break
                 }
                 case 3: {
                   yield {
-                    field: `${prefix != null ? `${prefix}` : '$'}.cancel`,
+                    field: `${prefix}.cancel`,
                     value: reader.bool()
                   }
                   break
                 }
                 case 4: {
                   yield {
-                    field: `${prefix != null ? `${prefix}` : '$'}.wantType`,
+                    field: `${prefix}.wantType`,
                     value: Message.Wantlist.WantType.codec().decode(reader)
                   }
                   break
                 }
                 case 5: {
                   yield {
-                    field: `${prefix != null ? `${prefix}` : '$'}.sendDontHave`,
+                    field: `${prefix}.sendDontHave`,
                     value: reader.bool()
                   }
                   break
@@ -288,7 +288,7 @@ export namespace Message {
                   throw new MaxLengthError('Streaming decode error - repeated field "entries" had too many elements')
                 }
 
-                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.entries[]`, {
+                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix}.entries[]`, {
                   limits: opts.limits?.entries$
                 })) {
                   yield {
@@ -303,7 +303,7 @@ export namespace Message {
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.full`,
+                  field: `${prefix}.full`,
                   value: reader.bool()
                 }
                 break
@@ -433,14 +433,14 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.prefix`,
+                  field: `${prefix}.prefix`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.data`,
+                  field: `${prefix}.data`,
                   value: reader.bytes()
                 }
                 break
@@ -561,14 +561,14 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.cid`,
+                  field: `${prefix}.cid`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                  field: `${prefix}.type`,
                   value: Message.BlockPresenceType.codec().decode(reader)
                 }
                 break
@@ -725,7 +725,7 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.wantlist`, {
+              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix}.wantlist`, {
                 limits: opts.limits?.wantlist
               })
 
@@ -737,7 +737,7 @@ export namespace Message {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.blocks[]`,
+                field: `${prefix}.blocks[]`,
                 index: obj.blocks,
                 value: reader.bytes()
               }
@@ -751,7 +751,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "payload" had too many elements')
               }
 
-              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.payload[]`, {
+              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix}.payload[]`, {
                 limits: opts.limits?.payload$
               })) {
                 yield {
@@ -769,7 +769,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "blockPresences" had too many elements')
               }
 
-              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.blockPresences[]`, {
+              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix}.blockPresences[]`, {
                 limits: opts.limits?.blockPresences$
               })) {
                 yield {
@@ -784,7 +784,7 @@ export namespace Message {
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.pendingBytes`,
+                field: `${prefix}.pendingBytes`,
                 value: reader.int32()
               }
               break

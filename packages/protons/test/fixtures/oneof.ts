@@ -146,35 +146,35 @@ export namespace OneOfMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldOne`,
+                field: `${prefix}.fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldTwo`,
+                field: `${prefix}.fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldThree`,
+                field: `${prefix}.fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldFour`,
+                field: `${prefix}.fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldFive`,
+                field: `${prefix}.fieldFive`,
                 value: reader.string()
               }
               break
@@ -327,35 +327,35 @@ export namespace MessageWithoutOneOfs {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldOne`,
+                field: `${prefix}.fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldTwo`,
+                field: `${prefix}.fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldThree`,
+                field: `${prefix}.fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldFour`,
+                field: `${prefix}.fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fieldFive`,
+                field: `${prefix}.fieldFive`,
                 value: reader.string()
               }
               break

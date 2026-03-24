@@ -21,7 +21,7 @@ export class MessageField extends Field {
     const type: Type = parent.findType(this.type)
 
     return `case ${this.id}: {
-              ${type.getStreamingDecoder(this, `\`\${prefix != null ? \`\${prefix}\` : '$'}.${this.name}\``, '  ')}
+              ${type.getStreamingDecoder(this, `\`\${prefix}.${this.name}\``, '  ')}
 
               break
             }`

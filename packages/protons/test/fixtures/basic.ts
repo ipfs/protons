@@ -68,14 +68,14 @@ export namespace Basic {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
+                field: `${prefix}.foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.num`,
+                field: `${prefix}.num`,
                 value: reader.int32()
               }
               break

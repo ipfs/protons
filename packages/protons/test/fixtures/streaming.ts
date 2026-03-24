@@ -86,14 +86,14 @@ export namespace MessageWithArrayField {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field2`,
+                field: `${prefix}.field2`,
                 value: reader.uint32()
               }
               break
@@ -104,7 +104,7 @@ export namespace MessageWithArrayField {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.arr[]`,
+                field: `${prefix}.arr[]`,
                 index: obj.arr,
                 value: reader.string()
               }
@@ -208,7 +208,7 @@ export namespace NestedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.nestedValue`,
+                field: `${prefix}.nestedValue`,
                 value: reader.string()
               }
               break
@@ -309,13 +309,13 @@ export namespace MessageWithNestedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
-              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessage`, {
+              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessage`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -422,13 +422,13 @@ export namespace MessageWithDeeplyNestedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
-              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessage`, {
+              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessage`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -551,7 +551,7 @@ export namespace MessageWithRepeatedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
@@ -561,7 +561,7 @@ export namespace MessageWithRepeatedMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessages[]`, {
+              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessages[]`, {
                 limits: opts.limits?.nestedMessages$
               })) {
                 yield {
@@ -682,13 +682,13 @@ export namespace MessageWithMapMessage {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
-                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.value`, {
+                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.value`, {
                   limits: opts.limits?.value
                 })
 
@@ -803,7 +803,7 @@ export namespace MessageWithMapMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
@@ -813,7 +813,7 @@ export namespace MessageWithMapMessage {
                 throw new MaxLengthError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessages{}`, {
+              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessages{}`, {
                 limits: {
                   value: opts.limits?.nestedMessages$value
                 }
@@ -930,14 +930,14 @@ export namespace MessageWithPrimitiveMap {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                  field: `${prefix}.value`,
                   value: reader.string()
                 }
                 break
@@ -1051,7 +1051,7 @@ export namespace MessageWithPrimitiveMap {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
@@ -1061,7 +1061,7 @@ export namespace MessageWithPrimitiveMap {
                 throw new MaxLengthError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedStrings{}`, {
+              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix}.nestedStrings{}`, {
                 limits: {
                   value: opts.limits?.nestedStrings$value
                 }

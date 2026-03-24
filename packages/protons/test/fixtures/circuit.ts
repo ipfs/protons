@@ -150,7 +150,7 @@ export namespace CircuitRelay {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.id`,
+                  field: `${prefix}.id`,
                   value: reader.bytes()
                 }
                 break
@@ -161,7 +161,7 @@ export namespace CircuitRelay {
                 }
 
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
+                  field: `${prefix}.addrs[]`,
                   index: obj.addrs,
                   value: reader.bytes()
                 }
@@ -284,20 +284,20 @@ export namespace CircuitRelay {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: CircuitRelay.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.srcPeer`, {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}.srcPeer`, {
                 limits: opts.limits?.srcPeer
               })
 
               break
             }
             case 3: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.dstPeer`, {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}.dstPeer`, {
                 limits: opts.limits?.dstPeer
               })
 
@@ -305,7 +305,7 @@ export namespace CircuitRelay {
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.code`,
+                field: `${prefix}.code`,
                 value: CircuitRelay.Status.codec().decode(reader)
               }
               break

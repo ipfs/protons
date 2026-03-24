@@ -94,35 +94,35 @@ export namespace Record {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                field: `${prefix}.key`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                field: `${prefix}.value`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.author`,
+                field: `${prefix}.author`,
                 value: reader.bytes()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.signature`,
+                field: `${prefix}.signature`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.timeReceived`,
+                field: `${prefix}.timeReceived`,
                 value: reader.string()
               }
               break
@@ -315,7 +315,7 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.id`,
+                  field: `${prefix}.id`,
                   value: reader.bytes()
                 }
                 break
@@ -326,7 +326,7 @@ export namespace Message {
                 }
 
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
+                  field: `${prefix}.addrs[]`,
                   index: obj.addrs,
                   value: reader.bytes()
                 }
@@ -337,7 +337,7 @@ export namespace Message {
               }
               case 3: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.connection`,
+                  field: `${prefix}.connection`,
                   value: Message.ConnectionType.codec().decode(reader)
                 }
                 break
@@ -499,28 +499,28 @@ export namespace Message {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: Message.MessageType.codec().decode(reader)
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.clusterLevelRaw`,
+                field: `${prefix}.clusterLevelRaw`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                field: `${prefix}.key`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.record`,
+                field: `${prefix}.record`,
                 value: reader.bytes()
               }
               break
@@ -530,7 +530,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.closerPeers[]`, {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}.closerPeers[]`, {
                 limits: opts.limits?.closerPeers$
               })) {
                 yield {
@@ -548,7 +548,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.providerPeers[]`, {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}.providerPeers[]`, {
                 limits: opts.limits?.providerPeers$
               })) {
                 yield {

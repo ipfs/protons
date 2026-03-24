@@ -95,7 +95,7 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
+                field: `${prefix}.foo`,
                 value: reader.string()
               }
               break
@@ -106,7 +106,7 @@ export namespace SubMessage {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.bar[]`,
+                field: `${prefix}.bar[]`,
                 index: obj.bar,
                 value: reader.uint32()
               }
@@ -225,14 +225,14 @@ export namespace MapTypes {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                  field: `${prefix}.value`,
                   value: reader.string()
                 }
                 break
@@ -337,14 +337,14 @@ export namespace MapTypes {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.int32()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                  field: `${prefix}.value`,
                   value: reader.int32()
                 }
                 break
@@ -449,14 +449,14 @@ export namespace MapTypes {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.bool()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                  field: `${prefix}.value`,
                   value: reader.bool()
                 }
                 break
@@ -562,13 +562,13 @@ export namespace MapTypes {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
-                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.value`, {
+                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}.value`, {
                   limits: opts.limits?.value
                 })
 
@@ -680,14 +680,14 @@ export namespace MapTypes {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                  field: `${prefix}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                  field: `${prefix}.value`,
                   value: EnumValue.codec().decode(reader)
                 }
                 break
@@ -882,7 +882,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "stringMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.stringMap{}`, {
+              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.stringMap{}`, {
                 limits: {
                   value: opts.limits?.stringMap$value
                 }
@@ -897,7 +897,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "intMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.intMap{}`, {
+              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.intMap{}`, {
                 limits: {
                   value: opts.limits?.intMap$value
                 }
@@ -912,7 +912,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "boolMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.boolMap{}`, {
+              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.boolMap{}`, {
                 limits: {
                   value: opts.limits?.boolMap$value
                 }
@@ -927,7 +927,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "messageMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.messageMap{}`, {
+              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.messageMap{}`, {
                 limits: {
                   value: opts.limits?.messageMap$value
                 }
@@ -942,7 +942,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "enumMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.enumMap{}`, {
+              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.enumMap{}`, {
                 limits: {
                   value: opts.limits?.enumMap$value
                 }

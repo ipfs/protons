@@ -84,21 +84,21 @@ export namespace pb {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.identityKey`,
+                  field: `${prefix}.identityKey`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.identitySig`,
+                  field: `${prefix}.identitySig`,
                   value: reader.bytes()
                 }
                 break
               }
               case 3: {
                 yield {
-                  field: `${prefix != null ? `${prefix}` : '$'}.data`,
+                  field: `${prefix}.data`,
                   value: reader.bytes()
                 }
                 break

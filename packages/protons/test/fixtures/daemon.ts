@@ -185,62 +185,62 @@ export namespace Request {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: Request.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.connect`, {
+              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix}.connect`, {
                 limits: opts.limits?.connect
               })
 
               break
             }
             case 3: {
-              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.streamOpen`, {
+              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix}.streamOpen`, {
                 limits: opts.limits?.streamOpen
               })
 
               break
             }
             case 4: {
-              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.streamHandler`, {
+              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix}.streamHandler`, {
                 limits: opts.limits?.streamHandler
               })
 
               break
             }
             case 5: {
-              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.dht`, {
+              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix}.dht`, {
                 limits: opts.limits?.dht
               })
 
               break
             }
             case 6: {
-              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.connManager`, {
+              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix}.connManager`, {
                 limits: opts.limits?.connManager
               })
 
               break
             }
             case 7: {
-              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.disconnect`, {
+              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix}.disconnect`, {
                 limits: opts.limits?.disconnect
               })
 
               break
             }
             case 8: {
-              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.pubsub`, {
+              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix}.pubsub`, {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 9: {
-              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.peerStore`, {
+              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix}.peerStore`, {
                 limits: opts.limits?.peerStore
               })
 
@@ -575,34 +575,34 @@ export namespace Response {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: Response.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.error`, {
+              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix}.error`, {
                 limits: opts.limits?.error
               })
 
               break
             }
             case 3: {
-              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.streamInfo`, {
+              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix}.streamInfo`, {
                 limits: opts.limits?.streamInfo
               })
 
               break
             }
             case 4: {
-              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.identify`, {
+              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix}.identify`, {
                 limits: opts.limits?.identify
               })
 
               break
             }
             case 5: {
-              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.dht`, {
+              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix}.dht`, {
                 limits: opts.limits?.dht
               })
 
@@ -613,7 +613,7 @@ export namespace Response {
                 throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
               }
 
-              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.peers[]`, {
+              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}.peers[]`, {
                 limits: opts.limits?.peers$
               })) {
                 yield {
@@ -627,14 +627,14 @@ export namespace Response {
               break
             }
             case 7: {
-              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.pubsub`, {
+              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix}.pubsub`, {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 8: {
-              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.peerStore`, {
+              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix}.peerStore`, {
                 limits: opts.limits?.peerStore
               })
 
@@ -838,7 +838,7 @@ export namespace IdentifyResponse {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.id`,
+                field: `${prefix}.id`,
                 value: reader.bytes()
               }
               break
@@ -849,7 +849,7 @@ export namespace IdentifyResponse {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
+                field: `${prefix}.addrs[]`,
                 index: obj.addrs,
                 value: reader.bytes()
               }
@@ -979,7 +979,7 @@ export namespace ConnectRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peer`,
+                field: `${prefix}.peer`,
                 value: reader.bytes()
               }
               break
@@ -990,7 +990,7 @@ export namespace ConnectRequest {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
+                field: `${prefix}.addrs[]`,
                 index: obj.addrs,
                 value: reader.bytes()
               }
@@ -1001,7 +1001,7 @@ export namespace ConnectRequest {
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.timeout`,
+                field: `${prefix}.timeout`,
                 value: reader.int64()
               }
               break
@@ -1132,7 +1132,7 @@ export namespace StreamOpenRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peer`,
+                field: `${prefix}.peer`,
                 value: reader.bytes()
               }
               break
@@ -1143,7 +1143,7 @@ export namespace StreamOpenRequest {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.proto[]`,
+                field: `${prefix}.proto[]`,
                 index: obj.proto,
                 value: reader.string()
               }
@@ -1154,7 +1154,7 @@ export namespace StreamOpenRequest {
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.timeout`,
+                field: `${prefix}.timeout`,
                 value: reader.int64()
               }
               break
@@ -1275,7 +1275,7 @@ export namespace StreamHandlerRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.addr`,
+                field: `${prefix}.addr`,
                 value: reader.bytes()
               }
               break
@@ -1286,7 +1286,7 @@ export namespace StreamHandlerRequest {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.proto[]`,
+                field: `${prefix}.proto[]`,
                 index: obj.proto,
                 value: reader.string()
               }
@@ -1385,7 +1385,7 @@ export namespace ErrorResponse {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.msg`,
+                field: `${prefix}.msg`,
                 value: reader.string()
               }
               break
@@ -1496,21 +1496,21 @@ export namespace StreamInfo {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peer`,
+                field: `${prefix}.peer`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.addr`,
+                field: `${prefix}.addr`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.proto`,
+                field: `${prefix}.proto`,
                 value: reader.string()
               }
               break
@@ -1699,49 +1699,49 @@ export namespace DHTRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: DHTRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peer`,
+                field: `${prefix}.peer`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.cid`,
+                field: `${prefix}.cid`,
                 value: reader.bytes()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                field: `${prefix}.key`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                field: `${prefix}.value`,
                 value: reader.bytes()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.count`,
+                field: `${prefix}.count`,
                 value: reader.int32()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.timeout`,
+                field: `${prefix}.timeout`,
                 value: reader.int64()
               }
               break
@@ -1900,13 +1900,13 @@ export namespace DHTResponse {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: DHTResponse.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.peer`, {
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}.peer`, {
                 limits: opts.limits?.peer
               })
 
@@ -1914,7 +1914,7 @@ export namespace DHTResponse {
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                field: `${prefix}.value`,
                 value: reader.bytes()
               }
               break
@@ -2040,7 +2040,7 @@ export namespace PeerInfo {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.id`,
+                field: `${prefix}.id`,
                 value: reader.bytes()
               }
               break
@@ -2051,7 +2051,7 @@ export namespace PeerInfo {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
+                field: `${prefix}.addrs[]`,
                 index: obj.addrs,
                 value: reader.bytes()
               }
@@ -2198,28 +2198,28 @@ export namespace ConnManagerRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: ConnManagerRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peer`,
+                field: `${prefix}.peer`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.tag`,
+                field: `${prefix}.tag`,
                 value: reader.string()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.weight`,
+                field: `${prefix}.weight`,
                 value: reader.int64()
               }
               break
@@ -2323,7 +2323,7 @@ export namespace DisconnectRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peer`,
+                field: `${prefix}.peer`,
                 value: reader.bytes()
               }
               break
@@ -2452,21 +2452,21 @@ export namespace PSRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: PSRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.topic`,
+                field: `${prefix}.topic`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.data`,
+                field: `${prefix}.data`,
                 value: reader.bytes()
               }
               break
@@ -2625,21 +2625,21 @@ export namespace PSMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.from`,
+                field: `${prefix}.from`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.data`,
+                field: `${prefix}.data`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.seqno`,
+                field: `${prefix}.seqno`,
                 value: reader.bytes()
               }
               break
@@ -2650,7 +2650,7 @@ export namespace PSMessage {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.topicIDs[]`,
+                field: `${prefix}.topicIDs[]`,
                 index: obj.topicIDs,
                 value: reader.string()
               }
@@ -2661,14 +2661,14 @@ export namespace PSMessage {
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.signature`,
+                field: `${prefix}.signature`,
                 value: reader.bytes()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                field: `${prefix}.key`,
                 value: reader.bytes()
               }
               break
@@ -2815,7 +2815,7 @@ export namespace PSResponse {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.topics[]`,
+                field: `${prefix}.topics[]`,
                 index: obj.topics,
                 value: reader.string()
               }
@@ -2830,7 +2830,7 @@ export namespace PSResponse {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peerIDs[]`,
+                field: `${prefix}.peerIDs[]`,
                 index: obj.peerIDs,
                 value: reader.bytes()
               }
@@ -2979,14 +2979,14 @@ export namespace PeerstoreRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.type`,
+                field: `${prefix}.type`,
                 value: PeerstoreRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.id`,
+                field: `${prefix}.id`,
                 value: reader.bytes()
               }
               break
@@ -2997,7 +2997,7 @@ export namespace PeerstoreRequest {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.protos[]`,
+                field: `${prefix}.protos[]`,
                 index: obj.protos,
                 value: reader.string()
               }
@@ -3122,7 +3122,7 @@ export namespace PeerstoreResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.peer`, {
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}.peer`, {
                 limits: opts.limits?.peer
               })
 
@@ -3134,7 +3134,7 @@ export namespace PeerstoreResponse {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.protos[]`,
+                field: `${prefix}.protos[]`,
                 index: obj.protos,
                 value: reader.string()
               }

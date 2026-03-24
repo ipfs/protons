@@ -72,7 +72,7 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
+                field: `${prefix}.foo`,
                 value: reader.string()
               }
               break
@@ -343,90 +343,90 @@ export namespace AllTheTypes {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
+                field: `${prefix}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field2`,
+                field: `${prefix}.field2`,
                 value: reader.int32()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field3`,
+                field: `${prefix}.field3`,
                 value: reader.int64()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field4`,
+                field: `${prefix}.field4`,
                 value: reader.uint32()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field5`,
+                field: `${prefix}.field5`,
                 value: reader.uint64()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field6`,
+                field: `${prefix}.field6`,
                 value: reader.sint32()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field7`,
+                field: `${prefix}.field7`,
                 value: reader.sint64()
               }
               break
             }
             case 8: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field8`,
+                field: `${prefix}.field8`,
                 value: reader.double()
               }
               break
             }
             case 9: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field9`,
+                field: `${prefix}.field9`,
                 value: reader.float()
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field10`,
+                field: `${prefix}.field10`,
                 value: reader.string()
               }
               break
             }
             case 11: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field11`,
+                field: `${prefix}.field11`,
                 value: reader.bytes()
               }
               break
             }
             case 12: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field12`,
+                field: `${prefix}.field12`,
                 value: AnEnum.codec().decode(reader)
               }
               break
             }
             case 13: {
-              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.field13`, {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}.field13`, {
                 limits: opts.limits?.field13
               })
 
@@ -438,7 +438,7 @@ export namespace AllTheTypes {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field14[]`,
+                field: `${prefix}.field14[]`,
                 index: obj.field14,
                 value: reader.string()
               }
@@ -449,28 +449,28 @@ export namespace AllTheTypes {
             }
             case 15: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field15`,
+                field: `${prefix}.field15`,
                 value: reader.fixed32()
               }
               break
             }
             case 16: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field16`,
+                field: `${prefix}.field16`,
                 value: reader.fixed64()
               }
               break
             }
             case 17: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field17`,
+                field: `${prefix}.field17`,
                 value: reader.sfixed32()
               }
               break
             }
             case 18: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.field18`,
+                field: `${prefix}.field18`,
                 value: reader.sfixed64()
               }
               break

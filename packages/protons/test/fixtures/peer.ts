@@ -130,7 +130,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
               }
 
-              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.addresses[]`, {
+              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix}.addresses[]`, {
                 limits: opts.limits?.addresses$
               })) {
                 yield {
@@ -149,7 +149,7 @@ export namespace Peer {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.protocols[]`,
+                field: `${prefix}.protocols[]`,
                 index: obj.protocols,
                 value: reader.string()
               }
@@ -163,7 +163,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
               }
 
-              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.metadata[]`, {
+              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix}.metadata[]`, {
                 limits: opts.limits?.metadata$
               })) {
                 yield {
@@ -178,14 +178,14 @@ export namespace Peer {
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.pubKey`,
+                field: `${prefix}.pubKey`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.peerRecordEnvelope`,
+                field: `${prefix}.peerRecordEnvelope`,
                 value: reader.bytes()
               }
               break
@@ -319,14 +319,14 @@ export namespace Address {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.multiaddr`,
+                field: `${prefix}.multiaddr`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.isCertified`,
+                field: `${prefix}.isCertified`,
                 value: reader.bool()
               }
               break
@@ -431,14 +431,14 @@ export namespace Metadata {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.key`,
+                field: `${prefix}.key`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.value`,
+                field: `${prefix}.value`,
                 value: reader.bytes()
               }
               break

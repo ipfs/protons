@@ -86,14 +86,14 @@ export namespace SingularSubMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
+                field: `${prefix}.foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.bar`,
+                field: `${prefix}.bar`,
                 value: reader.int32()
               }
               break
@@ -364,118 +364,118 @@ export namespace Singular {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.double`,
+                field: `${prefix}.double`,
                 value: reader.double()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.float`,
+                field: `${prefix}.float`,
                 value: reader.float()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.int32`,
+                field: `${prefix}.int32`,
                 value: reader.int32()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.int64`,
+                field: `${prefix}.int64`,
                 value: reader.int64()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.uint32`,
+                field: `${prefix}.uint32`,
                 value: reader.uint32()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.uint64`,
+                field: `${prefix}.uint64`,
                 value: reader.uint64()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.sint32`,
+                field: `${prefix}.sint32`,
                 value: reader.sint32()
               }
               break
             }
             case 8: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.sint64`,
+                field: `${prefix}.sint64`,
                 value: reader.sint64()
               }
               break
             }
             case 9: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fixed32`,
+                field: `${prefix}.fixed32`,
                 value: reader.fixed32()
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.fixed64`,
+                field: `${prefix}.fixed64`,
                 value: reader.fixed64()
               }
               break
             }
             case 11: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.sfixed32`,
+                field: `${prefix}.sfixed32`,
                 value: reader.sfixed32()
               }
               break
             }
             case 12: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.sfixed64`,
+                field: `${prefix}.sfixed64`,
                 value: reader.sfixed64()
               }
               break
             }
             case 13: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.bool`,
+                field: `${prefix}.bool`,
                 value: reader.bool()
               }
               break
             }
             case 14: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.string`,
+                field: `${prefix}.string`,
                 value: reader.string()
               }
               break
             }
             case 15: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.bytes`,
+                field: `${prefix}.bytes`,
                 value: reader.bytes()
               }
               break
             }
             case 16: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.enum`,
+                field: `${prefix}.enum`,
                 value: SingularEnum.codec().decode(reader)
               }
               break
             }
             case 17: {
-              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.subMessage`, {
+              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix}.subMessage`, {
                 limits: opts.limits?.subMessage
               })
 

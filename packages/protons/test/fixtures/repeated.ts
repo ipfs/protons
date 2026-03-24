@@ -80,7 +80,7 @@ export namespace SubSubMessage {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.foo[]`,
+                field: `${prefix}.foo[]`,
                 index: obj.foo,
                 value: reader.string()
               }
@@ -91,7 +91,7 @@ export namespace SubSubMessage {
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.nonRepeating`,
+                field: `${prefix}.nonRepeating`,
                 value: reader.uint32()
               }
               break
@@ -242,7 +242,7 @@ export namespace SubMessage {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.foo[]`,
+                field: `${prefix}.foo[]`,
                 index: obj.foo,
                 value: reader.string()
               }
@@ -253,13 +253,13 @@ export namespace SubMessage {
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.nonRepeating`,
+                field: `${prefix}.nonRepeating`,
                 value: reader.uint32()
               }
               break
             }
             case 3: {
-              yield * SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.message`, {
+              yield * SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix}.message`, {
                 limits: opts.limits?.message
               })
 
@@ -270,7 +270,7 @@ export namespace SubMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.messages[]`, {
+              for (const evt of SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix}.messages[]`, {
                 limits: opts.limits?.messages$
               })) {
                 yield {
@@ -474,7 +474,7 @@ export namespace RepeatedTypes {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.number[]`,
+                field: `${prefix}.number[]`,
                 index: obj.number,
                 value: reader.uint32()
               }
@@ -493,7 +493,7 @@ export namespace RepeatedTypes {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.limitedNumber[]`,
+                field: `${prefix}.limitedNumber[]`,
                 index: obj.limitedNumber,
                 value: reader.uint32()
               }
@@ -507,7 +507,7 @@ export namespace RepeatedTypes {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.messages[]`, {
+              for (const evt of SubMessage.codec().stream(reader, reader.uint32(), `${prefix}.messages[]`, {
                 limits: opts.limits?.messages$
               })) {
                 yield {
@@ -521,7 +521,7 @@ export namespace RepeatedTypes {
               break
             }
             case 4: {
-              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.message`, {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}.message`, {
                 limits: opts.limits?.message
               })
 
@@ -529,7 +529,7 @@ export namespace RepeatedTypes {
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.nonRepeating`,
+                field: `${prefix}.nonRepeating`,
                 value: reader.uint32()
               }
               break

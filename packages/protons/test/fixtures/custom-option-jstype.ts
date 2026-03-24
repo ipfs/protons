@@ -111,42 +111,42 @@ export namespace CustomOptionNumber {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.num`,
+                field: `${prefix}.num`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.i64`,
+                field: `${prefix}.i64`,
                 value: reader.int64Number()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.ui64`,
+                field: `${prefix}.ui64`,
                 value: reader.uint64Number()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.si64`,
+                field: `${prefix}.si64`,
                 value: reader.sint64Number()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.f64`,
+                field: `${prefix}.f64`,
                 value: reader.fixed64Number()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.sf64`,
+                field: `${prefix}.sf64`,
                 value: reader.sfixed64Number()
               }
               break
@@ -315,42 +315,42 @@ export namespace CustomOptionString {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.num`,
+                field: `${prefix}.num`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.i64`,
+                field: `${prefix}.i64`,
                 value: reader.int64String()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.ui64`,
+                field: `${prefix}.ui64`,
                 value: reader.uint64String()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.si64`,
+                field: `${prefix}.si64`,
                 value: reader.sint64String()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.f64`,
+                field: `${prefix}.f64`,
                 value: reader.fixed64String()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}` : '$'}.sf64`,
+                field: `${prefix}.sf64`,
                 value: reader.sfixed64String()
               }
               break
