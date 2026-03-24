@@ -3,41 +3,7 @@
   "version": "0.0.0",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
-  "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons-benchmark#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ipfs/protons.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ipfs/protons/issues"
-  },
   "type": "module",
-  "types": "./dist/src/index.d.ts",
-  "files": [
-    "src",
-    "dist",
-    "!dist/test",
-    "!**/*.tsbuildinfo"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
-    }
-  },
-  "eslintConfig": {
-    "extends": "ipfs",
-    "parserOptions": {
-      "project": true,
-      "sourceType": "module"
-    },
-    "ignorePatterns": [
-      "src/implementations/pbjs/*",
-      "src/implementations/protobuf-es/*",
-      "src/implementations/protobuf-ts/*",
-      "src/implementations/protobufjs/*"
-    ]
-  },
   "scripts": {
     "clean": "aegir clean",
     "lint": "aegir lint",
@@ -50,18 +16,18 @@
     "start:browser": "npx playwright-test dist/src/implementations/index.js --runner benchmark"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^2.0.0",
-    "@bufbuild/protoc-gen-es": "^2.0.0",
-    "@protobuf-ts/plugin": "^2.8.1",
-    "@protobuf-ts/runtime": "^2.8.1",
-    "@types/benchmark": "^2.1.1",
-    "aegir": "^47.0.5",
+    "@bufbuild/protobuf": "^2.11.0",
+    "@bufbuild/protoc-gen-es": "^2.11.0",
+    "@protobuf-ts/plugin": "^2.11.1",
+    "@protobuf-ts/runtime": "^2.11.1",
+    "@types/benchmark": "^2.1.5",
+    "aegir": "^47.0.26",
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
-    "protobufjs": "^7.0.0",
+    "protobufjs": "^7.5.4",
     "protons": "^7.0.0",
     "protons-runtime": "^5.0.0",
-    "uint8arraylist": "^2.4.3"
+    "uint8arraylist": "^2.4.8"
   },
   "private": true
 }

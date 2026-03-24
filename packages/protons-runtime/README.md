@@ -1,4 +1,4 @@
-# protons-runtime <!-- omit in toc -->
+# protons-runtime
 
 [![ipfs.tech](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](https://ipfs.tech)
 [![Discuss](https://img.shields.io/discourse/https/discuss.ipfs.tech/posts.svg?style=flat-square)](https://discuss.ipfs.tech)
@@ -38,8 +38,6 @@ npm i protons-runtime
 $ npm i protons-runtime
 ```
 
-Contains shared code to reduce code duplication between modules transpiled by protons.
-
 # API Docs
 
 - <https://ipfs.github.io/protons/modules/protons_runtime.html>
@@ -48,8 +46,8 @@ Contains shared code to reduce code duplication between modules transpiled by pr
 
 Licensed under either of
 
-- Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
-- MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
+- Apache 2.0, ([LICENSE-APACHE](https://github.com/ipfs/protons/blob/main/packages/protons-runtime/LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT ([LICENSE-MIT](https://github.com/ipfs/protons/blob/main/packages/protons-runtime/LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
 
 # Contribute
 

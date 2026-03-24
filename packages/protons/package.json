@@ -3,7 +3,7 @@
   "version": "7.5.0",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
-  "homepage": "https://github.com/ipfs/protons/tree/master/packages/protons#readme",
+  "homepage": "https://github.com/ipfs/protons/tree/main/packages/protons#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ipfs/protons.git"
@@ -32,12 +32,98 @@
       "import": "./dist/src/index.js"
     }
   },
-  "eslintConfig": {
-    "extends": "ipfs",
-    "parserOptions": {
-      "project": true,
-      "sourceType": "module"
-    }
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "releaseRules": [
+            {
+              "breaking": true,
+              "release": "major"
+            },
+            {
+              "revert": true,
+              "release": "patch"
+            },
+            {
+              "type": "feat",
+              "release": "minor"
+            },
+            {
+              "type": "fix",
+              "release": "patch"
+            },
+            {
+              "type": "docs",
+              "release": "patch"
+            },
+            {
+              "type": "test",
+              "release": "patch"
+            },
+            {
+              "type": "deps",
+              "release": "patch"
+            },
+            {
+              "scope": "no-release",
+              "release": false
+            }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "presetConfig": {
+            "types": [
+              {
+                "type": "feat",
+                "section": "Features"
+              },
+              {
+                "type": "fix",
+                "section": "Bug Fixes"
+              },
+              {
+                "type": "chore",
+                "section": "Trivial Changes"
+              },
+              {
+                "type": "docs",
+                "section": "Documentation"
+              },
+              {
+                "type": "deps",
+                "section": "Dependencies"
+              },
+              {
+                "type": "test",
+                "section": "Tests"
+              }
+            ]
+          }
+        }
+      ],
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "CHANGELOG.md",
+            "package.json"
+          ]
+        }
+      ]
+    ]
   },
   "scripts": {
     "clean": "aegir clean",
@@ -51,16 +137,16 @@
   },
   "dependencies": {
     "meow": "^14.1.0",
-    "protobufjs-cli": "^1.0.0",
+    "protobufjs-cli": "^1.2.0",
     "protons-runtime": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^47.0.5",
+    "aegir": "^47.0.26",
     "it-all": "^3.0.9",
-    "long": "^5.2.0",
+    "long": "^5.3.2",
     "pbjs": "^0.0.14",
-    "protobufjs": "^7.0.0",
-    "uint8arraylist": "^2.4.3",
-    "uint8arrays": "^5.0.1"
+    "protobufjs": "^7.5.4",
+    "uint8arraylist": "^2.4.8",
+    "uint8arrays": "^5.1.0"
   }
 }
