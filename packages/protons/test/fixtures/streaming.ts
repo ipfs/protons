@@ -86,14 +86,14 @@ export namespace MessageWithArrayField {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field2`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field2`,
                 value: reader.uint32()
               }
               break
@@ -104,7 +104,7 @@ export namespace MessageWithArrayField {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}arr`,
+                field: `${prefix != null ? `${prefix}` : '$'}.arr[]`,
                 index: obj.arr,
                 value: reader.string()
               }
@@ -126,17 +126,17 @@ export namespace MessageWithArrayField {
   }
 
   export interface MessageWithArrayFieldField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
   }
 
   export interface MessageWithArrayFieldField2FieldEvent {
-    field: 'field2'
+    field: '$.field2'
     value: number
   }
 
   export interface MessageWithArrayFieldArrFieldEvent {
-    field: 'arr$entry'
+    field: '$.arr[]'
     index: number
     value: string
   }
@@ -208,7 +208,7 @@ export namespace NestedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}nestedValue`,
+                field: `${prefix != null ? `${prefix}` : '$'}.nestedValue`,
                 value: reader.string()
               }
               break
@@ -226,7 +226,7 @@ export namespace NestedMessage {
   }
 
   export interface NestedMessageNestedValueFieldEvent {
-    field: 'nestedValue'
+    field: '$.nestedValue'
     value: string
   }
 
@@ -309,13 +309,13 @@ export namespace MessageWithNestedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
-              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}nestedMessage`, {
+              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessage`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -334,12 +334,12 @@ export namespace MessageWithNestedMessage {
   }
 
   export interface MessageWithNestedMessageField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
   }
 
-  export interface MessageWithNestedMessageNestedMessageNestedMessageNestedValueFieldEvent {
-    field: 'nestedValue'
+  export interface MessageWithNestedMessageNestedMessageNestedValueFieldEvent {
+    field: '$.nestedMessage.nestedValue'
     value: string
   }
 
@@ -351,7 +351,7 @@ export namespace MessageWithNestedMessage {
     return decodeMessage(buf, MessageWithNestedMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithNestedMessage>): Generator<MessageWithNestedMessageField1FieldEvent | MessageWithNestedMessageNestedMessageNestedMessageNestedValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithNestedMessage>): Generator<MessageWithNestedMessageField1FieldEvent | MessageWithNestedMessageNestedMessageNestedValueFieldEvent> {
     return streamMessage(buf, MessageWithNestedMessage.codec(), opts)
   }
 }
@@ -422,13 +422,13 @@ export namespace MessageWithDeeplyNestedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
-              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}nestedMessage`, {
+              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessage`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -447,17 +447,17 @@ export namespace MessageWithDeeplyNestedMessage {
   }
 
   export interface MessageWithDeeplyNestedMessageField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
   }
 
-  export interface MessageWithDeeplyNestedMessageNestedMessageMessageWithNestedMessageField1FieldEvent {
-    field: 'field1'
+  export interface MessageWithDeeplyNestedMessageNestedMessageField1FieldEvent {
+    field: '$.nestedMessage.field1'
     value: boolean
   }
 
-  export interface MessageWithDeeplyNestedMessageNestedMessageMessageWithNestedMessageNestedMessageNestedMessageNestedValueFieldEvent {
-    field: 'nestedValue'
+  export interface MessageWithDeeplyNestedMessageNestedMessageNestedMessageNestedValueFieldEvent {
+    field: '$.nestedMessage.nestedMessage.nestedValue'
     value: string
   }
 
@@ -469,7 +469,7 @@ export namespace MessageWithDeeplyNestedMessage {
     return decodeMessage(buf, MessageWithDeeplyNestedMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithDeeplyNestedMessage>): Generator<MessageWithDeeplyNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageMessageWithNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageMessageWithNestedMessageNestedMessageNestedMessageNestedValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithDeeplyNestedMessage>): Generator<MessageWithDeeplyNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageNestedMessageNestedValueFieldEvent> {
     return streamMessage(buf, MessageWithDeeplyNestedMessage.codec(), opts)
   }
 }
@@ -551,7 +551,7 @@ export namespace MessageWithRepeatedMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
@@ -561,7 +561,7 @@ export namespace MessageWithRepeatedMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}nestedMessages`, {
+              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessages[]`, {
                 limits: opts.limits?.nestedMessages$
               })) {
                 yield {
@@ -587,8 +587,14 @@ export namespace MessageWithRepeatedMessage {
   }
 
   export interface MessageWithRepeatedMessageField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
+  }
+
+  export interface MessageWithRepeatedMessageNestedMessagesNestedValueFieldEvent {
+    field: '$.nestedMessages[].nestedValue'
+    value: string
+    index: number
   }
 
   export function encode (obj: Partial<MessageWithRepeatedMessage>): Uint8Array {
@@ -599,7 +605,7 @@ export namespace MessageWithRepeatedMessage {
     return decodeMessage(buf, MessageWithRepeatedMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRepeatedMessage>): Generator<MessageWithRepeatedMessageField1FieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRepeatedMessage>): Generator<MessageWithRepeatedMessageField1FieldEvent | MessageWithRepeatedMessageNestedMessagesNestedValueFieldEvent> {
     return streamMessage(buf, MessageWithRepeatedMessage.codec(), opts)
   }
 }
@@ -676,13 +682,13 @@ export namespace MessageWithMapMessage {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}key`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
-                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}value`, {
+                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.value`, {
                   limits: opts.limits?.value
                 })
 
@@ -701,12 +707,12 @@ export namespace MessageWithMapMessage {
     }
 
     export interface MessageWithMapMessage$nestedMessagesEntryKeyFieldEvent {
-      field: 'key'
+      field: '$.key'
       value: string
     }
 
-    export interface MessageWithMapMessage$nestedMessagesEntryValueNestedMessageNestedValueFieldEvent {
-      field: 'nestedValue'
+    export interface MessageWithMapMessage$nestedMessagesEntryValueNestedValueFieldEvent {
+      field: '$.value.nestedValue'
       value: string
     }
 
@@ -718,7 +724,7 @@ export namespace MessageWithMapMessage {
       return decodeMessage(buf, MessageWithMapMessage$nestedMessagesEntry.codec(), opts)
     }
 
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage$nestedMessagesEntry>): Generator<MessageWithMapMessage$nestedMessagesEntryKeyFieldEvent | MessageWithMapMessage$nestedMessagesEntryValueNestedMessageNestedValueFieldEvent> {
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage$nestedMessagesEntry>): Generator<MessageWithMapMessage$nestedMessagesEntryKeyFieldEvent | MessageWithMapMessage$nestedMessagesEntryValueNestedValueFieldEvent> {
       return streamMessage(buf, MessageWithMapMessage$nestedMessagesEntry.codec(), opts)
     }
   }
@@ -797,7 +803,7 @@ export namespace MessageWithMapMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
@@ -807,7 +813,7 @@ export namespace MessageWithMapMessage {
                 throw new MaxLengthError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}nestedMessages`, {
+              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedMessages{}`, {
                 limits: {
                   value: opts.limits?.nestedMessages$value
                 }
@@ -830,8 +836,14 @@ export namespace MessageWithMapMessage {
   }
 
   export interface MessageWithMapMessageField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
+  }
+
+  export interface MessageWithMapMessageNestedMessagesNestedValueFieldEvent {
+    field: '$.nestedMessages{}.nestedValue'
+    value: NestedMessage
+    key: string
   }
 
   export function encode (obj: Partial<MessageWithMapMessage>): Uint8Array {
@@ -842,7 +854,7 @@ export namespace MessageWithMapMessage {
     return decodeMessage(buf, MessageWithMapMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage>): Generator<MessageWithMapMessageField1FieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage>): Generator<MessageWithMapMessageField1FieldEvent | MessageWithMapMessageNestedMessagesNestedValueFieldEvent> {
     return streamMessage(buf, MessageWithMapMessage.codec(), opts)
   }
 }
@@ -918,14 +930,14 @@ export namespace MessageWithPrimitiveMap {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}key`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}value`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
                   value: reader.string()
                 }
                 break
@@ -943,12 +955,12 @@ export namespace MessageWithPrimitiveMap {
     }
 
     export interface MessageWithPrimitiveMap$nestedStringsEntryKeyFieldEvent {
-      field: 'key'
+      field: '$.key'
       value: string
     }
 
     export interface MessageWithPrimitiveMap$nestedStringsEntryValueFieldEvent {
-      field: 'value'
+      field: '$.value'
       value: string
     }
 
@@ -1039,7 +1051,7 @@ export namespace MessageWithPrimitiveMap {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
@@ -1049,7 +1061,7 @@ export namespace MessageWithPrimitiveMap {
                 throw new MaxLengthError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}nestedStrings`, {
+              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.nestedStrings{}`, {
                 limits: {
                   value: opts.limits?.nestedStrings$value
                 }
@@ -1072,12 +1084,12 @@ export namespace MessageWithPrimitiveMap {
   }
 
   export interface MessageWithPrimitiveMapField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
   }
 
   export interface MessageWithPrimitiveMapNestedStringsFieldEvent {
-    field: 'nestedStrings$entry'
+    field: '$.nestedStrings{}'
     key: string
     value: string
   }

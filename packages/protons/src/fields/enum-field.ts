@@ -27,27 +27,4 @@ export class EnumField extends Field {
 
     return `${this.name}: ${type.pbType}.${this.enum.lowestValueName}`
   }
-/*
-  getValueTest (): string {
-    console.info(this.name, 'optional', this.optional, 'proto2required', this.proto2Required)
-
-    if (this.proto2Required) {
-      return 'true'
-    }
-
-    const valueTest = `obj.${this.name} != null`
-
-    // singular enums default to 0, but enums can be defined without a 0
-    // value which is against the proto3 spec but is tolerated
-    if (this.optional || this.proto2Required) {
-      return valueTest
-    }
-
-    if (this.enum.lowestValue === 0) {
-      return `${valueTest} && __${this.type}Values[obj.${this.name}] !== 0`
-    }
-
-    return valueTest
-  }
-    */
 }

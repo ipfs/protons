@@ -68,14 +68,14 @@ export namespace Basic {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}foo`,
+                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}num`,
+                field: `${prefix != null ? `${prefix}` : '$'}.num`,
                 value: reader.int32()
               }
               break
@@ -93,12 +93,12 @@ export namespace Basic {
   }
 
   export interface BasicFooFieldEvent {
-    field: 'foo'
+    field: '$.foo'
     value: string
   }
 
   export interface BasicNumFieldEvent {
-    field: 'num'
+    field: '$.num'
     value: number
   }
 

@@ -78,7 +78,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}repeatedField`,
+                field: `${prefix != null ? `${prefix}` : '$'}.repeatedField[]`,
                 index: obj.repeatedField,
                 value: reader.string()
               }
@@ -100,7 +100,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
   }
 
   export interface MessageWithSizeLimitedRepeatedFieldRepeatedFieldFieldEvent {
-    field: 'repeatedField$entry'
+    field: '$.repeatedField[]'
     index: number
     value: string
   }
@@ -188,14 +188,14 @@ export namespace MessageWithSizeLimitedMap {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}key`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}value`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.value`,
                   value: reader.string()
                 }
                 break
@@ -213,12 +213,12 @@ export namespace MessageWithSizeLimitedMap {
     }
 
     export interface MessageWithSizeLimitedMap$mapFieldEntryKeyFieldEvent {
-      field: 'key'
+      field: '$.key'
       value: string
     }
 
     export interface MessageWithSizeLimitedMap$mapFieldEntryValueFieldEvent {
-      field: 'value'
+      field: '$.value'
       value: string
     }
 
@@ -310,7 +310,7 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxLengthError('Decode error - repeated field "mapField" had too many elements')
               }
 
-              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}mapField`, {
+              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.mapField{}`, {
                 limits: {
                   value: opts.limits?.mapField$value
                 }
@@ -333,7 +333,7 @@ export namespace MessageWithSizeLimitedMap {
   }
 
   export interface MessageWithSizeLimitedMapMapFieldFieldEvent {
-    field: 'mapField$entry'
+    field: '$.mapField{}'
     key: string
     value: string
   }

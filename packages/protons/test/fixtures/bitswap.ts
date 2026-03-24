@@ -131,35 +131,35 @@ export namespace Message {
               switch (tag >>> 3) {
                 case 1: {
                   yield {
-                    field: `${prefix != null ? `${prefix}.` : ''}block`,
+                    field: `${prefix != null ? `${prefix}` : '$'}.block`,
                     value: reader.bytes()
                   }
                   break
                 }
                 case 2: {
                   yield {
-                    field: `${prefix != null ? `${prefix}.` : ''}priority`,
+                    field: `${prefix != null ? `${prefix}` : '$'}.priority`,
                     value: reader.int32()
                   }
                   break
                 }
                 case 3: {
                   yield {
-                    field: `${prefix != null ? `${prefix}.` : ''}cancel`,
+                    field: `${prefix != null ? `${prefix}` : '$'}.cancel`,
                     value: reader.bool()
                   }
                   break
                 }
                 case 4: {
                   yield {
-                    field: `${prefix != null ? `${prefix}.` : ''}wantType`,
+                    field: `${prefix != null ? `${prefix}` : '$'}.wantType`,
                     value: Message.Wantlist.WantType.codec().decode(reader)
                   }
                   break
                 }
                 case 5: {
                   yield {
-                    field: `${prefix != null ? `${prefix}.` : ''}sendDontHave`,
+                    field: `${prefix != null ? `${prefix}` : '$'}.sendDontHave`,
                     value: reader.bool()
                   }
                   break
@@ -177,27 +177,27 @@ export namespace Message {
       }
 
       export interface EntryBlockFieldEvent {
-        field: 'block'
+        field: '$.block'
         value: Uint8Array
       }
 
       export interface EntryPriorityFieldEvent {
-        field: 'priority'
+        field: '$.priority'
         value: number
       }
 
       export interface EntryCancelFieldEvent {
-        field: 'cancel'
+        field: '$.cancel'
         value: boolean
       }
 
       export interface EntryWantTypeFieldEvent {
-        field: 'wantType'
+        field: '$.wantType'
         value: Message.Wantlist.WantType
       }
 
       export interface EntrySendDontHaveFieldEvent {
-        field: 'sendDontHave'
+        field: '$.sendDontHave'
         value: boolean
       }
 
@@ -288,7 +288,7 @@ export namespace Message {
                   throw new MaxLengthError('Streaming decode error - repeated field "entries" had too many elements')
                 }
 
-                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}entries`, {
+                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.entries[]`, {
                   limits: opts.limits?.entries$
                 })) {
                   yield {
@@ -303,7 +303,7 @@ export namespace Message {
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}full`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.full`,
                   value: reader.bool()
                 }
                 break
@@ -320,8 +320,38 @@ export namespace Message {
       return _codec
     }
 
+    export interface WantlistEntriesBlockFieldEvent {
+      field: '$.entries[].block'
+      value: Uint8Array
+      index: number
+    }
+
+    export interface WantlistEntriesPriorityFieldEvent {
+      field: '$.entries[].priority'
+      value: number
+      index: number
+    }
+
+    export interface WantlistEntriesCancelFieldEvent {
+      field: '$.entries[].cancel'
+      value: boolean
+      index: number
+    }
+
+    export interface WantlistEntriesWantTypeFieldEvent {
+      field: '$.entries[].wantType'
+      value: Message.Wantlist.WantType
+      index: number
+    }
+
+    export interface WantlistEntriesSendDontHaveFieldEvent {
+      field: '$.entries[].sendDontHave'
+      value: boolean
+      index: number
+    }
+
     export interface WantlistFullFieldEvent {
-      field: 'full'
+      field: '$.full'
       value: boolean
     }
 
@@ -333,7 +363,7 @@ export namespace Message {
       return decodeMessage(buf, Wantlist.codec(), opts)
     }
 
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Wantlist>): Generator<WantlistFullFieldEvent> {
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Wantlist>): Generator<WantlistEntriesBlockFieldEvent | WantlistEntriesPriorityFieldEvent | WantlistEntriesCancelFieldEvent | WantlistEntriesWantTypeFieldEvent | WantlistEntriesSendDontHaveFieldEvent | WantlistFullFieldEvent> {
       return streamMessage(buf, Wantlist.codec(), opts)
     }
   }
@@ -403,14 +433,14 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}prefix`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.prefix`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}data`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.data`,
                   value: reader.bytes()
                 }
                 break
@@ -428,12 +458,12 @@ export namespace Message {
     }
 
     export interface BlockPrefixFieldEvent {
-      field: 'prefix'
+      field: '$.prefix'
       value: Uint8Array
     }
 
     export interface BlockDataFieldEvent {
-      field: 'data'
+      field: '$.data'
       value: Uint8Array
     }
 
@@ -531,14 +561,14 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}cid`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.cid`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}type`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.type`,
                   value: Message.BlockPresenceType.codec().decode(reader)
                 }
                 break
@@ -556,12 +586,12 @@ export namespace Message {
     }
 
     export interface BlockPresenceCidFieldEvent {
-      field: 'cid'
+      field: '$.cid'
       value: Uint8Array
     }
 
     export interface BlockPresenceTypeFieldEvent {
-      field: 'type'
+      field: '$.type'
       value: Message.BlockPresenceType
     }
 
@@ -695,7 +725,7 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}wantlist`, {
+              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.wantlist`, {
                 limits: opts.limits?.wantlist
               })
 
@@ -707,7 +737,7 @@ export namespace Message {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}blocks`,
+                field: `${prefix != null ? `${prefix}` : '$'}.blocks[]`,
                 index: obj.blocks,
                 value: reader.bytes()
               }
@@ -721,7 +751,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "payload" had too many elements')
               }
 
-              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}payload`, {
+              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.payload[]`, {
                 limits: opts.limits?.payload$
               })) {
                 yield {
@@ -739,7 +769,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "blockPresences" had too many elements')
               }
 
-              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}blockPresences`, {
+              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.blockPresences[]`, {
                 limits: opts.limits?.blockPresences$
               })) {
                 yield {
@@ -754,7 +784,7 @@ export namespace Message {
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}pendingBytes`,
+                field: `${prefix != null ? `${prefix}` : '$'}.pendingBytes`,
                 value: reader.int32()
               }
               break
@@ -771,19 +801,73 @@ export namespace Message {
     return _codec
   }
 
-  export interface MessageWantlistWantlistFullFieldEvent {
-    field: 'full'
+  export interface MessageWantlistEntriesBlockFieldEvent {
+    field: '$.wantlist.entries[].block'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface MessageWantlistEntriesPriorityFieldEvent {
+    field: '$.wantlist.entries[].priority'
+    value: number
+    index: number
+  }
+
+  export interface MessageWantlistEntriesCancelFieldEvent {
+    field: '$.wantlist.entries[].cancel'
+    value: boolean
+    index: number
+  }
+
+  export interface MessageWantlistEntriesWantTypeFieldEvent {
+    field: '$.wantlist.entries[].wantType'
+    value: Message.Wantlist.WantType
+    index: number
+  }
+
+  export interface MessageWantlistEntriesSendDontHaveFieldEvent {
+    field: '$.wantlist.entries[].sendDontHave'
+    value: boolean
+    index: number
+  }
+
+  export interface MessageWantlistFullFieldEvent {
+    field: '$.wantlist.full'
     value: boolean
   }
 
   export interface MessageBlocksFieldEvent {
-    field: 'blocks$entry'
+    field: '$.blocks[]'
     index: number
     value: Uint8Array
   }
 
+  export interface MessagePayloadPrefixFieldEvent {
+    field: '$.payload[].prefix'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface MessagePayloadDataFieldEvent {
+    field: '$.payload[].data'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface MessageBlockPresencesCidFieldEvent {
+    field: '$.blockPresences[].cid'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface MessageBlockPresencesTypeFieldEvent {
+    field: '$.blockPresences[].type'
+    value: Message.BlockPresenceType
+    index: number
+  }
+
   export interface MessagePendingBytesFieldEvent {
-    field: 'pendingBytes'
+    field: '$.pendingBytes'
     value: number
   }
 
@@ -795,7 +879,7 @@ export namespace Message {
     return decodeMessage(buf, Message.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Generator<MessageWantlistWantlistFullFieldEvent | MessageBlocksFieldEvent | MessagePendingBytesFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Generator<MessageWantlistEntriesBlockFieldEvent | MessageWantlistEntriesPriorityFieldEvent | MessageWantlistEntriesCancelFieldEvent | MessageWantlistEntriesWantTypeFieldEvent | MessageWantlistEntriesSendDontHaveFieldEvent | MessageWantlistFullFieldEvent | MessageBlocksFieldEvent | MessagePayloadPrefixFieldEvent | MessagePayloadDataFieldEvent | MessageBlockPresencesCidFieldEvent | MessageBlockPresencesTypeFieldEvent | MessagePendingBytesFieldEvent> {
     return streamMessage(buf, Message.codec(), opts)
   }
 }

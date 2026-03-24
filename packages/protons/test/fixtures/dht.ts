@@ -94,35 +94,35 @@ export namespace Record {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}key`,
+                field: `${prefix != null ? `${prefix}` : '$'}.key`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}value`,
+                field: `${prefix != null ? `${prefix}` : '$'}.value`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}author`,
+                field: `${prefix != null ? `${prefix}` : '$'}.author`,
                 value: reader.bytes()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}signature`,
+                field: `${prefix != null ? `${prefix}` : '$'}.signature`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}timeReceived`,
+                field: `${prefix != null ? `${prefix}` : '$'}.timeReceived`,
                 value: reader.string()
               }
               break
@@ -140,27 +140,27 @@ export namespace Record {
   }
 
   export interface RecordKeyFieldEvent {
-    field: 'key'
+    field: '$.key'
     value: Uint8Array
   }
 
   export interface RecordValueFieldEvent {
-    field: 'value'
+    field: '$.value'
     value: Uint8Array
   }
 
   export interface RecordAuthorFieldEvent {
-    field: 'author'
+    field: '$.author'
     value: Uint8Array
   }
 
   export interface RecordSignatureFieldEvent {
-    field: 'signature'
+    field: '$.signature'
     value: Uint8Array
   }
 
   export interface RecordTimeReceivedFieldEvent {
-    field: 'timeReceived'
+    field: '$.timeReceived'
     value: string
   }
 
@@ -315,7 +315,7 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}id`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.id`,
                   value: reader.bytes()
                 }
                 break
@@ -326,7 +326,7 @@ export namespace Message {
                 }
 
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
                   index: obj.addrs,
                   value: reader.bytes()
                 }
@@ -337,7 +337,7 @@ export namespace Message {
               }
               case 3: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}connection`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.connection`,
                   value: Message.ConnectionType.codec().decode(reader)
                 }
                 break
@@ -355,18 +355,18 @@ export namespace Message {
     }
 
     export interface PeerIdFieldEvent {
-      field: 'id'
+      field: '$.id'
       value: Uint8Array
     }
 
     export interface PeerAddrsFieldEvent {
-      field: 'addrs$entry'
+      field: '$.addrs[]'
       index: number
       value: Uint8Array
     }
 
     export interface PeerConnectionFieldEvent {
-      field: 'connection'
+      field: '$.connection'
       value: Message.ConnectionType
     }
 
@@ -499,28 +499,28 @@ export namespace Message {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                field: `${prefix != null ? `${prefix}` : '$'}.type`,
                 value: Message.MessageType.codec().decode(reader)
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}clusterLevelRaw`,
+                field: `${prefix != null ? `${prefix}` : '$'}.clusterLevelRaw`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}key`,
+                field: `${prefix != null ? `${prefix}` : '$'}.key`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}record`,
+                field: `${prefix != null ? `${prefix}` : '$'}.record`,
                 value: reader.bytes()
               }
               break
@@ -530,7 +530,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}closerPeers`, {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.closerPeers[]`, {
                 limits: opts.limits?.closerPeers$
               })) {
                 yield {
@@ -548,7 +548,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}providerPeers`, {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.providerPeers[]`, {
                 limits: opts.limits?.providerPeers$
               })) {
                 yield {
@@ -574,23 +574,59 @@ export namespace Message {
   }
 
   export interface MessageTypeFieldEvent {
-    field: 'type'
+    field: '$.type'
     value: Message.MessageType
   }
 
   export interface MessageClusterLevelRawFieldEvent {
-    field: 'clusterLevelRaw'
+    field: '$.clusterLevelRaw'
     value: number
   }
 
   export interface MessageKeyFieldEvent {
-    field: 'key'
+    field: '$.key'
     value: Uint8Array
   }
 
   export interface MessageRecordFieldEvent {
-    field: 'record'
+    field: '$.record'
     value: Uint8Array
+  }
+
+  export interface MessageCloserPeersIdFieldEvent {
+    field: '$.closerPeers[].id'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface MessageCloserPeersAddrsFieldEvent {
+    field: '$.closerPeers[].addrs[]'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface MessageCloserPeersConnectionFieldEvent {
+    field: '$.closerPeers[].connection'
+    value: Message.ConnectionType
+    index: number
+  }
+
+  export interface MessageProviderPeersIdFieldEvent {
+    field: '$.providerPeers[].id'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface MessageProviderPeersAddrsFieldEvent {
+    field: '$.providerPeers[].addrs[]'
+    index: number
+    value: Uint8Array
+  }
+
+  export interface MessageProviderPeersConnectionFieldEvent {
+    field: '$.providerPeers[].connection'
+    value: Message.ConnectionType
+    index: number
   }
 
   export function encode (obj: Partial<Message>): Uint8Array {
@@ -601,7 +637,7 @@ export namespace Message {
     return decodeMessage(buf, Message.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Generator<MessageTypeFieldEvent | MessageClusterLevelRawFieldEvent | MessageKeyFieldEvent | MessageRecordFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Generator<MessageTypeFieldEvent | MessageClusterLevelRawFieldEvent | MessageKeyFieldEvent | MessageRecordFieldEvent | MessageCloserPeersIdFieldEvent | MessageCloserPeersAddrsFieldEvent | MessageCloserPeersConnectionFieldEvent | MessageProviderPeersIdFieldEvent | MessageProviderPeersAddrsFieldEvent | MessageProviderPeersConnectionFieldEvent> {
     return streamMessage(buf, Message.codec(), opts)
   }
 }

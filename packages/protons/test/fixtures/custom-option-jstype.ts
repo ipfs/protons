@@ -111,42 +111,42 @@ export namespace CustomOptionNumber {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}num`,
+                field: `${prefix != null ? `${prefix}` : '$'}.num`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}i64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.i64`,
                 value: reader.int64Number()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}ui64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.ui64`,
                 value: reader.uint64Number()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}si64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.si64`,
                 value: reader.sint64Number()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}f64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.f64`,
                 value: reader.fixed64Number()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}sf64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.sf64`,
                 value: reader.sfixed64Number()
               }
               break
@@ -164,32 +164,32 @@ export namespace CustomOptionNumber {
   }
 
   export interface CustomOptionNumberNumFieldEvent {
-    field: 'num'
+    field: '$.num'
     value: number
   }
 
   export interface CustomOptionNumberI64FieldEvent {
-    field: 'i64'
+    field: '$.i64'
     value: bigint
   }
 
   export interface CustomOptionNumberUi64FieldEvent {
-    field: 'ui64'
+    field: '$.ui64'
     value: bigint
   }
 
   export interface CustomOptionNumberSi64FieldEvent {
-    field: 'si64'
+    field: '$.si64'
     value: bigint
   }
 
   export interface CustomOptionNumberF64FieldEvent {
-    field: 'f64'
+    field: '$.f64'
     value: bigint
   }
 
   export interface CustomOptionNumberSf64FieldEvent {
-    field: 'sf64'
+    field: '$.sf64'
     value: bigint
   }
 
@@ -315,42 +315,42 @@ export namespace CustomOptionString {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}num`,
+                field: `${prefix != null ? `${prefix}` : '$'}.num`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}i64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.i64`,
                 value: reader.int64String()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}ui64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.ui64`,
                 value: reader.uint64String()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}si64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.si64`,
                 value: reader.sint64String()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}f64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.f64`,
                 value: reader.fixed64String()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}sf64`,
+                field: `${prefix != null ? `${prefix}` : '$'}.sf64`,
                 value: reader.sfixed64String()
               }
               break
@@ -368,32 +368,32 @@ export namespace CustomOptionString {
   }
 
   export interface CustomOptionStringNumFieldEvent {
-    field: 'num'
+    field: '$.num'
     value: number
   }
 
   export interface CustomOptionStringI64FieldEvent {
-    field: 'i64'
+    field: '$.i64'
     value: bigint
   }
 
   export interface CustomOptionStringUi64FieldEvent {
-    field: 'ui64'
+    field: '$.ui64'
     value: bigint
   }
 
   export interface CustomOptionStringSi64FieldEvent {
-    field: 'si64'
+    field: '$.si64'
     value: bigint
   }
 
   export interface CustomOptionStringF64FieldEvent {
-    field: 'f64'
+    field: '$.f64'
     value: bigint
   }
 
   export interface CustomOptionStringSf64FieldEvent {
-    field: 'sf64'
+    field: '$.sf64'
     value: bigint
   }
 

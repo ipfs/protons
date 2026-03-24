@@ -83,7 +83,7 @@ export class Enum implements Type {
 
     // check that the enum def values start from 0
     if ([...this.values.values()][0] !== 0) {
-      const message = `enum ${this.pbType} does not contain a value that maps to zero as it's first element, this is required in proto3 - see https://protobuf.dev/programming-guides/proto3/#enum`
+      const message = `enum ${this.pbType} does not contain a value that maps to zero as the first element, this is required in proto3 - see https://protobuf.dev/programming-guides/proto3/#enum`
 
       if (parent.flags.strict === true) {
         throw new ParseError(message)

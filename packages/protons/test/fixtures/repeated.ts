@@ -80,7 +80,7 @@ export namespace SubSubMessage {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}foo`,
+                field: `${prefix != null ? `${prefix}` : '$'}.foo[]`,
                 index: obj.foo,
                 value: reader.string()
               }
@@ -91,7 +91,7 @@ export namespace SubSubMessage {
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}nonRepeating`,
+                field: `${prefix != null ? `${prefix}` : '$'}.nonRepeating`,
                 value: reader.uint32()
               }
               break
@@ -109,13 +109,13 @@ export namespace SubSubMessage {
   }
 
   export interface SubSubMessageFooFieldEvent {
-    field: 'foo$entry'
+    field: '$.foo[]'
     index: number
     value: string
   }
 
   export interface SubSubMessageNonRepeatingFieldEvent {
-    field: 'nonRepeating'
+    field: '$.nonRepeating'
     value: number
   }
 
@@ -242,7 +242,7 @@ export namespace SubMessage {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}foo`,
+                field: `${prefix != null ? `${prefix}` : '$'}.foo[]`,
                 index: obj.foo,
                 value: reader.string()
               }
@@ -253,13 +253,13 @@ export namespace SubMessage {
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}nonRepeating`,
+                field: `${prefix != null ? `${prefix}` : '$'}.nonRepeating`,
                 value: reader.uint32()
               }
               break
             }
             case 3: {
-              yield * SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}message`, {
+              yield * SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.message`, {
                 limits: opts.limits?.message
               })
 
@@ -270,7 +270,7 @@ export namespace SubMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}messages`, {
+              for (const evt of SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.messages[]`, {
                 limits: opts.limits?.messages$
               })) {
                 yield {
@@ -296,25 +296,37 @@ export namespace SubMessage {
   }
 
   export interface SubMessageFooFieldEvent {
-    field: 'foo$entry'
+    field: '$.foo[]'
     index: number
     value: string
   }
 
   export interface SubMessageNonRepeatingFieldEvent {
-    field: 'nonRepeating'
+    field: '$.nonRepeating'
     value: number
   }
 
-  export interface SubMessageMessageSubSubMessageFooFieldEvent {
-    field: 'foo$entry'
+  export interface SubMessageMessageFooFieldEvent {
+    field: '$.message.foo[]'
     index: number
     value: string
   }
 
-  export interface SubMessageMessageSubSubMessageNonRepeatingFieldEvent {
-    field: 'nonRepeating'
+  export interface SubMessageMessageNonRepeatingFieldEvent {
+    field: '$.message.nonRepeating'
     value: number
+  }
+
+  export interface SubMessageMessagesFooFieldEvent {
+    field: '$.messages[].foo[]'
+    index: number
+    value: string
+  }
+
+  export interface SubMessageMessagesNonRepeatingFieldEvent {
+    field: '$.messages[].nonRepeating'
+    value: number
+    index: number
   }
 
   export function encode (obj: Partial<SubMessage>): Uint8Array {
@@ -325,7 +337,7 @@ export namespace SubMessage {
     return decodeMessage(buf, SubMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): Generator<SubMessageFooFieldEvent | SubMessageNonRepeatingFieldEvent | SubMessageMessageSubSubMessageFooFieldEvent | SubMessageMessageSubSubMessageNonRepeatingFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<SubMessage>): Generator<SubMessageFooFieldEvent | SubMessageNonRepeatingFieldEvent | SubMessageMessageFooFieldEvent | SubMessageMessageNonRepeatingFieldEvent | SubMessageMessagesFooFieldEvent | SubMessageMessagesNonRepeatingFieldEvent> {
     return streamMessage(buf, SubMessage.codec(), opts)
   }
 }
@@ -462,7 +474,7 @@ export namespace RepeatedTypes {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}number`,
+                field: `${prefix != null ? `${prefix}` : '$'}.number[]`,
                 index: obj.number,
                 value: reader.uint32()
               }
@@ -481,7 +493,7 @@ export namespace RepeatedTypes {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}limitedNumber`,
+                field: `${prefix != null ? `${prefix}` : '$'}.limitedNumber[]`,
                 index: obj.limitedNumber,
                 value: reader.uint32()
               }
@@ -495,7 +507,7 @@ export namespace RepeatedTypes {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}messages`, {
+              for (const evt of SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.messages[]`, {
                 limits: opts.limits?.messages$
               })) {
                 yield {
@@ -509,7 +521,7 @@ export namespace RepeatedTypes {
               break
             }
             case 4: {
-              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}message`, {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.message`, {
                 limits: opts.limits?.message
               })
 
@@ -517,7 +529,7 @@ export namespace RepeatedTypes {
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}nonRepeating`,
+                field: `${prefix != null ? `${prefix}` : '$'}.nonRepeating`,
                 value: reader.uint32()
               }
               break
@@ -535,41 +547,89 @@ export namespace RepeatedTypes {
   }
 
   export interface RepeatedTypesNumberFieldEvent {
-    field: 'number$entry'
+    field: '$.number[]'
     index: number
     value: number
   }
 
   export interface RepeatedTypesLimitedNumberFieldEvent {
-    field: 'limitedNumber$entry'
+    field: '$.limitedNumber[]'
     index: number
     value: number
   }
 
-  export interface RepeatedTypesMessageSubMessageFooFieldEvent {
-    field: 'foo$entry'
-    index: number
-    value: string
-  }
-
-  export interface RepeatedTypesMessageSubMessageNonRepeatingFieldEvent {
-    field: 'nonRepeating'
-    value: number
-  }
-
-  export interface RepeatedTypesMessageSubMessageMessageSubSubMessageFooFieldEvent {
-    field: 'foo$entry'
+  export interface RepeatedTypesMessagesFooFieldEvent {
+    field: '$.messages[].foo[]'
     index: number
     value: string
   }
 
-  export interface RepeatedTypesMessageSubMessageMessageSubSubMessageNonRepeatingFieldEvent {
-    field: 'nonRepeating'
+  export interface RepeatedTypesMessagesNonRepeatingFieldEvent {
+    field: '$.messages[].nonRepeating'
     value: number
+    index: number
+  }
+
+  export interface RepeatedTypesMessagesMessageFooFieldEvent {
+    field: '$.messages[].message.foo[]'
+    index: number
+    value: string
+  }
+
+  export interface RepeatedTypesMessagesMessageNonRepeatingFieldEvent {
+    field: '$.messages[].message.nonRepeating'
+    value: number
+    index: number
+  }
+
+  export interface RepeatedTypesMessagesMessagesFooFieldEvent {
+    field: '$.messages[].messages[].foo[]'
+    index: number
+    value: string
+  }
+
+  export interface RepeatedTypesMessagesMessagesNonRepeatingFieldEvent {
+    field: '$.messages[].messages[].nonRepeating'
+    value: number
+    index: number
+  }
+
+  export interface RepeatedTypesMessageFooFieldEvent {
+    field: '$.message.foo[]'
+    index: number
+    value: string
+  }
+
+  export interface RepeatedTypesMessageNonRepeatingFieldEvent {
+    field: '$.message.nonRepeating'
+    value: number
+  }
+
+  export interface RepeatedTypesMessageMessageFooFieldEvent {
+    field: '$.message.message.foo[]'
+    index: number
+    value: string
+  }
+
+  export interface RepeatedTypesMessageMessageNonRepeatingFieldEvent {
+    field: '$.message.message.nonRepeating'
+    value: number
+  }
+
+  export interface RepeatedTypesMessageMessagesFooFieldEvent {
+    field: '$.message.messages[].foo[]'
+    index: number
+    value: string
+  }
+
+  export interface RepeatedTypesMessageMessagesNonRepeatingFieldEvent {
+    field: '$.message.messages[].nonRepeating'
+    value: number
+    index: number
   }
 
   export interface RepeatedTypesNonRepeatingFieldEvent {
-    field: 'nonRepeating'
+    field: '$.nonRepeating'
     value: number
   }
 
@@ -581,7 +641,7 @@ export namespace RepeatedTypes {
     return decodeMessage(buf, RepeatedTypes.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<RepeatedTypes>): Generator<RepeatedTypesNumberFieldEvent | RepeatedTypesLimitedNumberFieldEvent | RepeatedTypesMessageSubMessageFooFieldEvent | RepeatedTypesMessageSubMessageNonRepeatingFieldEvent | RepeatedTypesMessageSubMessageMessageSubSubMessageFooFieldEvent | RepeatedTypesMessageSubMessageMessageSubSubMessageNonRepeatingFieldEvent | RepeatedTypesNonRepeatingFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<RepeatedTypes>): Generator<RepeatedTypesNumberFieldEvent | RepeatedTypesLimitedNumberFieldEvent | RepeatedTypesMessagesFooFieldEvent | RepeatedTypesMessagesNonRepeatingFieldEvent | RepeatedTypesMessagesMessageFooFieldEvent | RepeatedTypesMessagesMessageNonRepeatingFieldEvent | RepeatedTypesMessagesMessagesFooFieldEvent | RepeatedTypesMessagesMessagesNonRepeatingFieldEvent | RepeatedTypesMessageFooFieldEvent | RepeatedTypesMessageNonRepeatingFieldEvent | RepeatedTypesMessageMessageFooFieldEvent | RepeatedTypesMessageMessageNonRepeatingFieldEvent | RepeatedTypesMessageMessagesFooFieldEvent | RepeatedTypesMessageMessagesNonRepeatingFieldEvent | RepeatedTypesNonRepeatingFieldEvent> {
     return streamMessage(buf, RepeatedTypes.codec(), opts)
   }
 }

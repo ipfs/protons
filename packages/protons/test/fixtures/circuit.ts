@@ -150,7 +150,7 @@ export namespace CircuitRelay {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}id`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.id`,
                   value: reader.bytes()
                 }
                 break
@@ -161,7 +161,7 @@ export namespace CircuitRelay {
                 }
 
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}addrs`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.addrs[]`,
                   index: obj.addrs,
                   value: reader.bytes()
                 }
@@ -183,12 +183,12 @@ export namespace CircuitRelay {
     }
 
     export interface PeerIdFieldEvent {
-      field: 'id'
+      field: '$.id'
       value: Uint8Array
     }
 
     export interface PeerAddrsFieldEvent {
-      field: 'addrs$entry'
+      field: '$.addrs[]'
       index: number
       value: Uint8Array
     }
@@ -284,20 +284,20 @@ export namespace CircuitRelay {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}type`,
+                field: `${prefix != null ? `${prefix}` : '$'}.type`,
                 value: CircuitRelay.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}srcPeer`, {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.srcPeer`, {
                 limits: opts.limits?.srcPeer
               })
 
               break
             }
             case 3: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}dstPeer`, {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.dstPeer`, {
                 limits: opts.limits?.dstPeer
               })
 
@@ -305,7 +305,7 @@ export namespace CircuitRelay {
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}code`,
+                field: `${prefix != null ? `${prefix}` : '$'}.code`,
                 value: CircuitRelay.Status.codec().decode(reader)
               }
               break
@@ -323,34 +323,34 @@ export namespace CircuitRelay {
   }
 
   export interface CircuitRelayTypeFieldEvent {
-    field: 'type'
+    field: '$.type'
     value: CircuitRelay.Type
   }
 
-  export interface CircuitRelaySrcPeerPeerIdFieldEvent {
-    field: 'id'
+  export interface CircuitRelaySrcPeerIdFieldEvent {
+    field: '$.srcPeer.id'
     value: Uint8Array
   }
 
-  export interface CircuitRelaySrcPeerPeerAddrsFieldEvent {
-    field: 'addrs$entry'
+  export interface CircuitRelaySrcPeerAddrsFieldEvent {
+    field: '$.srcPeer.addrs[]'
     index: number
     value: Uint8Array
   }
 
-  export interface CircuitRelayDstPeerPeerIdFieldEvent {
-    field: 'id'
+  export interface CircuitRelayDstPeerIdFieldEvent {
+    field: '$.dstPeer.id'
     value: Uint8Array
   }
 
-  export interface CircuitRelayDstPeerPeerAddrsFieldEvent {
-    field: 'addrs$entry'
+  export interface CircuitRelayDstPeerAddrsFieldEvent {
+    field: '$.dstPeer.addrs[]'
     index: number
     value: Uint8Array
   }
 
   export interface CircuitRelayCodeFieldEvent {
-    field: 'code'
+    field: '$.code'
     value: CircuitRelay.Status
   }
 
@@ -362,7 +362,7 @@ export namespace CircuitRelay {
     return decodeMessage(buf, CircuitRelay.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): Generator<CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerPeerIdFieldEvent | CircuitRelaySrcPeerPeerAddrsFieldEvent | CircuitRelayDstPeerPeerIdFieldEvent | CircuitRelayDstPeerPeerAddrsFieldEvent | CircuitRelayCodeFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): Generator<CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerIdFieldEvent | CircuitRelaySrcPeerAddrsFieldEvent | CircuitRelayDstPeerIdFieldEvent | CircuitRelayDstPeerAddrsFieldEvent | CircuitRelayCodeFieldEvent> {
     return streamMessage(buf, CircuitRelay.codec(), opts)
   }
 }

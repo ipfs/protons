@@ -182,7 +182,7 @@ export class Primitive implements Type {
     return decoderGenerators[this.pbType](field.jsTypeOverride)
   }
 
-  getStreamingDecoder (field: Field, prefix: string, indent: string): string {
+  getStreamingDecoder (field: Field, prefix: string): string {
     const generator = decoderGenerators[this.pbType](field.jsTypeOverride)
 
     if (field instanceof ArrayField) {

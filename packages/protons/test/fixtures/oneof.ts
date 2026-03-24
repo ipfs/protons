@@ -146,35 +146,35 @@ export namespace OneOfMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldOne`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldTwo`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldThree`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldFour`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldFive`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldFive`,
                 value: reader.string()
               }
               break
@@ -192,27 +192,27 @@ export namespace OneOfMessage {
   }
 
   export interface OneOfMessageFieldOneFieldEvent {
-    field: 'fieldOne'
+    field: '$.fieldOne'
     value: string
   }
 
   export interface OneOfMessageFieldTwoFieldEvent {
-    field: 'fieldTwo'
+    field: '$.fieldTwo'
     value: string
   }
 
   export interface OneOfMessageFieldThreeFieldEvent {
-    field: 'fieldThree'
+    field: '$.fieldThree'
     value: EnumType
   }
 
   export interface OneOfMessageFieldFourFieldEvent {
-    field: 'fieldFour'
+    field: '$.fieldFour'
     value: EnumType
   }
 
   export interface OneOfMessageFieldFiveFieldEvent {
-    field: 'fieldFive'
+    field: '$.fieldFive'
     value: string
   }
 
@@ -327,35 +327,35 @@ export namespace MessageWithoutOneOfs {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldOne`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldTwo`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldThree`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldFour`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}fieldFive`,
+                field: `${prefix != null ? `${prefix}` : '$'}.fieldFive`,
                 value: reader.string()
               }
               break
@@ -373,27 +373,27 @@ export namespace MessageWithoutOneOfs {
   }
 
   export interface MessageWithoutOneOfsFieldOneFieldEvent {
-    field: 'fieldOne'
+    field: '$.fieldOne'
     value: string
   }
 
   export interface MessageWithoutOneOfsFieldTwoFieldEvent {
-    field: 'fieldTwo'
+    field: '$.fieldTwo'
     value: string
   }
 
   export interface MessageWithoutOneOfsFieldThreeFieldEvent {
-    field: 'fieldThree'
+    field: '$.fieldThree'
     value: EnumType
   }
 
   export interface MessageWithoutOneOfsFieldFourFieldEvent {
-    field: 'fieldFour'
+    field: '$.fieldFour'
     value: EnumType
   }
 
   export interface MessageWithoutOneOfsFieldFiveFieldEvent {
-    field: 'fieldFive'
+    field: '$.fieldFive'
     value: string
   }
 

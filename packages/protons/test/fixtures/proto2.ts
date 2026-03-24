@@ -56,7 +56,7 @@ export namespace MessageWithRequired {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}scalarField`,
+                field: `${prefix != null ? `${prefix}` : '$'}.scalarField`,
                 value: reader.int32()
               }
               break
@@ -74,7 +74,7 @@ export namespace MessageWithRequired {
   }
 
   export interface MessageWithRequiredScalarFieldFieldEvent {
-    field: 'scalarField'
+    field: '$.scalarField'
     value: number
   }
 

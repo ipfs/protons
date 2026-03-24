@@ -169,7 +169,7 @@ export class Field implements MessageField {
 
     return `case ${this.id}: {
               yield {
-                field: \`\${prefix != null ? \`\${prefix}.\` : ''}${this.name}\`,
+                field: \`\${prefix != null ? \`\${prefix}\` : '$'}.${this.name}\`,
                 value: ${type.getDecoder(this, '  ')}
               }
               break

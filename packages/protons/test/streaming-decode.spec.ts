@@ -13,15 +13,15 @@ describe('streaming-decode', () => {
     const output = all(MessageWithArrayField.stream(input))
 
     expect(output).to.deep.equal([{
-      field: 'arr',
+      field: '$.arr[]',
       index: 0,
       value: '1'
     }, {
-      field: 'arr',
+      field: '$.arr[]',
       index: 1,
       value: '2'
     }, {
-      field: 'arr',
+      field: '$.arr[]',
       index: 2,
       value: '3'
     }])
@@ -53,7 +53,7 @@ describe('streaming-decode', () => {
     for (const evt of MessageWithArrayField.stream(input)) {
       output.push(evt)
 
-      if (evt.field === 'field2') {
+      if (evt.field === '$.field2') {
         break
       }
     }
@@ -72,10 +72,10 @@ describe('streaming-decode', () => {
     const output = all(MessageWithNestedMessage.stream(input))
 
     expect(output).to.deep.equal([{
-      field: 'field1',
+      field: '$.field1',
       value: true
     }, {
-      field: 'nestedMessage.nestedValue',
+      field: '$.nestedMessage.nestedValue',
       value: 'hello'
     }])
   })
@@ -94,13 +94,13 @@ describe('streaming-decode', () => {
     const output = all(MessageWithDeeplyNestedMessage.stream(input))
 
     expect(output).to.deep.equal([{
-      field: 'field1',
+      field: '$.field1',
       value: true
     }, {
-      field: 'nestedMessage.field1',
+      field: '$.nestedMessage.field1',
       value: true
     }, {
-      field: 'nestedMessage.nestedMessage.nestedValue',
+      field: '$.nestedMessage.nestedMessage.nestedValue',
       value: 'hello'
     }])
   })
@@ -116,10 +116,10 @@ describe('streaming-decode', () => {
     const output = all(MessageWithRepeatedMessage.stream(input))
 
     expect(output).to.deep.equal([{
-      field: 'field1',
+      field: '$.field1',
       value: true
     }, {
-      field: 'nestedMessages.nestedValue',
+      field: '$.nestedMessages[].nestedValue',
       index: 0,
       value: 'hello'
     }])
@@ -138,19 +138,19 @@ describe('streaming-decode', () => {
     const output = all(MessageWithMapMessage.stream(input))
 
     expect(output).to.deep.equal([{
-      field: 'field1',
+      field: '$.field1',
       value: true
     }, {
-      field: 'nestedMessages.key',
+      field: '$.nestedMessages{}.key',
       value: 'this-is-a-key'
     }, {
-      field: 'nestedMessages.value.nestedValue',
+      field: '$.nestedMessages{}.value.nestedValue',
       value: 'hello'
     }, {
-      field: 'nestedMessages.key',
+      field: '$.nestedMessages{}.key',
       value: 'this-is-another-key'
     }, {
-      field: 'nestedMessages.value.nestedValue',
+      field: '$.nestedMessages{}.value.nestedValue',
       value: 'world'
     }])
   })
@@ -164,19 +164,19 @@ describe('streaming-decode', () => {
     const output = all(MessageWithPrimitiveMap.stream(input))
 
     expect(output).to.deep.equal([{
-      field: 'field1',
+      field: '$.field1',
       value: true
     }, {
-      field: 'nestedStrings.key',
+      field: '$.nestedStrings{}.key',
       value: 'this-is-a-key'
     }, {
-      field: 'nestedStrings.value',
+      field: '$.nestedStrings{}.value',
       value: 'this-is-a-value'
     }, {
-      field: 'nestedStrings.key',
+      field: '$.nestedStrings{}.key',
       value: 'this-is-another-key'
     }, {
-      field: 'nestedStrings.value',
+      field: '$.nestedStrings{}.value',
       value: 'this-is-another-value'
     }])
   })

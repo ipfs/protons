@@ -130,7 +130,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
               }
 
-              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}addresses`, {
+              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.addresses[]`, {
                 limits: opts.limits?.addresses$
               })) {
                 yield {
@@ -149,7 +149,7 @@ export namespace Peer {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}protocols`,
+                field: `${prefix != null ? `${prefix}` : '$'}.protocols[]`,
                 index: obj.protocols,
                 value: reader.string()
               }
@@ -163,7 +163,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
               }
 
-              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}metadata`, {
+              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.metadata[]`, {
                 limits: opts.limits?.metadata$
               })) {
                 yield {
@@ -178,14 +178,14 @@ export namespace Peer {
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}pubKey`,
+                field: `${prefix != null ? `${prefix}` : '$'}.pubKey`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}peerRecordEnvelope`,
+                field: `${prefix != null ? `${prefix}` : '$'}.peerRecordEnvelope`,
                 value: reader.bytes()
               }
               break
@@ -202,19 +202,43 @@ export namespace Peer {
     return _codec
   }
 
+  export interface PeerAddressesMultiaddrFieldEvent {
+    field: '$.addresses[].multiaddr'
+    value: Uint8Array
+    index: number
+  }
+
+  export interface PeerAddressesIsCertifiedFieldEvent {
+    field: '$.addresses[].isCertified'
+    value: boolean
+    index: number
+  }
+
   export interface PeerProtocolsFieldEvent {
-    field: 'protocols$entry'
+    field: '$.protocols[]'
     index: number
     value: string
   }
 
+  export interface PeerMetadataKeyFieldEvent {
+    field: '$.metadata[].key'
+    value: string
+    index: number
+  }
+
+  export interface PeerMetadataValueFieldEvent {
+    field: '$.metadata[].value'
+    value: Uint8Array
+    index: number
+  }
+
   export interface PeerPubKeyFieldEvent {
-    field: 'pubKey'
+    field: '$.pubKey'
     value: Uint8Array
   }
 
   export interface PeerPeerRecordEnvelopeFieldEvent {
-    field: 'peerRecordEnvelope'
+    field: '$.peerRecordEnvelope'
     value: Uint8Array
   }
 
@@ -226,7 +250,7 @@ export namespace Peer {
     return decodeMessage(buf, Peer.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Generator<PeerProtocolsFieldEvent | PeerPubKeyFieldEvent | PeerPeerRecordEnvelopeFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Peer>): Generator<PeerAddressesMultiaddrFieldEvent | PeerAddressesIsCertifiedFieldEvent | PeerProtocolsFieldEvent | PeerMetadataKeyFieldEvent | PeerMetadataValueFieldEvent | PeerPubKeyFieldEvent | PeerPeerRecordEnvelopeFieldEvent> {
     return streamMessage(buf, Peer.codec(), opts)
   }
 }
@@ -295,14 +319,14 @@ export namespace Address {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}multiaddr`,
+                field: `${prefix != null ? `${prefix}` : '$'}.multiaddr`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}isCertified`,
+                field: `${prefix != null ? `${prefix}` : '$'}.isCertified`,
                 value: reader.bool()
               }
               break
@@ -320,12 +344,12 @@ export namespace Address {
   }
 
   export interface AddressMultiaddrFieldEvent {
-    field: 'multiaddr'
+    field: '$.multiaddr'
     value: Uint8Array
   }
 
   export interface AddressIsCertifiedFieldEvent {
-    field: 'isCertified'
+    field: '$.isCertified'
     value: boolean
   }
 
@@ -407,14 +431,14 @@ export namespace Metadata {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}key`,
+                field: `${prefix != null ? `${prefix}` : '$'}.key`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}value`,
+                field: `${prefix != null ? `${prefix}` : '$'}.value`,
                 value: reader.bytes()
               }
               break
@@ -432,12 +456,12 @@ export namespace Metadata {
   }
 
   export interface MetadataKeyFieldEvent {
-    field: 'key'
+    field: '$.key'
     value: string
   }
 
   export interface MetadataValueFieldEvent {
-    field: 'value'
+    field: '$.value'
     value: Uint8Array
   }
 

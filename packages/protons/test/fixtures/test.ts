@@ -72,7 +72,7 @@ export namespace SubMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}foo`,
+                field: `${prefix != null ? `${prefix}` : '$'}.foo`,
                 value: reader.string()
               }
               break
@@ -90,7 +90,7 @@ export namespace SubMessage {
   }
 
   export interface SubMessageFooFieldEvent {
-    field: 'foo'
+    field: '$.foo'
     value: string
   }
 
@@ -343,90 +343,90 @@ export namespace AllTheTypes {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field1`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field2`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field2`,
                 value: reader.int32()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field3`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field3`,
                 value: reader.int64()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field4`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field4`,
                 value: reader.uint32()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field5`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field5`,
                 value: reader.uint64()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field6`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field6`,
                 value: reader.sint32()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field7`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field7`,
                 value: reader.sint64()
               }
               break
             }
             case 8: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field8`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field8`,
                 value: reader.double()
               }
               break
             }
             case 9: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field9`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field9`,
                 value: reader.float()
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field10`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field10`,
                 value: reader.string()
               }
               break
             }
             case 11: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field11`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field11`,
                 value: reader.bytes()
               }
               break
             }
             case 12: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field12`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field12`,
                 value: AnEnum.codec().decode(reader)
               }
               break
             }
             case 13: {
-              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}.` : ''}field13`, {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix != null ? `${prefix}` : '$'}.field13`, {
                 limits: opts.limits?.field13
               })
 
@@ -438,7 +438,7 @@ export namespace AllTheTypes {
               }
 
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field14`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field14[]`,
                 index: obj.field14,
                 value: reader.string()
               }
@@ -449,28 +449,28 @@ export namespace AllTheTypes {
             }
             case 15: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field15`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field15`,
                 value: reader.fixed32()
               }
               break
             }
             case 16: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field16`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field16`,
                 value: reader.fixed64()
               }
               break
             }
             case 17: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field17`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field17`,
                 value: reader.sfixed32()
               }
               break
             }
             case 18: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}field18`,
+                field: `${prefix != null ? `${prefix}` : '$'}.field18`,
                 value: reader.sfixed64()
               }
               break
@@ -488,93 +488,93 @@ export namespace AllTheTypes {
   }
 
   export interface AllTheTypesField1FieldEvent {
-    field: 'field1'
+    field: '$.field1'
     value: boolean
   }
 
   export interface AllTheTypesField2FieldEvent {
-    field: 'field2'
+    field: '$.field2'
     value: number
   }
 
   export interface AllTheTypesField3FieldEvent {
-    field: 'field3'
+    field: '$.field3'
     value: bigint
   }
 
   export interface AllTheTypesField4FieldEvent {
-    field: 'field4'
+    field: '$.field4'
     value: number
   }
 
   export interface AllTheTypesField5FieldEvent {
-    field: 'field5'
+    field: '$.field5'
     value: bigint
   }
 
   export interface AllTheTypesField6FieldEvent {
-    field: 'field6'
+    field: '$.field6'
     value: number
   }
 
   export interface AllTheTypesField7FieldEvent {
-    field: 'field7'
+    field: '$.field7'
     value: bigint
   }
 
   export interface AllTheTypesField8FieldEvent {
-    field: 'field8'
+    field: '$.field8'
     value: number
   }
 
   export interface AllTheTypesField9FieldEvent {
-    field: 'field9'
+    field: '$.field9'
     value: number
   }
 
   export interface AllTheTypesField10FieldEvent {
-    field: 'field10'
+    field: '$.field10'
     value: string
   }
 
   export interface AllTheTypesField11FieldEvent {
-    field: 'field11'
+    field: '$.field11'
     value: Uint8Array
   }
 
   export interface AllTheTypesField12FieldEvent {
-    field: 'field12'
+    field: '$.field12'
     value: AnEnum
   }
 
-  export interface AllTheTypesField13SubMessageFooFieldEvent {
-    field: 'foo'
+  export interface AllTheTypesField13FooFieldEvent {
+    field: '$.field13.foo'
     value: string
   }
 
   export interface AllTheTypesField14FieldEvent {
-    field: 'field14$entry'
+    field: '$.field14[]'
     index: number
     value: string
   }
 
   export interface AllTheTypesField15FieldEvent {
-    field: 'field15'
+    field: '$.field15'
     value: number
   }
 
   export interface AllTheTypesField16FieldEvent {
-    field: 'field16'
+    field: '$.field16'
     value: bigint
   }
 
   export interface AllTheTypesField17FieldEvent {
-    field: 'field17'
+    field: '$.field17'
     value: number
   }
 
   export interface AllTheTypesField18FieldEvent {
-    field: 'field18'
+    field: '$.field18'
     value: bigint
   }
 
@@ -586,7 +586,7 @@ export namespace AllTheTypes {
     return decodeMessage(buf, AllTheTypes.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): Generator<AllTheTypesField1FieldEvent | AllTheTypesField2FieldEvent | AllTheTypesField3FieldEvent | AllTheTypesField4FieldEvent | AllTheTypesField5FieldEvent | AllTheTypesField6FieldEvent | AllTheTypesField7FieldEvent | AllTheTypesField8FieldEvent | AllTheTypesField9FieldEvent | AllTheTypesField10FieldEvent | AllTheTypesField11FieldEvent | AllTheTypesField12FieldEvent | AllTheTypesField13SubMessageFooFieldEvent | AllTheTypesField14FieldEvent | AllTheTypesField15FieldEvent | AllTheTypesField16FieldEvent | AllTheTypesField17FieldEvent | AllTheTypesField18FieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<AllTheTypes>): Generator<AllTheTypesField1FieldEvent | AllTheTypesField2FieldEvent | AllTheTypesField3FieldEvent | AllTheTypesField4FieldEvent | AllTheTypesField5FieldEvent | AllTheTypesField6FieldEvent | AllTheTypesField7FieldEvent | AllTheTypesField8FieldEvent | AllTheTypesField9FieldEvent | AllTheTypesField10FieldEvent | AllTheTypesField11FieldEvent | AllTheTypesField12FieldEvent | AllTheTypesField13FooFieldEvent | AllTheTypesField14FieldEvent | AllTheTypesField15FieldEvent | AllTheTypesField16FieldEvent | AllTheTypesField17FieldEvent | AllTheTypesField18FieldEvent> {
     return streamMessage(buf, AllTheTypes.codec(), opts)
   }
 }

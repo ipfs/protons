@@ -453,12 +453,20 @@ ${fields
             ${fields.join(delimiter)}`
   }
 
-  getStreamEvents (fieldPrefix = ''): StreamEvent[] {
+  getStreamEvents (fieldPrefix = '$.'): StreamEvent[] {
     const streamEvents: StreamEvent[] = []
 
     const addMessageFields = (field: Field, message: Message, extraFields: string[]): void => {
+      let fieldSuffix = '.'
+
+      if (field instanceof ArrayField) {
+        fieldSuffix = '[].'
+      } else if (field instanceof MapField) {
+        fieldSuffix = '{}.'
+      }
+
       // include sub messages
-      streamEvents.push(...message.getStreamEvents(field.name).map(evt => {
+      streamEvents.push(...message.getStreamEvents(`${fieldPrefix}${field.name}${fieldSuffix}`).map(evt => {
         let type = evt.type
 
         if (evt.type === 'field') {
@@ -469,14 +477,21 @@ ${fields
           type = 'sub-message-collection-message-member-field'
         }
 
+        const fields = new Map<string, string>()
+        evt.fields.forEach(field => {
+          const [key, value] = field.split(':')
+          fields.set(key.trim(), value.trim())
+        })
+        extraFields.forEach(field => {
+          const [key, value] = field.split(':')
+          fields.set(key.trim(), value.trim())
+        })
+
         return {
           ...evt,
-          name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}${evt.name}`,
+          name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}${evt.name}`,
           type,
-          fields: [
-            ...evt.fields,
-            ...extraFields
-          ]
+          fields: [...fields.entries()].map(([key, value]) => `${key}: ${value}`)
         }
       }))
     }
@@ -488,9 +503,9 @@ ${fields
 
         if (valueType instanceof Primitive || valueType instanceof Enum) {
           streamEvents.push({
-            name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
-              `field: '${fieldPrefix}${field.name}'`,
+              `field: '${fieldPrefix}${field.name}{}'`,
               `key: ${keyType.jsType}`,
               `value: ${valueType.jsType}`
             ],
@@ -507,9 +522,9 @@ ${fields
 
         if (type instanceof Primitive || type instanceof Enum) {
           streamEvents.push({
-            name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
-              `field: '${fieldPrefix}${field.name}'`,
+              `field: '${fieldPrefix}${field.name}[]'`,
               'index: number',
               `value: ${type.jsType}`
             ],
@@ -525,7 +540,7 @@ ${fields
 
         if (type instanceof Primitive || type instanceof Enum) {
           streamEvents.push({
-            name: `${fieldPrefix === '' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}'`,
               `value: ${type.jsType}`

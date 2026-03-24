@@ -84,21 +84,21 @@ export namespace pb {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}identityKey`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.identityKey`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}identitySig`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.identitySig`,
                   value: reader.bytes()
                 }
                 break
               }
               case 3: {
                 yield {
-                  field: `${prefix != null ? `${prefix}.` : ''}data`,
+                  field: `${prefix != null ? `${prefix}` : '$'}.data`,
                   value: reader.bytes()
                 }
                 break
@@ -116,17 +116,17 @@ export namespace pb {
     }
 
     export interface NoiseHandshakePayloadIdentityKeyFieldEvent {
-      field: 'identityKey'
+      field: '$.identityKey'
       value: Uint8Array
     }
 
     export interface NoiseHandshakePayloadIdentitySigFieldEvent {
-      field: 'identitySig'
+      field: '$.identitySig'
       value: Uint8Array
     }
 
     export interface NoiseHandshakePayloadDataFieldEvent {
-      field: 'data'
+      field: '$.data'
       value: Uint8Array
     }
 
