@@ -84,14 +84,14 @@ function normalizeProtonbufjs (obj: any, target: any): any {
   output = uint8ArrayifyBytes(output)
 
   for (const key of Object.keys(output)) {
-    // protobujs sets unset message fields to `null`, protons does not set the field at all
+    // protobufjs sets unset message fields to `null`, protons does not set the field at all
     if (output[key] === null && target[key] == null) {
       delete output[key]
     }
   }
 
   for (const key of Object.keys(target)) {
-    // protobujs uses plain objects instead of maps
+    // protobufjs uses plain objects instead of maps
     if (target[key] instanceof Map) {
       output[key] = new Map(Object.entries(output[key]))
     }

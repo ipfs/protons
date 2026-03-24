@@ -46,7 +46,7 @@
  *
  * ## Differences from protobuf.js
  *
- * This module uses the internal reader/writer from `protobuf.js` as it is highly optimised and there's no point reinventing the wheel.
+ * This module uses the internal reader/writer from `protobuf.js` as it is highly optimized and there's no point reinventing the wheel.
  *
  * It does have one or two differences:
  *
