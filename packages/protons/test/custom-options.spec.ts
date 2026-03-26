@@ -9,7 +9,9 @@ describe('custom options', () => {
       ui64: 5,
       si64: 5,
       f64: 5,
-      sf64: 5
+      sf64: 5,
+      i64Array: [],
+      i64Map: new Map()
     }
 
     expect(CustomOptionNumber.decode(CustomOptionNumber.encode(obj)))
@@ -23,7 +25,9 @@ describe('custom options', () => {
       ui64: '5',
       si64: '5',
       f64: '5',
-      sf64: '5'
+      sf64: '5',
+      i64Array: ['5'],
+      i64Map: new Map([['5', '5']])
     }
 
     expect(CustomOptionString.decode(CustomOptionString.encode(obj)))

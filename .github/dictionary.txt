@@ -10,6 +10,8 @@ deopt
 transpiles
 ints
 jstype
+jskeytype
+jsvaluetype
 oneofs
 arraylist
 bigintify

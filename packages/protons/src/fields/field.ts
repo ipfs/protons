@@ -32,7 +32,7 @@ export const codecTypes: Record<string, number> = {
   uint64: CODEC_TYPES.VARINT
 }
 
-const jsTypeOverrides: Record<string, 'number' | 'string'> = {
+export const jsTypeOverrides: Record<string, 'number' | 'string'> = {
   JS_NUMBER: 'number',
   JS_STRING: 'string'
 }
