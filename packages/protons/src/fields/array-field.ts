@@ -42,7 +42,7 @@ export class ArrayField extends Field {
     }
 
     return `
-        if (obj.${this.name} != null) {
+        if (obj.${this.name} != null && obj.${this.name}.length > 0) {
           for (const value of obj.${this.name}) {
             w.uint32(${id})
             ${type.getEncoder(this, 'value')}

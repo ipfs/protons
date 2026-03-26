@@ -252,7 +252,7 @@ export namespace Message {
             w.bytes(obj.id)
           }
 
-          if (obj.addrs != null) {
+          if (obj.addrs != null && obj.addrs.length > 0) {
             for (const value of obj.addrs) {
               w.uint32(18)
               w.bytes(value)
@@ -412,14 +412,14 @@ export namespace Message {
           w.bytes(obj.record)
         }
 
-        if (obj.closerPeers != null) {
+        if (obj.closerPeers != null && obj.closerPeers.length > 0) {
           for (const value of obj.closerPeers) {
             w.uint32(66)
             Message.Peer.codec().encode(value, w)
           }
         }
 
-        if (obj.providerPeers != null) {
+        if (obj.providerPeers != null && obj.providerPeers.length > 0) {
           for (const value of obj.providerPeers) {
             w.uint32(74)
             Message.Peer.codec().encode(value, w)

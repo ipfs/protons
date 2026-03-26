@@ -16,7 +16,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
           w.fork()
         }
 
-        if (obj.repeatedField != null) {
+        if (obj.repeatedField != null && obj.repeatedField.length > 0) {
           for (const value of obj.repeatedField) {
             w.uint32(10)
             w.string(value)
@@ -244,7 +244,7 @@ export namespace MessageWithSizeLimitedMap {
           w.fork()
         }
 
-        if (obj.mapField != null) {
+        if (obj.mapField != null && obj.mapField.size > 0) {
           for (const [key, value] of obj.mapField.entries()) {
             w.uint32(10)
             MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().encode({ key, value }, w)

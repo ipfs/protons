@@ -56,7 +56,7 @@ export class MapField extends Field {
     const entryType = parent.findType(this.entryType)
 
     return `
-        if (${entryType.getValueTest(this, 'value')}) {
+        if (obj.${this.name} != null && obj.${this.name}.size > 0) {
           for (const [key, value] of obj.${this.name}.entries()) {
             w.uint32(${id})
             ${entryType.getEncoder(this, '{ key, value }')}

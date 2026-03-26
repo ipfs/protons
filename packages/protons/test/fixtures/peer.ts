@@ -21,21 +21,21 @@ export namespace Peer {
           w.fork()
         }
 
-        if (obj.addresses != null) {
+        if (obj.addresses != null && obj.addresses.length > 0) {
           for (const value of obj.addresses) {
             w.uint32(10)
             Address.codec().encode(value, w)
           }
         }
 
-        if (obj.protocols != null) {
+        if (obj.protocols != null && obj.protocols.length > 0) {
           for (const value of obj.protocols) {
             w.uint32(18)
             w.string(value)
           }
         }
 
-        if (obj.metadata != null) {
+        if (obj.metadata != null && obj.metadata.length > 0) {
           for (const value of obj.metadata) {
             w.uint32(26)
             Metadata.codec().encode(value, w)
