@@ -1,3 +1,9 @@
+## [protons-v8.1.1](https://github.com/ipfs/protons/compare/protons-8.1.0...protons-8.1.1) (2026-03-26)
+
+### Bug Fixes
+
+* check collection size before iteration ([#161](https://github.com/ipfs/protons/issues/161)) ([860a874](https://github.com/ipfs/protons/commit/860a874203749ec148cdae7417572b69a477d19f))
+
 ## [protons-v8.1.0](https://github.com/ipfs/protons/compare/protons-8.0.2...protons-8.1.0) (2026-03-26)
 
 ### Features
