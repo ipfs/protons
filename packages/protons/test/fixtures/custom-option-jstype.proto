@@ -7,6 +7,8 @@ message CustomOptionNumber {
   sint64 si64 = 4 [jstype = JS_NUMBER];
   fixed64 f64 = 5 [jstype = JS_NUMBER];
   sfixed64 sf64 = 6 [jstype = JS_NUMBER];
+  repeated int64 i64Array = 7 [jstype = JS_NUMBER];
+  map<int64, int64> i64Map = 8 [jskeytype = JS_NUMBER, jsvaluetype = JS_NUMBER];
 }
 
 message CustomOptionString {
@@ -16,4 +18,6 @@ message CustomOptionString {
   sint64 si64 = 4 [jstype = JS_STRING];
   fixed64 f64 = 5 [jstype = JS_STRING];
   sfixed64 sf64 = 6 [jstype = JS_STRING];
+  repeated int64 i64Array = 7 [jstype = JS_STRING];
+  map<int64, int64> i64Map = 8 [jskeytype = JS_STRING, jsvaluetype = JS_STRING];
 }

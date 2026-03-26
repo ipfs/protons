@@ -70,11 +70,17 @@ export class Message implements Type {
         fields: {
           key: {
             type: fieldDef.keyType,
-            id: 1
+            id: 1,
+            options: {
+              jstype: fieldDef.options?.jskeytype
+            }
           },
           value: {
             type: fieldDef.type,
-            id: 2
+            id: 2,
+            options: {
+              jstype: fieldDef.options?.jsvaluetype
+            }
           }
         }
       }
@@ -506,15 +512,15 @@ ${fields
             name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}{}'`,
-              `key: ${keyType.jsType}`,
-              `value: ${valueType.jsType}`
+              `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
+              `value: ${field.jsValueTypeOverride ?? valueType.jsType}`
             ],
             type: 'collection-primitive-member'
           })
         } else if (valueType instanceof Message) {
           addMessageFields(field, valueType, [
-            `key: ${keyType.jsType}`,
-            `value: ${valueType.jsType}`
+            `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
+            `value: ${field.jsValueTypeOverride ?? valueType.jsType}`
           ])
         }
       } else if (field instanceof ArrayField) {
@@ -526,7 +532,7 @@ ${fields
             fields: [
               `field: '${fieldPrefix}${field.name}[]'`,
               'index: number',
-              `value: ${type.jsType}`
+              `value: ${field.jsTypeOverride ?? type.jsType}`
             ],
             type: 'collection-primitive-member'
           })
@@ -543,7 +549,7 @@ ${fields
             name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}'`,
-              `value: ${type.jsType}`
+              `value: ${field.jsTypeOverride ?? type.jsType}`
             ],
             type: 'field'
           })

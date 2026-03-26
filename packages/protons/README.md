@@ -189,13 +189,15 @@ By default 64 bit types are implemented as [BigInt](https://developer.mozilla.or
 
 Sometimes this is undesirable due to [performance issues](https://betterprogramming.pub/the-downsides-of-bigints-in-javascript-6350fd807d) or code legibility.
 
-It's possible to override the JavaScript type 64 bit fields will deserialize to:
+It's possible to override the JavaScript type 64 bit fields will deserialize
+to, including repeated fields and map key/values:
 
 ```
 message MyMessage {
-  repeated int64 bigintField = 1;
-  repeated int64 numberField = 2 [jstype = JS_NUMBER];
-  repeated int64 stringField = 3 [jstype = JS_STRING];
+  int64 bigintField = 1;
+  int64 numberField = 2 [jstype = JS_NUMBER];
+  repeated int64 stringArray = 3 [jstype = JS_STRING];
+  map<int64, int64, bigintMap = 4 [jskeytype = JS_STRING, jsvaluetype = JS_STRING];
 }
 ```
 
@@ -204,7 +206,8 @@ const message = MyMessage.decode(buf)
 
 console.info(typeof message.bigintField) // bigint
 console.info(typeof message.numberField) // number
-console.info(typeof message.stringField) // string
+console.info(typeof message.stringArray[0]) // string
+console.info(typeof message.bigintMap.get('5')) // string
 ```
 
 ## Missing features

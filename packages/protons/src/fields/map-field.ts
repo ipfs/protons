@@ -1,4 +1,4 @@
-import { codecTypes, Field } from './field.ts'
+import { codecTypes, Field, jsTypeOverrides } from './field.ts'
 import type { FieldDef } from './field.ts'
 import type { Parent } from '../types/index.ts'
 
@@ -15,6 +15,8 @@ export class MapField extends Field {
   public keyType: string
   public valueType: string
   public entryType: string
+  public jsKeyTypeOverride?: 'string' | 'number'
+  public jsValueTypeOverride?: 'string' | 'number'
   private lengthLimit?: number
 
   constructor (name: string, def: MapFieldDef, parent: Parent) {
@@ -25,14 +27,28 @@ export class MapField extends Field {
     this.valueType = def.valueType
     this.entryType = def.type
     this.lengthLimit = def.options?.['(protons.options).limit']
+
+    if (def.options?.jskeytype != null) {
+      this.jsKeyTypeOverride = jsTypeOverrides[def.options.jskeytype]
+    }
+
+    if (def.options?.jsvaluetype != null) {
+      this.jsValueTypeOverride = jsTypeOverrides[def.options.jsvaluetype]
+    }
   }
 
   getInterfaceField (parent: Parent): string {
-    return `${this.name}: Map<${parent.findType(this.keyType).jsType}, ${parent.findType(this.valueType).jsType}>`
+    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType
+    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType
+
+    return `${this.name}: Map<${keyType}, ${valueType}>`
   }
 
   getDefaultField (parent: Parent): string {
-    return `${this.name}: new Map<${parent.findType(this.keyType).jsType}, ${parent.findType(this.valueType).jsType}>()`
+    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType
+    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType
+
+    return `${this.name}: new Map<${keyType}, ${valueType}>()`
   }
 
   getEncoder (parent: Parent): string {
