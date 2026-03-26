@@ -1,3 +1,9 @@
+## [protons-v8.1.0](https://github.com/ipfs/protons/compare/protons-8.0.2...protons-8.1.0) (2026-03-26)
+
+### Features
+
+* support js type overrides for map keys and values ([#160](https://github.com/ipfs/protons/issues/160)) ([5ed4a54](https://github.com/ipfs/protons/commit/5ed4a547108e491248e57fa4658b1d86cdd9270b))
+
 ## [protons-v8.0.2](https://github.com/ipfs/protons/compare/protons-8.0.1...protons-8.0.2) (2026-03-24)
 
 ### Bug Fixes
