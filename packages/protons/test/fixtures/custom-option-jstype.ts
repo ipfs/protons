@@ -165,14 +165,14 @@ export namespace CustomOptionNumber {
           w.sfixed64Number(obj.sf64)
         }
 
-        if (obj.i64Array != null) {
+        if (obj.i64Array != null && obj.i64Array.length > 0) {
           for (const value of obj.i64Array) {
             w.uint32(56)
             w.int64Number(value)
           }
         }
 
-        if (obj.i64Map != null) {
+        if (obj.i64Map != null && obj.i64Map.size > 0) {
           for (const [key, value] of obj.i64Map.entries()) {
             w.uint32(66)
             CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().encode({ key, value }, w)
@@ -567,14 +567,14 @@ export namespace CustomOptionString {
           w.sfixed64String(obj.sf64)
         }
 
-        if (obj.i64Array != null) {
+        if (obj.i64Array != null && obj.i64Array.length > 0) {
           for (const value of obj.i64Array) {
             w.uint32(56)
             w.int64String(value)
           }
         }
 
-        if (obj.i64Map != null) {
+        if (obj.i64Map != null && obj.i64Map.size > 0) {
           for (const [key, value] of obj.i64Map.entries()) {
             w.uint32(66)
             CustomOptionString.CustomOptionString$i64MapEntry.codec().encode({ key, value }, w)

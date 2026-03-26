@@ -223,7 +223,7 @@ export namespace Message {
             w.fork()
           }
 
-          if (obj.entries != null) {
+          if (obj.entries != null && obj.entries.length > 0) {
             for (const value of obj.entries) {
               w.uint32(10)
               Message.Wantlist.Entry.codec().encode(value, w)
@@ -622,21 +622,21 @@ export namespace Message {
           Message.Wantlist.codec().encode(obj.wantlist, w)
         }
 
-        if (obj.blocks != null) {
+        if (obj.blocks != null && obj.blocks.length > 0) {
           for (const value of obj.blocks) {
             w.uint32(18)
             w.bytes(value)
           }
         }
 
-        if (obj.payload != null) {
+        if (obj.payload != null && obj.payload.length > 0) {
           for (const value of obj.payload) {
             w.uint32(26)
             Message.Block.codec().encode(value, w)
           }
         }
 
-        if (obj.blockPresences != null) {
+        if (obj.blockPresences != null && obj.blockPresences.length > 0) {
           for (const value of obj.blockPresences) {
             w.uint32(34)
             Message.BlockPresence.codec().encode(value, w)

@@ -17,7 +17,7 @@ export namespace SubSubMessage {
           w.fork()
         }
 
-        if (obj.foo != null) {
+        if (obj.foo != null && obj.foo.length > 0) {
           for (const value of obj.foo) {
             w.uint32(10)
             w.string(value)
@@ -149,7 +149,7 @@ export namespace SubMessage {
           w.fork()
         }
 
-        if (obj.foo != null) {
+        if (obj.foo != null && obj.foo.length > 0) {
           for (const value of obj.foo) {
             w.uint32(10)
             w.string(value)
@@ -166,7 +166,7 @@ export namespace SubMessage {
           SubSubMessage.codec().encode(obj.message, w)
         }
 
-        if (obj.messages != null) {
+        if (obj.messages != null && obj.messages.length > 0) {
           for (const value of obj.messages) {
             w.uint32(34)
             SubSubMessage.codec().encode(value, w)
@@ -360,21 +360,21 @@ export namespace RepeatedTypes {
           w.fork()
         }
 
-        if (obj.number != null) {
+        if (obj.number != null && obj.number.length > 0) {
           for (const value of obj.number) {
             w.uint32(8)
             w.uint32(value)
           }
         }
 
-        if (obj.limitedNumber != null) {
+        if (obj.limitedNumber != null && obj.limitedNumber.length > 0) {
           for (const value of obj.limitedNumber) {
             w.uint32(16)
             w.uint32(value)
           }
         }
 
-        if (obj.messages != null) {
+        if (obj.messages != null && obj.messages.length > 0) {
           for (const value of obj.messages) {
             w.uint32(26)
             SubMessage.codec().encode(value, w)

@@ -40,7 +40,7 @@ export namespace SubMessage {
           w.string(obj.foo)
         }
 
-        if (obj.bar != null) {
+        if (obj.bar != null && obj.bar.length > 0) {
           for (const value of obj.bar) {
             w.uint32(16)
             w.uint32(value)
@@ -736,35 +736,35 @@ export namespace MapTypes {
           w.fork()
         }
 
-        if (obj.stringMap != null) {
+        if (obj.stringMap != null && obj.stringMap.size > 0) {
           for (const [key, value] of obj.stringMap.entries()) {
             w.uint32(10)
             MapTypes.MapTypes$stringMapEntry.codec().encode({ key, value }, w)
           }
         }
 
-        if (obj.intMap != null) {
+        if (obj.intMap != null && obj.intMap.size > 0) {
           for (const [key, value] of obj.intMap.entries()) {
             w.uint32(18)
             MapTypes.MapTypes$intMapEntry.codec().encode({ key, value }, w)
           }
         }
 
-        if (obj.boolMap != null) {
+        if (obj.boolMap != null && obj.boolMap.size > 0) {
           for (const [key, value] of obj.boolMap.entries()) {
             w.uint32(26)
             MapTypes.MapTypes$boolMapEntry.codec().encode({ key, value }, w)
           }
         }
 
-        if (obj.messageMap != null) {
+        if (obj.messageMap != null && obj.messageMap.size > 0) {
           for (const [key, value] of obj.messageMap.entries()) {
             w.uint32(34)
             MapTypes.MapTypes$messageMapEntry.codec().encode({ key, value }, w)
           }
         }
 
-        if (obj.enumMap != null) {
+        if (obj.enumMap != null && obj.enumMap.size > 0) {
           for (const [key, value] of obj.enumMap.entries()) {
             w.uint32(42)
             MapTypes.MapTypes$enumMapEntry.codec().encode({ key, value }, w)

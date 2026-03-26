@@ -28,7 +28,7 @@ export namespace MessageWithArrayField {
           w.uint32(obj.field2)
         }
 
-        if (obj.arr != null) {
+        if (obj.arr != null && obj.arr.length > 0) {
           for (const value of obj.arr) {
             w.uint32(26)
             w.string(value)
@@ -494,7 +494,7 @@ export namespace MessageWithRepeatedMessage {
           w.bool(obj.field1)
         }
 
-        if (obj.nestedMessages != null) {
+        if (obj.nestedMessages != null && obj.nestedMessages.length > 0) {
           for (const value of obj.nestedMessages) {
             w.uint32(18)
             NestedMessage.codec().encode(value, w)
@@ -743,7 +743,7 @@ export namespace MessageWithMapMessage {
           w.bool(obj.field1)
         }
 
-        if (obj.nestedMessages != null) {
+        if (obj.nestedMessages != null && obj.nestedMessages.size > 0) {
           for (const [key, value] of obj.nestedMessages.entries()) {
             w.uint32(18)
             MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().encode({ key, value }, w)
@@ -991,7 +991,7 @@ export namespace MessageWithPrimitiveMap {
           w.bool(obj.field1)
         }
 
-        if (obj.nestedStrings != null) {
+        if (obj.nestedStrings != null && obj.nestedStrings.size > 0) {
           for (const [key, value] of obj.nestedStrings.entries()) {
             w.uint32(18)
             MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().encode({ key, value }, w)

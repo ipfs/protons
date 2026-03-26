@@ -95,7 +95,7 @@ export namespace CircuitRelay {
             w.bytes(obj.id)
           }
 
-          if (obj.addrs != null) {
+          if (obj.addrs != null && obj.addrs.length > 0) {
             for (const value of obj.addrs) {
               w.uint32(18)
               w.bytes(value)

@@ -203,7 +203,7 @@ export namespace AllTheTypes {
           SubMessage.codec().encode(obj.field13, w)
         }
 
-        if (obj.field14 != null) {
+        if (obj.field14 != null && obj.field14.length > 0) {
           for (const value of obj.field14) {
             w.uint32(114)
             w.string(value)
