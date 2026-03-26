@@ -11,7 +11,7 @@ transpiles
 ints
 jstype
 jskeytype
-jsmaptype
+jsvaluetype
 oneofs
 arraylist
 bigintify
