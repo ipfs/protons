@@ -24,7 +24,7 @@
     "aegir": "^47.0.26",
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
-    "protobufjs": "^7.5.4",
+    "protobufjs": "^8.0.1",
     "protons": "^8.0.0",
     "protons-runtime": "^6.0.0",
     "uint8arraylist": "^2.4.8"

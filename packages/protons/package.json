@@ -145,7 +145,7 @@
     "it-all": "^3.0.9",
     "long": "^5.3.2",
     "pbjs": "^0.0.14",
-    "protobufjs": "^7.5.4",
+    "protobufjs": "^8.0.1",
     "uint8arraylist": "^2.4.8",
     "uint8arrays": "^5.1.0"
   }
