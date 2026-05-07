@@ -216,7 +216,7 @@ export namespace OneOfMessage {
     value: string
   }
 
-  export function encode (obj: Partial<OneOfMessage>): Uint8Array {
+  export function encode (obj: Partial<OneOfMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, OneOfMessage.codec())
   }
 
@@ -397,7 +397,7 @@ export namespace MessageWithoutOneOfs {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithoutOneOfs>): Uint8Array {
+  export function encode (obj: Partial<MessageWithoutOneOfs>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithoutOneOfs.codec())
   }
 

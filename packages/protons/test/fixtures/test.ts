@@ -94,7 +94,7 @@ export namespace SubMessage {
     value: string
   }
 
-  export function encode (obj: Partial<SubMessage>): Uint8Array {
+  export function encode (obj: Partial<SubMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -578,7 +578,7 @@ export namespace AllTheTypes {
     value: bigint
   }
 
-  export function encode (obj: Partial<AllTheTypes>): Uint8Array {
+  export function encode (obj: Partial<AllTheTypes>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 

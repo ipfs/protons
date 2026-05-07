@@ -102,7 +102,7 @@ export namespace Basic {
     value: number
   }
 
-  export function encode (obj: Partial<Basic>): Uint8Array {
+  export function encode (obj: Partial<Basic>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Basic.codec())
   }
 
@@ -166,7 +166,7 @@ export namespace Empty {
     return _codec
   }
 
-  export function encode (obj: Partial<Empty>): Uint8Array {
+  export function encode (obj: Partial<Empty>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Empty.codec())
   }
 

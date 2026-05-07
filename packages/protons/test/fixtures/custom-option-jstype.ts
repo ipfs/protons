@@ -113,7 +113,7 @@ export namespace CustomOptionNumber {
       value: number
     }
 
-    export function encode (obj: Partial<CustomOptionNumber$i64MapEntry>): Uint8Array {
+    export function encode (obj: Partial<CustomOptionNumber$i64MapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, CustomOptionNumber$i64MapEntry.codec())
     }
 
@@ -391,7 +391,7 @@ export namespace CustomOptionNumber {
     value: number
   }
 
-  export function encode (obj: Partial<CustomOptionNumber>): Uint8Array {
+  export function encode (obj: Partial<CustomOptionNumber>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CustomOptionNumber.codec())
   }
 
@@ -515,7 +515,7 @@ export namespace CustomOptionString {
       value: string
     }
 
-    export function encode (obj: Partial<CustomOptionString$i64MapEntry>): Uint8Array {
+    export function encode (obj: Partial<CustomOptionString$i64MapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, CustomOptionString$i64MapEntry.codec())
     }
 
@@ -793,7 +793,7 @@ export namespace CustomOptionString {
     value: string
   }
 
-  export function encode (obj: Partial<CustomOptionString>): Uint8Array {
+  export function encode (obj: Partial<CustomOptionString>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CustomOptionString.codec())
   }
 

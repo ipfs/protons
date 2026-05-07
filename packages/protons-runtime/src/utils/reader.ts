@@ -4,6 +4,7 @@ import { LongBits } from './longbits.ts'
 import * as utf8 from './utf8.ts'
 import type { Reader } from '../index.ts'
 import type { Uint8ArrayList } from 'uint8arraylist'
+import { withArrayBuffer } from 'uint8arrays/with-array-buffer'
 
 /* istanbul ignore next */
 function indexOutOfRange (reader: Reader, writeLength?: number): RangeError {
@@ -21,7 +22,7 @@ function readFixed32End (buf: Uint8Array, end: number): number { // note that th
  * Constructs a new reader instance using the specified buffer.
  */
 export class Uint8ArrayReader implements Reader {
-  public buf: Uint8Array
+  public buf: Uint8Array<ArrayBuffer>
   public pos: number
   public len: number
 
@@ -31,7 +32,7 @@ export class Uint8ArrayReader implements Reader {
     /**
      * Read buffer
      */
-    this.buf = buffer
+    this.buf = withArrayBuffer(buffer)
 
     /**
      * Read buffer position
@@ -138,7 +139,7 @@ export class Uint8ArrayReader implements Reader {
   /**
    * Reads a sequence of bytes preceded by its length as a varint
    */
-  bytes (): Uint8Array {
+  bytes (): Uint8Array<ArrayBuffer> {
     const length = this.uint32()
     const start = this.pos
     const end = this.pos + length

@@ -119,7 +119,7 @@ export namespace SubSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SubSubMessage>): Uint8Array {
+  export function encode (obj: Partial<SubSubMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubSubMessage.codec())
   }
 
@@ -329,7 +329,7 @@ export namespace SubMessage {
     index: number
   }
 
-  export function encode (obj: Partial<SubMessage>): Uint8Array {
+  export function encode (obj: Partial<SubMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -633,7 +633,7 @@ export namespace RepeatedTypes {
     value: number
   }
 
-  export function encode (obj: Partial<RepeatedTypes>): Uint8Array {
+  export function encode (obj: Partial<RepeatedTypes>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, RepeatedTypes.codec())
   }
 

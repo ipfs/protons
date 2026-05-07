@@ -3,10 +3,10 @@ import { allocUnsafe } from 'uint8arrays/alloc'
 /**
  * A general purpose buffer pool
  */
-export default function pool (size?: number): (size: number) => Uint8Array {
+export default function pool (size?: number): (size: number) => Uint8Array<ArrayBuffer> {
   const SIZE = size ?? 8192
   const MAX = SIZE >>> 1
-  let slab: Uint8Array
+  let slab: Uint8Array<ArrayBuffer>
   let offset = SIZE
   return function poolAlloc (size: number) {
     if (size < 1 || size > MAX) {
