@@ -130,7 +130,7 @@ export namespace pb {
       value: Uint8Array
     }
 
-    export function encode (obj: Partial<NoiseHandshakePayload>): Uint8Array {
+    export function encode (obj: Partial<NoiseHandshakePayload>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
@@ -191,7 +191,7 @@ export namespace pb {
     return _codec
   }
 
-  export function encode (obj: Partial<pb>): Uint8Array {
+  export function encode (obj: Partial<pb>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, pb.codec())
   }
 

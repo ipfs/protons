@@ -105,7 +105,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithSizeLimitedRepeatedField>): Uint8Array {
+  export function encode (obj: Partial<MessageWithSizeLimitedRepeatedField>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedRepeatedField.codec())
   }
 
@@ -222,7 +222,7 @@ export namespace MessageWithSizeLimitedMap {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntry>): Uint8Array {
+    export function encode (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithSizeLimitedMap$mapFieldEntry.codec())
     }
 
@@ -338,7 +338,7 @@ export namespace MessageWithSizeLimitedMap {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithSizeLimitedMap>): Uint8Array {
+  export function encode (obj: Partial<MessageWithSizeLimitedMap>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedMap.codec())
   }
 

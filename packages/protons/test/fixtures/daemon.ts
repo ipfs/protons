@@ -397,7 +397,7 @@ export namespace Request {
     value: string
   }
 
-  export function encode (obj: Partial<Request>): Uint8Array {
+  export function encode (obj: Partial<Request>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Request.codec())
   }
 
@@ -750,7 +750,7 @@ export namespace Response {
     value: string
   }
 
-  export function encode (obj: Partial<Response>): Uint8Array {
+  export function encode (obj: Partial<Response>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Response.codec())
   }
 
@@ -881,7 +881,7 @@ export namespace IdentifyResponse {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<IdentifyResponse>): Uint8Array {
+  export function encode (obj: Partial<IdentifyResponse>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
@@ -1034,7 +1034,7 @@ export namespace ConnectRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<ConnectRequest>): Uint8Array {
+  export function encode (obj: Partial<ConnectRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
@@ -1187,7 +1187,7 @@ export namespace StreamOpenRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<StreamOpenRequest>): Uint8Array {
+  export function encode (obj: Partial<StreamOpenRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
@@ -1318,7 +1318,7 @@ export namespace StreamHandlerRequest {
     value: string
   }
 
-  export function encode (obj: Partial<StreamHandlerRequest>): Uint8Array {
+  export function encode (obj: Partial<StreamHandlerRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
@@ -1407,7 +1407,7 @@ export namespace ErrorResponse {
     value: string
   }
 
-  export function encode (obj: Partial<ErrorResponse>): Uint8Array {
+  export function encode (obj: Partial<ErrorResponse>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
@@ -1542,7 +1542,7 @@ export namespace StreamInfo {
     value: string
   }
 
-  export function encode (obj: Partial<StreamInfo>): Uint8Array {
+  export function encode (obj: Partial<StreamInfo>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
@@ -1793,7 +1793,7 @@ export namespace DHTRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<DHTRequest>): Uint8Array {
+  export function encode (obj: Partial<DHTRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
@@ -1952,7 +1952,7 @@ export namespace DHTResponse {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<DHTResponse>): Uint8Array {
+  export function encode (obj: Partial<DHTResponse>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
@@ -2083,7 +2083,7 @@ export namespace PeerInfo {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<PeerInfo>): Uint8Array {
+  export function encode (obj: Partial<PeerInfo>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
@@ -2256,7 +2256,7 @@ export namespace ConnManagerRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<ConnManagerRequest>): Uint8Array {
+  export function encode (obj: Partial<ConnManagerRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
@@ -2345,7 +2345,7 @@ export namespace DisconnectRequest {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<DisconnectRequest>): Uint8Array {
+  export function encode (obj: Partial<DisconnectRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
@@ -2498,7 +2498,7 @@ export namespace PSRequest {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<PSRequest>): Uint8Array {
+  export function encode (obj: Partial<PSRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSRequest.codec())
   }
 
@@ -2716,7 +2716,7 @@ export namespace PSMessage {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<PSMessage>): Uint8Array {
+  export function encode (obj: Partial<PSMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSMessage.codec())
   }
 
@@ -2863,7 +2863,7 @@ export namespace PSResponse {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<PSResponse>): Uint8Array {
+  export function encode (obj: Partial<PSResponse>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSResponse.codec())
   }
 
@@ -3034,7 +3034,7 @@ export namespace PeerstoreRequest {
     value: string
   }
 
-  export function encode (obj: Partial<PeerstoreRequest>): Uint8Array {
+  export function encode (obj: Partial<PeerstoreRequest>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
@@ -3172,7 +3172,7 @@ export namespace PeerstoreResponse {
     value: string
   }
 
-  export function encode (obj: Partial<PeerstoreResponse>): Uint8Array {
+  export function encode (obj: Partial<PeerstoreResponse>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 

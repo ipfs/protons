@@ -85,7 +85,7 @@ const bufferPool = pool()
 /**
  * Allocates a buffer of the specified size
  */
-function alloc (size: number): Uint8Array {
+function alloc (size: number): Uint8Array<ArrayBuffer> {
   if (globalThis.Buffer != null) {
     return allocUnsafe(size)
   }
@@ -393,7 +393,7 @@ class Uint8ArrayWriter implements Writer {
   /**
    * Finishes the write operation
    */
-  finish (): Uint8Array {
+  finish (): Uint8Array<ArrayBuffer> {
     let head = this.head.next // skip noop
     const buf = alloc(this.len)
     let pos = 0

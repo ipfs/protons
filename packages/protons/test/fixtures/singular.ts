@@ -120,7 +120,7 @@ export namespace SingularSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SingularSubMessage>): Uint8Array {
+  export function encode (obj: Partial<SingularSubMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
 
@@ -583,7 +583,7 @@ export namespace Singular {
     value: number
   }
 
-  export function encode (obj: Partial<Singular>): Uint8Array {
+  export function encode (obj: Partial<Singular>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Singular.codec())
   }
 

@@ -164,7 +164,7 @@ export namespace Record {
     value: string
   }
 
-  export function encode (obj: Partial<Record>): Uint8Array {
+  export function encode (obj: Partial<Record>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Record.codec())
   }
 
@@ -370,7 +370,7 @@ export namespace Message {
       value: Message.ConnectionType
     }
 
-    export function encode (obj: Partial<Peer>): Uint8Array {
+    export function encode (obj: Partial<Peer>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -629,7 +629,7 @@ export namespace Message {
     index: number
   }
 
-  export function encode (obj: Partial<Message>): Uint8Array {
+  export function encode (obj: Partial<Message>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Message.codec())
   }
 

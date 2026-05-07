@@ -1,4 +1,5 @@
 import { decodeUint8Array, encodingLength } from 'uint8-varint'
+import { withArrayBuffer } from 'uint8arrays/with-array-buffer'
 import { readFloatLE, readDoubleLE } from './float.ts'
 import { LongBits } from './longbits.ts'
 import * as utf8 from './utf8.ts'
@@ -21,7 +22,7 @@ function readFixed32End (buf: Uint8Array, end: number): number { // note that th
  * Constructs a new reader instance using the specified buffer.
  */
 export class Uint8ArrayReader implements Reader {
-  public buf: Uint8Array
+  public buf: Uint8Array<ArrayBuffer>
   public pos: number
   public len: number
 
@@ -31,7 +32,7 @@ export class Uint8ArrayReader implements Reader {
     /**
      * Read buffer
      */
-    this.buf = buffer
+    this.buf = withArrayBuffer(buffer)
 
     /**
      * Read buffer position
@@ -138,7 +139,7 @@ export class Uint8ArrayReader implements Reader {
   /**
    * Reads a sequence of bytes preceded by its length as a varint
    */
-  bytes (): Uint8Array {
+  bytes (): Uint8Array<ArrayBuffer> {
     const length = this.uint32()
     const start = this.pos
     const end = this.pos + length

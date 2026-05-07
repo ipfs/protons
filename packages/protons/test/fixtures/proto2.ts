@@ -78,7 +78,7 @@ export namespace MessageWithRequired {
     value: number
   }
 
-  export function encode (obj: Partial<MessageWithRequired>): Uint8Array {
+  export function encode (obj: Partial<MessageWithRequired>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRequired.codec())
   }
 
