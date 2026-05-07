@@ -188,7 +188,7 @@ export interface Writer {
   /**
    * Finishes the write operation
    */
-  finish(): Uint8Array
+  finish(): Uint8Array<ArrayBuffer>
 }
 
 export interface Reader {
@@ -250,7 +250,7 @@ export interface Reader {
   /**
    * Reads a sequence of bytes preceded by its length as a varint
    */
-  bytes(): Uint8Array
+  bytes(): Uint8Array<ArrayBuffer>
 
   /**
    * Reads a string preceded by its byte length as a varint

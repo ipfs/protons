@@ -242,7 +242,7 @@ export namespace Peer {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<Peer>): Uint8Array {
+  export function encode (obj: Partial<Peer>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Peer.codec())
   }
 
@@ -353,7 +353,7 @@ export namespace Address {
     value: boolean
   }
 
-  export function encode (obj: Partial<Address>): Uint8Array {
+  export function encode (obj: Partial<Address>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Address.codec())
   }
 
@@ -465,7 +465,7 @@ export namespace Metadata {
     value: Uint8Array
   }
 
-  export function encode (obj: Partial<Metadata>): Uint8Array {
+  export function encode (obj: Partial<Metadata>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Metadata.codec())
   }
 

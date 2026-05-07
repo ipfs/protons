@@ -141,7 +141,7 @@ export namespace MessageWithArrayField {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithArrayField>): Uint8Array {
+  export function encode (obj: Partial<MessageWithArrayField>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithArrayField.codec())
   }
 
@@ -230,7 +230,7 @@ export namespace NestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<NestedMessage>): Uint8Array {
+  export function encode (obj: Partial<NestedMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, NestedMessage.codec())
   }
 
@@ -343,7 +343,7 @@ export namespace MessageWithNestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithNestedMessage>): Uint8Array {
+  export function encode (obj: Partial<MessageWithNestedMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithNestedMessage.codec())
   }
 
@@ -461,7 +461,7 @@ export namespace MessageWithDeeplyNestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithDeeplyNestedMessage>): Uint8Array {
+  export function encode (obj: Partial<MessageWithDeeplyNestedMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithDeeplyNestedMessage.codec())
   }
 
@@ -597,7 +597,7 @@ export namespace MessageWithRepeatedMessage {
     index: number
   }
 
-  export function encode (obj: Partial<MessageWithRepeatedMessage>): Uint8Array {
+  export function encode (obj: Partial<MessageWithRepeatedMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRepeatedMessage.codec())
   }
 
@@ -716,7 +716,7 @@ export namespace MessageWithMapMessage {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithMapMessage$nestedMessagesEntry>): Uint8Array {
+    export function encode (obj: Partial<MessageWithMapMessage$nestedMessagesEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithMapMessage$nestedMessagesEntry.codec())
     }
 
@@ -846,7 +846,7 @@ export namespace MessageWithMapMessage {
     key: string
   }
 
-  export function encode (obj: Partial<MessageWithMapMessage>): Uint8Array {
+  export function encode (obj: Partial<MessageWithMapMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithMapMessage.codec())
   }
 
@@ -964,7 +964,7 @@ export namespace MessageWithPrimitiveMap {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithPrimitiveMap$nestedStringsEntry>): Uint8Array {
+    export function encode (obj: Partial<MessageWithPrimitiveMap$nestedStringsEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithPrimitiveMap$nestedStringsEntry.codec())
     }
 
@@ -1094,7 +1094,7 @@ export namespace MessageWithPrimitiveMap {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithPrimitiveMap>): Uint8Array {
+  export function encode (obj: Partial<MessageWithPrimitiveMap>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithPrimitiveMap.codec())
   }
 

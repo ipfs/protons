@@ -201,7 +201,7 @@ export namespace Message {
         value: boolean
       }
 
-      export function encode (obj: Partial<Entry>): Uint8Array {
+      export function encode (obj: Partial<Entry>): Uint8Array<ArrayBuffer> {
         return encodeMessage(obj, Entry.codec())
       }
 
@@ -355,7 +355,7 @@ export namespace Message {
       value: boolean
     }
 
-    export function encode (obj: Partial<Wantlist>): Uint8Array {
+    export function encode (obj: Partial<Wantlist>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Wantlist.codec())
     }
 
@@ -467,7 +467,7 @@ export namespace Message {
       value: Uint8Array
     }
 
-    export function encode (obj: Partial<Block>): Uint8Array {
+    export function encode (obj: Partial<Block>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Block.codec())
     }
 
@@ -595,7 +595,7 @@ export namespace Message {
       value: Message.BlockPresenceType
     }
 
-    export function encode (obj: Partial<BlockPresence>): Uint8Array {
+    export function encode (obj: Partial<BlockPresence>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, BlockPresence.codec())
     }
 
@@ -871,7 +871,7 @@ export namespace Message {
     value: number
   }
 
-  export function encode (obj: Partial<Message>): Uint8Array {
+  export function encode (obj: Partial<Message>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Message.codec())
   }
 

@@ -1,5 +1,3 @@
-/* eslint-disable require-yield */
-
 import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -78,7 +76,7 @@ export namespace Foo {
     value: number
   }
 
-  export function encode (obj: Partial<Foo>): Uint8Array {
+  export function encode (obj: Partial<Foo>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Foo.codec())
   }
 

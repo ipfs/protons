@@ -1,3 +1,9 @@
+## [protons-v8.1.2](https://github.com/ipfs/protons/compare/protons-8.1.1...protons-8.1.2) (2026-05-07)
+
+### Dependencies
+
+* bump aegir from 47.2.0 to 48.0.1 ([#167](https://github.com/ipfs/protons/issues/167)) ([b38cb94](https://github.com/ipfs/protons/commit/b38cb9443b9046db74fb5bdd73b8c7c7486a1cdf))
+
 ## [protons-v8.1.1](https://github.com/ipfs/protons/compare/protons-8.1.0...protons-8.1.1) (2026-03-26)
 
 ### Bug Fixes

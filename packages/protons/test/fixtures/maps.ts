@@ -138,7 +138,7 @@ export namespace SubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SubMessage>): Uint8Array {
+  export function encode (obj: Partial<SubMessage>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -259,7 +259,7 @@ export namespace MapTypes {
       value: string
     }
 
-    export function encode (obj: Partial<MapTypes$stringMapEntry>): Uint8Array {
+    export function encode (obj: Partial<MapTypes$stringMapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$stringMapEntry.codec())
     }
 
@@ -371,7 +371,7 @@ export namespace MapTypes {
       value: number
     }
 
-    export function encode (obj: Partial<MapTypes$intMapEntry>): Uint8Array {
+    export function encode (obj: Partial<MapTypes$intMapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$intMapEntry.codec())
     }
 
@@ -483,7 +483,7 @@ export namespace MapTypes {
       value: boolean
     }
 
-    export function encode (obj: Partial<MapTypes$boolMapEntry>): Uint8Array {
+    export function encode (obj: Partial<MapTypes$boolMapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$boolMapEntry.codec())
     }
 
@@ -602,7 +602,7 @@ export namespace MapTypes {
       value: number
     }
 
-    export function encode (obj: Partial<MapTypes$messageMapEntry>): Uint8Array {
+    export function encode (obj: Partial<MapTypes$messageMapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$messageMapEntry.codec())
     }
 
@@ -714,7 +714,7 @@ export namespace MapTypes {
       value: EnumValue
     }
 
-    export function encode (obj: Partial<MapTypes$enumMapEntry>): Uint8Array {
+    export function encode (obj: Partial<MapTypes$enumMapEntry>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$enumMapEntry.codec())
     }
 
@@ -1001,7 +1001,7 @@ export namespace MapTypes {
     value: EnumValue
   }
 
-  export function encode (obj: Partial<MapTypes>): Uint8Array {
+  export function encode (obj: Partial<MapTypes>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MapTypes.codec())
   }
 

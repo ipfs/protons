@@ -1,6 +1,6 @@
 {
   "name": "protons",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "description": "Protobuf to ts transpiler",
   "license": "Apache-2.0 OR MIT",
   "homepage": "https://github.com/ipfs/protons/tree/main/packages/protons#readme",
@@ -141,12 +141,12 @@
     "protons-runtime": "^6.0.0"
   },
   "devDependencies": {
-    "aegir": "^47.0.26",
+    "aegir": "^48.0.1",
     "it-all": "^3.0.9",
     "long": "^5.3.2",
     "pbjs": "^0.0.14",
-    "protobufjs": "^7.5.4",
-    "uint8arraylist": "^2.4.8",
-    "uint8arrays": "^5.1.0"
+    "protobufjs": "^8.0.3",
+    "uint8arraylist": "^3.0.0",
+    "uint8arrays": "^6.0.0"
   }
 }

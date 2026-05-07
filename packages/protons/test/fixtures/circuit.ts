@@ -193,7 +193,7 @@ export namespace CircuitRelay {
       value: Uint8Array
     }
 
-    export function encode (obj: Partial<Peer>): Uint8Array {
+    export function encode (obj: Partial<Peer>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -354,7 +354,7 @@ export namespace CircuitRelay {
     value: CircuitRelay.Status
   }
 
-  export function encode (obj: Partial<CircuitRelay>): Uint8Array {
+  export function encode (obj: Partial<CircuitRelay>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 
