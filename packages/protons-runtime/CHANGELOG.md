@@ -1,3 +1,13 @@
+## [protons-runtime-v7.0.0](https://github.com/ipfs/protons/compare/protons-runtime-6.0.2...protons-runtime-7.0.0) (2026-05-07)
+
+### ⚠ BREAKING CHANGES
+
+* Returned `Uint8Array`s are now generic
+
+### Bug Fixes
+
+* uint8arrays are generic ([#170](https://github.com/ipfs/protons/issues/170)) ([048a855](https://github.com/ipfs/protons/commit/048a8552d310dea51f7b0a0c0397c50ff2611d55))
+
 ## [protons-runtime-v6.0.2](https://github.com/ipfs/protons/compare/protons-runtime-6.0.1...protons-runtime-6.0.2) (2026-05-07)
 
 ### Dependencies
