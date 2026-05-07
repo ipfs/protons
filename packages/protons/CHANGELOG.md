@@ -1,3 +1,13 @@
+## [protons-v9.0.0](https://github.com/ipfs/protons/compare/protons-8.1.2...protons-9.0.0) (2026-05-07)
+
+### ⚠ BREAKING CHANGES
+
+* Returned `Uint8Array`s are now generic
+
+### Bug Fixes
+
+* uint8arrays are generic ([#170](https://github.com/ipfs/protons/issues/170)) ([048a855](https://github.com/ipfs/protons/commit/048a8552d310dea51f7b0a0c0397c50ff2611d55))
+
 ## [protons-v8.1.2](https://github.com/ipfs/protons/compare/protons-8.1.1...protons-8.1.2) (2026-05-07)
 
 ### Dependencies
