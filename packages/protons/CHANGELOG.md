@@ -1,3 +1,9 @@
+## [protons-v9.0.1](https://github.com/ipfs/protons/compare/protons-9.0.0...protons-9.0.1) (2026-05-07)
+
+### Bug Fixes
+
+* update sibling deps ([20f3e99](https://github.com/ipfs/protons/commit/20f3e99177a880b7e4d2cca97c37cd6686567b49))
+
 ## [protons-v9.0.0](https://github.com/ipfs/protons/compare/protons-8.1.2...protons-9.0.0) (2026-05-07)
 
 ### ⚠ BREAKING CHANGES
