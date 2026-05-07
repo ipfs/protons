@@ -133,7 +133,7 @@
   "dependencies": {
     "uint8-varint": "^2.0.4",
     "uint8arraylist": "^2.4.8",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^6.0.0"
   },
   "devDependencies": {
     "aegir": "^48.0.1"

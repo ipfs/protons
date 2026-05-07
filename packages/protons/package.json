@@ -147,6 +147,6 @@
     "pbjs": "^0.0.14",
     "protobufjs": "^7.5.4",
     "uint8arraylist": "^2.4.8",
-    "uint8arrays": "^5.1.0"
+    "uint8arrays": "^6.0.0"
   }
 }
