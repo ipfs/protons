@@ -1,3 +1,9 @@
+## [protons-runtime-v6.0.2](https://github.com/ipfs/protons/compare/protons-runtime-6.0.1...protons-runtime-6.0.2) (2026-05-07)
+
+### Dependencies
+
+* bump aegir from 47.2.0 to 48.0.1 ([#167](https://github.com/ipfs/protons/issues/167)) ([b38cb94](https://github.com/ipfs/protons/commit/b38cb9443b9046db74fb5bdd73b8c7c7486a1cdf))
+
 ## [protons-runtime-v6.0.1](https://github.com/ipfs/protons/compare/protons-runtime-6.0.0...protons-runtime-6.0.1) (2026-03-24)
 
 ### Bug Fixes
