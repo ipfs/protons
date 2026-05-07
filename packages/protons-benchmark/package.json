@@ -25,8 +25,8 @@
     "benchmark": "^2.1.4",
     "pbjs": "^0.0.14",
     "protobufjs": "^8.0.3",
-    "protons": "^8.0.0",
-    "protons-runtime": "^6.0.0",
+    "protons": "^9.0.0",
+    "protons-runtime": "^7.0.0",
     "uint8arraylist": "^3.0.0"
   },
   "private": true
