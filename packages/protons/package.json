@@ -141,7 +141,7 @@
     "protons-runtime": "^6.0.0"
   },
   "devDependencies": {
-    "aegir": "^47.0.26",
+    "aegir": "^48.0.1",
     "it-all": "^3.0.9",
     "long": "^5.3.2",
     "pbjs": "^0.0.14",
