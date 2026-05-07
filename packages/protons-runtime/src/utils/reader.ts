@@ -1,10 +1,10 @@
 import { decodeUint8Array, encodingLength } from 'uint8-varint'
+import { withArrayBuffer } from 'uint8arrays/with-array-buffer'
 import { readFloatLE, readDoubleLE } from './float.ts'
 import { LongBits } from './longbits.ts'
 import * as utf8 from './utf8.ts'
 import type { Reader } from '../index.ts'
 import type { Uint8ArrayList } from 'uint8arraylist'
-import { withArrayBuffer } from 'uint8arrays/with-array-buffer'
 
 /* istanbul ignore next */
 function indexOutOfRange (reader: Reader, writeLength?: number): RangeError {
