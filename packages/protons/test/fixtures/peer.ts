@@ -7,8 +7,8 @@ export interface Peer {
   addresses: Address[]
   protocols: string[]
   metadata: Metadata[]
-  pubKey?: Uint8Array
-  peerRecordEnvelope?: Uint8Array
+  pubKey?: Uint8Array<ArrayBuffer>
+  peerRecordEnvelope?: Uint8Array<ArrayBuffer>
 }
 
 export namespace Peer {
@@ -204,7 +204,7 @@ export namespace Peer {
 
   export interface PeerAddressesMultiaddrFieldEvent {
     field: '$.addresses[].multiaddr'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
@@ -228,18 +228,18 @@ export namespace Peer {
 
   export interface PeerMetadataValueFieldEvent {
     field: '$.metadata[].value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface PeerPubKeyFieldEvent {
     field: '$.pubKey'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerPeerRecordEnvelopeFieldEvent {
     field: '$.peerRecordEnvelope'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<Peer>): Uint8Array<ArrayBuffer> {
@@ -256,7 +256,7 @@ export namespace Peer {
 }
 
 export interface Address {
-  multiaddr: Uint8Array
+  multiaddr: Uint8Array<ArrayBuffer>
   isCertified?: boolean
 }
 
@@ -345,7 +345,7 @@ export namespace Address {
 
   export interface AddressMultiaddrFieldEvent {
     field: '$.multiaddr'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface AddressIsCertifiedFieldEvent {
@@ -368,7 +368,7 @@ export namespace Address {
 
 export interface Metadata {
   key: string
-  value: Uint8Array
+  value: Uint8Array<ArrayBuffer>
 }
 
 export namespace Metadata {
@@ -462,7 +462,7 @@ export namespace Metadata {
 
   export interface MetadataValueFieldEvent {
     field: '$.value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<Metadata>): Uint8Array<ArrayBuffer> {

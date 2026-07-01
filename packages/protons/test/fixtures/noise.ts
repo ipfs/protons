@@ -9,9 +9,9 @@ export interface pb {}
 
 export namespace pb {
   export interface NoiseHandshakePayload {
-    identityKey: Uint8Array
-    identitySig: Uint8Array
-    data: Uint8Array
+    identityKey: Uint8Array<ArrayBuffer>
+    identitySig: Uint8Array<ArrayBuffer>
+    data: Uint8Array<ArrayBuffer>
   }
 
   export namespace NoiseHandshakePayload {
@@ -117,17 +117,17 @@ export namespace pb {
 
     export interface NoiseHandshakePayloadIdentityKeyFieldEvent {
       field: '$.identityKey'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface NoiseHandshakePayloadIdentitySigFieldEvent {
       field: '$.identitySig'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface NoiseHandshakePayloadDataFieldEvent {
       field: '$.data'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export function encode (obj: Partial<NoiseHandshakePayload>): Uint8Array<ArrayBuffer> {

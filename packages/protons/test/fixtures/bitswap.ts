@@ -5,7 +5,7 @@ import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Message {
   wantlist?: Message.Wantlist
-  blocks: Uint8Array[]
+  blocks: Uint8Array<ArrayBuffer>[]
   payload: Message.Block[]
   blockPresences: Message.BlockPresence[]
   pendingBytes: number
@@ -35,7 +35,7 @@ export namespace Message {
     }
 
     export interface Entry {
-      block: Uint8Array
+      block: Uint8Array<ArrayBuffer>
       priority: number
       cancel?: boolean
       wantType: Message.Wantlist.WantType
@@ -178,7 +178,7 @@ export namespace Message {
 
       export interface EntryBlockFieldEvent {
         field: '$.block'
-        value: Uint8Array
+        value: Uint8Array<ArrayBuffer>
       }
 
       export interface EntryPriorityFieldEvent {
@@ -322,7 +322,7 @@ export namespace Message {
 
     export interface WantlistEntriesBlockFieldEvent {
       field: '$.entries[].block'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
       index: number
     }
 
@@ -369,8 +369,8 @@ export namespace Message {
   }
 
   export interface Block {
-    prefix: Uint8Array
-    data: Uint8Array
+    prefix: Uint8Array<ArrayBuffer>
+    data: Uint8Array<ArrayBuffer>
   }
 
   export namespace Block {
@@ -459,12 +459,12 @@ export namespace Message {
 
     export interface BlockPrefixFieldEvent {
       field: '$.prefix'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface BlockDataFieldEvent {
       field: '$.data'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export function encode (obj: Partial<Block>): Uint8Array<ArrayBuffer> {
@@ -497,7 +497,7 @@ export namespace Message {
   }
 
   export interface BlockPresence {
-    cid: Uint8Array
+    cid: Uint8Array<ArrayBuffer>
     type: Message.BlockPresenceType
   }
 
@@ -587,7 +587,7 @@ export namespace Message {
 
     export interface BlockPresenceCidFieldEvent {
       field: '$.cid'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface BlockPresenceTypeFieldEvent {
@@ -803,7 +803,7 @@ export namespace Message {
 
   export interface MessageWantlistEntriesBlockFieldEvent {
     field: '$.wantlist.entries[].block'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
@@ -839,24 +839,24 @@ export namespace Message {
   export interface MessageBlocksFieldEvent {
     field: '$.blocks[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessagePayloadPrefixFieldEvent {
     field: '$.payload[].prefix'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface MessagePayloadDataFieldEvent {
     field: '$.payload[].data'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface MessageBlockPresencesCidFieldEvent {
     field: '$.blockPresences[].cid'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
