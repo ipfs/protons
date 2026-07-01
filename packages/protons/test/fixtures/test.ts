@@ -118,7 +118,7 @@ export interface AllTheTypes {
   field8?: number
   field9?: number
   field10?: string
-  field11?: Uint8Array
+  field11?: Uint8Array<ArrayBuffer>
   field12?: AnEnum
   field13?: SubMessage
   field14: string[]
@@ -539,7 +539,7 @@ export namespace AllTheTypes {
 
   export interface AllTheTypesField11FieldEvent {
     field: '$.field11'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface AllTheTypesField12FieldEvent {

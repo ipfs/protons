@@ -144,7 +144,7 @@ export interface Optional {
   sfixed64?: bigint
   bool?: boolean
   string?: string
-  bytes?: Uint8Array
+  bytes?: Uint8Array<ArrayBuffer>
   enum?: OptionalEnum
   subMessage?: OptionalSubMessage
 }
@@ -544,7 +544,7 @@ export namespace Optional {
 
   export interface OptionalBytesFieldEvent {
     field: '$.bytes'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface OptionalEnumFieldEvent {

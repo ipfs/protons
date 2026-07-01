@@ -148,7 +148,7 @@ export interface Singular {
   sfixed64: bigint
   bool: boolean
   string: string
-  bytes: Uint8Array
+  bytes: Uint8Array<ArrayBuffer>
   enum: SingularEnum
   subMessage?: SingularSubMessage
 }
@@ -565,7 +565,7 @@ export namespace Singular {
 
   export interface SingularBytesFieldEvent {
     field: '$.bytes'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface SingularEnumFieldEvent {

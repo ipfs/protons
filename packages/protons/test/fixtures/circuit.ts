@@ -76,8 +76,8 @@ export namespace CircuitRelay {
   }
 
   export interface Peer {
-    id: Uint8Array
-    addrs: Uint8Array[]
+    id: Uint8Array<ArrayBuffer>
+    addrs: Uint8Array<ArrayBuffer>[]
   }
 
   export namespace Peer {
@@ -184,13 +184,13 @@ export namespace CircuitRelay {
 
     export interface PeerIdFieldEvent {
       field: '$.id'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface PeerAddrsFieldEvent {
       field: '$.addrs[]'
       index: number
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export function encode (obj: Partial<Peer>): Uint8Array<ArrayBuffer> {
@@ -329,24 +329,24 @@ export namespace CircuitRelay {
 
   export interface CircuitRelaySrcPeerIdFieldEvent {
     field: '$.srcPeer.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelaySrcPeerAddrsFieldEvent {
     field: '$.srcPeer.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelayDstPeerIdFieldEvent {
     field: '$.dstPeer.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelayDstPeerAddrsFieldEvent {
     field: '$.dstPeer.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelayCodeFieldEvent {

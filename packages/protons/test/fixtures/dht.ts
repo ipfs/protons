@@ -3,10 +3,10 @@ import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
 export interface Record {
-  key?: Uint8Array
-  value?: Uint8Array
-  author?: Uint8Array
-  signature?: Uint8Array
+  key?: Uint8Array<ArrayBuffer>
+  value?: Uint8Array<ArrayBuffer>
+  author?: Uint8Array<ArrayBuffer>
+  signature?: Uint8Array<ArrayBuffer>
   timeReceived?: string
 }
 
@@ -141,22 +141,22 @@ export namespace Record {
 
   export interface RecordKeyFieldEvent {
     field: '$.key'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordValueFieldEvent {
     field: '$.value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordAuthorFieldEvent {
     field: '$.author'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordSignatureFieldEvent {
     field: '$.signature'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordTimeReceivedFieldEvent {
@@ -180,8 +180,8 @@ export namespace Record {
 export interface Message {
   type?: Message.MessageType
   clusterLevelRaw?: number
-  key?: Uint8Array
-  record?: Uint8Array
+  key?: Uint8Array<ArrayBuffer>
+  record?: Uint8Array<ArrayBuffer>
   closerPeers: Message.Peer[]
   providerPeers: Message.Peer[]
 }
@@ -232,8 +232,8 @@ export namespace Message {
   }
 
   export interface Peer {
-    id?: Uint8Array
-    addrs: Uint8Array[]
+    id?: Uint8Array<ArrayBuffer>
+    addrs: Uint8Array<ArrayBuffer>[]
     connection?: Message.ConnectionType
   }
 
@@ -356,13 +356,13 @@ export namespace Message {
 
     export interface PeerIdFieldEvent {
       field: '$.id'
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface PeerAddrsFieldEvent {
       field: '$.addrs[]'
       index: number
-      value: Uint8Array
+      value: Uint8Array<ArrayBuffer>
     }
 
     export interface PeerConnectionFieldEvent {
@@ -585,24 +585,24 @@ export namespace Message {
 
   export interface MessageKeyFieldEvent {
     field: '$.key'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageRecordFieldEvent {
     field: '$.record'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageCloserPeersIdFieldEvent {
     field: '$.closerPeers[].id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface MessageCloserPeersAddrsFieldEvent {
     field: '$.closerPeers[].addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageCloserPeersConnectionFieldEvent {
@@ -613,14 +613,14 @@ export namespace Message {
 
   export interface MessageProviderPeersIdFieldEvent {
     field: '$.providerPeers[].id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface MessageProviderPeersAddrsFieldEvent {
     field: '$.providerPeers[].addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageProviderPeersConnectionFieldEvent {

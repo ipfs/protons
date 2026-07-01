@@ -265,13 +265,13 @@ export namespace Request {
 
   export interface RequestConnectPeerFieldEvent {
     field: '$.connect.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestConnectAddrsFieldEvent {
     field: '$.connect.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestConnectTimeoutFieldEvent {
@@ -281,7 +281,7 @@ export namespace Request {
 
   export interface RequestStreamOpenPeerFieldEvent {
     field: '$.streamOpen.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestStreamOpenProtoFieldEvent {
@@ -297,7 +297,7 @@ export namespace Request {
 
   export interface RequestStreamHandlerAddrFieldEvent {
     field: '$.streamHandler.addr'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestStreamHandlerProtoFieldEvent {
@@ -313,22 +313,22 @@ export namespace Request {
 
   export interface RequestDhtPeerFieldEvent {
     field: '$.dht.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtCidFieldEvent {
     field: '$.dht.cid'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtKeyFieldEvent {
     field: '$.dht.key'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtValueFieldEvent {
     field: '$.dht.value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtCountFieldEvent {
@@ -348,7 +348,7 @@ export namespace Request {
 
   export interface RequestConnManagerPeerFieldEvent {
     field: '$.connManager.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestConnManagerTagFieldEvent {
@@ -363,7 +363,7 @@ export namespace Request {
 
   export interface RequestDisconnectPeerFieldEvent {
     field: '$.disconnect.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestPubsubTypeFieldEvent {
@@ -378,7 +378,7 @@ export namespace Request {
 
   export interface RequestPubsubDataFieldEvent {
     field: '$.pubsub.data'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestPeerStoreTypeFieldEvent {
@@ -388,7 +388,7 @@ export namespace Request {
 
   export interface RequestPeerStoreIdFieldEvent {
     field: '$.peerStore.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestPeerStoreProtosFieldEvent {
@@ -664,12 +664,12 @@ export namespace Response {
 
   export interface ResponseStreamInfoPeerFieldEvent {
     field: '$.streamInfo.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseStreamInfoAddrFieldEvent {
     field: '$.streamInfo.addr'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseStreamInfoProtoFieldEvent {
@@ -679,13 +679,13 @@ export namespace Response {
 
   export interface ResponseIdentifyIdFieldEvent {
     field: '$.identify.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseIdentifyAddrsFieldEvent {
     field: '$.identify.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseDhtTypeFieldEvent {
@@ -695,30 +695,30 @@ export namespace Response {
 
   export interface ResponseDhtPeerIdFieldEvent {
     field: '$.dht.peer.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseDhtPeerAddrsFieldEvent {
     field: '$.dht.peer.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseDhtValueFieldEvent {
     field: '$.dht.value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeersIdFieldEvent {
     field: '$.peers[].id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface ResponsePeersAddrsFieldEvent {
     field: '$.peers[].addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePubsubTopicsFieldEvent {
@@ -730,18 +730,18 @@ export namespace Response {
   export interface ResponsePubsubPeerIDsFieldEvent {
     field: '$.pubsub.peerIDs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeerStorePeerIdFieldEvent {
     field: '$.peerStore.peer.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeerStorePeerAddrsFieldEvent {
     field: '$.peerStore.peer.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeerStoreProtosFieldEvent {
@@ -764,8 +764,8 @@ export namespace Response {
 }
 
 export interface IdentifyResponse {
-  id: Uint8Array
-  addrs: Uint8Array[]
+  id: Uint8Array<ArrayBuffer>
+  addrs: Uint8Array<ArrayBuffer>[]
 }
 
 export namespace IdentifyResponse {
@@ -872,13 +872,13 @@ export namespace IdentifyResponse {
 
   export interface IdentifyResponseIdFieldEvent {
     field: '$.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface IdentifyResponseAddrsFieldEvent {
     field: '$.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<IdentifyResponse>): Uint8Array<ArrayBuffer> {
@@ -895,8 +895,8 @@ export namespace IdentifyResponse {
 }
 
 export interface ConnectRequest {
-  peer: Uint8Array
-  addrs: Uint8Array[]
+  peer: Uint8Array<ArrayBuffer>
+  addrs: Uint8Array<ArrayBuffer>[]
   timeout?: bigint
 }
 
@@ -1020,13 +1020,13 @@ export namespace ConnectRequest {
 
   export interface ConnectRequestPeerFieldEvent {
     field: '$.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ConnectRequestAddrsFieldEvent {
     field: '$.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ConnectRequestTimeoutFieldEvent {
@@ -1048,7 +1048,7 @@ export namespace ConnectRequest {
 }
 
 export interface StreamOpenRequest {
-  peer: Uint8Array
+  peer: Uint8Array<ArrayBuffer>
   proto: string[]
   timeout?: bigint
 }
@@ -1173,7 +1173,7 @@ export namespace StreamOpenRequest {
 
   export interface StreamOpenRequestPeerFieldEvent {
     field: '$.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamOpenRequestProtoFieldEvent {
@@ -1201,7 +1201,7 @@ export namespace StreamOpenRequest {
 }
 
 export interface StreamHandlerRequest {
-  addr: Uint8Array
+  addr: Uint8Array<ArrayBuffer>
   proto: string[]
 }
 
@@ -1309,7 +1309,7 @@ export namespace StreamHandlerRequest {
 
   export interface StreamHandlerRequestAddrFieldEvent {
     field: '$.addr'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamHandlerRequestProtoFieldEvent {
@@ -1421,8 +1421,8 @@ export namespace ErrorResponse {
 }
 
 export interface StreamInfo {
-  peer: Uint8Array
-  addr: Uint8Array
+  peer: Uint8Array<ArrayBuffer>
+  addr: Uint8Array<ArrayBuffer>
   proto: string
 }
 
@@ -1529,12 +1529,12 @@ export namespace StreamInfo {
 
   export interface StreamInfoPeerFieldEvent {
     field: '$.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamInfoAddrFieldEvent {
     field: '$.addr'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamInfoProtoFieldEvent {
@@ -1557,10 +1557,10 @@ export namespace StreamInfo {
 
 export interface DHTRequest {
   type: DHTRequest.Type
-  peer?: Uint8Array
-  cid?: Uint8Array
-  key?: Uint8Array
-  value?: Uint8Array
+  peer?: Uint8Array<ArrayBuffer>
+  cid?: Uint8Array<ArrayBuffer>
+  key?: Uint8Array<ArrayBuffer>
+  value?: Uint8Array<ArrayBuffer>
   count?: number
   timeout?: bigint
 }
@@ -1765,22 +1765,22 @@ export namespace DHTRequest {
 
   export interface DHTRequestPeerFieldEvent {
     field: '$.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestCidFieldEvent {
     field: '$.cid'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestKeyFieldEvent {
     field: '$.key'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestValueFieldEvent {
     field: '$.value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestCountFieldEvent {
@@ -1809,7 +1809,7 @@ export namespace DHTRequest {
 export interface DHTResponse {
   type: DHTResponse.Type
   peer?: PeerInfo
-  value?: Uint8Array
+  value?: Uint8Array<ArrayBuffer>
 }
 
 export namespace DHTResponse {
@@ -1938,18 +1938,18 @@ export namespace DHTResponse {
 
   export interface DHTResponsePeerIdFieldEvent {
     field: '$.peer.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTResponsePeerAddrsFieldEvent {
     field: '$.peer.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTResponseValueFieldEvent {
     field: '$.value'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<DHTResponse>): Uint8Array<ArrayBuffer> {
@@ -1966,8 +1966,8 @@ export namespace DHTResponse {
 }
 
 export interface PeerInfo {
-  id: Uint8Array
-  addrs: Uint8Array[]
+  id: Uint8Array<ArrayBuffer>
+  addrs: Uint8Array<ArrayBuffer>[]
 }
 
 export namespace PeerInfo {
@@ -2074,13 +2074,13 @@ export namespace PeerInfo {
 
   export interface PeerInfoIdFieldEvent {
     field: '$.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerInfoAddrsFieldEvent {
     field: '$.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<PeerInfo>): Uint8Array<ArrayBuffer> {
@@ -2098,7 +2098,7 @@ export namespace PeerInfo {
 
 export interface ConnManagerRequest {
   type: ConnManagerRequest.Type
-  peer?: Uint8Array
+  peer?: Uint8Array<ArrayBuffer>
   tag?: string
   weight?: bigint
 }
@@ -2243,7 +2243,7 @@ export namespace ConnManagerRequest {
 
   export interface ConnManagerRequestPeerFieldEvent {
     field: '$.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface ConnManagerRequestTagFieldEvent {
@@ -2270,7 +2270,7 @@ export namespace ConnManagerRequest {
 }
 
 export interface DisconnectRequest {
-  peer: Uint8Array
+  peer: Uint8Array<ArrayBuffer>
 }
 
 export namespace DisconnectRequest {
@@ -2342,7 +2342,7 @@ export namespace DisconnectRequest {
 
   export interface DisconnectRequestPeerFieldEvent {
     field: '$.peer'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<DisconnectRequest>): Uint8Array<ArrayBuffer> {
@@ -2361,7 +2361,7 @@ export namespace DisconnectRequest {
 export interface PSRequest {
   type: PSRequest.Type
   topic?: string
-  data?: Uint8Array
+  data?: Uint8Array<ArrayBuffer>
 }
 
 export namespace PSRequest {
@@ -2495,7 +2495,7 @@ export namespace PSRequest {
 
   export interface PSRequestDataFieldEvent {
     field: '$.data'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<PSRequest>): Uint8Array<ArrayBuffer> {
@@ -2512,12 +2512,12 @@ export namespace PSRequest {
 }
 
 export interface PSMessage {
-  from?: Uint8Array
-  data?: Uint8Array
-  seqno?: Uint8Array
+  from?: Uint8Array<ArrayBuffer>
+  data?: Uint8Array<ArrayBuffer>
+  seqno?: Uint8Array<ArrayBuffer>
   topicIDs: string[]
-  signature?: Uint8Array
-  key?: Uint8Array
+  signature?: Uint8Array<ArrayBuffer>
+  key?: Uint8Array<ArrayBuffer>
 }
 
 export namespace PSMessage {
@@ -2687,17 +2687,17 @@ export namespace PSMessage {
 
   export interface PSMessageFromFieldEvent {
     field: '$.from'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageDataFieldEvent {
     field: '$.data'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageSeqnoFieldEvent {
     field: '$.seqno'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageTopicIDsFieldEvent {
@@ -2708,12 +2708,12 @@ export namespace PSMessage {
 
   export interface PSMessageSignatureFieldEvent {
     field: '$.signature'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageKeyFieldEvent {
     field: '$.key'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<PSMessage>): Uint8Array<ArrayBuffer> {
@@ -2731,7 +2731,7 @@ export namespace PSMessage {
 
 export interface PSResponse {
   topics: string[]
-  peerIDs: Uint8Array[]
+  peerIDs: Uint8Array<ArrayBuffer>[]
 }
 
 export namespace PSResponse {
@@ -2860,7 +2860,7 @@ export namespace PSResponse {
   export interface PSResponsePeerIDsFieldEvent {
     field: '$.peerIDs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export function encode (obj: Partial<PSResponse>): Uint8Array<ArrayBuffer> {
@@ -2878,7 +2878,7 @@ export namespace PSResponse {
 
 export interface PeerstoreRequest {
   type: PeerstoreRequest.Type
-  id?: Uint8Array
+  id?: Uint8Array<ArrayBuffer>
   protos: string[]
 }
 
@@ -3025,7 +3025,7 @@ export namespace PeerstoreRequest {
 
   export interface PeerstoreRequestIdFieldEvent {
     field: '$.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerstoreRequestProtosFieldEvent {
@@ -3157,13 +3157,13 @@ export namespace PeerstoreResponse {
 
   export interface PeerstoreResponsePeerIdFieldEvent {
     field: '$.peer.id'
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerstoreResponsePeerAddrsFieldEvent {
     field: '$.peer.addrs[]'
     index: number
-    value: Uint8Array
+    value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerstoreResponseProtosFieldEvent {

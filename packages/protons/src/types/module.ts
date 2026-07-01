@@ -9,7 +9,7 @@ import type { Type } from './index.ts'
 
 const types: Record<string, string> = {
   bool: 'boolean',
-  bytes: 'Uint8Array',
+  bytes: 'Uint8Array<ArrayBuffer>',
   double: 'number',
   fixed32: 'number',
   fixed64: 'bigint',
