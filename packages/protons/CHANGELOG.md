@@ -1,3 +1,9 @@
+## [protons-v9.0.2](https://github.com/ipfs/protons/compare/protons-9.0.1...protons-9.0.2) (2026-07-01)
+
+### Bug Fixes
+
+* add backing buffer type to Uint8Array fields ([#194](https://github.com/ipfs/protons/issues/194)) ([1369612](https://github.com/ipfs/protons/commit/1369612f7ddce7f005cca8041028ed49f15aac9b))
+
 ## [protons-v9.0.1](https://github.com/ipfs/protons/compare/protons-9.0.0...protons-9.0.1) (2026-05-07)
 
 ### Bug Fixes
