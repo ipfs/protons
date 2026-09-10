@@ -1,5 +1,3 @@
-/* eslint-disable require-yield */
-
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
