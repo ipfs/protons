@@ -1,3 +1,9 @@
+## [protons-v9.1.0](https://github.com/ipfs/protons/compare/protons-9.0.2...protons-9.1.0) (2026-09-10)
+
+### Features
+
+* generate start/end events for sub messages ([#201](https://github.com/ipfs/protons/issues/201)) ([c879d0c](https://github.com/ipfs/protons/commit/c879d0cb6719defdfbb51d5406e6acf7daafcc10))
+
 ## [protons-v9.0.2](https://github.com/ipfs/protons/compare/protons-9.0.1...protons-9.0.2) (2026-07-01)
 
 ### Bug Fixes
