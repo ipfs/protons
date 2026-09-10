@@ -24,10 +24,8 @@ export function enumeration <T> (v: any): Codec<T> {
     return findValue(val)
   }
 
-  const stream: StreamFunction<T> = function * enumStream (reader) {
-    const val = reader.int32()
-
-    yield findValue(val)
+  const stream: StreamFunction<T> = function * enumStream (reader, prefix) {
+    // enums are simple values that are decoded inline so this is a no-op
   }
 
   return createCodec<T>('enum', CODEC_TYPES.VARINT, encode, decode, stream)

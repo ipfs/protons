@@ -1,5 +1,3 @@
-/* eslint-disable require-yield */
-
 import { decodeMessage, encodeMessage, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -59,8 +57,16 @@ export namespace Basic {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Basic'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -68,14 +74,14 @@ export namespace Basic {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.foo`,
+                field: `${prefix}foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.num`,
+                field: `${prefix}num`,
                 value: reader.int32()
               }
               break
@@ -86,6 +92,14 @@ export namespace Basic {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Basic'
+          }
+        }
       })
     }
 
@@ -93,12 +107,12 @@ export namespace Basic {
   }
 
   export interface BasicFooFieldEvent {
-    field: '$.foo'
+    field: '.foo'
     value: string
   }
 
   export interface BasicNumFieldEvent {
-    field: '$.num'
+    field: '.num'
     value: number
   }
 
@@ -147,8 +161,16 @@ export namespace Empty {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Empty'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -158,6 +180,14 @@ export namespace Empty {
               reader.skipType(tag & 7)
               break
             }
+          }
+        }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Empty'
           }
         }
       })

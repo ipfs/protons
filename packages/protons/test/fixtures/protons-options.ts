@@ -57,12 +57,20 @@ export namespace MessageWithSizeLimitedRepeatedField {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           repeatedField: 1
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithSizeLimitedRepeatedField'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -78,7 +86,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
               }
 
               yield {
-                field: `${prefix}.repeatedField[]`,
+                field: `${prefix}repeatedField[]`,
                 index: obj.repeatedField,
                 value: reader.string()
               }
@@ -93,6 +101,14 @@ export namespace MessageWithSizeLimitedRepeatedField {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithSizeLimitedRepeatedField'
+          }
+        }
       })
     }
 
@@ -100,7 +116,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
   }
 
   export interface MessageWithSizeLimitedRepeatedFieldRepeatedFieldFieldEvent {
-    field: '$.repeatedField[]'
+    field: '.repeatedField[]'
     index: number
     value: string
   }
@@ -179,8 +195,16 @@ export namespace MessageWithSizeLimitedMap {
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
+        }, function * (reader, prefix, length, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry'
+            }
+          }
 
           while (reader.pos < end) {
             const tag = reader.uint32()
@@ -188,14 +212,14 @@ export namespace MessageWithSizeLimitedMap {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.string()
                 }
                 break
@@ -206,6 +230,14 @@ export namespace MessageWithSizeLimitedMap {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry'
+            }
+          }
         })
       }
 
@@ -213,12 +245,12 @@ export namespace MessageWithSizeLimitedMap {
     }
 
     export interface MessageWithSizeLimitedMap$mapFieldEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
     export interface MessageWithSizeLimitedMap$mapFieldEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: string
     }
 
@@ -290,12 +322,20 @@ export namespace MessageWithSizeLimitedMap {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           mapField: 1
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithSizeLimitedMap'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -310,7 +350,7 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxLengthError('Decode error - repeated field "mapField" had too many elements')
               }
 
-              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, reader.uint32(), `${prefix}.mapField{}`, {
+              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, `${prefix}mapField{}.`, reader.uint32(), {
                 limits: {
                   value: opts.limits?.mapField$value
                 }
@@ -326,6 +366,14 @@ export namespace MessageWithSizeLimitedMap {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithSizeLimitedMap'
+          }
+        }
       })
     }
 
@@ -333,7 +381,7 @@ export namespace MessageWithSizeLimitedMap {
   }
 
   export interface MessageWithSizeLimitedMapMapFieldFieldEvent {
-    field: '$.mapField{}'
+    field: '.mapField{}'
     key: string
     value: string
   }

@@ -85,8 +85,16 @@ export namespace Record {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Record'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -94,35 +102,35 @@ export namespace Record {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.key`,
+                field: `${prefix}key`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.value`,
+                field: `${prefix}value`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.author`,
+                field: `${prefix}author`,
                 value: reader.bytes()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.signature`,
+                field: `${prefix}signature`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.timeReceived`,
+                field: `${prefix}timeReceived`,
                 value: reader.string()
               }
               break
@@ -133,6 +141,14 @@ export namespace Record {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Record'
+          }
+        }
       })
     }
 
@@ -140,27 +156,27 @@ export namespace Record {
   }
 
   export interface RecordKeyFieldEvent {
-    field: '$.key'
+    field: '.key'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordValueFieldEvent {
-    field: '$.value'
+    field: '.value'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordAuthorFieldEvent {
-    field: '$.author'
+    field: '.author'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordSignatureFieldEvent {
-    field: '$.signature'
+    field: '.signature'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RecordTimeReceivedFieldEvent {
-    field: '$.timeReceived'
+    field: '.timeReceived'
     value: string
   }
 
@@ -302,12 +318,20 @@ export namespace Message {
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
+        }, function * (reader, prefix, length, opts = {}) {
           const obj = {
             addrs: 0
           }
 
           const end = length == null ? reader.len : reader.pos + length
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'Message.Peer'
+            }
+          }
 
           while (reader.pos < end) {
             const tag = reader.uint32()
@@ -315,7 +339,7 @@ export namespace Message {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.id`,
+                  field: `${prefix}id`,
                   value: reader.bytes()
                 }
                 break
@@ -326,7 +350,7 @@ export namespace Message {
                 }
 
                 yield {
-                  field: `${prefix}.addrs[]`,
+                  field: `${prefix}addrs[]`,
                   index: obj.addrs,
                   value: reader.bytes()
                 }
@@ -337,7 +361,7 @@ export namespace Message {
               }
               case 3: {
                 yield {
-                  field: `${prefix}.connection`,
+                  field: `${prefix}connection`,
                   value: Message.ConnectionType.codec().decode(reader)
                 }
                 break
@@ -348,6 +372,14 @@ export namespace Message {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'Message.Peer'
+            }
+          }
         })
       }
 
@@ -355,18 +387,18 @@ export namespace Message {
     }
 
     export interface PeerIdFieldEvent {
-      field: '$.id'
+      field: '.id'
       value: Uint8Array<ArrayBuffer>
     }
 
     export interface PeerAddrsFieldEvent {
-      field: '$.addrs[]'
+      field: '.addrs[]'
       index: number
       value: Uint8Array<ArrayBuffer>
     }
 
     export interface PeerConnectionFieldEvent {
-      field: '$.connection'
+      field: '.connection'
       value: Message.ConnectionType
     }
 
@@ -485,7 +517,7 @@ export namespace Message {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           closerPeers: 0,
           providerPeers: 0
@@ -493,34 +525,42 @@ export namespace Message {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Message'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: Message.MessageType.codec().decode(reader)
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix}.clusterLevelRaw`,
+                field: `${prefix}clusterLevelRaw`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.key`,
+                field: `${prefix}key`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.record`,
+                field: `${prefix}record`,
                 value: reader.bytes()
               }
               break
@@ -530,7 +570,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}.closerPeers[]`, {
+              for (const evt of Message.Peer.codec().stream(reader, `${prefix}closerPeers[].`, reader.uint32(), {
                 limits: opts.limits?.closerPeers$
               })) {
                 yield {
@@ -548,7 +588,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}.providerPeers[]`, {
+              for (const evt of Message.Peer.codec().stream(reader, `${prefix}providerPeers[].`, reader.uint32(), {
                 limits: opts.limits?.providerPeers$
               })) {
                 yield {
@@ -567,6 +607,14 @@ export namespace Message {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Message'
+          }
+        }
       })
     }
 
@@ -574,59 +622,87 @@ export namespace Message {
   }
 
   export interface MessageTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: Message.MessageType
   }
 
   export interface MessageClusterLevelRawFieldEvent {
-    field: '$.clusterLevelRaw'
+    field: '.clusterLevelRaw'
     value: number
   }
 
   export interface MessageKeyFieldEvent {
-    field: '$.key'
+    field: '.key'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageRecordFieldEvent {
-    field: '$.record'
+    field: '.record'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageCloserPeersIdFieldEvent {
-    field: '$.closerPeers[].id'
+    field: '.closerPeers[].id'
     value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface MessageCloserPeersAddrsFieldEvent {
-    field: '$.closerPeers[].addrs[]'
+    field: '.closerPeers[].addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageCloserPeersConnectionFieldEvent {
-    field: '$.closerPeers[].connection'
+    field: '.closerPeers[].connection'
     value: Message.ConnectionType
     index: number
   }
 
+  export interface MessageCloserPeersMessageStartEvent {
+    field: '.closerPeers[]'
+    index: number
+    type: 'start'
+    message: string
+  }
+
+  export interface MessageCloserPeersMessageEndEvent {
+    field: '.closerPeers[]'
+    index: number
+    type: 'end'
+    message: string
+  }
+
   export interface MessageProviderPeersIdFieldEvent {
-    field: '$.providerPeers[].id'
+    field: '.providerPeers[].id'
     value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface MessageProviderPeersAddrsFieldEvent {
-    field: '$.providerPeers[].addrs[]'
+    field: '.providerPeers[].addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface MessageProviderPeersConnectionFieldEvent {
-    field: '$.providerPeers[].connection'
+    field: '.providerPeers[].connection'
     value: Message.ConnectionType
     index: number
+  }
+
+  export interface MessageProviderPeersMessageStartEvent {
+    field: '.providerPeers[]'
+    index: number
+    type: 'start'
+    message: string
+  }
+
+  export interface MessageProviderPeersMessageEndEvent {
+    field: '.providerPeers[]'
+    index: number
+    type: 'end'
+    message: string
   }
 
   export function encode (obj: Partial<Message>): Uint8Array<ArrayBuffer> {
@@ -637,7 +713,7 @@ export namespace Message {
     return decodeMessage(buf, Message.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Generator<MessageTypeFieldEvent | MessageClusterLevelRawFieldEvent | MessageKeyFieldEvent | MessageRecordFieldEvent | MessageCloserPeersIdFieldEvent | MessageCloserPeersAddrsFieldEvent | MessageCloserPeersConnectionFieldEvent | MessageProviderPeersIdFieldEvent | MessageProviderPeersAddrsFieldEvent | MessageProviderPeersConnectionFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Message>): Generator<MessageTypeFieldEvent | MessageClusterLevelRawFieldEvent | MessageKeyFieldEvent | MessageRecordFieldEvent | MessageCloserPeersIdFieldEvent | MessageCloserPeersAddrsFieldEvent | MessageCloserPeersConnectionFieldEvent | MessageCloserPeersMessageStartEvent | MessageCloserPeersMessageEndEvent | MessageProviderPeersIdFieldEvent | MessageProviderPeersAddrsFieldEvent | MessageProviderPeersConnectionFieldEvent | MessageProviderPeersMessageStartEvent | MessageProviderPeersMessageEndEvent> {
     return streamMessage(buf, Message.codec(), opts)
   }
 }

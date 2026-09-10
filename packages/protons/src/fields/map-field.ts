@@ -109,7 +109,7 @@ export class MapField extends Field {
     const type = parent.findType(this.entryType)
 
     return `case ${this.id}: {${limit}
-              ${type.getStreamingDecoder(this, `\`\${prefix}.${this.name}{}\``, '  ')}
+              ${type.getStreamingDecoder(this, `\`\${prefix}${this.name}{}.\``, '  ')}
 
               obj.${this.name}++
 
