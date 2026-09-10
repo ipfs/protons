@@ -75,8 +75,16 @@ export namespace pb {
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
+        }, function * (reader, prefix, length, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'pb.NoiseHandshakePayload'
+            }
+          }
 
           while (reader.pos < end) {
             const tag = reader.uint32()
@@ -84,21 +92,21 @@ export namespace pb {
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.identityKey`,
+                  field: `${prefix}identityKey`,
                   value: reader.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.identitySig`,
+                  field: `${prefix}identitySig`,
                   value: reader.bytes()
                 }
                 break
               }
               case 3: {
                 yield {
-                  field: `${prefix}.data`,
+                  field: `${prefix}data`,
                   value: reader.bytes()
                 }
                 break
@@ -109,6 +117,14 @@ export namespace pb {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'pb.NoiseHandshakePayload'
+            }
+          }
         })
       }
 
@@ -116,17 +132,17 @@ export namespace pb {
     }
 
     export interface NoiseHandshakePayloadIdentityKeyFieldEvent {
-      field: '$.identityKey'
+      field: '.identityKey'
       value: Uint8Array<ArrayBuffer>
     }
 
     export interface NoiseHandshakePayloadIdentitySigFieldEvent {
-      field: '$.identitySig'
+      field: '.identitySig'
       value: Uint8Array<ArrayBuffer>
     }
 
     export interface NoiseHandshakePayloadDataFieldEvent {
-      field: '$.data'
+      field: '.data'
       value: Uint8Array<ArrayBuffer>
     }
 
@@ -172,8 +188,16 @@ export namespace pb {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'pb'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -183,6 +207,14 @@ export namespace pb {
               reader.skipType(tag & 7)
               break
             }
+          }
+        }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'pb'
           }
         }
       })

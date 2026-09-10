@@ -137,8 +137,16 @@ export namespace OneOfMessage {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'OneOfMessage'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -146,35 +154,35 @@ export namespace OneOfMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.fieldOne`,
+                field: `${prefix}fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.fieldTwo`,
+                field: `${prefix}fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.fieldThree`,
+                field: `${prefix}fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.fieldFour`,
+                field: `${prefix}fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.fieldFive`,
+                field: `${prefix}fieldFive`,
                 value: reader.string()
               }
               break
@@ -185,6 +193,14 @@ export namespace OneOfMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'OneOfMessage'
+          }
+        }
       })
     }
 
@@ -192,27 +208,27 @@ export namespace OneOfMessage {
   }
 
   export interface OneOfMessageFieldOneFieldEvent {
-    field: '$.fieldOne'
+    field: '.fieldOne'
     value: string
   }
 
   export interface OneOfMessageFieldTwoFieldEvent {
-    field: '$.fieldTwo'
+    field: '.fieldTwo'
     value: string
   }
 
   export interface OneOfMessageFieldThreeFieldEvent {
-    field: '$.fieldThree'
+    field: '.fieldThree'
     value: EnumType
   }
 
   export interface OneOfMessageFieldFourFieldEvent {
-    field: '$.fieldFour'
+    field: '.fieldFour'
     value: EnumType
   }
 
   export interface OneOfMessageFieldFiveFieldEvent {
-    field: '$.fieldFive'
+    field: '.fieldFive'
     value: string
   }
 
@@ -318,8 +334,16 @@ export namespace MessageWithoutOneOfs {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithoutOneOfs'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -327,35 +351,35 @@ export namespace MessageWithoutOneOfs {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.fieldOne`,
+                field: `${prefix}fieldOne`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.fieldTwo`,
+                field: `${prefix}fieldTwo`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.fieldThree`,
+                field: `${prefix}fieldThree`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.fieldFour`,
+                field: `${prefix}fieldFour`,
                 value: EnumType.codec().decode(reader)
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.fieldFive`,
+                field: `${prefix}fieldFive`,
                 value: reader.string()
               }
               break
@@ -366,6 +390,14 @@ export namespace MessageWithoutOneOfs {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithoutOneOfs'
+          }
+        }
       })
     }
 
@@ -373,27 +405,27 @@ export namespace MessageWithoutOneOfs {
   }
 
   export interface MessageWithoutOneOfsFieldOneFieldEvent {
-    field: '$.fieldOne'
+    field: '.fieldOne'
     value: string
   }
 
   export interface MessageWithoutOneOfsFieldTwoFieldEvent {
-    field: '$.fieldTwo'
+    field: '.fieldTwo'
     value: string
   }
 
   export interface MessageWithoutOneOfsFieldThreeFieldEvent {
-    field: '$.fieldThree'
+    field: '.fieldThree'
     value: EnumType
   }
 
   export interface MessageWithoutOneOfsFieldFourFieldEvent {
-    field: '$.fieldFour'
+    field: '.fieldFour'
     value: EnumType
   }
 
   export interface MessageWithoutOneOfsFieldFiveFieldEvent {
-    field: '$.fieldFive'
+    field: '.fieldFive'
     value: string
   }
 

@@ -1,4 +1,5 @@
 import { ParseError } from 'protons-runtime'
+import { ArrayField } from '../fields/array-field.ts'
 import type { Parent, Type } from './index.ts'
 import type { Field } from '../fields/field.ts'
 
@@ -53,8 +54,19 @@ export class Enum implements Type {
     return `${this.jsType}.codec().decode(reader)`
   }
 
-  getStreamingDecoder (field: Field): string {
-    return `${this.jsType}.codec().stream(reader)`
+  getStreamingDecoder (field: Field, prefix: string, indent: ''): string {
+    if (field instanceof ArrayField) {
+      return `yield {
+${indent}              field: ${prefix},
+${indent}              index: obj.${field.name},
+${indent}              value: ${this.jsType}.codec().decode(reader)
+${indent}            }`
+    }
+
+    return `yield {
+${indent}              field: ${prefix},
+${indent}              value: ${this.jsType}.codec().decode(reader)
+${indent}            }`
   }
 
   getEncoder (field: Field, accessor: string): string {

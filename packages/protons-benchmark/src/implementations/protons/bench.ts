@@ -45,8 +45,16 @@ export namespace Foo {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Foo'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -54,7 +62,7 @@ export namespace Foo {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}baz`,
+                field: `${prefix}baz`,
                 value: reader.uint32()
               }
               break
@@ -65,6 +73,14 @@ export namespace Foo {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Foo'
+          }
+        }
       })
     }
 
@@ -72,7 +88,7 @@ export namespace Foo {
   }
 
   export interface FooBazFieldEvent {
-    field: 'baz'
+    field: '.baz'
     value: number
   }
 
@@ -134,20 +150,26 @@ export namespace Bar {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Bar'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}tmp`,
-                value: Foo.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.tmp
-                })
-              }
+              yield * Foo.codec().stream(reader, `${prefix}tmp.`, reader.uint32(), {
+                limits: opts.limits?.tmp
+              })
+
               break
             }
             default: {
@@ -156,18 +178,36 @@ export namespace Bar {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Bar'
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export interface BarTmpFooBazFieldEvent {
-    field: 'baz'
+  export interface BarTmpMessageStart {
+    field: '.tmp'
+    type: 'start'
+  }
+
+  export interface BarTmpMessageEnd {
+    field: '.tmp'
+    type: 'end'
+  }
+
+  export interface BarTmpBazFieldEvent {
+    field: '.tmp.baz'
     value: number
   }
 
-  export function encode (obj: Partial<Bar>): Uint8Array {
+  export function encode (obj: Partial<Bar>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Bar.codec())
   }
 
@@ -175,7 +215,7 @@ export namespace Bar {
     return decodeMessage(buf, Bar.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Bar>): Generator<BarTmpFooBazFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Bar>): Generator<BarTmpMessageStart | BarTmpMessageEnd | BarTmpBazFieldEvent> {
     return streamMessage(buf, Bar.codec(), opts)
   }
 }
@@ -212,7 +252,7 @@ export namespace Yo {
           w.fork()
         }
 
-        if (obj.lol != null) {
+        if (obj.lol != null && obj.lol.length > 0) {
           for (const value of obj.lol) {
             w.uint32(8)
             FOO.codec().encode(value, w)
@@ -249,12 +289,20 @@ export namespace Yo {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           lol: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Yo'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -262,17 +310,12 @@ export namespace Yo {
           switch (tag >>> 3) {
             case 1: {
               if (opts.limits?.lol != null && obj.lol === opts.limits.lol) {
-                throw new MaxLengthError('Decode error - repeated field "lol" had too many elements')
+                throw new MaxLengthError('Streaming decode error - repeated field "lol" had too many elements')
               }
 
-              const value = FOO.codec().decode(reader)
+              FOO.codec().stream(reader, `${prefix}lol[]`, reader.uint32())
+
               obj.lol++
-
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}lol`,
-                index: obj.lol,
-                value
-              }
 
               break
             }
@@ -282,13 +325,27 @@ export namespace Yo {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Yo'
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export function encode (obj: Partial<Yo>): Uint8Array {
+  export interface YoLolFieldEvent {
+    field: '.lol[]'
+    index: number
+    value: FOO
+  }
+
+  export function encode (obj: Partial<Yo>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Yo.codec())
   }
 
@@ -296,7 +353,7 @@ export namespace Yo {
     return decodeMessage(buf, Yo.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Yo>): Generator<{}> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Yo>): Generator<YoLolFieldEvent> {
     return streamMessage(buf, Yo.codec(), opts)
   }
 }
@@ -356,8 +413,16 @@ export namespace Lol {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Lol'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -365,24 +430,30 @@ export namespace Lol {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}lol`,
+                field: `${prefix}lol`,
                 value: reader.string()
               }
               break
             }
             case 2: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}b`,
-                value: Bar.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.b
-                })
-              }
+              yield * Bar.codec().stream(reader, `${prefix}b.`, reader.uint32(), {
+                limits: opts.limits?.b
+              })
+
               break
             }
             default: {
               reader.skipType(tag & 7)
               break
             }
+          }
+        }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Lol'
           }
         }
       })
@@ -392,16 +463,36 @@ export namespace Lol {
   }
 
   export interface LolLolFieldEvent {
-    field: 'lol'
+    field: '.lol'
     value: string
   }
 
-  export interface LolBBarTmpFooBazFieldEvent {
-    field: 'baz'
+  export interface LolBMessageStart {
+    field: '.b'
+    type: 'start'
+  }
+
+  export interface LolBMessageEnd {
+    field: '.b'
+    type: 'end'
+  }
+
+  export interface LolBTmpMessageStart {
+    field: '.b.tmp'
+    type: 'start'
+  }
+
+  export interface LolBTmpMessageEnd {
+    field: '.b.tmp'
+    type: 'end'
+  }
+
+  export interface LolBTmpBazFieldEvent {
+    field: '.b.tmp.baz'
     value: number
   }
 
-  export function encode (obj: Partial<Lol>): Uint8Array {
+  export function encode (obj: Partial<Lol>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Lol.codec())
   }
 
@@ -409,7 +500,7 @@ export namespace Lol {
     return decodeMessage(buf, Lol.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Lol>): Generator<LolLolFieldEvent | LolBBarTmpFooBazFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Lol>): Generator<LolLolFieldEvent | LolBMessageStart | LolBMessageEnd | LolBTmpMessageStart | LolBTmpMessageEnd | LolBTmpBazFieldEvent> {
     return streamMessage(buf, Lol.codec(), opts)
   }
 }
@@ -418,7 +509,7 @@ export interface Test {
   meh?: Lol
   hello?: number
   foo?: string
-  payload?: Uint8Array
+  payload?: Uint8Array<ArrayBuffer>
 }
 
 export namespace Test {
@@ -489,39 +580,45 @@ export namespace Test {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Test'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 6: {
-              yield {
-                field: `${prefix != null ? `${prefix}.` : ''}meh`,
-                value: Lol.codec().decode(reader, reader.uint32(), {
-                  limits: opts.limits?.meh
-                })
-              }
+              yield * Lol.codec().stream(reader, `${prefix}meh.`, reader.uint32(), {
+                limits: opts.limits?.meh
+              })
+
               break
             }
             case 3: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}hello`,
+                field: `${prefix}hello`,
                 value: reader.uint32()
               }
               break
             }
             case 1: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}foo`,
+                field: `${prefix}foo`,
                 value: reader.string()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix != null ? `${prefix}.` : ''}payload`,
+                field: `${prefix}payload`,
                 value: reader.bytes()
               }
               break
@@ -532,38 +629,76 @@ export namespace Test {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Test'
+          }
+        }
       })
     }
 
     return _codec
   }
 
-  export interface TestMehLolLolFieldEvent {
-    field: 'lol'
+  export interface TestMehMessageStart {
+    field: '.meh'
+    type: 'start'
+  }
+
+  export interface TestMehMessageEnd {
+    field: '.meh'
+    type: 'end'
+  }
+
+  export interface TestMehLolFieldEvent {
+    field: '.meh.lol'
     value: string
   }
 
-  export interface TestMehLolBBarTmpFooBazFieldEvent {
-    field: 'baz'
+  export interface TestMehBMessageStart {
+    field: '.meh.b'
+    type: 'start'
+  }
+
+  export interface TestMehBMessageEnd {
+    field: '.meh.b'
+    type: 'end'
+  }
+
+  export interface TestMehBTmpMessageStart {
+    field: '.meh.b.tmp'
+    type: 'start'
+  }
+
+  export interface TestMehBTmpMessageEnd {
+    field: '.meh.b.tmp'
+    type: 'end'
+  }
+
+  export interface TestMehBTmpBazFieldEvent {
+    field: '.meh.b.tmp.baz'
     value: number
   }
 
   export interface TestHelloFieldEvent {
-    field: 'hello'
+    field: '.hello'
     value: number
   }
 
   export interface TestFooFieldEvent {
-    field: 'foo'
+    field: '.foo'
     value: string
   }
 
   export interface TestPayloadFieldEvent {
-    field: 'payload'
-    value: Uint8Array
+    field: '.payload'
+    value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<Test>): Uint8Array {
+  export function encode (obj: Partial<Test>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Test.codec())
   }
 
@@ -571,7 +706,7 @@ export namespace Test {
     return decodeMessage(buf, Test.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Test>): Generator<TestMehLolLolFieldEvent | TestMehLolBBarTmpFooBazFieldEvent | TestHelloFieldEvent | TestFooFieldEvent | TestPayloadFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Test>): Generator<TestMehMessageStart | TestMehMessageEnd | TestMehLolFieldEvent | TestMehBMessageStart | TestMehBMessageEnd | TestMehBTmpMessageStart | TestMehBTmpMessageEnd | TestMehBTmpBazFieldEvent | TestHelloFieldEvent | TestFooFieldEvent | TestPayloadFieldEvent> {
     return streamMessage(buf, Test.codec(), opts)
   }
 }

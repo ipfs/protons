@@ -34,3 +34,14 @@ message MessageWithPrimitiveMap {
   bool field1 = 1;
   map<string, string> nestedStrings = 2;
 }
+
+enum ENUM {
+  VAL_1=0;
+  VAL_2=1;
+  VAL_3=3;
+}
+
+message MessageWithRepeatedEnums {
+  bool field1 = 1;
+  repeated ENUM enums = 2;
+}

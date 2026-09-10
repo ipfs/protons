@@ -176,8 +176,16 @@ export namespace Request {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Request'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -185,62 +193,62 @@ export namespace Request {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: Request.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix}.connect`, {
+              yield * ConnectRequest.codec().stream(reader, `${prefix}connect.`, reader.uint32(), {
                 limits: opts.limits?.connect
               })
 
               break
             }
             case 3: {
-              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix}.streamOpen`, {
+              yield * StreamOpenRequest.codec().stream(reader, `${prefix}streamOpen.`, reader.uint32(), {
                 limits: opts.limits?.streamOpen
               })
 
               break
             }
             case 4: {
-              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix}.streamHandler`, {
+              yield * StreamHandlerRequest.codec().stream(reader, `${prefix}streamHandler.`, reader.uint32(), {
                 limits: opts.limits?.streamHandler
               })
 
               break
             }
             case 5: {
-              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix}.dht`, {
+              yield * DHTRequest.codec().stream(reader, `${prefix}dht.`, reader.uint32(), {
                 limits: opts.limits?.dht
               })
 
               break
             }
             case 6: {
-              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix}.connManager`, {
+              yield * ConnManagerRequest.codec().stream(reader, `${prefix}connManager.`, reader.uint32(), {
                 limits: opts.limits?.connManager
               })
 
               break
             }
             case 7: {
-              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix}.disconnect`, {
+              yield * DisconnectRequest.codec().stream(reader, `${prefix}disconnect.`, reader.uint32(), {
                 limits: opts.limits?.disconnect
               })
 
               break
             }
             case 8: {
-              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix}.pubsub`, {
+              yield * PSRequest.codec().stream(reader, `${prefix}pubsub.`, reader.uint32(), {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 9: {
-              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix}.peerStore`, {
+              yield * PeerstoreRequest.codec().stream(reader, `${prefix}peerStore.`, reader.uint32(), {
                 limits: opts.limits?.peerStore
               })
 
@@ -252,6 +260,14 @@ export namespace Request {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Request'
+          }
+        }
       })
     }
 
@@ -259,140 +275,220 @@ export namespace Request {
   }
 
   export interface RequestTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: Request.Type
   }
 
+  export interface RequestConnectMessageStart {
+    field: '.connect'
+    type: 'start'
+  }
+
+  export interface RequestConnectMessageEnd {
+    field: '.connect'
+    type: 'end'
+  }
+
   export interface RequestConnectPeerFieldEvent {
-    field: '$.connect.peer'
+    field: '.connect.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestConnectAddrsFieldEvent {
-    field: '$.connect.addrs[]'
+    field: '.connect.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestConnectTimeoutFieldEvent {
-    field: '$.connect.timeout'
+    field: '.connect.timeout'
     value: bigint
   }
 
+  export interface RequestStreamOpenMessageStart {
+    field: '.streamOpen'
+    type: 'start'
+  }
+
+  export interface RequestStreamOpenMessageEnd {
+    field: '.streamOpen'
+    type: 'end'
+  }
+
   export interface RequestStreamOpenPeerFieldEvent {
-    field: '$.streamOpen.peer'
+    field: '.streamOpen.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestStreamOpenProtoFieldEvent {
-    field: '$.streamOpen.proto[]'
+    field: '.streamOpen.proto[]'
     index: number
     value: string
   }
 
   export interface RequestStreamOpenTimeoutFieldEvent {
-    field: '$.streamOpen.timeout'
+    field: '.streamOpen.timeout'
     value: bigint
   }
 
+  export interface RequestStreamHandlerMessageStart {
+    field: '.streamHandler'
+    type: 'start'
+  }
+
+  export interface RequestStreamHandlerMessageEnd {
+    field: '.streamHandler'
+    type: 'end'
+  }
+
   export interface RequestStreamHandlerAddrFieldEvent {
-    field: '$.streamHandler.addr'
+    field: '.streamHandler.addr'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestStreamHandlerProtoFieldEvent {
-    field: '$.streamHandler.proto[]'
+    field: '.streamHandler.proto[]'
     index: number
     value: string
   }
 
+  export interface RequestDhtMessageStart {
+    field: '.dht'
+    type: 'start'
+  }
+
+  export interface RequestDhtMessageEnd {
+    field: '.dht'
+    type: 'end'
+  }
+
   export interface RequestDhtTypeFieldEvent {
-    field: '$.dht.type'
+    field: '.dht.type'
     value: DHTRequest.Type
   }
 
   export interface RequestDhtPeerFieldEvent {
-    field: '$.dht.peer'
+    field: '.dht.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtCidFieldEvent {
-    field: '$.dht.cid'
+    field: '.dht.cid'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtKeyFieldEvent {
-    field: '$.dht.key'
+    field: '.dht.key'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtValueFieldEvent {
-    field: '$.dht.value'
+    field: '.dht.value'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestDhtCountFieldEvent {
-    field: '$.dht.count'
+    field: '.dht.count'
     value: number
   }
 
   export interface RequestDhtTimeoutFieldEvent {
-    field: '$.dht.timeout'
+    field: '.dht.timeout'
     value: bigint
   }
 
+  export interface RequestConnManagerMessageStart {
+    field: '.connManager'
+    type: 'start'
+  }
+
+  export interface RequestConnManagerMessageEnd {
+    field: '.connManager'
+    type: 'end'
+  }
+
   export interface RequestConnManagerTypeFieldEvent {
-    field: '$.connManager.type'
+    field: '.connManager.type'
     value: ConnManagerRequest.Type
   }
 
   export interface RequestConnManagerPeerFieldEvent {
-    field: '$.connManager.peer'
+    field: '.connManager.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestConnManagerTagFieldEvent {
-    field: '$.connManager.tag'
+    field: '.connManager.tag'
     value: string
   }
 
   export interface RequestConnManagerWeightFieldEvent {
-    field: '$.connManager.weight'
+    field: '.connManager.weight'
     value: bigint
   }
 
+  export interface RequestDisconnectMessageStart {
+    field: '.disconnect'
+    type: 'start'
+  }
+
+  export interface RequestDisconnectMessageEnd {
+    field: '.disconnect'
+    type: 'end'
+  }
+
   export interface RequestDisconnectPeerFieldEvent {
-    field: '$.disconnect.peer'
+    field: '.disconnect.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
+  export interface RequestPubsubMessageStart {
+    field: '.pubsub'
+    type: 'start'
+  }
+
+  export interface RequestPubsubMessageEnd {
+    field: '.pubsub'
+    type: 'end'
+  }
+
   export interface RequestPubsubTypeFieldEvent {
-    field: '$.pubsub.type'
+    field: '.pubsub.type'
     value: PSRequest.Type
   }
 
   export interface RequestPubsubTopicFieldEvent {
-    field: '$.pubsub.topic'
+    field: '.pubsub.topic'
     value: string
   }
 
   export interface RequestPubsubDataFieldEvent {
-    field: '$.pubsub.data'
+    field: '.pubsub.data'
     value: Uint8Array<ArrayBuffer>
   }
 
+  export interface RequestPeerStoreMessageStart {
+    field: '.peerStore'
+    type: 'start'
+  }
+
+  export interface RequestPeerStoreMessageEnd {
+    field: '.peerStore'
+    type: 'end'
+  }
+
   export interface RequestPeerStoreTypeFieldEvent {
-    field: '$.peerStore.type'
+    field: '.peerStore.type'
     value: PeerstoreRequest.Type
   }
 
   export interface RequestPeerStoreIdFieldEvent {
-    field: '$.peerStore.id'
+    field: '.peerStore.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface RequestPeerStoreProtosFieldEvent {
-    field: '$.peerStore.protos[]'
+    field: '.peerStore.protos[]'
     index: number
     value: string
   }
@@ -405,7 +501,7 @@ export namespace Request {
     return decodeMessage(buf, Request.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Request>): Generator<RequestTypeFieldEvent | RequestConnectPeerFieldEvent | RequestConnectAddrsFieldEvent | RequestConnectTimeoutFieldEvent | RequestStreamOpenPeerFieldEvent | RequestStreamOpenProtoFieldEvent | RequestStreamOpenTimeoutFieldEvent | RequestStreamHandlerAddrFieldEvent | RequestStreamHandlerProtoFieldEvent | RequestDhtTypeFieldEvent | RequestDhtPeerFieldEvent | RequestDhtCidFieldEvent | RequestDhtKeyFieldEvent | RequestDhtValueFieldEvent | RequestDhtCountFieldEvent | RequestDhtTimeoutFieldEvent | RequestConnManagerTypeFieldEvent | RequestConnManagerPeerFieldEvent | RequestConnManagerTagFieldEvent | RequestConnManagerWeightFieldEvent | RequestDisconnectPeerFieldEvent | RequestPubsubTypeFieldEvent | RequestPubsubTopicFieldEvent | RequestPubsubDataFieldEvent | RequestPeerStoreTypeFieldEvent | RequestPeerStoreIdFieldEvent | RequestPeerStoreProtosFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Request>): Generator<RequestTypeFieldEvent | RequestConnectMessageStart | RequestConnectMessageEnd | RequestConnectPeerFieldEvent | RequestConnectAddrsFieldEvent | RequestConnectTimeoutFieldEvent | RequestStreamOpenMessageStart | RequestStreamOpenMessageEnd | RequestStreamOpenPeerFieldEvent | RequestStreamOpenProtoFieldEvent | RequestStreamOpenTimeoutFieldEvent | RequestStreamHandlerMessageStart | RequestStreamHandlerMessageEnd | RequestStreamHandlerAddrFieldEvent | RequestStreamHandlerProtoFieldEvent | RequestDhtMessageStart | RequestDhtMessageEnd | RequestDhtTypeFieldEvent | RequestDhtPeerFieldEvent | RequestDhtCidFieldEvent | RequestDhtKeyFieldEvent | RequestDhtValueFieldEvent | RequestDhtCountFieldEvent | RequestDhtTimeoutFieldEvent | RequestConnManagerMessageStart | RequestConnManagerMessageEnd | RequestConnManagerTypeFieldEvent | RequestConnManagerPeerFieldEvent | RequestConnManagerTagFieldEvent | RequestConnManagerWeightFieldEvent | RequestDisconnectMessageStart | RequestDisconnectMessageEnd | RequestDisconnectPeerFieldEvent | RequestPubsubMessageStart | RequestPubsubMessageEnd | RequestPubsubTypeFieldEvent | RequestPubsubTopicFieldEvent | RequestPubsubDataFieldEvent | RequestPeerStoreMessageStart | RequestPeerStoreMessageEnd | RequestPeerStoreTypeFieldEvent | RequestPeerStoreIdFieldEvent | RequestPeerStoreProtosFieldEvent> {
     return streamMessage(buf, Request.codec(), opts)
   }
 }
@@ -562,12 +658,20 @@ export namespace Response {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           peers: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Response'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -575,34 +679,34 @@ export namespace Response {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: Response.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix}.error`, {
+              yield * ErrorResponse.codec().stream(reader, `${prefix}error.`, reader.uint32(), {
                 limits: opts.limits?.error
               })
 
               break
             }
             case 3: {
-              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix}.streamInfo`, {
+              yield * StreamInfo.codec().stream(reader, `${prefix}streamInfo.`, reader.uint32(), {
                 limits: opts.limits?.streamInfo
               })
 
               break
             }
             case 4: {
-              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix}.identify`, {
+              yield * IdentifyResponse.codec().stream(reader, `${prefix}identify.`, reader.uint32(), {
                 limits: opts.limits?.identify
               })
 
               break
             }
             case 5: {
-              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix}.dht`, {
+              yield * DHTResponse.codec().stream(reader, `${prefix}dht.`, reader.uint32(), {
                 limits: opts.limits?.dht
               })
 
@@ -613,7 +717,7 @@ export namespace Response {
                 throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
               }
 
-              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}.peers[]`, {
+              for (const evt of PeerInfo.codec().stream(reader, `${prefix}peers[].`, reader.uint32(), {
                 limits: opts.limits?.peers$
               })) {
                 yield {
@@ -627,14 +731,14 @@ export namespace Response {
               break
             }
             case 7: {
-              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix}.pubsub`, {
+              yield * PSResponse.codec().stream(reader, `${prefix}pubsub.`, reader.uint32(), {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 8: {
-              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix}.peerStore`, {
+              yield * PeerstoreResponse.codec().stream(reader, `${prefix}peerStore.`, reader.uint32(), {
                 limits: opts.limits?.peerStore
               })
 
@@ -646,6 +750,14 @@ export namespace Response {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Response'
+          }
+        }
       })
     }
 
@@ -653,99 +765,193 @@ export namespace Response {
   }
 
   export interface ResponseTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: Response.Type
   }
 
+  export interface ResponseErrorMessageStart {
+    field: '.error'
+    type: 'start'
+  }
+
+  export interface ResponseErrorMessageEnd {
+    field: '.error'
+    type: 'end'
+  }
+
   export interface ResponseErrorMsgFieldEvent {
-    field: '$.error.msg'
+    field: '.error.msg'
     value: string
   }
 
+  export interface ResponseStreamInfoMessageStart {
+    field: '.streamInfo'
+    type: 'start'
+  }
+
+  export interface ResponseStreamInfoMessageEnd {
+    field: '.streamInfo'
+    type: 'end'
+  }
+
   export interface ResponseStreamInfoPeerFieldEvent {
-    field: '$.streamInfo.peer'
+    field: '.streamInfo.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseStreamInfoAddrFieldEvent {
-    field: '$.streamInfo.addr'
+    field: '.streamInfo.addr'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseStreamInfoProtoFieldEvent {
-    field: '$.streamInfo.proto'
+    field: '.streamInfo.proto'
     value: string
   }
 
+  export interface ResponseIdentifyMessageStart {
+    field: '.identify'
+    type: 'start'
+  }
+
+  export interface ResponseIdentifyMessageEnd {
+    field: '.identify'
+    type: 'end'
+  }
+
   export interface ResponseIdentifyIdFieldEvent {
-    field: '$.identify.id'
+    field: '.identify.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseIdentifyAddrsFieldEvent {
-    field: '$.identify.addrs[]'
+    field: '.identify.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
+  export interface ResponseDhtMessageStart {
+    field: '.dht'
+    type: 'start'
+  }
+
+  export interface ResponseDhtMessageEnd {
+    field: '.dht'
+    type: 'end'
+  }
+
   export interface ResponseDhtTypeFieldEvent {
-    field: '$.dht.type'
+    field: '.dht.type'
     value: DHTResponse.Type
   }
 
+  export interface ResponseDhtPeerMessageStart {
+    field: '.dht.peer'
+    type: 'start'
+  }
+
+  export interface ResponseDhtPeerMessageEnd {
+    field: '.dht.peer'
+    type: 'end'
+  }
+
   export interface ResponseDhtPeerIdFieldEvent {
-    field: '$.dht.peer.id'
+    field: '.dht.peer.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseDhtPeerAddrsFieldEvent {
-    field: '$.dht.peer.addrs[]'
+    field: '.dht.peer.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponseDhtValueFieldEvent {
-    field: '$.dht.value'
+    field: '.dht.value'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeersIdFieldEvent {
-    field: '$.peers[].id'
+    field: '.peers[].id'
     value: Uint8Array<ArrayBuffer>
     index: number
   }
 
   export interface ResponsePeersAddrsFieldEvent {
-    field: '$.peers[].addrs[]'
+    field: '.peers[].addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
+  export interface ResponsePeersMessageStartEvent {
+    field: '.peers[]'
+    index: number
+    type: 'start'
+    message: string
+  }
+
+  export interface ResponsePeersMessageEndEvent {
+    field: '.peers[]'
+    index: number
+    type: 'end'
+    message: string
+  }
+
+  export interface ResponsePubsubMessageStart {
+    field: '.pubsub'
+    type: 'start'
+  }
+
+  export interface ResponsePubsubMessageEnd {
+    field: '.pubsub'
+    type: 'end'
+  }
+
   export interface ResponsePubsubTopicsFieldEvent {
-    field: '$.pubsub.topics[]'
+    field: '.pubsub.topics[]'
     index: number
     value: string
   }
 
   export interface ResponsePubsubPeerIDsFieldEvent {
-    field: '$.pubsub.peerIDs[]'
+    field: '.pubsub.peerIDs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
+  export interface ResponsePeerStoreMessageStart {
+    field: '.peerStore'
+    type: 'start'
+  }
+
+  export interface ResponsePeerStoreMessageEnd {
+    field: '.peerStore'
+    type: 'end'
+  }
+
+  export interface ResponsePeerStorePeerMessageStart {
+    field: '.peerStore.peer'
+    type: 'start'
+  }
+
+  export interface ResponsePeerStorePeerMessageEnd {
+    field: '.peerStore.peer'
+    type: 'end'
+  }
+
   export interface ResponsePeerStorePeerIdFieldEvent {
-    field: '$.peerStore.peer.id'
+    field: '.peerStore.peer.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeerStorePeerAddrsFieldEvent {
-    field: '$.peerStore.peer.addrs[]'
+    field: '.peerStore.peer.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ResponsePeerStoreProtosFieldEvent {
-    field: '$.peerStore.protos[]'
+    field: '.peerStore.protos[]'
     index: number
     value: string
   }
@@ -758,7 +964,7 @@ export namespace Response {
     return decodeMessage(buf, Response.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Response>): Generator<ResponseTypeFieldEvent | ResponseErrorMsgFieldEvent | ResponseStreamInfoPeerFieldEvent | ResponseStreamInfoAddrFieldEvent | ResponseStreamInfoProtoFieldEvent | ResponseIdentifyIdFieldEvent | ResponseIdentifyAddrsFieldEvent | ResponseDhtTypeFieldEvent | ResponseDhtPeerIdFieldEvent | ResponseDhtPeerAddrsFieldEvent | ResponseDhtValueFieldEvent | ResponsePeersIdFieldEvent | ResponsePeersAddrsFieldEvent | ResponsePubsubTopicsFieldEvent | ResponsePubsubPeerIDsFieldEvent | ResponsePeerStorePeerIdFieldEvent | ResponsePeerStorePeerAddrsFieldEvent | ResponsePeerStoreProtosFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Response>): Generator<ResponseTypeFieldEvent | ResponseErrorMessageStart | ResponseErrorMessageEnd | ResponseErrorMsgFieldEvent | ResponseStreamInfoMessageStart | ResponseStreamInfoMessageEnd | ResponseStreamInfoPeerFieldEvent | ResponseStreamInfoAddrFieldEvent | ResponseStreamInfoProtoFieldEvent | ResponseIdentifyMessageStart | ResponseIdentifyMessageEnd | ResponseIdentifyIdFieldEvent | ResponseIdentifyAddrsFieldEvent | ResponseDhtMessageStart | ResponseDhtMessageEnd | ResponseDhtTypeFieldEvent | ResponseDhtPeerMessageStart | ResponseDhtPeerMessageEnd | ResponseDhtPeerIdFieldEvent | ResponseDhtPeerAddrsFieldEvent | ResponseDhtValueFieldEvent | ResponsePeersIdFieldEvent | ResponsePeersAddrsFieldEvent | ResponsePeersMessageStartEvent | ResponsePeersMessageEndEvent | ResponsePubsubMessageStart | ResponsePubsubMessageEnd | ResponsePubsubTopicsFieldEvent | ResponsePubsubPeerIDsFieldEvent | ResponsePeerStoreMessageStart | ResponsePeerStoreMessageEnd | ResponsePeerStorePeerMessageStart | ResponsePeerStorePeerMessageEnd | ResponsePeerStorePeerIdFieldEvent | ResponsePeerStorePeerAddrsFieldEvent | ResponsePeerStoreProtosFieldEvent> {
     return streamMessage(buf, Response.codec(), opts)
   }
 }
@@ -825,12 +1031,20 @@ export namespace IdentifyResponse {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           addrs: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'IdentifyResponse'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -838,7 +1052,7 @@ export namespace IdentifyResponse {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.id`,
+                field: `${prefix}id`,
                 value: reader.bytes()
               }
               break
@@ -849,7 +1063,7 @@ export namespace IdentifyResponse {
               }
 
               yield {
-                field: `${prefix}.addrs[]`,
+                field: `${prefix}addrs[]`,
                 index: obj.addrs,
                 value: reader.bytes()
               }
@@ -864,6 +1078,14 @@ export namespace IdentifyResponse {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'IdentifyResponse'
+          }
+        }
       })
     }
 
@@ -871,12 +1093,12 @@ export namespace IdentifyResponse {
   }
 
   export interface IdentifyResponseIdFieldEvent {
-    field: '$.id'
+    field: '.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface IdentifyResponseAddrsFieldEvent {
-    field: '$.addrs[]'
+    field: '.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
@@ -966,12 +1188,20 @@ export namespace ConnectRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           addrs: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'ConnectRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -979,7 +1209,7 @@ export namespace ConnectRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.peer`,
+                field: `${prefix}peer`,
                 value: reader.bytes()
               }
               break
@@ -990,7 +1220,7 @@ export namespace ConnectRequest {
               }
 
               yield {
-                field: `${prefix}.addrs[]`,
+                field: `${prefix}addrs[]`,
                 index: obj.addrs,
                 value: reader.bytes()
               }
@@ -1001,7 +1231,7 @@ export namespace ConnectRequest {
             }
             case 3: {
               yield {
-                field: `${prefix}.timeout`,
+                field: `${prefix}timeout`,
                 value: reader.int64()
               }
               break
@@ -1012,6 +1242,14 @@ export namespace ConnectRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'ConnectRequest'
+          }
+        }
       })
     }
 
@@ -1019,18 +1257,18 @@ export namespace ConnectRequest {
   }
 
   export interface ConnectRequestPeerFieldEvent {
-    field: '$.peer'
+    field: '.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ConnectRequestAddrsFieldEvent {
-    field: '$.addrs[]'
+    field: '.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ConnectRequestTimeoutFieldEvent {
-    field: '$.timeout'
+    field: '.timeout'
     value: bigint
   }
 
@@ -1119,12 +1357,20 @@ export namespace StreamOpenRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           proto: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'StreamOpenRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -1132,7 +1378,7 @@ export namespace StreamOpenRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.peer`,
+                field: `${prefix}peer`,
                 value: reader.bytes()
               }
               break
@@ -1143,7 +1389,7 @@ export namespace StreamOpenRequest {
               }
 
               yield {
-                field: `${prefix}.proto[]`,
+                field: `${prefix}proto[]`,
                 index: obj.proto,
                 value: reader.string()
               }
@@ -1154,7 +1400,7 @@ export namespace StreamOpenRequest {
             }
             case 3: {
               yield {
-                field: `${prefix}.timeout`,
+                field: `${prefix}timeout`,
                 value: reader.int64()
               }
               break
@@ -1165,6 +1411,14 @@ export namespace StreamOpenRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'StreamOpenRequest'
+          }
+        }
       })
     }
 
@@ -1172,18 +1426,18 @@ export namespace StreamOpenRequest {
   }
 
   export interface StreamOpenRequestPeerFieldEvent {
-    field: '$.peer'
+    field: '.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamOpenRequestProtoFieldEvent {
-    field: '$.proto[]'
+    field: '.proto[]'
     index: number
     value: string
   }
 
   export interface StreamOpenRequestTimeoutFieldEvent {
-    field: '$.timeout'
+    field: '.timeout'
     value: bigint
   }
 
@@ -1262,12 +1516,20 @@ export namespace StreamHandlerRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           proto: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'StreamHandlerRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -1275,7 +1537,7 @@ export namespace StreamHandlerRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.addr`,
+                field: `${prefix}addr`,
                 value: reader.bytes()
               }
               break
@@ -1286,7 +1548,7 @@ export namespace StreamHandlerRequest {
               }
 
               yield {
-                field: `${prefix}.proto[]`,
+                field: `${prefix}proto[]`,
                 index: obj.proto,
                 value: reader.string()
               }
@@ -1301,6 +1563,14 @@ export namespace StreamHandlerRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'StreamHandlerRequest'
+          }
+        }
       })
     }
 
@@ -1308,12 +1578,12 @@ export namespace StreamHandlerRequest {
   }
 
   export interface StreamHandlerRequestAddrFieldEvent {
-    field: '$.addr'
+    field: '.addr'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamHandlerRequestProtoFieldEvent {
-    field: '$.proto[]'
+    field: '.proto[]'
     index: number
     value: string
   }
@@ -1376,8 +1646,16 @@ export namespace ErrorResponse {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'ErrorResponse'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -1385,7 +1663,7 @@ export namespace ErrorResponse {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.msg`,
+                field: `${prefix}msg`,
                 value: reader.string()
               }
               break
@@ -1396,6 +1674,14 @@ export namespace ErrorResponse {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'ErrorResponse'
+          }
+        }
       })
     }
 
@@ -1403,7 +1689,7 @@ export namespace ErrorResponse {
   }
 
   export interface ErrorResponseMsgFieldEvent {
-    field: '$.msg'
+    field: '.msg'
     value: string
   }
 
@@ -1487,8 +1773,16 @@ export namespace StreamInfo {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'StreamInfo'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -1496,21 +1790,21 @@ export namespace StreamInfo {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.peer`,
+                field: `${prefix}peer`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.addr`,
+                field: `${prefix}addr`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.proto`,
+                field: `${prefix}proto`,
                 value: reader.string()
               }
               break
@@ -1521,6 +1815,14 @@ export namespace StreamInfo {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'StreamInfo'
+          }
+        }
       })
     }
 
@@ -1528,17 +1830,17 @@ export namespace StreamInfo {
   }
 
   export interface StreamInfoPeerFieldEvent {
-    field: '$.peer'
+    field: '.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamInfoAddrFieldEvent {
-    field: '$.addr'
+    field: '.addr'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface StreamInfoProtoFieldEvent {
-    field: '$.proto'
+    field: '.proto'
     value: string
   }
 
@@ -1690,8 +1992,16 @@ export namespace DHTRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'DHTRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -1699,49 +2009,49 @@ export namespace DHTRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: DHTRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.peer`,
+                field: `${prefix}peer`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.cid`,
+                field: `${prefix}cid`,
                 value: reader.bytes()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.key`,
+                field: `${prefix}key`,
                 value: reader.bytes()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.value`,
+                field: `${prefix}value`,
                 value: reader.bytes()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix}.count`,
+                field: `${prefix}count`,
                 value: reader.int32()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix}.timeout`,
+                field: `${prefix}timeout`,
                 value: reader.int64()
               }
               break
@@ -1752,6 +2062,14 @@ export namespace DHTRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'DHTRequest'
+          }
+        }
       })
     }
 
@@ -1759,37 +2077,37 @@ export namespace DHTRequest {
   }
 
   export interface DHTRequestTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: DHTRequest.Type
   }
 
   export interface DHTRequestPeerFieldEvent {
-    field: '$.peer'
+    field: '.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestCidFieldEvent {
-    field: '$.cid'
+    field: '.cid'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestKeyFieldEvent {
-    field: '$.key'
+    field: '.key'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestValueFieldEvent {
-    field: '$.value'
+    field: '.value'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTRequestCountFieldEvent {
-    field: '$.count'
+    field: '.count'
     value: number
   }
 
   export interface DHTRequestTimeoutFieldEvent {
-    field: '$.timeout'
+    field: '.timeout'
     value: bigint
   }
 
@@ -1891,8 +2209,16 @@ export namespace DHTResponse {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'DHTResponse'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -1900,13 +2226,13 @@ export namespace DHTResponse {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: DHTResponse.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}.peer`, {
+              yield * PeerInfo.codec().stream(reader, `${prefix}peer.`, reader.uint32(), {
                 limits: opts.limits?.peer
               })
 
@@ -1914,7 +2240,7 @@ export namespace DHTResponse {
             }
             case 3: {
               yield {
-                field: `${prefix}.value`,
+                field: `${prefix}value`,
                 value: reader.bytes()
               }
               break
@@ -1925,6 +2251,14 @@ export namespace DHTResponse {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'DHTResponse'
+          }
+        }
       })
     }
 
@@ -1932,23 +2266,33 @@ export namespace DHTResponse {
   }
 
   export interface DHTResponseTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: DHTResponse.Type
   }
 
+  export interface DHTResponsePeerMessageStart {
+    field: '.peer'
+    type: 'start'
+  }
+
+  export interface DHTResponsePeerMessageEnd {
+    field: '.peer'
+    type: 'end'
+  }
+
   export interface DHTResponsePeerIdFieldEvent {
-    field: '$.peer.id'
+    field: '.peer.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTResponsePeerAddrsFieldEvent {
-    field: '$.peer.addrs[]'
+    field: '.peer.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface DHTResponseValueFieldEvent {
-    field: '$.value'
+    field: '.value'
     value: Uint8Array<ArrayBuffer>
   }
 
@@ -1960,7 +2304,7 @@ export namespace DHTResponse {
     return decodeMessage(buf, DHTResponse.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTResponse>): Generator<DHTResponseTypeFieldEvent | DHTResponsePeerIdFieldEvent | DHTResponsePeerAddrsFieldEvent | DHTResponseValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<DHTResponse>): Generator<DHTResponseTypeFieldEvent | DHTResponsePeerMessageStart | DHTResponsePeerMessageEnd | DHTResponsePeerIdFieldEvent | DHTResponsePeerAddrsFieldEvent | DHTResponseValueFieldEvent> {
     return streamMessage(buf, DHTResponse.codec(), opts)
   }
 }
@@ -2027,12 +2371,20 @@ export namespace PeerInfo {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           addrs: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'PeerInfo'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2040,7 +2392,7 @@ export namespace PeerInfo {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.id`,
+                field: `${prefix}id`,
                 value: reader.bytes()
               }
               break
@@ -2051,7 +2403,7 @@ export namespace PeerInfo {
               }
 
               yield {
-                field: `${prefix}.addrs[]`,
+                field: `${prefix}addrs[]`,
                 index: obj.addrs,
                 value: reader.bytes()
               }
@@ -2066,6 +2418,14 @@ export namespace PeerInfo {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'PeerInfo'
+          }
+        }
       })
     }
 
@@ -2073,12 +2433,12 @@ export namespace PeerInfo {
   }
 
   export interface PeerInfoIdFieldEvent {
-    field: '$.id'
+    field: '.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerInfoAddrsFieldEvent {
-    field: '$.addrs[]'
+    field: '.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
@@ -2189,8 +2549,16 @@ export namespace ConnManagerRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'ConnManagerRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2198,28 +2566,28 @@ export namespace ConnManagerRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: ConnManagerRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.peer`,
+                field: `${prefix}peer`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.tag`,
+                field: `${prefix}tag`,
                 value: reader.string()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.weight`,
+                field: `${prefix}weight`,
                 value: reader.int64()
               }
               break
@@ -2230,6 +2598,14 @@ export namespace ConnManagerRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'ConnManagerRequest'
+          }
+        }
       })
     }
 
@@ -2237,22 +2613,22 @@ export namespace ConnManagerRequest {
   }
 
   export interface ConnManagerRequestTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: ConnManagerRequest.Type
   }
 
   export interface ConnManagerRequestPeerFieldEvent {
-    field: '$.peer'
+    field: '.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface ConnManagerRequestTagFieldEvent {
-    field: '$.tag'
+    field: '.tag'
     value: string
   }
 
   export interface ConnManagerRequestWeightFieldEvent {
-    field: '$.weight'
+    field: '.weight'
     value: bigint
   }
 
@@ -2314,8 +2690,16 @@ export namespace DisconnectRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'DisconnectRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2323,7 +2707,7 @@ export namespace DisconnectRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.peer`,
+                field: `${prefix}peer`,
                 value: reader.bytes()
               }
               break
@@ -2334,6 +2718,14 @@ export namespace DisconnectRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'DisconnectRequest'
+          }
+        }
       })
     }
 
@@ -2341,7 +2733,7 @@ export namespace DisconnectRequest {
   }
 
   export interface DisconnectRequestPeerFieldEvent {
-    field: '$.peer'
+    field: '.peer'
     value: Uint8Array<ArrayBuffer>
   }
 
@@ -2443,8 +2835,16 @@ export namespace PSRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'PSRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2452,21 +2852,21 @@ export namespace PSRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: PSRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.topic`,
+                field: `${prefix}topic`,
                 value: reader.string()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.data`,
+                field: `${prefix}data`,
                 value: reader.bytes()
               }
               break
@@ -2477,6 +2877,14 @@ export namespace PSRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'PSRequest'
+          }
+        }
       })
     }
 
@@ -2484,17 +2892,17 @@ export namespace PSRequest {
   }
 
   export interface PSRequestTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: PSRequest.Type
   }
 
   export interface PSRequestTopicFieldEvent {
-    field: '$.topic'
+    field: '.topic'
     value: string
   }
 
   export interface PSRequestDataFieldEvent {
-    field: '$.data'
+    field: '.data'
     value: Uint8Array<ArrayBuffer>
   }
 
@@ -2612,12 +3020,20 @@ export namespace PSMessage {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           topicIDs: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'PSMessage'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2625,21 +3041,21 @@ export namespace PSMessage {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.from`,
+                field: `${prefix}from`,
                 value: reader.bytes()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.data`,
+                field: `${prefix}data`,
                 value: reader.bytes()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.seqno`,
+                field: `${prefix}seqno`,
                 value: reader.bytes()
               }
               break
@@ -2650,7 +3066,7 @@ export namespace PSMessage {
               }
 
               yield {
-                field: `${prefix}.topicIDs[]`,
+                field: `${prefix}topicIDs[]`,
                 index: obj.topicIDs,
                 value: reader.string()
               }
@@ -2661,14 +3077,14 @@ export namespace PSMessage {
             }
             case 5: {
               yield {
-                field: `${prefix}.signature`,
+                field: `${prefix}signature`,
                 value: reader.bytes()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix}.key`,
+                field: `${prefix}key`,
                 value: reader.bytes()
               }
               break
@@ -2679,6 +3095,14 @@ export namespace PSMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'PSMessage'
+          }
+        }
       })
     }
 
@@ -2686,33 +3110,33 @@ export namespace PSMessage {
   }
 
   export interface PSMessageFromFieldEvent {
-    field: '$.from'
+    field: '.from'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageDataFieldEvent {
-    field: '$.data'
+    field: '.data'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageSeqnoFieldEvent {
-    field: '$.seqno'
+    field: '.seqno'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageTopicIDsFieldEvent {
-    field: '$.topicIDs[]'
+    field: '.topicIDs[]'
     index: number
     value: string
   }
 
   export interface PSMessageSignatureFieldEvent {
-    field: '$.signature'
+    field: '.signature'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PSMessageKeyFieldEvent {
-    field: '$.key'
+    field: '.key'
     value: Uint8Array<ArrayBuffer>
   }
 
@@ -2797,13 +3221,21 @@ export namespace PSResponse {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           topics: 0,
           peerIDs: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'PSResponse'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2815,7 +3247,7 @@ export namespace PSResponse {
               }
 
               yield {
-                field: `${prefix}.topics[]`,
+                field: `${prefix}topics[]`,
                 index: obj.topics,
                 value: reader.string()
               }
@@ -2830,7 +3262,7 @@ export namespace PSResponse {
               }
 
               yield {
-                field: `${prefix}.peerIDs[]`,
+                field: `${prefix}peerIDs[]`,
                 index: obj.peerIDs,
                 value: reader.bytes()
               }
@@ -2845,6 +3277,14 @@ export namespace PSResponse {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'PSResponse'
+          }
+        }
       })
     }
 
@@ -2852,13 +3292,13 @@ export namespace PSResponse {
   }
 
   export interface PSResponseTopicsFieldEvent {
-    field: '$.topics[]'
+    field: '.topics[]'
     index: number
     value: string
   }
 
   export interface PSResponsePeerIDsFieldEvent {
-    field: '$.peerIDs[]'
+    field: '.peerIDs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
@@ -2966,12 +3406,20 @@ export namespace PeerstoreRequest {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           protos: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'PeerstoreRequest'
+          }
+        }
 
         while (reader.pos < end) {
           const tag = reader.uint32()
@@ -2979,14 +3427,14 @@ export namespace PeerstoreRequest {
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: PeerstoreRequest.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.id`,
+                field: `${prefix}id`,
                 value: reader.bytes()
               }
               break
@@ -2997,7 +3445,7 @@ export namespace PeerstoreRequest {
               }
 
               yield {
-                field: `${prefix}.protos[]`,
+                field: `${prefix}protos[]`,
                 index: obj.protos,
                 value: reader.string()
               }
@@ -3012,6 +3460,14 @@ export namespace PeerstoreRequest {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'PeerstoreRequest'
+          }
+        }
       })
     }
 
@@ -3019,17 +3475,17 @@ export namespace PeerstoreRequest {
   }
 
   export interface PeerstoreRequestTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: PeerstoreRequest.Type
   }
 
   export interface PeerstoreRequestIdFieldEvent {
-    field: '$.id'
+    field: '.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerstoreRequestProtosFieldEvent {
-    field: '$.protos[]'
+    field: '.protos[]'
     index: number
     value: string
   }
@@ -3110,19 +3566,27 @@ export namespace PeerstoreResponse {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (reader, prefix, length, opts = {}) {
         const obj = {
           protos: 0
         }
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'PeerstoreResponse'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}.peer`, {
+              yield * PeerInfo.codec().stream(reader, `${prefix}peer.`, reader.uint32(), {
                 limits: opts.limits?.peer
               })
 
@@ -3134,7 +3598,7 @@ export namespace PeerstoreResponse {
               }
 
               yield {
-                field: `${prefix}.protos[]`,
+                field: `${prefix}protos[]`,
                 index: obj.protos,
                 value: reader.string()
               }
@@ -3149,25 +3613,43 @@ export namespace PeerstoreResponse {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'PeerstoreResponse'
+          }
+        }
       })
     }
 
     return _codec
   }
 
+  export interface PeerstoreResponsePeerMessageStart {
+    field: '.peer'
+    type: 'start'
+  }
+
+  export interface PeerstoreResponsePeerMessageEnd {
+    field: '.peer'
+    type: 'end'
+  }
+
   export interface PeerstoreResponsePeerIdFieldEvent {
-    field: '$.peer.id'
+    field: '.peer.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerstoreResponsePeerAddrsFieldEvent {
-    field: '$.peer.addrs[]'
+    field: '.peer.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface PeerstoreResponseProtosFieldEvent {
-    field: '$.protos[]'
+    field: '.protos[]'
     index: number
     value: string
   }
@@ -3180,7 +3662,7 @@ export namespace PeerstoreResponse {
     return decodeMessage(buf, PeerstoreResponse.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreResponse>): Generator<PeerstoreResponsePeerIdFieldEvent | PeerstoreResponsePeerAddrsFieldEvent | PeerstoreResponseProtosFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<PeerstoreResponse>): Generator<PeerstoreResponsePeerMessageStart | PeerstoreResponsePeerMessageEnd | PeerstoreResponsePeerIdFieldEvent | PeerstoreResponsePeerAddrsFieldEvent | PeerstoreResponseProtosFieldEvent> {
     return streamMessage(buf, PeerstoreResponse.codec(), opts)
   }
 }
