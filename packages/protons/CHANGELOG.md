@@ -1,3 +1,9 @@
+## [protons-v9.1.1](https://github.com/ipfs/protons/compare/protons-9.1.0...protons-9.1.1) (2026-09-14)
+
+### Bug Fixes
+
+* stream function argument order ([#202](https://github.com/ipfs/protons/issues/202)) ([bc9c0a2](https://github.com/ipfs/protons/commit/bc9c0a25197933eefb34e0242728ed8dff1ea075))
+
 ## [protons-v9.1.0](https://github.com/ipfs/protons/compare/protons-9.0.2...protons-9.1.0) (2026-09-10)
 
 ### Features
