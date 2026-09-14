@@ -60,7 +60,7 @@ export interface DecodeFunction<T> {
 }
 
 export interface StreamFunction<T> {
-  (reader: Reader, prefix: string, length?: number, opts?: DecodeOptions<T>): Generator<any>
+  (reader: Reader, length: number | undefined, prefix: string, opts?: DecodeOptions<T>): Generator<any>
 }
 
 export interface Codec<T> {

@@ -73,7 +73,7 @@ export namespace MessageWithArrayField {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           arr: 0
         }
@@ -215,7 +215,7 @@ export namespace NestedMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -332,7 +332,7 @@ export namespace MessageWithNestedMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -355,7 +355,7 @@ export namespace MessageWithNestedMessage {
               break
             }
             case 2: {
-              yield * NestedMessage.codec().stream(reader, `${prefix}nestedMessage.`, reader.uint32(), {
+              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessage.`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -471,7 +471,7 @@ export namespace MessageWithDeeplyNestedMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -494,7 +494,7 @@ export namespace MessageWithDeeplyNestedMessage {
               break
             }
             case 2: {
-              yield * MessageWithNestedMessage.codec().stream(reader, `${prefix}nestedMessage.`, reader.uint32(), {
+              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessage.`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -632,7 +632,7 @@ export namespace MessageWithRepeatedMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           nestedMessages: 0
         }
@@ -663,7 +663,7 @@ export namespace MessageWithRepeatedMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              for (const evt of NestedMessage.codec().stream(reader, `${prefix}nestedMessages[].`, reader.uint32(), {
+              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessages[].`, {
                 limits: opts.limits?.nestedMessages$
               })) {
                 yield {
@@ -797,7 +797,7 @@ export namespace MessageWithMapMessage {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -820,7 +820,7 @@ export namespace MessageWithMapMessage {
                 break
               }
               case 2: {
-                yield * NestedMessage.codec().stream(reader, `${prefix}value.`, reader.uint32(), {
+                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}value.`, {
                   limits: opts.limits?.value
                 })
 
@@ -940,7 +940,7 @@ export namespace MessageWithMapMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           nestedMessages: 0
         }
@@ -971,7 +971,7 @@ export namespace MessageWithMapMessage {
                 throw new MaxLengthError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, `${prefix}nestedMessages{}.`, reader.uint32(), {
+              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix}nestedMessages{}.`, {
                 limits: {
                   value: opts.limits?.nestedMessages$value
                 }
@@ -1101,7 +1101,7 @@ export namespace MessageWithPrimitiveMap {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -1234,7 +1234,7 @@ export namespace MessageWithPrimitiveMap {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           nestedStrings: 0
         }
@@ -1265,7 +1265,7 @@ export namespace MessageWithPrimitiveMap {
                 throw new MaxLengthError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, `${prefix}nestedStrings{}.`, reader.uint32(), {
+              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix}nestedStrings{}.`, {
                 limits: {
                   value: opts.limits?.nestedStrings$value
                 }
@@ -1399,7 +1399,7 @@ export namespace MessageWithRepeatedEnums {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           enums: 0
         }

@@ -70,7 +70,7 @@ export namespace CustomOptionNumber {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -269,7 +269,7 @@ export namespace CustomOptionNumber {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           i64Array: 0,
           i64Map: 0
@@ -351,7 +351,7 @@ export namespace CustomOptionNumber {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(reader, `${prefix}i64Map{}.`, reader.uint32(), {
+              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}i64Map{}.`, {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -504,7 +504,7 @@ export namespace CustomOptionString {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -703,7 +703,7 @@ export namespace CustomOptionString {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           i64Array: 0,
           i64Map: 0
@@ -785,7 +785,7 @@ export namespace CustomOptionString {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(reader, `${prefix}i64Map{}.`, reader.uint32(), {
+              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}i64Map{}.`, {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }

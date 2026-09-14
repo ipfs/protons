@@ -85,7 +85,7 @@ export namespace Record {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -318,7 +318,7 @@ export namespace Message {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const obj = {
             addrs: 0
           }
@@ -517,7 +517,7 @@ export namespace Message {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           closerPeers: 0,
           providerPeers: 0
@@ -570,7 +570,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, `${prefix}closerPeers[].`, reader.uint32(), {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}closerPeers[].`, {
                 limits: opts.limits?.closerPeers$
               })) {
                 yield {
@@ -588,7 +588,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, `${prefix}providerPeers[].`, reader.uint32(), {
+              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}providerPeers[].`, {
                 limits: opts.limits?.providerPeers$
               })) {
                 yield {

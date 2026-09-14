@@ -63,7 +63,7 @@ export namespace SubSubMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           foo: 0
         }
@@ -240,7 +240,7 @@ export namespace SubMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           foo: 0,
           messages: 0
@@ -283,7 +283,7 @@ export namespace SubMessage {
               break
             }
             case 3: {
-              yield * SubSubMessage.codec().stream(reader, `${prefix}message.`, reader.uint32(), {
+              yield * SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix}message.`, {
                 limits: opts.limits?.message
               })
 
@@ -294,7 +294,7 @@ export namespace SubMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubSubMessage.codec().stream(reader, `${prefix}messages[].`, reader.uint32(), {
+              for (const evt of SubSubMessage.codec().stream(reader, reader.uint32(), `${prefix}messages[].`, {
                 limits: opts.limits?.messages$
               })) {
                 yield {
@@ -511,7 +511,7 @@ export namespace RepeatedTypes {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           number: 0,
           limitedNumber: 1,
@@ -571,7 +571,7 @@ export namespace RepeatedTypes {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubMessage.codec().stream(reader, `${prefix}messages[].`, reader.uint32(), {
+              for (const evt of SubMessage.codec().stream(reader, reader.uint32(), `${prefix}messages[].`, {
                 limits: opts.limits?.messages$
               })) {
                 yield {
@@ -585,7 +585,7 @@ export namespace RepeatedTypes {
               break
             }
             case 4: {
-              yield * SubMessage.codec().stream(reader, `${prefix}message.`, reader.uint32(), {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}message.`, {
                 limits: opts.limits?.message
               })
 

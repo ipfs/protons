@@ -199,7 +199,7 @@ ${indent}            }`
 ${indent}              limits: opts.limits?.${field.name}$
 ${indent}            }`
 
-      return `for (const evt of ${this.jsType}.codec().stream(reader, ${prefix}, reader.uint32()${opts})) {
+      return `for (const evt of ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})) {
 ${indent}              yield {
 ${indent}                ...evt,
 ${indent}                index: obj.${field.name}
@@ -213,7 +213,7 @@ ${indent}                value: opts.limits?.${field.name}$value
 ${indent}            }`
     }
 
-    return `yield * ${this.jsType}.codec().stream(reader, ${prefix}, reader.uint32()${opts})`
+    return `yield * ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})`
   }
 
   getEncoder (field: Field, accessor: string): string {
@@ -282,7 +282,6 @@ export interface ${this.pbType} {
     const streamGeneratorEvents = streamEvents.map(evt => evt.name)
 
     if (streamGeneratorEvents.length === 0) {
-      this.addEslintIgnore('require-yield')
       streamGeneratorEvents.push('{}')
     }
 
@@ -316,7 +315,7 @@ export interface ${this.pbType} {
         }
 ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         ${this.createLimitObject()}const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {

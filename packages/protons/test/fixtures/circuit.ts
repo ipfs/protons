@@ -137,7 +137,7 @@ export namespace CircuitRelay {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const obj = {
             addrs: 0
           }
@@ -291,7 +291,7 @@ export namespace CircuitRelay {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -314,14 +314,14 @@ export namespace CircuitRelay {
               break
             }
             case 2: {
-              yield * CircuitRelay.Peer.codec().stream(reader, `${prefix}srcPeer.`, reader.uint32(), {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}srcPeer.`, {
                 limits: opts.limits?.srcPeer
               })
 
               break
             }
             case 3: {
-              yield * CircuitRelay.Peer.codec().stream(reader, `${prefix}dstPeer.`, reader.uint32(), {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}dstPeer.`, {
                 limits: opts.limits?.dstPeer
               })
 

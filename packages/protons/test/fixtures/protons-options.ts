@@ -57,7 +57,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           repeatedField: 1
         }
@@ -195,7 +195,7 @@ export namespace MessageWithSizeLimitedMap {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -322,7 +322,7 @@ export namespace MessageWithSizeLimitedMap {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           mapField: 1
         }
@@ -350,7 +350,7 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxLengthError('Decode error - repeated field "mapField" had too many elements')
               }
 
-              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, `${prefix}mapField{}.`, reader.uint32(), {
+              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, reader.uint32(), `${prefix}mapField{}.`, {
                 limits: {
                   value: opts.limits?.mapField$value
                 }
