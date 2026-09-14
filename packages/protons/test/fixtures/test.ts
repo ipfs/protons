@@ -63,7 +63,7 @@ export namespace SubMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -346,7 +346,7 @@ export namespace AllTheTypes {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           field14: 0
         }
@@ -450,7 +450,7 @@ export namespace AllTheTypes {
               break
             }
             case 13: {
-              yield * SubMessage.codec().stream(reader, `${prefix}field13.`, reader.uint32(), {
+              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}field13.`, {
                 limits: opts.limits?.field13
               })
 

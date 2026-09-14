@@ -45,7 +45,7 @@ export namespace Foo {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -150,7 +150,7 @@ export namespace Bar {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -166,7 +166,7 @@ export namespace Bar {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Foo.codec().stream(reader, `${prefix}tmp.`, reader.uint32(), {
+              yield * Foo.codec().stream(reader, reader.uint32(), `${prefix}tmp.`, {
                 limits: opts.limits?.tmp
               })
 
@@ -289,7 +289,7 @@ export namespace Yo {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           lol: 0
         }
@@ -313,7 +313,11 @@ export namespace Yo {
                 throw new MaxLengthError('Streaming decode error - repeated field "lol" had too many elements')
               }
 
-              FOO.codec().stream(reader, `${prefix}lol[]`, reader.uint32())
+              yield {
+                field: `${prefix}lol[]`,
+                index: obj.lol,
+                value: FOO.codec().decode(reader)
+              }
 
               obj.lol++
 
@@ -413,7 +417,7 @@ export namespace Lol {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -436,7 +440,7 @@ export namespace Lol {
               break
             }
             case 2: {
-              yield * Bar.codec().stream(reader, `${prefix}b.`, reader.uint32(), {
+              yield * Bar.codec().stream(reader, reader.uint32(), `${prefix}b.`, {
                 limits: opts.limits?.b
               })
 
@@ -580,7 +584,7 @@ export namespace Test {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -596,7 +600,7 @@ export namespace Test {
 
           switch (tag >>> 3) {
             case 6: {
-              yield * Lol.codec().stream(reader, `${prefix}meh.`, reader.uint32(), {
+              yield * Lol.codec().stream(reader, reader.uint32(), `${prefix}meh.`, {
                 limits: opts.limits?.meh
               })
 

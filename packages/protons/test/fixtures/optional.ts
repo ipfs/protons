@@ -73,7 +73,7 @@ export namespace OptionalSubMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -350,7 +350,7 @@ export namespace Optional {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -478,7 +478,7 @@ export namespace Optional {
               break
             }
             case 17: {
-              yield * OptionalSubMessage.codec().stream(reader, `${prefix}subMessage.`, reader.uint32(), {
+              yield * OptionalSubMessage.codec().stream(reader, reader.uint32(), `${prefix}subMessage.`, {
                 limits: opts.limits?.subMessage
               })
 

@@ -122,7 +122,7 @@ export namespace Message {
             }
 
             return obj
-          }, function * (reader, prefix, length, opts = {}) {
+          }, function * (reader, length, prefix, opts = {}) {
             const end = length == null ? reader.len : reader.pos + length
 
             if (prefix !== '.') {
@@ -288,7 +288,7 @@ export namespace Message {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const obj = {
             entries: 0
           }
@@ -312,7 +312,7 @@ export namespace Message {
                   throw new MaxLengthError('Streaming decode error - repeated field "entries" had too many elements')
                 }
 
-                for (const evt of Message.Wantlist.Entry.codec().stream(reader, `${prefix}entries[].`, reader.uint32(), {
+                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix}entries[].`, {
                   limits: opts.limits?.entries$
                 })) {
                   yield {
@@ -470,7 +470,7 @@ export namespace Message {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -614,7 +614,7 @@ export namespace Message {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -789,7 +789,7 @@ export namespace Message {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           blocks: 0,
           payload: 0,
@@ -811,7 +811,7 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Message.Wantlist.codec().stream(reader, `${prefix}wantlist.`, reader.uint32(), {
+              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix}wantlist.`, {
                 limits: opts.limits?.wantlist
               })
 
@@ -837,7 +837,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "payload" had too many elements')
               }
 
-              for (const evt of Message.Block.codec().stream(reader, `${prefix}payload[].`, reader.uint32(), {
+              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix}payload[].`, {
                 limits: opts.limits?.payload$
               })) {
                 yield {
@@ -855,7 +855,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "blockPresences" had too many elements')
               }
 
-              for (const evt of Message.BlockPresence.codec().stream(reader, `${prefix}blockPresences[].`, reader.uint32(), {
+              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix}blockPresences[].`, {
                 limits: opts.limits?.blockPresences$
               })) {
                 yield {

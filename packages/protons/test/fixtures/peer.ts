@@ -112,7 +112,7 @@ export namespace Peer {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           addresses: 0,
           protocols: 0,
@@ -138,7 +138,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
               }
 
-              for (const evt of Address.codec().stream(reader, `${prefix}addresses[].`, reader.uint32(), {
+              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix}addresses[].`, {
                 limits: opts.limits?.addresses$
               })) {
                 yield {
@@ -171,7 +171,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
               }
 
-              for (const evt of Metadata.codec().stream(reader, `${prefix}metadata[].`, reader.uint32(), {
+              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix}metadata[].`, {
                 limits: opts.limits?.metadata$
               })) {
                 yield {
@@ -354,7 +354,7 @@ export namespace Address {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -482,7 +482,7 @@ export namespace Metadata {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {

@@ -77,7 +77,7 @@ export namespace SingularSubMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -371,7 +371,7 @@ export namespace Singular {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -499,7 +499,7 @@ export namespace Singular {
               break
             }
             case 17: {
-              yield * SingularSubMessage.codec().stream(reader, `${prefix}subMessage.`, reader.uint32(), {
+              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix}subMessage.`, {
                 limits: opts.limits?.subMessage
               })
 

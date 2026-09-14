@@ -82,7 +82,7 @@ export namespace SubMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           bar: 0
         }
@@ -232,7 +232,7 @@ export namespace MapTypes {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -360,7 +360,7 @@ export namespace MapTypes {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -488,7 +488,7 @@ export namespace MapTypes {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -617,7 +617,7 @@ export namespace MapTypes {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -640,7 +640,7 @@ export namespace MapTypes {
                 break
               }
               case 2: {
-                yield * SubMessage.codec().stream(reader, `${prefix}value.`, reader.uint32(), {
+                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}value.`, {
                   limits: opts.limits?.value
                 })
 
@@ -761,7 +761,7 @@ export namespace MapTypes {
           }
 
           return obj
-        }, function * (reader, prefix, length, opts = {}) {
+        }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
           if (prefix !== '.') {
@@ -968,7 +968,7 @@ export namespace MapTypes {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           stringMap: 0,
           intMap: 0,
@@ -996,7 +996,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "stringMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, `${prefix}stringMap{}.`, reader.uint32(), {
+              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix}stringMap{}.`, {
                 limits: {
                   value: opts.limits?.stringMap$value
                 }
@@ -1011,7 +1011,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "intMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, `${prefix}intMap{}.`, reader.uint32(), {
+              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix}intMap{}.`, {
                 limits: {
                   value: opts.limits?.intMap$value
                 }
@@ -1026,7 +1026,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "boolMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, `${prefix}boolMap{}.`, reader.uint32(), {
+              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix}boolMap{}.`, {
                 limits: {
                   value: opts.limits?.boolMap$value
                 }
@@ -1041,7 +1041,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "messageMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, `${prefix}messageMap{}.`, reader.uint32(), {
+              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix}messageMap{}.`, {
                 limits: {
                   value: opts.limits?.messageMap$value
                 }
@@ -1056,7 +1056,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "enumMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, `${prefix}enumMap{}.`, reader.uint32(), {
+              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix}enumMap{}.`, {
                 limits: {
                   value: opts.limits?.enumMap$value
                 }

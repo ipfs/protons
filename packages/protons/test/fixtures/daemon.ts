@@ -176,7 +176,7 @@ export namespace Request {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -199,56 +199,56 @@ export namespace Request {
               break
             }
             case 2: {
-              yield * ConnectRequest.codec().stream(reader, `${prefix}connect.`, reader.uint32(), {
+              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix}connect.`, {
                 limits: opts.limits?.connect
               })
 
               break
             }
             case 3: {
-              yield * StreamOpenRequest.codec().stream(reader, `${prefix}streamOpen.`, reader.uint32(), {
+              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix}streamOpen.`, {
                 limits: opts.limits?.streamOpen
               })
 
               break
             }
             case 4: {
-              yield * StreamHandlerRequest.codec().stream(reader, `${prefix}streamHandler.`, reader.uint32(), {
+              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix}streamHandler.`, {
                 limits: opts.limits?.streamHandler
               })
 
               break
             }
             case 5: {
-              yield * DHTRequest.codec().stream(reader, `${prefix}dht.`, reader.uint32(), {
+              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix}dht.`, {
                 limits: opts.limits?.dht
               })
 
               break
             }
             case 6: {
-              yield * ConnManagerRequest.codec().stream(reader, `${prefix}connManager.`, reader.uint32(), {
+              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix}connManager.`, {
                 limits: opts.limits?.connManager
               })
 
               break
             }
             case 7: {
-              yield * DisconnectRequest.codec().stream(reader, `${prefix}disconnect.`, reader.uint32(), {
+              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix}disconnect.`, {
                 limits: opts.limits?.disconnect
               })
 
               break
             }
             case 8: {
-              yield * PSRequest.codec().stream(reader, `${prefix}pubsub.`, reader.uint32(), {
+              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix}pubsub.`, {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 9: {
-              yield * PeerstoreRequest.codec().stream(reader, `${prefix}peerStore.`, reader.uint32(), {
+              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix}peerStore.`, {
                 limits: opts.limits?.peerStore
               })
 
@@ -658,7 +658,7 @@ export namespace Response {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           peers: 0
         }
@@ -685,28 +685,28 @@ export namespace Response {
               break
             }
             case 2: {
-              yield * ErrorResponse.codec().stream(reader, `${prefix}error.`, reader.uint32(), {
+              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix}error.`, {
                 limits: opts.limits?.error
               })
 
               break
             }
             case 3: {
-              yield * StreamInfo.codec().stream(reader, `${prefix}streamInfo.`, reader.uint32(), {
+              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix}streamInfo.`, {
                 limits: opts.limits?.streamInfo
               })
 
               break
             }
             case 4: {
-              yield * IdentifyResponse.codec().stream(reader, `${prefix}identify.`, reader.uint32(), {
+              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix}identify.`, {
                 limits: opts.limits?.identify
               })
 
               break
             }
             case 5: {
-              yield * DHTResponse.codec().stream(reader, `${prefix}dht.`, reader.uint32(), {
+              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix}dht.`, {
                 limits: opts.limits?.dht
               })
 
@@ -717,7 +717,7 @@ export namespace Response {
                 throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
               }
 
-              for (const evt of PeerInfo.codec().stream(reader, `${prefix}peers[].`, reader.uint32(), {
+              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}peers[].`, {
                 limits: opts.limits?.peers$
               })) {
                 yield {
@@ -731,14 +731,14 @@ export namespace Response {
               break
             }
             case 7: {
-              yield * PSResponse.codec().stream(reader, `${prefix}pubsub.`, reader.uint32(), {
+              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix}pubsub.`, {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 8: {
-              yield * PeerstoreResponse.codec().stream(reader, `${prefix}peerStore.`, reader.uint32(), {
+              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix}peerStore.`, {
                 limits: opts.limits?.peerStore
               })
 
@@ -1031,7 +1031,7 @@ export namespace IdentifyResponse {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           addrs: 0
         }
@@ -1188,7 +1188,7 @@ export namespace ConnectRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           addrs: 0
         }
@@ -1357,7 +1357,7 @@ export namespace StreamOpenRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           proto: 0
         }
@@ -1516,7 +1516,7 @@ export namespace StreamHandlerRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           proto: 0
         }
@@ -1646,7 +1646,7 @@ export namespace ErrorResponse {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -1773,7 +1773,7 @@ export namespace StreamInfo {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -1992,7 +1992,7 @@ export namespace DHTRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -2209,7 +2209,7 @@ export namespace DHTResponse {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -2232,7 +2232,7 @@ export namespace DHTResponse {
               break
             }
             case 2: {
-              yield * PeerInfo.codec().stream(reader, `${prefix}peer.`, reader.uint32(), {
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}peer.`, {
                 limits: opts.limits?.peer
               })
 
@@ -2371,7 +2371,7 @@ export namespace PeerInfo {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           addrs: 0
         }
@@ -2549,7 +2549,7 @@ export namespace ConnManagerRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -2690,7 +2690,7 @@ export namespace DisconnectRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -2835,7 +2835,7 @@ export namespace PSRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
         if (prefix !== '.') {
@@ -3020,7 +3020,7 @@ export namespace PSMessage {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           topicIDs: 0
         }
@@ -3221,7 +3221,7 @@ export namespace PSResponse {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           topics: 0,
           peerIDs: 0
@@ -3406,7 +3406,7 @@ export namespace PeerstoreRequest {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           protos: 0
         }
@@ -3566,7 +3566,7 @@ export namespace PeerstoreResponse {
         }
 
         return obj
-      }, function * (reader, prefix, length, opts = {}) {
+      }, function * (reader, length, prefix, opts = {}) {
         const obj = {
           protos: 0
         }
@@ -3586,7 +3586,7 @@ export namespace PeerstoreResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * PeerInfo.codec().stream(reader, `${prefix}peer.`, reader.uint32(), {
+              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}peer.`, {
                 limits: opts.limits?.peer
               })
 
