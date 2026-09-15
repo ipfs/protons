@@ -14,7 +14,7 @@ import type { Codec } from './codec.ts'
 
 export interface FieldDef {
   name: string
-  codec: Codec<any>
+  codec: Codec<any, any>
   optional?: true
   repeats?: true
   packed?: true

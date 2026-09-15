@@ -6,12 +6,16 @@ export interface MessageWithSizeLimitedRepeatedField {
   repeatedField: string[]
 }
 
-export namespace MessageWithSizeLimitedRepeatedField {
-  let _codec: Codec<MessageWithSizeLimitedRepeatedField>
+export interface MessageWithSizeLimitedRepeatedFieldEncoder {
+  repeatedField: string[]
+}
 
-  export const codec = (): Codec<MessageWithSizeLimitedRepeatedField> => {
+export namespace MessageWithSizeLimitedRepeatedField {
+  let _codec: Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldEncoder>
+
+  export const codec = (): Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithSizeLimitedRepeatedField>((obj, w, opts = {}) => {
+      _codec = message<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -121,7 +125,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithSizeLimitedRepeatedField>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithSizeLimitedRepeatedFieldEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedRepeatedField.codec())
   }
 
@@ -138,18 +142,27 @@ export interface MessageWithSizeLimitedMap {
   mapField: Map<string, string>
 }
 
+export interface MessageWithSizeLimitedMapEncoder {
+  mapField: Map<string, string>
+}
+
 export namespace MessageWithSizeLimitedMap {
   export interface MessageWithSizeLimitedMap$mapFieldEntry {
     key: string
     value: string
   }
 
-  export namespace MessageWithSizeLimitedMap$mapFieldEntry {
-    let _codec: Codec<MessageWithSizeLimitedMap$mapFieldEntry>
+  export interface MessageWithSizeLimitedMap$mapFieldEntryEncoder {
+    key: string
+    value: string
+  }
 
-    export const codec = (): Codec<MessageWithSizeLimitedMap$mapFieldEntry> => {
+  export namespace MessageWithSizeLimitedMap$mapFieldEntry {
+    let _codec: Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryEncoder>
+
+    export const codec = (): Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryEncoder> => {
       if (_codec == null) {
-        _codec = message<MessageWithSizeLimitedMap$mapFieldEntry>((obj, w, opts = {}) => {
+        _codec = message<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryEncoder>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -254,7 +267,7 @@ export namespace MessageWithSizeLimitedMap {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntry>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntryEncoder>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithSizeLimitedMap$mapFieldEntry.codec())
     }
 
@@ -267,11 +280,11 @@ export namespace MessageWithSizeLimitedMap {
     }
   }
 
-  let _codec: Codec<MessageWithSizeLimitedMap>
+  let _codec: Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapEncoder>
 
-  export const codec = (): Codec<MessageWithSizeLimitedMap> => {
+  export const codec = (): Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithSizeLimitedMap>((obj, w, opts = {}) => {
+      _codec = message<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -386,7 +399,7 @@ export namespace MessageWithSizeLimitedMap {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithSizeLimitedMap>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithSizeLimitedMapEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedMap.codec())
   }
 

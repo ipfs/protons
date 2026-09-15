@@ -7,12 +7,17 @@ export interface Basic {
   num: number
 }
 
-export namespace Basic {
-  let _codec: Codec<Basic>
+export interface BasicEncoder {
+  foo?: string
+  num: number
+}
 
-  export const codec = (): Codec<Basic> => {
+export namespace Basic {
+  let _codec: Codec<Basic, BasicEncoder>
+
+  export const codec = (): Codec<Basic, BasicEncoder> => {
     if (_codec == null) {
-      _codec = message<Basic>((obj, w, opts = {}) => {
+      _codec = message<Basic, BasicEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -116,7 +121,7 @@ export namespace Basic {
     value: number
   }
 
-  export function encode (obj: Partial<Basic>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<BasicEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Basic.codec())
   }
 
@@ -129,14 +134,16 @@ export namespace Basic {
   }
 }
 
+export interface EmptyEncoder {}
+
 export interface Empty {}
 
 export namespace Empty {
-  let _codec: Codec<Empty>
+  let _codec: Codec<Empty, EmptyEncoder>
 
-  export const codec = (): Codec<Empty> => {
+  export const codec = (): Codec<Empty, EmptyEncoder> => {
     if (_codec == null) {
-      _codec = message<Empty>((obj, w, opts = {}) => {
+      _codec = message<Empty, EmptyEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -196,7 +203,7 @@ export namespace Empty {
     return _codec
   }
 
-  export function encode (obj: Partial<Empty>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<EmptyEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Empty.codec())
   }
 

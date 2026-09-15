@@ -37,16 +37,23 @@ export class MapField extends Field {
     }
   }
 
-  getInterfaceField (parent: Parent): string {
-    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType
-    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType
+  getDecoderInterfaceField (parent: Parent): string {
+    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType.decode
+    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType.decode
+
+    return `${this.name}: Map<${keyType}, ${valueType}>`
+  }
+
+  getEncoderInterfaceField (parent: Parent): string {
+    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType.encode
+    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType.encode
 
     return `${this.name}: Map<${keyType}, ${valueType}>`
   }
 
   getDefaultField (parent: Parent): string {
-    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType
-    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType
+    const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType.decode
+    const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType.decode
 
     return `${this.name}: new Map<${keyType}, ${valueType}>()`
   }

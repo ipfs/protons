@@ -82,7 +82,12 @@ export interface MessageField {
   /**
    * Return a string that can be used in a typescript interface for this field
    */
-  getInterfaceField (parent: Parent, indent?: string): string
+  getDecoderInterfaceField (parent: Parent, indent?: string): string
+
+  /**
+   * Return a string that can be used in a typescript interface for this field
+   */
+  getEncoderInterfaceField (parent: Parent, indent?: string): string
 }
 
 export class Field implements MessageField {
@@ -127,8 +132,12 @@ export class Field implements MessageField {
     }
   }
 
-  getInterfaceField (parent: Parent, indent = ''): string {
-    return `${indent}${this.name}${this.optional ? '?' : ''}: ${this.jsTypeOverride ?? parent.findType(this.type).jsType}`
+  getDecoderInterfaceField (parent: Parent, indent = ''): string {
+    return `${indent}${this.name}${this.optional ? '?' : ''}: ${this.jsTypeOverride ?? parent.findType(this.type).jsType.decode}`
+  }
+
+  getEncoderInterfaceField (parent: Parent, indent = ''): string {
+    return `${indent}${this.name}${this.optional ? '?' : ''}: ${this.jsTypeOverride ?? parent.findType(this.type).jsType.encode}`
   }
 
   getDefaultField (parent: Parent): string {

@@ -8,12 +8,18 @@ export interface MessageWithArrayField {
   arr: string[]
 }
 
-export namespace MessageWithArrayField {
-  let _codec: Codec<MessageWithArrayField>
+export interface MessageWithArrayFieldEncoder {
+  field1?: boolean
+  field2?: number
+  arr: string[]
+}
 
-  export const codec = (): Codec<MessageWithArrayField> => {
+export namespace MessageWithArrayField {
+  let _codec: Codec<MessageWithArrayField, MessageWithArrayFieldEncoder>
+
+  export const codec = (): Codec<MessageWithArrayField, MessageWithArrayFieldEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithArrayField>((obj, w, opts = {}) => {
+      _codec = message<MessageWithArrayField, MessageWithArrayFieldEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -157,7 +163,7 @@ export namespace MessageWithArrayField {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithArrayField>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithArrayFieldEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithArrayField.codec())
   }
 
@@ -174,12 +180,16 @@ export interface NestedMessage {
   nestedValue: string
 }
 
-export namespace NestedMessage {
-  let _codec: Codec<NestedMessage>
+export interface NestedMessageEncoder {
+  nestedValue: string
+}
 
-  export const codec = (): Codec<NestedMessage> => {
+export namespace NestedMessage {
+  let _codec: Codec<NestedMessage, NestedMessageEncoder>
+
+  export const codec = (): Codec<NestedMessage, NestedMessageEncoder> => {
     if (_codec == null) {
-      _codec = message<NestedMessage>((obj, w, opts = {}) => {
+      _codec = message<NestedMessage, NestedMessageEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -262,7 +272,7 @@ export namespace NestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<NestedMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<NestedMessageEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, NestedMessage.codec())
   }
 
@@ -280,12 +290,17 @@ export interface MessageWithNestedMessage {
   nestedMessage?: NestedMessage
 }
 
-export namespace MessageWithNestedMessage {
-  let _codec: Codec<MessageWithNestedMessage>
+export interface MessageWithNestedMessageEncoder {
+  field1: boolean
+  nestedMessage?: NestedMessageEncoder
+}
 
-  export const codec = (): Codec<MessageWithNestedMessage> => {
+export namespace MessageWithNestedMessage {
+  let _codec: Codec<MessageWithNestedMessage, MessageWithNestedMessageEncoder>
+
+  export const codec = (): Codec<MessageWithNestedMessage, MessageWithNestedMessageEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithNestedMessage>((obj, w, opts = {}) => {
+      _codec = message<MessageWithNestedMessage, MessageWithNestedMessageEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -401,7 +416,7 @@ export namespace MessageWithNestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithNestedMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithNestedMessageEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithNestedMessage.codec())
   }
 
@@ -419,12 +434,17 @@ export interface MessageWithDeeplyNestedMessage {
   nestedMessage?: MessageWithNestedMessage
 }
 
-export namespace MessageWithDeeplyNestedMessage {
-  let _codec: Codec<MessageWithDeeplyNestedMessage>
+export interface MessageWithDeeplyNestedMessageEncoder {
+  field1: boolean
+  nestedMessage?: MessageWithNestedMessageEncoder
+}
 
-  export const codec = (): Codec<MessageWithDeeplyNestedMessage> => {
+export namespace MessageWithDeeplyNestedMessage {
+  let _codec: Codec<MessageWithDeeplyNestedMessage, MessageWithDeeplyNestedMessageEncoder>
+
+  export const codec = (): Codec<MessageWithDeeplyNestedMessage, MessageWithDeeplyNestedMessageEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithDeeplyNestedMessage>((obj, w, opts = {}) => {
+      _codec = message<MessageWithDeeplyNestedMessage, MessageWithDeeplyNestedMessageEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -555,7 +575,7 @@ export namespace MessageWithDeeplyNestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithDeeplyNestedMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithDeeplyNestedMessageEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithDeeplyNestedMessage.codec())
   }
 
@@ -573,12 +593,17 @@ export interface MessageWithRepeatedMessage {
   nestedMessages: NestedMessage[]
 }
 
-export namespace MessageWithRepeatedMessage {
-  let _codec: Codec<MessageWithRepeatedMessage>
+export interface MessageWithRepeatedMessageEncoder {
+  field1: boolean
+  nestedMessages: NestedMessageEncoder[]
+}
 
-  export const codec = (): Codec<MessageWithRepeatedMessage> => {
+export namespace MessageWithRepeatedMessage {
+  let _codec: Codec<MessageWithRepeatedMessage, MessageWithRepeatedMessageEncoder>
+
+  export const codec = (): Codec<MessageWithRepeatedMessage, MessageWithRepeatedMessageEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithRepeatedMessage>((obj, w, opts = {}) => {
+      _codec = message<MessageWithRepeatedMessage, MessageWithRepeatedMessageEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -721,7 +746,7 @@ export namespace MessageWithRepeatedMessage {
     message: string
   }
 
-  export function encode (obj: Partial<MessageWithRepeatedMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithRepeatedMessageEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRepeatedMessage.codec())
   }
 
@@ -739,18 +764,28 @@ export interface MessageWithMapMessage {
   nestedMessages: Map<string, NestedMessage>
 }
 
+export interface MessageWithMapMessageEncoder {
+  field1: boolean
+  nestedMessages: Map<string, NestedMessageEncoder>
+}
+
 export namespace MessageWithMapMessage {
   export interface MessageWithMapMessage$nestedMessagesEntry {
     key: string
     value?: NestedMessage
   }
 
-  export namespace MessageWithMapMessage$nestedMessagesEntry {
-    let _codec: Codec<MessageWithMapMessage$nestedMessagesEntry>
+  export interface MessageWithMapMessage$nestedMessagesEntryEncoder {
+    key: string
+    value?: NestedMessageEncoder
+  }
 
-    export const codec = (): Codec<MessageWithMapMessage$nestedMessagesEntry> => {
+  export namespace MessageWithMapMessage$nestedMessagesEntry {
+    let _codec: Codec<MessageWithMapMessage$nestedMessagesEntry, MessageWithMapMessage$nestedMessagesEntryEncoder>
+
+    export const codec = (): Codec<MessageWithMapMessage$nestedMessagesEntry, MessageWithMapMessage$nestedMessagesEntryEncoder> => {
       if (_codec == null) {
-        _codec = message<MessageWithMapMessage$nestedMessagesEntry>((obj, w, opts = {}) => {
+        _codec = message<MessageWithMapMessage$nestedMessagesEntry, MessageWithMapMessage$nestedMessagesEntryEncoder>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -866,7 +901,7 @@ export namespace MessageWithMapMessage {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithMapMessage$nestedMessagesEntry>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: Partial<MessageWithMapMessage$nestedMessagesEntryEncoder>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithMapMessage$nestedMessagesEntry.codec())
     }
 
@@ -879,11 +914,11 @@ export namespace MessageWithMapMessage {
     }
   }
 
-  let _codec: Codec<MessageWithMapMessage>
+  let _codec: Codec<MessageWithMapMessage, MessageWithMapMessageEncoder>
 
-  export const codec = (): Codec<MessageWithMapMessage> => {
+  export const codec = (): Codec<MessageWithMapMessage, MessageWithMapMessageEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithMapMessage>((obj, w, opts = {}) => {
+      _codec = message<MessageWithMapMessage, MessageWithMapMessageEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1026,7 +1061,7 @@ export namespace MessageWithMapMessage {
     message: string
   }
 
-  export function encode (obj: Partial<MessageWithMapMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithMapMessageEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithMapMessage.codec())
   }
 
@@ -1044,18 +1079,28 @@ export interface MessageWithPrimitiveMap {
   nestedStrings: Map<string, string>
 }
 
+export interface MessageWithPrimitiveMapEncoder {
+  field1: boolean
+  nestedStrings: Map<string, string>
+}
+
 export namespace MessageWithPrimitiveMap {
   export interface MessageWithPrimitiveMap$nestedStringsEntry {
     key: string
     value: string
   }
 
-  export namespace MessageWithPrimitiveMap$nestedStringsEntry {
-    let _codec: Codec<MessageWithPrimitiveMap$nestedStringsEntry>
+  export interface MessageWithPrimitiveMap$nestedStringsEntryEncoder {
+    key: string
+    value: string
+  }
 
-    export const codec = (): Codec<MessageWithPrimitiveMap$nestedStringsEntry> => {
+  export namespace MessageWithPrimitiveMap$nestedStringsEntry {
+    let _codec: Codec<MessageWithPrimitiveMap$nestedStringsEntry, MessageWithPrimitiveMap$nestedStringsEntryEncoder>
+
+    export const codec = (): Codec<MessageWithPrimitiveMap$nestedStringsEntry, MessageWithPrimitiveMap$nestedStringsEntryEncoder> => {
       if (_codec == null) {
-        _codec = message<MessageWithPrimitiveMap$nestedStringsEntry>((obj, w, opts = {}) => {
+        _codec = message<MessageWithPrimitiveMap$nestedStringsEntry, MessageWithPrimitiveMap$nestedStringsEntryEncoder>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -1160,7 +1205,7 @@ export namespace MessageWithPrimitiveMap {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithPrimitiveMap$nestedStringsEntry>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: Partial<MessageWithPrimitiveMap$nestedStringsEntryEncoder>): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithPrimitiveMap$nestedStringsEntry.codec())
     }
 
@@ -1173,11 +1218,11 @@ export namespace MessageWithPrimitiveMap {
     }
   }
 
-  let _codec: Codec<MessageWithPrimitiveMap>
+  let _codec: Codec<MessageWithPrimitiveMap, MessageWithPrimitiveMapEncoder>
 
-  export const codec = (): Codec<MessageWithPrimitiveMap> => {
+  export const codec = (): Codec<MessageWithPrimitiveMap, MessageWithPrimitiveMapEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithPrimitiveMap>((obj, w, opts = {}) => {
+      _codec = message<MessageWithPrimitiveMap, MessageWithPrimitiveMapEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1306,7 +1351,7 @@ export namespace MessageWithPrimitiveMap {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithPrimitiveMap>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithPrimitiveMapEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithPrimitiveMap.codec())
   }
 
@@ -1332,7 +1377,7 @@ enum __ENUMValues {
 }
 
 export namespace ENUM {
-  export const codec = (): Codec<ENUM> => {
+  export const codec = (): Codec<ENUM, ENUM> => {
     return enumeration<ENUM>(__ENUMValues)
   }
 }
@@ -1342,12 +1387,17 @@ export interface MessageWithRepeatedEnums {
   enums: ENUM[]
 }
 
-export namespace MessageWithRepeatedEnums {
-  let _codec: Codec<MessageWithRepeatedEnums>
+export interface MessageWithRepeatedEnumsEncoder {
+  field1: boolean
+  enums: ENUM[]
+}
 
-  export const codec = (): Codec<MessageWithRepeatedEnums> => {
+export namespace MessageWithRepeatedEnums {
+  let _codec: Codec<MessageWithRepeatedEnums, MessageWithRepeatedEnumsEncoder>
+
+  export const codec = (): Codec<MessageWithRepeatedEnums, MessageWithRepeatedEnumsEncoder> => {
     if (_codec == null) {
-      _codec = message<MessageWithRepeatedEnums>((obj, w, opts = {}) => {
+      _codec = message<MessageWithRepeatedEnums, MessageWithRepeatedEnumsEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1471,7 +1521,7 @@ export namespace MessageWithRepeatedEnums {
     value: ENUM
   }
 
-  export function encode (obj: Partial<MessageWithRepeatedEnums>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<MessageWithRepeatedEnumsEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRepeatedEnums.codec())
   }
 

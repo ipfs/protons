@@ -21,8 +21,12 @@ export class ArrayField extends Field {
     this.lengthLimit = def.options?.['(protons.options).limit']
   }
 
-  getInterfaceField (parent: Parent, indent = ''): string {
-    return `${super.getInterfaceField(parent, indent)}[]`
+  getDecoderInterfaceField (parent: Parent, indent = ''): string {
+    return `${super.getDecoderInterfaceField(parent, indent)}[]`
+  }
+
+  getEncoderInterfaceField (parent: Parent, indent = ''): string {
+    return `${super.getEncoderInterfaceField(parent, indent)}[]`
   }
 
   getDefaultField (parent: Parent): string {

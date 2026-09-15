@@ -15,6 +15,18 @@ export interface Request {
   peerStore?: PeerstoreRequest
 }
 
+export interface RequestEncoder {
+  type: Request.Type
+  connect?: ConnectRequestEncoder
+  streamOpen?: StreamOpenRequestEncoder
+  streamHandler?: StreamHandlerRequestEncoder
+  dht?: DHTRequestEncoder
+  connManager?: ConnManagerRequestEncoder
+  disconnect?: DisconnectRequestEncoder
+  pubsub?: PSRequestEncoder
+  peerStore?: PeerstoreRequestEncoder
+}
+
 export namespace Request {
   export enum Type {
     IDENTIFY = 'IDENTIFY',
@@ -43,16 +55,16 @@ export namespace Request {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<Request>
+  let _codec: Codec<Request, RequestEncoder>
 
-  export const codec = (): Codec<Request> => {
+  export const codec = (): Codec<Request, RequestEncoder> => {
     if (_codec == null) {
-      _codec = message<Request>((obj, w, opts = {}) => {
+      _codec = message<Request, RequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -493,7 +505,7 @@ export namespace Request {
     value: string
   }
 
-  export function encode (obj: Partial<Request>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<RequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Request.codec())
   }
 
@@ -517,6 +529,17 @@ export interface Response {
   peerStore?: PeerstoreResponse
 }
 
+export interface ResponseEncoder {
+  type: Response.Type
+  error?: ErrorResponseEncoder
+  streamInfo?: StreamInfoEncoder
+  identify?: IdentifyResponseEncoder
+  dht?: DHTResponseEncoder
+  peers: PeerInfoEncoder[]
+  pubsub?: PSResponseEncoder
+  peerStore?: PeerstoreResponseEncoder
+}
+
 export namespace Response {
   export enum Type {
     OK = 'OK',
@@ -529,16 +552,16 @@ export namespace Response {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<Response>
+  let _codec: Codec<Response, ResponseEncoder>
 
-  export const codec = (): Codec<Response> => {
+  export const codec = (): Codec<Response, ResponseEncoder> => {
     if (_codec == null) {
-      _codec = message<Response>((obj, w, opts = {}) => {
+      _codec = message<Response, ResponseEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -956,7 +979,7 @@ export namespace Response {
     value: string
   }
 
-  export function encode (obj: Partial<Response>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<ResponseEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Response.codec())
   }
 
@@ -974,12 +997,17 @@ export interface IdentifyResponse {
   addrs: Uint8Array<ArrayBuffer>[]
 }
 
-export namespace IdentifyResponse {
-  let _codec: Codec<IdentifyResponse>
+export interface IdentifyResponseEncoder {
+  id: Uint8Array
+  addrs: Uint8Array[]
+}
 
-  export const codec = (): Codec<IdentifyResponse> => {
+export namespace IdentifyResponse {
+  let _codec: Codec<IdentifyResponse, IdentifyResponseEncoder>
+
+  export const codec = (): Codec<IdentifyResponse, IdentifyResponseEncoder> => {
     if (_codec == null) {
-      _codec = message<IdentifyResponse>((obj, w, opts = {}) => {
+      _codec = message<IdentifyResponse, IdentifyResponseEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1103,7 +1131,7 @@ export namespace IdentifyResponse {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<IdentifyResponse>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<IdentifyResponseEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
@@ -1122,12 +1150,18 @@ export interface ConnectRequest {
   timeout?: bigint
 }
 
-export namespace ConnectRequest {
-  let _codec: Codec<ConnectRequest>
+export interface ConnectRequestEncoder {
+  peer: Uint8Array
+  addrs: Uint8Array[]
+  timeout?: bigint
+}
 
-  export const codec = (): Codec<ConnectRequest> => {
+export namespace ConnectRequest {
+  let _codec: Codec<ConnectRequest, ConnectRequestEncoder>
+
+  export const codec = (): Codec<ConnectRequest, ConnectRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<ConnectRequest>((obj, w, opts = {}) => {
+      _codec = message<ConnectRequest, ConnectRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1272,7 +1306,7 @@ export namespace ConnectRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<ConnectRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<ConnectRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
@@ -1291,12 +1325,18 @@ export interface StreamOpenRequest {
   timeout?: bigint
 }
 
-export namespace StreamOpenRequest {
-  let _codec: Codec<StreamOpenRequest>
+export interface StreamOpenRequestEncoder {
+  peer: Uint8Array
+  proto: string[]
+  timeout?: bigint
+}
 
-  export const codec = (): Codec<StreamOpenRequest> => {
+export namespace StreamOpenRequest {
+  let _codec: Codec<StreamOpenRequest, StreamOpenRequestEncoder>
+
+  export const codec = (): Codec<StreamOpenRequest, StreamOpenRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<StreamOpenRequest>((obj, w, opts = {}) => {
+      _codec = message<StreamOpenRequest, StreamOpenRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1441,7 +1481,7 @@ export namespace StreamOpenRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<StreamOpenRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<StreamOpenRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
@@ -1459,12 +1499,17 @@ export interface StreamHandlerRequest {
   proto: string[]
 }
 
-export namespace StreamHandlerRequest {
-  let _codec: Codec<StreamHandlerRequest>
+export interface StreamHandlerRequestEncoder {
+  addr: Uint8Array
+  proto: string[]
+}
 
-  export const codec = (): Codec<StreamHandlerRequest> => {
+export namespace StreamHandlerRequest {
+  let _codec: Codec<StreamHandlerRequest, StreamHandlerRequestEncoder>
+
+  export const codec = (): Codec<StreamHandlerRequest, StreamHandlerRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<StreamHandlerRequest>((obj, w, opts = {}) => {
+      _codec = message<StreamHandlerRequest, StreamHandlerRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1588,7 +1633,7 @@ export namespace StreamHandlerRequest {
     value: string
   }
 
-  export function encode (obj: Partial<StreamHandlerRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<StreamHandlerRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
@@ -1605,12 +1650,16 @@ export interface ErrorResponse {
   msg: string
 }
 
-export namespace ErrorResponse {
-  let _codec: Codec<ErrorResponse>
+export interface ErrorResponseEncoder {
+  msg: string
+}
 
-  export const codec = (): Codec<ErrorResponse> => {
+export namespace ErrorResponse {
+  let _codec: Codec<ErrorResponse, ErrorResponseEncoder>
+
+  export const codec = (): Codec<ErrorResponse, ErrorResponseEncoder> => {
     if (_codec == null) {
-      _codec = message<ErrorResponse>((obj, w, opts = {}) => {
+      _codec = message<ErrorResponse, ErrorResponseEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1693,7 +1742,7 @@ export namespace ErrorResponse {
     value: string
   }
 
-  export function encode (obj: Partial<ErrorResponse>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<ErrorResponseEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
@@ -1712,12 +1761,18 @@ export interface StreamInfo {
   proto: string
 }
 
-export namespace StreamInfo {
-  let _codec: Codec<StreamInfo>
+export interface StreamInfoEncoder {
+  peer: Uint8Array
+  addr: Uint8Array
+  proto: string
+}
 
-  export const codec = (): Codec<StreamInfo> => {
+export namespace StreamInfo {
+  let _codec: Codec<StreamInfo, StreamInfoEncoder>
+
+  export const codec = (): Codec<StreamInfo, StreamInfoEncoder> => {
     if (_codec == null) {
-      _codec = message<StreamInfo>((obj, w, opts = {}) => {
+      _codec = message<StreamInfo, StreamInfoEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1844,7 +1899,7 @@ export namespace StreamInfo {
     value: string
   }
 
-  export function encode (obj: Partial<StreamInfo>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<StreamInfoEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
@@ -1863,6 +1918,16 @@ export interface DHTRequest {
   cid?: Uint8Array<ArrayBuffer>
   key?: Uint8Array<ArrayBuffer>
   value?: Uint8Array<ArrayBuffer>
+  count?: number
+  timeout?: bigint
+}
+
+export interface DHTRequestEncoder {
+  type: DHTRequest.Type
+  peer?: Uint8Array
+  cid?: Uint8Array
+  key?: Uint8Array
+  value?: Uint8Array
   count?: number
   timeout?: bigint
 }
@@ -1893,16 +1958,16 @@ export namespace DHTRequest {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<DHTRequest>
+  let _codec: Codec<DHTRequest, DHTRequestEncoder>
 
-  export const codec = (): Codec<DHTRequest> => {
+  export const codec = (): Codec<DHTRequest, DHTRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<DHTRequest>((obj, w, opts = {}) => {
+      _codec = message<DHTRequest, DHTRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -2111,7 +2176,7 @@ export namespace DHTRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<DHTRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<DHTRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
@@ -2130,6 +2195,12 @@ export interface DHTResponse {
   value?: Uint8Array<ArrayBuffer>
 }
 
+export interface DHTResponseEncoder {
+  type: DHTResponse.Type
+  peer?: PeerInfoEncoder
+  value?: Uint8Array
+}
+
 export namespace DHTResponse {
   export enum Type {
     BEGIN = 'BEGIN',
@@ -2144,16 +2215,16 @@ export namespace DHTResponse {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<DHTResponse>
+  let _codec: Codec<DHTResponse, DHTResponseEncoder>
 
-  export const codec = (): Codec<DHTResponse> => {
+  export const codec = (): Codec<DHTResponse, DHTResponseEncoder> => {
     if (_codec == null) {
-      _codec = message<DHTResponse>((obj, w, opts = {}) => {
+      _codec = message<DHTResponse, DHTResponseEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -2296,7 +2367,7 @@ export namespace DHTResponse {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<DHTResponse>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<DHTResponseEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
@@ -2314,12 +2385,17 @@ export interface PeerInfo {
   addrs: Uint8Array<ArrayBuffer>[]
 }
 
-export namespace PeerInfo {
-  let _codec: Codec<PeerInfo>
+export interface PeerInfoEncoder {
+  id: Uint8Array
+  addrs: Uint8Array[]
+}
 
-  export const codec = (): Codec<PeerInfo> => {
+export namespace PeerInfo {
+  let _codec: Codec<PeerInfo, PeerInfoEncoder>
+
+  export const codec = (): Codec<PeerInfo, PeerInfoEncoder> => {
     if (_codec == null) {
-      _codec = message<PeerInfo>((obj, w, opts = {}) => {
+      _codec = message<PeerInfo, PeerInfoEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -2443,7 +2519,7 @@ export namespace PeerInfo {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PeerInfo>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<PeerInfoEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
@@ -2463,6 +2539,13 @@ export interface ConnManagerRequest {
   weight?: bigint
 }
 
+export interface ConnManagerRequestEncoder {
+  type: ConnManagerRequest.Type
+  peer?: Uint8Array
+  tag?: string
+  weight?: bigint
+}
+
 export namespace ConnManagerRequest {
   export enum Type {
     TAG_PEER = 'TAG_PEER',
@@ -2477,16 +2560,16 @@ export namespace ConnManagerRequest {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<ConnManagerRequest>
+  let _codec: Codec<ConnManagerRequest, ConnManagerRequestEncoder>
 
-  export const codec = (): Codec<ConnManagerRequest> => {
+  export const codec = (): Codec<ConnManagerRequest, ConnManagerRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<ConnManagerRequest>((obj, w, opts = {}) => {
+      _codec = message<ConnManagerRequest, ConnManagerRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -2632,7 +2715,7 @@ export namespace ConnManagerRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<ConnManagerRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<ConnManagerRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
@@ -2649,12 +2732,16 @@ export interface DisconnectRequest {
   peer: Uint8Array<ArrayBuffer>
 }
 
-export namespace DisconnectRequest {
-  let _codec: Codec<DisconnectRequest>
+export interface DisconnectRequestEncoder {
+  peer: Uint8Array
+}
 
-  export const codec = (): Codec<DisconnectRequest> => {
+export namespace DisconnectRequest {
+  let _codec: Codec<DisconnectRequest, DisconnectRequestEncoder>
+
+  export const codec = (): Codec<DisconnectRequest, DisconnectRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<DisconnectRequest>((obj, w, opts = {}) => {
+      _codec = message<DisconnectRequest, DisconnectRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -2737,7 +2824,7 @@ export namespace DisconnectRequest {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<DisconnectRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<DisconnectRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
@@ -2756,6 +2843,12 @@ export interface PSRequest {
   data?: Uint8Array<ArrayBuffer>
 }
 
+export interface PSRequestEncoder {
+  type: PSRequest.Type
+  topic?: string
+  data?: Uint8Array
+}
+
 export namespace PSRequest {
   export enum Type {
     GET_TOPICS = 'GET_TOPICS',
@@ -2772,16 +2865,16 @@ export namespace PSRequest {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<PSRequest>
+  let _codec: Codec<PSRequest, PSRequestEncoder>
 
-  export const codec = (): Codec<PSRequest> => {
+  export const codec = (): Codec<PSRequest, PSRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<PSRequest>((obj, w, opts = {}) => {
+      _codec = message<PSRequest, PSRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -2906,7 +2999,7 @@ export namespace PSRequest {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PSRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<PSRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSRequest.codec())
   }
 
@@ -2928,12 +3021,21 @@ export interface PSMessage {
   key?: Uint8Array<ArrayBuffer>
 }
 
-export namespace PSMessage {
-  let _codec: Codec<PSMessage>
+export interface PSMessageEncoder {
+  from?: Uint8Array
+  data?: Uint8Array
+  seqno?: Uint8Array
+  topicIDs: string[]
+  signature?: Uint8Array
+  key?: Uint8Array
+}
 
-  export const codec = (): Codec<PSMessage> => {
+export namespace PSMessage {
+  let _codec: Codec<PSMessage, PSMessageEncoder>
+
+  export const codec = (): Codec<PSMessage, PSMessageEncoder> => {
     if (_codec == null) {
-      _codec = message<PSMessage>((obj, w, opts = {}) => {
+      _codec = message<PSMessage, PSMessageEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -3140,7 +3242,7 @@ export namespace PSMessage {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PSMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<PSMessageEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSMessage.codec())
   }
 
@@ -3158,12 +3260,17 @@ export interface PSResponse {
   peerIDs: Uint8Array<ArrayBuffer>[]
 }
 
-export namespace PSResponse {
-  let _codec: Codec<PSResponse>
+export interface PSResponseEncoder {
+  topics: string[]
+  peerIDs: Uint8Array[]
+}
 
-  export const codec = (): Codec<PSResponse> => {
+export namespace PSResponse {
+  let _codec: Codec<PSResponse, PSResponseEncoder>
+
+  export const codec = (): Codec<PSResponse, PSResponseEncoder> => {
     if (_codec == null) {
-      _codec = message<PSResponse>((obj, w, opts = {}) => {
+      _codec = message<PSResponse, PSResponseEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -3303,7 +3410,7 @@ export namespace PSResponse {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PSResponse>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<PSResponseEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSResponse.codec())
   }
 
@@ -3322,6 +3429,12 @@ export interface PeerstoreRequest {
   protos: string[]
 }
 
+export interface PeerstoreRequestEncoder {
+  type: PeerstoreRequest.Type
+  id?: Uint8Array
+  protos: string[]
+}
+
 export namespace PeerstoreRequest {
   export enum Type {
     INVALID = 'INVALID',
@@ -3336,16 +3449,16 @@ export namespace PeerstoreRequest {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
 
-  let _codec: Codec<PeerstoreRequest>
+  let _codec: Codec<PeerstoreRequest, PeerstoreRequestEncoder>
 
-  export const codec = (): Codec<PeerstoreRequest> => {
+  export const codec = (): Codec<PeerstoreRequest, PeerstoreRequestEncoder> => {
     if (_codec == null) {
-      _codec = message<PeerstoreRequest>((obj, w, opts = {}) => {
+      _codec = message<PeerstoreRequest, PeerstoreRequestEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -3490,7 +3603,7 @@ export namespace PeerstoreRequest {
     value: string
   }
 
-  export function encode (obj: Partial<PeerstoreRequest>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<PeerstoreRequestEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
@@ -3508,12 +3621,17 @@ export interface PeerstoreResponse {
   protos: string[]
 }
 
-export namespace PeerstoreResponse {
-  let _codec: Codec<PeerstoreResponse>
+export interface PeerstoreResponseEncoder {
+  peer?: PeerInfoEncoder
+  protos: string[]
+}
 
-  export const codec = (): Codec<PeerstoreResponse> => {
+export namespace PeerstoreResponse {
+  let _codec: Codec<PeerstoreResponse, PeerstoreResponseEncoder>
+
+  export const codec = (): Codec<PeerstoreResponse, PeerstoreResponseEncoder> => {
     if (_codec == null) {
-      _codec = message<PeerstoreResponse>((obj, w, opts = {}) => {
+      _codec = message<PeerstoreResponse, PeerstoreResponseEncoder>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -3654,7 +3772,7 @@ export namespace PeerstoreResponse {
     value: string
   }
 
-  export function encode (obj: Partial<PeerstoreResponse>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: Partial<PeerstoreResponseEncoder>): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 
