@@ -16,7 +16,7 @@ export interface EncodeOptions {
 }
 
 export interface EncodeFunction<T> {
-  (value: Partial<T>, writer: Writer, opts?: EncodeOptions): void
+  (value: T, writer: Writer, opts?: EncodeOptions): void
 }
 
 // protobuf types that contain multiple values
