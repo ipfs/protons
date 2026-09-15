@@ -96,7 +96,7 @@ export namespace Foo {
     value: number
   }
 
-  export function encode (obj: Partial<FooEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: FooEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Foo.codec())
   }
 
@@ -215,7 +215,7 @@ export namespace Bar {
     value: number
   }
 
-  export function encode (obj: Partial<BarEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: BarEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Bar.codec())
   }
 
@@ -251,7 +251,7 @@ export interface Yo {
 }
 
 export interface YoEncoder {
-  lol: FOO[]
+  lol?: FOO[]
 }
 
 export namespace Yo {
@@ -361,7 +361,7 @@ export namespace Yo {
     value: FOO
   }
 
-  export function encode (obj: Partial<YoEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: YoEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Yo.codec())
   }
 
@@ -513,7 +513,7 @@ export namespace Lol {
     value: number
   }
 
-  export function encode (obj: Partial<LolEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: LolEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Lol.codec())
   }
 
@@ -726,7 +726,7 @@ export namespace Test {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<TestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: TestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Test.codec())
   }
 

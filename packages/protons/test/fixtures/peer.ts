@@ -12,9 +12,9 @@ export interface Peer {
 }
 
 export interface PeerEncoder {
-  addresses: AddressEncoder[]
-  protocols: string[]
-  metadata: MetadataEncoder[]
+  addresses?: AddressEncoder[]
+  protocols?: string[]
+  metadata?: MetadataEncoder[]
   pubKey?: Uint8Array
   peerRecordEnvelope?: Uint8Array
 }
@@ -294,7 +294,7 @@ export namespace Peer {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PeerEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PeerEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Peer.codec())
   }
 
@@ -313,7 +313,7 @@ export interface Address {
 }
 
 export interface AddressEncoder {
-  multiaddr: Uint8Array
+  multiaddr?: Uint8Array
   isCertified?: boolean
 }
 
@@ -426,7 +426,7 @@ export namespace Address {
     value: boolean
   }
 
-  export function encode (obj: Partial<AddressEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: AddressEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Address.codec())
   }
 
@@ -445,8 +445,8 @@ export interface Metadata {
 }
 
 export interface MetadataEncoder {
-  key: string
-  value: Uint8Array
+  key?: string
+  value?: Uint8Array
 }
 
 export namespace Metadata {
@@ -559,7 +559,7 @@ export namespace Metadata {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<MetadataEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MetadataEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Metadata.codec())
   }
 

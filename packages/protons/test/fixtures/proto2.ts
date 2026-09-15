@@ -7,7 +7,7 @@ export interface MessageWithRequired {
 }
 
 export interface MessageWithRequiredEncoder {
-  scalarField: number
+  scalarField?: number
 }
 
 export namespace MessageWithRequired {
@@ -98,7 +98,7 @@ export namespace MessageWithRequired {
     value: number
   }
 
-  export function encode (obj: Partial<MessageWithRequiredEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithRequiredEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRequired.codec())
   }
 

@@ -15,9 +15,9 @@ export namespace pb {
   }
 
   export interface NoiseHandshakePayloadEncoder {
-    identityKey: Uint8Array
-    identitySig: Uint8Array
-    data: Uint8Array
+    identityKey?: Uint8Array
+    identitySig?: Uint8Array
+    data?: Uint8Array
   }
 
   export namespace NoiseHandshakePayload {
@@ -152,7 +152,7 @@ export namespace pb {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: Partial<NoiseHandshakePayloadEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: NoiseHandshakePayloadEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
@@ -229,7 +229,7 @@ export namespace pb {
     return _codec
   }
 
-  export function encode (obj: Partial<pbEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: pbEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, pb.codec())
   }
 

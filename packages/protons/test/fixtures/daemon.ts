@@ -16,7 +16,7 @@ export interface Request {
 }
 
 export interface RequestEncoder {
-  type: Request.Type
+  type?: Request.Type
   connect?: ConnectRequestEncoder
   streamOpen?: StreamOpenRequestEncoder
   streamHandler?: StreamHandlerRequestEncoder
@@ -505,7 +505,7 @@ export namespace Request {
     value: string
   }
 
-  export function encode (obj: Partial<RequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: RequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Request.codec())
   }
 
@@ -530,12 +530,12 @@ export interface Response {
 }
 
 export interface ResponseEncoder {
-  type: Response.Type
+  type?: Response.Type
   error?: ErrorResponseEncoder
   streamInfo?: StreamInfoEncoder
   identify?: IdentifyResponseEncoder
   dht?: DHTResponseEncoder
-  peers: PeerInfoEncoder[]
+  peers?: PeerInfoEncoder[]
   pubsub?: PSResponseEncoder
   peerStore?: PeerstoreResponseEncoder
 }
@@ -979,7 +979,7 @@ export namespace Response {
     value: string
   }
 
-  export function encode (obj: Partial<ResponseEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ResponseEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Response.codec())
   }
 
@@ -998,8 +998,8 @@ export interface IdentifyResponse {
 }
 
 export interface IdentifyResponseEncoder {
-  id: Uint8Array
-  addrs: Uint8Array[]
+  id?: Uint8Array
+  addrs?: Uint8Array[]
 }
 
 export namespace IdentifyResponse {
@@ -1131,7 +1131,7 @@ export namespace IdentifyResponse {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<IdentifyResponseEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: IdentifyResponseEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, IdentifyResponse.codec())
   }
 
@@ -1151,8 +1151,8 @@ export interface ConnectRequest {
 }
 
 export interface ConnectRequestEncoder {
-  peer: Uint8Array
-  addrs: Uint8Array[]
+  peer?: Uint8Array
+  addrs?: Uint8Array[]
   timeout?: bigint
 }
 
@@ -1306,7 +1306,7 @@ export namespace ConnectRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<ConnectRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ConnectRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ConnectRequest.codec())
   }
 
@@ -1326,8 +1326,8 @@ export interface StreamOpenRequest {
 }
 
 export interface StreamOpenRequestEncoder {
-  peer: Uint8Array
-  proto: string[]
+  peer?: Uint8Array
+  proto?: string[]
   timeout?: bigint
 }
 
@@ -1481,7 +1481,7 @@ export namespace StreamOpenRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<StreamOpenRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: StreamOpenRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamOpenRequest.codec())
   }
 
@@ -1500,8 +1500,8 @@ export interface StreamHandlerRequest {
 }
 
 export interface StreamHandlerRequestEncoder {
-  addr: Uint8Array
-  proto: string[]
+  addr?: Uint8Array
+  proto?: string[]
 }
 
 export namespace StreamHandlerRequest {
@@ -1633,7 +1633,7 @@ export namespace StreamHandlerRequest {
     value: string
   }
 
-  export function encode (obj: Partial<StreamHandlerRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: StreamHandlerRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamHandlerRequest.codec())
   }
 
@@ -1651,7 +1651,7 @@ export interface ErrorResponse {
 }
 
 export interface ErrorResponseEncoder {
-  msg: string
+  msg?: string
 }
 
 export namespace ErrorResponse {
@@ -1742,7 +1742,7 @@ export namespace ErrorResponse {
     value: string
   }
 
-  export function encode (obj: Partial<ErrorResponseEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ErrorResponseEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ErrorResponse.codec())
   }
 
@@ -1762,9 +1762,9 @@ export interface StreamInfo {
 }
 
 export interface StreamInfoEncoder {
-  peer: Uint8Array
-  addr: Uint8Array
-  proto: string
+  peer?: Uint8Array
+  addr?: Uint8Array
+  proto?: string
 }
 
 export namespace StreamInfo {
@@ -1899,7 +1899,7 @@ export namespace StreamInfo {
     value: string
   }
 
-  export function encode (obj: Partial<StreamInfoEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: StreamInfoEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, StreamInfo.codec())
   }
 
@@ -1923,7 +1923,7 @@ export interface DHTRequest {
 }
 
 export interface DHTRequestEncoder {
-  type: DHTRequest.Type
+  type?: DHTRequest.Type
   peer?: Uint8Array
   cid?: Uint8Array
   key?: Uint8Array
@@ -2176,7 +2176,7 @@ export namespace DHTRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<DHTRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: DHTRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DHTRequest.codec())
   }
 
@@ -2196,7 +2196,7 @@ export interface DHTResponse {
 }
 
 export interface DHTResponseEncoder {
-  type: DHTResponse.Type
+  type?: DHTResponse.Type
   peer?: PeerInfoEncoder
   value?: Uint8Array
 }
@@ -2367,7 +2367,7 @@ export namespace DHTResponse {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<DHTResponseEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: DHTResponseEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DHTResponse.codec())
   }
 
@@ -2386,8 +2386,8 @@ export interface PeerInfo {
 }
 
 export interface PeerInfoEncoder {
-  id: Uint8Array
-  addrs: Uint8Array[]
+  id?: Uint8Array
+  addrs?: Uint8Array[]
 }
 
 export namespace PeerInfo {
@@ -2519,7 +2519,7 @@ export namespace PeerInfo {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PeerInfoEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PeerInfoEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerInfo.codec())
   }
 
@@ -2540,7 +2540,7 @@ export interface ConnManagerRequest {
 }
 
 export interface ConnManagerRequestEncoder {
-  type: ConnManagerRequest.Type
+  type?: ConnManagerRequest.Type
   peer?: Uint8Array
   tag?: string
   weight?: bigint
@@ -2715,7 +2715,7 @@ export namespace ConnManagerRequest {
     value: bigint
   }
 
-  export function encode (obj: Partial<ConnManagerRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ConnManagerRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ConnManagerRequest.codec())
   }
 
@@ -2733,7 +2733,7 @@ export interface DisconnectRequest {
 }
 
 export interface DisconnectRequestEncoder {
-  peer: Uint8Array
+  peer?: Uint8Array
 }
 
 export namespace DisconnectRequest {
@@ -2824,7 +2824,7 @@ export namespace DisconnectRequest {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<DisconnectRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: DisconnectRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DisconnectRequest.codec())
   }
 
@@ -2844,7 +2844,7 @@ export interface PSRequest {
 }
 
 export interface PSRequestEncoder {
-  type: PSRequest.Type
+  type?: PSRequest.Type
   topic?: string
   data?: Uint8Array
 }
@@ -2999,7 +2999,7 @@ export namespace PSRequest {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PSRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PSRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSRequest.codec())
   }
 
@@ -3025,7 +3025,7 @@ export interface PSMessageEncoder {
   from?: Uint8Array
   data?: Uint8Array
   seqno?: Uint8Array
-  topicIDs: string[]
+  topicIDs?: string[]
   signature?: Uint8Array
   key?: Uint8Array
 }
@@ -3242,7 +3242,7 @@ export namespace PSMessage {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PSMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PSMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSMessage.codec())
   }
 
@@ -3261,8 +3261,8 @@ export interface PSResponse {
 }
 
 export interface PSResponseEncoder {
-  topics: string[]
-  peerIDs: Uint8Array[]
+  topics?: string[]
+  peerIDs?: Uint8Array[]
 }
 
 export namespace PSResponse {
@@ -3410,7 +3410,7 @@ export namespace PSResponse {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<PSResponseEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PSResponseEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PSResponse.codec())
   }
 
@@ -3430,9 +3430,9 @@ export interface PeerstoreRequest {
 }
 
 export interface PeerstoreRequestEncoder {
-  type: PeerstoreRequest.Type
+  type?: PeerstoreRequest.Type
   id?: Uint8Array
-  protos: string[]
+  protos?: string[]
 }
 
 export namespace PeerstoreRequest {
@@ -3603,7 +3603,7 @@ export namespace PeerstoreRequest {
     value: string
   }
 
-  export function encode (obj: Partial<PeerstoreRequestEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PeerstoreRequestEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerstoreRequest.codec())
   }
 
@@ -3623,7 +3623,7 @@ export interface PeerstoreResponse {
 
 export interface PeerstoreResponseEncoder {
   peer?: PeerInfoEncoder
-  protos: string[]
+  protos?: string[]
 }
 
 export namespace PeerstoreResponse {
@@ -3772,7 +3772,7 @@ export namespace PeerstoreResponse {
     value: string
   }
 
-  export function encode (obj: Partial<PeerstoreResponseEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PeerstoreResponseEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PeerstoreResponse.codec())
   }
 

@@ -188,7 +188,7 @@ export namespace Record {
     value: string
   }
 
-  export function encode (obj: Partial<RecordEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: RecordEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Record.codec())
   }
 
@@ -215,8 +215,8 @@ export interface MessageEncoder {
   clusterLevelRaw?: number
   key?: Uint8Array
   record?: Uint8Array
-  closerPeers: Message.PeerEncoder[]
-  providerPeers: Message.PeerEncoder[]
+  closerPeers?: Message.PeerEncoder[]
+  providerPeers?: Message.PeerEncoder[]
 }
 
 export namespace Message {
@@ -272,7 +272,7 @@ export namespace Message {
 
   export interface PeerEncoder {
     id?: Uint8Array
-    addrs: Uint8Array[]
+    addrs?: Uint8Array[]
     connection?: Message.ConnectionType
   }
 
@@ -425,7 +425,7 @@ export namespace Message {
       value: Message.ConnectionType
     }
 
-    export function encode (obj: Partial<PeerEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: PeerEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -728,7 +728,7 @@ export namespace Message {
     message: string
   }
 
-  export function encode (obj: Partial<MessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Message.codec())
   }
 

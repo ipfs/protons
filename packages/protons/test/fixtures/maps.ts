@@ -26,8 +26,8 @@ export interface SubMessage {
 }
 
 export interface SubMessageEncoder {
-  foo: string
-  bar: number[]
+  foo?: string
+  bar?: number[]
 }
 
 export namespace SubMessage {
@@ -159,7 +159,7 @@ export namespace SubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SubMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -181,11 +181,11 @@ export interface MapTypes {
 }
 
 export interface MapTypesEncoder {
-  stringMap: Map<string, string>
-  intMap: Map<number, number>
-  boolMap: Map<boolean, boolean>
-  messageMap: Map<string, SubMessageEncoder>
-  enumMap: Map<string, EnumValue>
+  stringMap?: Map<string, string>
+  intMap?: Map<number, number>
+  boolMap?: Map<boolean, boolean>
+  messageMap?: Map<string, SubMessageEncoder>
+  enumMap?: Map<string, EnumValue>
 }
 
 export namespace MapTypes {
@@ -195,8 +195,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$stringMapEntryEncoder {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace MapTypes$stringMapEntry {
@@ -309,7 +309,7 @@ export namespace MapTypes {
       value: string
     }
 
-    export function encode (obj: Partial<MapTypes$stringMapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$stringMapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$stringMapEntry.codec())
     }
 
@@ -328,8 +328,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$intMapEntryEncoder {
-    key: number
-    value: number
+    key?: number
+    value?: number
   }
 
   export namespace MapTypes$intMapEntry {
@@ -442,7 +442,7 @@ export namespace MapTypes {
       value: number
     }
 
-    export function encode (obj: Partial<MapTypes$intMapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$intMapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$intMapEntry.codec())
     }
 
@@ -461,8 +461,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$boolMapEntryEncoder {
-    key: boolean
-    value: boolean
+    key?: boolean
+    value?: boolean
   }
 
   export namespace MapTypes$boolMapEntry {
@@ -575,7 +575,7 @@ export namespace MapTypes {
       value: boolean
     }
 
-    export function encode (obj: Partial<MapTypes$boolMapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$boolMapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$boolMapEntry.codec())
     }
 
@@ -594,7 +594,7 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$messageMapEntryEncoder {
-    key: string
+    key?: string
     value?: SubMessageEncoder
   }
 
@@ -725,7 +725,7 @@ export namespace MapTypes {
       value: number
     }
 
-    export function encode (obj: Partial<MapTypes$messageMapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$messageMapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$messageMapEntry.codec())
     }
 
@@ -744,8 +744,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$enumMapEntryEncoder {
-    key: string
-    value: EnumValue
+    key?: string
+    value?: EnumValue
   }
 
   export namespace MapTypes$enumMapEntry {
@@ -858,7 +858,7 @@ export namespace MapTypes {
       value: EnumValue
     }
 
-    export function encode (obj: Partial<MapTypes$enumMapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$enumMapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$enumMapEntry.codec())
     }
 
@@ -1175,7 +1175,7 @@ export namespace MapTypes {
     value: EnumValue
   }
 
-  export function encode (obj: Partial<MapTypesEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MapTypesEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MapTypes.codec())
   }
 

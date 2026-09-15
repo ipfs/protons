@@ -8,7 +8,7 @@ export interface SubSubMessage {
 }
 
 export interface SubSubMessageEncoder {
-  foo: string[]
+  foo?: string[]
   nonRepeating?: number
 }
 
@@ -140,7 +140,7 @@ export namespace SubSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SubSubMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubSubMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubSubMessage.codec())
   }
 
@@ -161,10 +161,10 @@ export interface SubMessage {
 }
 
 export interface SubMessageEncoder {
-  foo: string[]
+  foo?: string[]
   nonRepeating?: number
   message?: SubSubMessageEncoder
-  messages: SubSubMessageEncoder[]
+  messages?: SubSubMessageEncoder[]
 }
 
 export namespace SubMessage {
@@ -397,7 +397,7 @@ export namespace SubMessage {
     message: string
   }
 
-  export function encode (obj: Partial<SubMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -419,9 +419,9 @@ export interface RepeatedTypes {
 }
 
 export interface RepeatedTypesEncoder {
-  number: number[]
-  limitedNumber: number[]
-  messages: SubMessageEncoder[]
+  number?: number[]
+  limitedNumber?: number[]
+  messages?: SubMessageEncoder[]
   message?: SubMessageEncoder
   nonRepeating?: number
 }
@@ -799,7 +799,7 @@ export namespace RepeatedTypes {
     value: number
   }
 
-  export function encode (obj: Partial<RepeatedTypesEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: RepeatedTypesEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, RepeatedTypes.codec())
   }
 

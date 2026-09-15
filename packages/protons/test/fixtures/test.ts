@@ -23,7 +23,7 @@ export interface SubMessage {
 }
 
 export interface SubMessageEncoder {
-  foo: string
+  foo?: string
 }
 
 export namespace SubMessage {
@@ -114,7 +114,7 @@ export namespace SubMessage {
     value: string
   }
 
-  export function encode (obj: Partial<SubMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -162,7 +162,7 @@ export interface AllTheTypesEncoder {
   field11?: Uint8Array
   field12?: AnEnum
   field13?: SubMessageEncoder
-  field14: string[]
+  field14?: string[]
   field15?: number
   field16?: bigint
   field17?: number
@@ -645,7 +645,7 @@ export namespace AllTheTypes {
     value: bigint
   }
 
-  export function encode (obj: Partial<AllTheTypesEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: AllTheTypesEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 

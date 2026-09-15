@@ -7,7 +7,7 @@ export interface MessageWithSizeLimitedRepeatedField {
 }
 
 export interface MessageWithSizeLimitedRepeatedFieldEncoder {
-  repeatedField: string[]
+  repeatedField?: string[]
 }
 
 export namespace MessageWithSizeLimitedRepeatedField {
@@ -125,7 +125,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithSizeLimitedRepeatedFieldEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithSizeLimitedRepeatedFieldEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedRepeatedField.codec())
   }
 
@@ -143,7 +143,7 @@ export interface MessageWithSizeLimitedMap {
 }
 
 export interface MessageWithSizeLimitedMapEncoder {
-  mapField: Map<string, string>
+  mapField?: Map<string, string>
 }
 
 export namespace MessageWithSizeLimitedMap {
@@ -153,8 +153,8 @@ export namespace MessageWithSizeLimitedMap {
   }
 
   export interface MessageWithSizeLimitedMap$mapFieldEntryEncoder {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace MessageWithSizeLimitedMap$mapFieldEntry {
@@ -267,7 +267,7 @@ export namespace MessageWithSizeLimitedMap {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithSizeLimitedMap$mapFieldEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MessageWithSizeLimitedMap$mapFieldEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithSizeLimitedMap$mapFieldEntry.codec())
     }
 
@@ -399,7 +399,7 @@ export namespace MessageWithSizeLimitedMap {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithSizeLimitedMapEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithSizeLimitedMapEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedMap.codec())
   }
 

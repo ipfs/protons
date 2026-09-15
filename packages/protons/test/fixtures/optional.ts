@@ -137,7 +137,7 @@ export namespace OptionalSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<OptionalSubMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: OptionalSubMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, OptionalSubMessage.codec())
   }
 
@@ -629,7 +629,7 @@ export namespace Optional {
     value: number
   }
 
-  export function encode (obj: Partial<OptionalEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: OptionalEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Optional.codec())
   }
 

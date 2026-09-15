@@ -88,8 +88,8 @@ export namespace CircuitRelay {
   }
 
   export interface PeerEncoder {
-    id: Uint8Array
-    addrs: Uint8Array[]
+    id?: Uint8Array
+    addrs?: Uint8Array[]
   }
 
   export namespace Peer {
@@ -221,7 +221,7 @@ export namespace CircuitRelay {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: Partial<PeerEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: PeerEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -418,7 +418,7 @@ export namespace CircuitRelay {
     value: CircuitRelay.Status
   }
 
-  export function encode (obj: Partial<CircuitRelayEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CircuitRelayEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 

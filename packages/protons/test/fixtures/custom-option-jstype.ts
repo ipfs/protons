@@ -14,14 +14,14 @@ export interface CustomOptionNumber {
 }
 
 export interface CustomOptionNumberEncoder {
-  num: number
-  i64: number
-  ui64: number
-  si64: number
-  f64: number
-  sf64: number
-  i64Array: number[]
-  i64Map: Map<number, number>
+  num?: number
+  i64?: number
+  ui64?: number
+  si64?: number
+  f64?: number
+  sf64?: number
+  i64Array?: number[]
+  i64Map?: Map<number, number>
 }
 
 export namespace CustomOptionNumber {
@@ -31,8 +31,8 @@ export namespace CustomOptionNumber {
   }
 
   export interface CustomOptionNumber$i64MapEntryEncoder {
-    key: number
-    value: number
+    key?: number
+    value?: number
   }
 
   export namespace CustomOptionNumber$i64MapEntry {
@@ -145,7 +145,7 @@ export namespace CustomOptionNumber {
       value: number
     }
 
-    export function encode (obj: Partial<CustomOptionNumber$i64MapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: CustomOptionNumber$i64MapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, CustomOptionNumber$i64MapEntry.codec())
     }
 
@@ -439,7 +439,7 @@ export namespace CustomOptionNumber {
     value: number
   }
 
-  export function encode (obj: Partial<CustomOptionNumberEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CustomOptionNumberEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CustomOptionNumber.codec())
   }
 
@@ -464,14 +464,14 @@ export interface CustomOptionString {
 }
 
 export interface CustomOptionStringEncoder {
-  num: number
-  i64: string
-  ui64: string
-  si64: string
-  f64: string
-  sf64: string
-  i64Array: string[]
-  i64Map: Map<string, string>
+  num?: number
+  i64?: string
+  ui64?: string
+  si64?: string
+  f64?: string
+  sf64?: string
+  i64Array?: string[]
+  i64Map?: Map<string, string>
 }
 
 export namespace CustomOptionString {
@@ -481,8 +481,8 @@ export namespace CustomOptionString {
   }
 
   export interface CustomOptionString$i64MapEntryEncoder {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace CustomOptionString$i64MapEntry {
@@ -595,7 +595,7 @@ export namespace CustomOptionString {
       value: string
     }
 
-    export function encode (obj: Partial<CustomOptionString$i64MapEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: CustomOptionString$i64MapEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, CustomOptionString$i64MapEntry.codec())
     }
 
@@ -889,7 +889,7 @@ export namespace CustomOptionString {
     value: string
   }
 
-  export function encode (obj: Partial<CustomOptionStringEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CustomOptionStringEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CustomOptionString.codec())
   }
 

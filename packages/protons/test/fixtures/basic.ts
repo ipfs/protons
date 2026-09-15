@@ -9,7 +9,7 @@ export interface Basic {
 
 export interface BasicEncoder {
   foo?: string
-  num: number
+  num?: number
 }
 
 export namespace Basic {
@@ -121,7 +121,7 @@ export namespace Basic {
     value: number
   }
 
-  export function encode (obj: Partial<BasicEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: BasicEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Basic.codec())
   }
 
@@ -203,7 +203,7 @@ export namespace Empty {
     return _codec
   }
 
-  export function encode (obj: Partial<EmptyEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: EmptyEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Empty.codec())
   }
 

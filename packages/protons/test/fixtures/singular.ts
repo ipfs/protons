@@ -27,8 +27,8 @@ export interface SingularSubMessage {
 }
 
 export interface SingularSubMessageEncoder {
-  foo: string
-  bar: number
+  foo?: string
+  bar?: number
 }
 
 export namespace SingularSubMessage {
@@ -141,7 +141,7 @@ export namespace SingularSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SingularSubMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SingularSubMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
 
@@ -175,22 +175,22 @@ export interface Singular {
 }
 
 export interface SingularEncoder {
-  double: number
-  float: number
-  int32: number
-  int64: bigint
-  uint32: number
-  uint64: bigint
-  sint32: number
-  sint64: bigint
-  fixed32: number
-  fixed64: bigint
-  sfixed32: number
-  sfixed64: bigint
-  bool: boolean
-  string: string
-  bytes: Uint8Array
-  enum: SingularEnum
+  double?: number
+  float?: number
+  int32?: number
+  int64?: bigint
+  uint32?: number
+  uint64?: bigint
+  sint32?: number
+  sint64?: bigint
+  fixed32?: number
+  fixed64?: bigint
+  sfixed32?: number
+  sfixed64?: bigint
+  bool?: boolean
+  string?: string
+  bytes?: Uint8Array
+  enum?: SingularEnum
   subMessage?: SingularSubMessageEncoder
 }
 
@@ -650,7 +650,7 @@ export namespace Singular {
     value: number
   }
 
-  export function encode (obj: Partial<SingularEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SingularEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Singular.codec())
   }
 

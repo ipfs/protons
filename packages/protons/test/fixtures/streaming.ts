@@ -11,7 +11,7 @@ export interface MessageWithArrayField {
 export interface MessageWithArrayFieldEncoder {
   field1?: boolean
   field2?: number
-  arr: string[]
+  arr?: string[]
 }
 
 export namespace MessageWithArrayField {
@@ -163,7 +163,7 @@ export namespace MessageWithArrayField {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithArrayFieldEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithArrayFieldEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithArrayField.codec())
   }
 
@@ -181,7 +181,7 @@ export interface NestedMessage {
 }
 
 export interface NestedMessageEncoder {
-  nestedValue: string
+  nestedValue?: string
 }
 
 export namespace NestedMessage {
@@ -272,7 +272,7 @@ export namespace NestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<NestedMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: NestedMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, NestedMessage.codec())
   }
 
@@ -291,7 +291,7 @@ export interface MessageWithNestedMessage {
 }
 
 export interface MessageWithNestedMessageEncoder {
-  field1: boolean
+  field1?: boolean
   nestedMessage?: NestedMessageEncoder
 }
 
@@ -416,7 +416,7 @@ export namespace MessageWithNestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithNestedMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithNestedMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithNestedMessage.codec())
   }
 
@@ -435,7 +435,7 @@ export interface MessageWithDeeplyNestedMessage {
 }
 
 export interface MessageWithDeeplyNestedMessageEncoder {
-  field1: boolean
+  field1?: boolean
   nestedMessage?: MessageWithNestedMessageEncoder
 }
 
@@ -575,7 +575,7 @@ export namespace MessageWithDeeplyNestedMessage {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithDeeplyNestedMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithDeeplyNestedMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithDeeplyNestedMessage.codec())
   }
 
@@ -594,8 +594,8 @@ export interface MessageWithRepeatedMessage {
 }
 
 export interface MessageWithRepeatedMessageEncoder {
-  field1: boolean
-  nestedMessages: NestedMessageEncoder[]
+  field1?: boolean
+  nestedMessages?: NestedMessageEncoder[]
 }
 
 export namespace MessageWithRepeatedMessage {
@@ -746,7 +746,7 @@ export namespace MessageWithRepeatedMessage {
     message: string
   }
 
-  export function encode (obj: Partial<MessageWithRepeatedMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithRepeatedMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRepeatedMessage.codec())
   }
 
@@ -765,8 +765,8 @@ export interface MessageWithMapMessage {
 }
 
 export interface MessageWithMapMessageEncoder {
-  field1: boolean
-  nestedMessages: Map<string, NestedMessageEncoder>
+  field1?: boolean
+  nestedMessages?: Map<string, NestedMessageEncoder>
 }
 
 export namespace MessageWithMapMessage {
@@ -776,7 +776,7 @@ export namespace MessageWithMapMessage {
   }
 
   export interface MessageWithMapMessage$nestedMessagesEntryEncoder {
-    key: string
+    key?: string
     value?: NestedMessageEncoder
   }
 
@@ -901,7 +901,7 @@ export namespace MessageWithMapMessage {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithMapMessage$nestedMessagesEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MessageWithMapMessage$nestedMessagesEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithMapMessage$nestedMessagesEntry.codec())
     }
 
@@ -1061,7 +1061,7 @@ export namespace MessageWithMapMessage {
     message: string
   }
 
-  export function encode (obj: Partial<MessageWithMapMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithMapMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithMapMessage.codec())
   }
 
@@ -1080,8 +1080,8 @@ export interface MessageWithPrimitiveMap {
 }
 
 export interface MessageWithPrimitiveMapEncoder {
-  field1: boolean
-  nestedStrings: Map<string, string>
+  field1?: boolean
+  nestedStrings?: Map<string, string>
 }
 
 export namespace MessageWithPrimitiveMap {
@@ -1091,8 +1091,8 @@ export namespace MessageWithPrimitiveMap {
   }
 
   export interface MessageWithPrimitiveMap$nestedStringsEntryEncoder {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace MessageWithPrimitiveMap$nestedStringsEntry {
@@ -1205,7 +1205,7 @@ export namespace MessageWithPrimitiveMap {
       value: string
     }
 
-    export function encode (obj: Partial<MessageWithPrimitiveMap$nestedStringsEntryEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MessageWithPrimitiveMap$nestedStringsEntryEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithPrimitiveMap$nestedStringsEntry.codec())
     }
 
@@ -1351,7 +1351,7 @@ export namespace MessageWithPrimitiveMap {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithPrimitiveMapEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithPrimitiveMapEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithPrimitiveMap.codec())
   }
 
@@ -1388,8 +1388,8 @@ export interface MessageWithRepeatedEnums {
 }
 
 export interface MessageWithRepeatedEnumsEncoder {
-  field1: boolean
-  enums: ENUM[]
+  field1?: boolean
+  enums?: ENUM[]
 }
 
 export namespace MessageWithRepeatedEnums {
@@ -1521,7 +1521,7 @@ export namespace MessageWithRepeatedEnums {
     value: ENUM
   }
 
-  export function encode (obj: Partial<MessageWithRepeatedEnumsEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithRepeatedEnumsEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRepeatedEnums.codec())
   }
 

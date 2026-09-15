@@ -31,7 +31,7 @@ export interface OneOfMessageEncoder {
   fieldTwo?: string
   fieldThree?: EnumType
   fieldFour?: EnumType
-  fieldFive: string
+  fieldFive?: string
 }
 
 export namespace OneOfMessage {
@@ -240,7 +240,7 @@ export namespace OneOfMessage {
     value: string
   }
 
-  export function encode (obj: Partial<OneOfMessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: OneOfMessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, OneOfMessage.codec())
   }
 
@@ -262,11 +262,11 @@ export interface MessageWithoutOneOfs {
 }
 
 export interface MessageWithoutOneOfsEncoder {
-  fieldOne: string
-  fieldTwo: string
-  fieldThree: EnumType
-  fieldFour: EnumType
-  fieldFive: string
+  fieldOne?: string
+  fieldTwo?: string
+  fieldThree?: EnumType
+  fieldFour?: EnumType
+  fieldFive?: string
 }
 
 export namespace MessageWithoutOneOfs {
@@ -445,7 +445,7 @@ export namespace MessageWithoutOneOfs {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithoutOneOfsEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithoutOneOfsEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithoutOneOfs.codec())
   }
 

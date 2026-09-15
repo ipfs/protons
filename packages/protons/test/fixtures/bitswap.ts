@@ -13,10 +13,10 @@ export interface Message {
 
 export interface MessageEncoder {
   wantlist?: Message.WantlistEncoder
-  blocks: Uint8Array[]
-  payload: Message.BlockEncoder[]
-  blockPresences: Message.BlockPresenceEncoder[]
-  pendingBytes: number
+  blocks?: Uint8Array[]
+  payload?: Message.BlockEncoder[]
+  blockPresences?: Message.BlockPresenceEncoder[]
+  pendingBytes?: number
 }
 
 export namespace Message {
@@ -26,8 +26,8 @@ export namespace Message {
   }
 
   export interface WantlistEncoder {
-    entries: Message.Wantlist.EntryEncoder[]
-    full: boolean
+    entries?: Message.Wantlist.EntryEncoder[]
+    full?: boolean
   }
 
   export namespace Wantlist {
@@ -56,11 +56,11 @@ export namespace Message {
     }
 
     export interface EntryEncoder {
-      block: Uint8Array
-      priority: number
+      block?: Uint8Array
+      priority?: number
       cancel?: boolean
-      wantType: Message.Wantlist.WantType
-      sendDontHave: boolean
+      wantType?: Message.Wantlist.WantType
+      sendDontHave?: boolean
     }
 
     export namespace Entry {
@@ -238,7 +238,7 @@ export namespace Message {
         value: boolean
       }
 
-      export function encode (obj: Partial<EntryEncoder>): Uint8Array<ArrayBuffer> {
+      export function encode (obj: EntryEncoder): Uint8Array<ArrayBuffer> {
         return encodeMessage(obj, Entry.codec())
       }
 
@@ -422,7 +422,7 @@ export namespace Message {
       value: boolean
     }
 
-    export function encode (obj: Partial<WantlistEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: WantlistEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Wantlist.codec())
     }
 
@@ -441,8 +441,8 @@ export namespace Message {
   }
 
   export interface BlockEncoder {
-    prefix: Uint8Array
-    data: Uint8Array
+    prefix?: Uint8Array
+    data?: Uint8Array
   }
 
   export namespace Block {
@@ -555,7 +555,7 @@ export namespace Message {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: Partial<BlockEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: BlockEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Block.codec())
     }
 
@@ -590,8 +590,8 @@ export namespace Message {
   }
 
   export interface BlockPresenceEncoder {
-    cid: Uint8Array
-    type: Message.BlockPresenceType
+    cid?: Uint8Array
+    type?: Message.BlockPresenceType
   }
 
   export namespace BlockPresence {
@@ -704,7 +704,7 @@ export namespace Message {
       value: Message.BlockPresenceType
     }
 
-    export function encode (obj: Partial<BlockPresenceEncoder>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: BlockPresenceEncoder): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, BlockPresence.codec())
     }
 
@@ -1048,7 +1048,7 @@ export namespace Message {
     value: number
   }
 
-  export function encode (obj: Partial<MessageEncoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageEncoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Message.codec())
   }
 

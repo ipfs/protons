@@ -358,7 +358,7 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
     return _codec
   }${this.formatStreamEvents(streamEvents)}
 
-  export function encode (obj: Partial<${this.pbType}Encoder>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ${this.pbType}Encoder): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ${this.pbType}.codec())
   }
 

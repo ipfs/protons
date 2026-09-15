@@ -48,7 +48,7 @@ export class MapField extends Field {
     const keyType = this.jsKeyTypeOverride ?? parent.findType(this.keyType).jsType.encode
     const valueType = this.jsValueTypeOverride ?? parent.findType(this.valueType).jsType.encode
 
-    return `${this.name}: Map<${keyType}, ${valueType}>`
+    return `${this.name}?: Map<${keyType}, ${valueType}>`
   }
 
   getDefaultField (parent: Parent): string {
