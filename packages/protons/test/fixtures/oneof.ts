@@ -82,39 +82,39 @@ export namespace OneOfMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           fieldFive: ''
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.fieldOne = reader.string()
+              obj.fieldOne = r.string()
               break
             }
             case 2: {
-              obj.fieldTwo = reader.string()
+              obj.fieldTwo = r.string()
               break
             }
             case 3: {
-              obj.fieldThree = EnumType.codec().decode(reader)
+              obj.fieldThree = EnumType.codec().decode(r)
               break
             }
             case 4: {
-              obj.fieldFour = EnumType.codec().decode(reader)
+              obj.fieldFour = EnumType.codec().decode(r)
               break
             }
             case 5: {
-              obj.fieldFive = reader.string()
+              obj.fieldFive = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -137,8 +137,8 @@ export namespace OneOfMessage {
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -148,47 +148,47 @@ export namespace OneOfMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}fieldOne`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}fieldTwo`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}fieldThree`,
-                value: EnumType.codec().decode(reader)
+                value: EnumType.codec().decode(r)
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}fieldFour`,
-                value: EnumType.codec().decode(reader)
+                value: EnumType.codec().decode(r)
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}fieldFive`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -291,7 +291,7 @@ export namespace MessageWithoutOneOfs {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           fieldOne: '',
           fieldTwo: '',
@@ -300,42 +300,42 @@ export namespace MessageWithoutOneOfs {
           fieldFive: ''
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.fieldOne = reader.string()
+              obj.fieldOne = r.string()
               break
             }
             case 2: {
-              obj.fieldTwo = reader.string()
+              obj.fieldTwo = r.string()
               break
             }
             case 3: {
-              obj.fieldThree = EnumType.codec().decode(reader)
+              obj.fieldThree = EnumType.codec().decode(r)
               break
             }
             case 4: {
-              obj.fieldFour = EnumType.codec().decode(reader)
+              obj.fieldFour = EnumType.codec().decode(r)
               break
             }
             case 5: {
-              obj.fieldFive = reader.string()
+              obj.fieldFive = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -345,47 +345,47 @@ export namespace MessageWithoutOneOfs {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}fieldOne`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}fieldTwo`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}fieldThree`,
-                value: EnumType.codec().decode(reader)
+                value: EnumType.codec().decode(r)
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}fieldFour`,
-                value: EnumType.codec().decode(reader)
+                value: EnumType.codec().decode(r)
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}fieldFive`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

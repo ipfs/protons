@@ -105,20 +105,20 @@ export namespace CircuitRelay {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             id: uint8ArrayAlloc(0),
             addrs: []
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.id = reader.bytes()
+                obj.id = r.bytes()
                 break
               }
               case 2: {
@@ -126,23 +126,23 @@ export namespace CircuitRelay {
                   throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
 
-                obj.addrs.push(reader.bytes())
+                obj.addrs.push(r.bytes())
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
+        }, function * (r, length, prefix, opts = {}) {
           const obj = {
             addrs: 0
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -152,14 +152,14 @@ export namespace CircuitRelay {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}id`,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
                 break
               }
@@ -171,7 +171,7 @@ export namespace CircuitRelay {
                 yield {
                   field: `${prefix}addrs[]`,
                   index: obj.addrs,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
 
                 obj.addrs++
@@ -179,7 +179,7 @@ export namespace CircuitRelay {
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -254,45 +254,45 @@ export namespace CircuitRelay {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = CircuitRelay.Type.codec().decode(reader)
+              obj.type = CircuitRelay.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.srcPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
+              obj.srcPeer = CircuitRelay.Peer.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.srcPeer
               })
               break
             }
             case 3: {
-              obj.dstPeer = CircuitRelay.Peer.codec().decode(reader, reader.uint32(), {
+              obj.dstPeer = CircuitRelay.Peer.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.dstPeer
               })
               break
             }
             case 4: {
-              obj.code = CircuitRelay.Status.codec().decode(reader)
+              obj.code = CircuitRelay.Status.codec().decode(r)
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -302,26 +302,26 @@ export namespace CircuitRelay {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: CircuitRelay.Type.codec().decode(reader)
+                value: CircuitRelay.Type.codec().decode(r)
               }
               break
             }
             case 2: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}srcPeer.`, {
+              yield * CircuitRelay.Peer.codec().stream(r, r.uint32(), `${prefix}srcPeer.`, {
                 limits: opts.limits?.srcPeer
               })
 
               break
             }
             case 3: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}dstPeer.`, {
+              yield * CircuitRelay.Peer.codec().stream(r, r.uint32(), `${prefix}dstPeer.`, {
                 limits: opts.limits?.dstPeer
               })
 
@@ -330,12 +330,12 @@ export namespace CircuitRelay {
             case 4: {
               yield {
                 field: `${prefix}code`,
-                value: CircuitRelay.Status.codec().decode(reader)
+                value: CircuitRelay.Status.codec().decode(r)
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

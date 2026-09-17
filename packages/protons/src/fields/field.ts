@@ -67,6 +67,7 @@ const defaultValueGeneratorsJsTypeOverrides: Record<string, DefaultValueGenerato
 export interface FieldOptions extends Record<string, any> {
   proto3_optional?: boolean
   jstype?: 'string' | 'number'
+  packed?: boolean
 }
 
 export interface FieldDef {
@@ -93,10 +94,12 @@ export class Field implements MessageField {
   public proto2Required: boolean
   public jsTypeOverride?: 'string' | 'number'
   public oneof?: string[]
+  protected parent: Parent
 
   constructor (name: string, def: FieldDef, parent: Parent) {
     this.id = def.id
     this.name = name
+    this.parent = parent
 
     // the default type for a message is unset so they are always optional
     // https://developers.google.com/protocol-buffers/docs/proto3#default

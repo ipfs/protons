@@ -2,71 +2,71 @@ import { ArrayField } from '../fields/array-field.ts'
 import type { Type } from './index.ts'
 import type { Field } from '../fields/field.ts'
 
-const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string') => string> = {
-  bool: () => 'reader.bool()',
-  bytes: () => 'reader.bytes()',
-  double: () => 'reader.double()',
-  fixed32: () => 'reader.fixed32()',
-  fixed64: (jsTypeOverride) => {
+const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string', reader?: string) => string> = {
+  bool: (_, reader = 'r') => `${reader}.bool()`,
+  bytes: (_, reader = 'r') => `${reader}.bytes()`,
+  double: (_, reader = 'r') => `${reader}.double()`,
+  fixed32: (_, reader = 'r') => `${reader}.fixed32()`,
+  fixed64: (jsTypeOverride, reader = 'r') => {
     if (jsTypeOverride === 'number') {
-      return 'reader.fixed64Number()'
+      return `${reader}.fixed64Number()`
     }
 
     if (jsTypeOverride === 'string') {
-      return 'reader.fixed64String()'
+      return `${reader}.fixed64String()`
     }
 
-    return 'reader.fixed64()'
+    return `${reader}.fixed64()`
   },
-  float: () => 'reader.float()',
-  int32: () => 'reader.int32()',
-  int64: (jsTypeOverride) => {
+  float: (_, reader = 'r') => `${reader}.float()`,
+  int32: (_, reader = 'r') => `${reader}.int32()`,
+  int64: (jsTypeOverride, reader = 'r') => {
     if (jsTypeOverride === 'number') {
-      return 'reader.int64Number()'
+      return `${reader}.int64Number()`
     }
 
     if (jsTypeOverride === 'string') {
-      return 'reader.int64String()'
+      return `${reader}.int64String()`
     }
 
-    return 'reader.int64()'
+    return `${reader}.int64()`
   },
-  sfixed32: () => 'reader.sfixed32()',
-  sfixed64: (jsTypeOverride) => {
+  sfixed32: (_, reader = 'r') => `${reader}.sfixed32()`,
+  sfixed64: (jsTypeOverride, reader = 'r') => {
     if (jsTypeOverride === 'number') {
-      return 'reader.sfixed64Number()'
+      return `${reader}.sfixed64Number()`
     }
 
     if (jsTypeOverride === 'string') {
-      return 'reader.sfixed64String()'
+      return `${reader}.sfixed64String()`
     }
 
-    return 'reader.sfixed64()'
+    return `${reader}.sfixed64()`
   },
-  sint32: () => 'reader.sint32()',
-  sint64: (jsTypeOverride) => {
+  sint32: (_, reader = 'r') => `${reader}.sint32()`,
+  sint64: (jsTypeOverride, reader = 'r') => {
     if (jsTypeOverride === 'number') {
-      return 'reader.sint64Number()'
+      return `${reader}.sint64Number()`
     }
 
     if (jsTypeOverride === 'string') {
-      return 'reader.sint64String()'
+      return `${reader}.sint64String()`
     }
 
-    return 'reader.sint64()'
+    return `${reader}.sint64()`
   },
-  string: () => 'reader.string()',
-  uint32: () => 'reader.uint32()',
-  uint64: (jsTypeOverride) => {
+  string: (_, reader = 'r') => `${reader}.string()`,
+  uint32: (_, reader = 'r') => `${reader}.uint32()`,
+  uint64: (jsTypeOverride, reader = 'r') => {
     if (jsTypeOverride === 'number') {
-      return 'reader.uint64Number()'
+      return `${reader}.uint64Number()`
     }
 
     if (jsTypeOverride === 'string') {
-      return 'reader.uint64String()'
+      return `${reader}.uint64String()`
     }
 
-    return 'reader.uint64()'
+    return `${reader}.uint64()`
   }
 }
 
@@ -178,12 +178,12 @@ export class Primitive implements Type {
 
   }
 
-  getDecoder (field: Field): string {
-    return decoderGenerators[this.pbType](field.jsTypeOverride)
+  getDecoder (field: Field, indent = '', reader = 'r'): string {
+    return decoderGenerators[this.pbType](field.jsTypeOverride, reader)
   }
 
-  getStreamingDecoder (field: Field, prefix: string, indent = ''): string {
-    const generator = decoderGenerators[this.pbType](field.jsTypeOverride)
+  getStreamingDecoder (field: Field, prefix: string, indent = '', reader = 'r'): string {
+    const generator = decoderGenerators[this.pbType](field.jsTypeOverride, reader)
 
     if (field instanceof ArrayField) {
       return `yield {

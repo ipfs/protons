@@ -6,8 +6,8 @@ export interface Type {
   jsType: string
   pbType: string
   init(module: Module): void
-  getDecoder(field: Field, indent?: string): string
-  getStreamingDecoder(field: Field, prefix: string, indent?: string): string
+  getDecoder(field: Field, indent?: string, reader?: string): string
+  getStreamingDecoder(field: Field, prefix: string, indent?: string, reader?: string): string
   getEncoder(field: Field, accessor: string): string
   getValueTest(field: Field, accessor: string): string
 }

@@ -50,22 +50,22 @@ export class Enum implements Type {
 
   }
 
-  getDecoder (field: Field): string {
-    return `${this.jsType}.codec().decode(reader)`
+  getDecoder (field: Field, indent?: string, reader = 'r'): string {
+    return `${this.jsType}.codec().decode(${reader})`
   }
 
-  getStreamingDecoder (field: Field, prefix: string, indent: ''): string {
+  getStreamingDecoder (field: Field, prefix: string, indent: '', reader = 'r'): string {
     if (field instanceof ArrayField) {
       return `yield {
 ${indent}              field: ${prefix},
 ${indent}              index: obj.${field.name},
-${indent}              value: ${this.jsType}.codec().decode(reader)
+${indent}              value: ${this.jsType}.codec().decode(${reader})
 ${indent}            }`
     }
 
     return `yield {
 ${indent}              field: ${prefix},
-${indent}              value: ${this.jsType}.codec().decode(reader)
+${indent}              value: ${this.jsType}.codec().decode(${reader})
 ${indent}            }`
   }
 

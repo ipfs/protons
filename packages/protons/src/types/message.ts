@@ -165,7 +165,7 @@ export class Message implements Type {
     return this.parent.flags
   }
 
-  getDecoder (field: Field, indent = ''): string {
+  getDecoder (field: Field, indent = '', reader = 'r'): string {
     let opts = ''
 
     if (field instanceof MessageField) {
@@ -184,10 +184,10 @@ ${indent}                  value: opts.limits?.${field.name}$value
 ${indent}              }`
     }
 
-    return `${this.jsType}.codec().decode(reader, reader.uint32()${opts})`
+    return `${this.jsType}.codec().decode(${reader}, ${reader}.uint32()${opts})`
   }
 
-  getStreamingDecoder (field: Field, prefix: string, indent: ''): string {
+  getStreamingDecoder (field: Field, prefix: string, indent: '', reader = 'r'): string {
     let opts = ''
 
     if (field instanceof MessageField) {
@@ -199,7 +199,7 @@ ${indent}            }`
 ${indent}              limits: opts.limits?.${field.name}$
 ${indent}            }`
 
-      return `for (const evt of ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})) {
+      return `for (const evt of ${this.jsType}.codec().stream(${reader}, ${reader}.uint32(), ${prefix}${opts})) {
 ${indent}              yield {
 ${indent}                ...evt,
 ${indent}                index: obj.${field.name}
@@ -213,7 +213,7 @@ ${indent}                value: opts.limits?.${field.name}$value
 ${indent}            }`
     }
 
-    return `yield * ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})`
+    return `yield * ${this.jsType}.codec().stream(${reader}, ${reader}.uint32(), ${prefix}${opts})`
   }
 
   getEncoder (field: Field, accessor: string): string {
@@ -298,25 +298,25 @@ export interface ${this.pbType} {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {${this.createDefaultObject()}}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {${this.formatFields(decodeFields, '\n            ')}
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        ${this.createLimitObject()}const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        ${this.createLimitObject()}const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -326,12 +326,12 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {${this.formatFields(streamFields, '\n            ')}
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

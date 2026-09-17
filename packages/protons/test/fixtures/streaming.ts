@@ -38,23 +38,23 @@ export namespace MessageWithArrayField {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           arr: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
-              obj.field2 = reader.uint32()
+              obj.field2 = r.uint32()
               break
             }
             case 3: {
@@ -62,23 +62,23 @@ export namespace MessageWithArrayField {
                 throw new MaxLengthError('Decode error - repeated field "arr" had too many elements')
               }
 
-              obj.arr.push(reader.string())
+              obj.arr.push(r.string())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           arr: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -88,21 +88,21 @@ export namespace MessageWithArrayField {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}field2`,
-                value: reader.uint32()
+                value: r.uint32()
               }
               break
             }
@@ -114,7 +114,7 @@ export namespace MessageWithArrayField {
               yield {
                 field: `${prefix}arr[]`,
                 index: obj.arr,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.arr++
@@ -122,7 +122,7 @@ export namespace MessageWithArrayField {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -192,31 +192,31 @@ export namespace NestedMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           nestedValue: ''
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.nestedValue = reader.string()
+              obj.nestedValue = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -226,19 +226,19 @@ export namespace NestedMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}nestedValue`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -303,37 +303,37 @@ export namespace MessageWithNestedMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field1: false
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
-              obj.nestedMessage = NestedMessage.codec().decode(reader, reader.uint32(), {
+              obj.nestedMessage = NestedMessage.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.nestedMessage
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -343,26 +343,26 @@ export namespace MessageWithNestedMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
             case 2: {
-              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessage.`, {
+              yield * NestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessage.`, {
                 limits: opts.limits?.nestedMessage
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -442,37 +442,37 @@ export namespace MessageWithDeeplyNestedMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field1: false
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
-              obj.nestedMessage = MessageWithNestedMessage.codec().decode(reader, reader.uint32(), {
+              obj.nestedMessage = MessageWithNestedMessage.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.nestedMessage
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -482,26 +482,26 @@ export namespace MessageWithDeeplyNestedMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
             case 2: {
-              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessage.`, {
+              yield * MessageWithNestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessage.`, {
                 limits: opts.limits?.nestedMessage
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -598,20 +598,20 @@ export namespace MessageWithRepeatedMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field1: false,
           nestedMessages: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
@@ -619,25 +619,25 @@ export namespace MessageWithRepeatedMessage {
                 throw new MaxLengthError('Decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              obj.nestedMessages.push(NestedMessage.codec().decode(reader, reader.uint32(), {
+              obj.nestedMessages.push(NestedMessage.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.nestedMessages$
               }))
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           nestedMessages: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -647,14 +647,14 @@ export namespace MessageWithRepeatedMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
@@ -663,7 +663,7 @@ export namespace MessageWithRepeatedMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessages[].`, {
+              for (const evt of NestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessages[].`, {
                 limits: opts.limits?.nestedMessages$
               })) {
                 yield {
@@ -677,7 +677,7 @@ export namespace MessageWithRepeatedMessage {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -768,37 +768,37 @@ export namespace MessageWithMapMessage {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: ''
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.string()
+                obj.key = r.string()
                 break
               }
               case 2: {
-                obj.value = NestedMessage.codec().decode(reader, reader.uint32(), {
+                obj.value = NestedMessage.codec().decode(r, r.uint32(), {
                   limits: opts.limits?.value
                 })
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -808,26 +808,26 @@ export namespace MessageWithMapMessage {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               case 2: {
-                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}value.`, {
+                yield * NestedMessage.codec().stream(r, r.uint32(), `${prefix}value.`, {
                   limits: opts.limits?.value
                 })
 
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -903,20 +903,20 @@ export namespace MessageWithMapMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field1: false,
           nestedMessages: new Map<string, NestedMessage>()
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
@@ -924,7 +924,7 @@ export namespace MessageWithMapMessage {
                 throw new MaxSizeError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              const entry = MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.nestedMessages$value
                 }
@@ -933,19 +933,19 @@ export namespace MessageWithMapMessage {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           nestedMessages: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -955,14 +955,14 @@ export namespace MessageWithMapMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
@@ -971,7 +971,7 @@ export namespace MessageWithMapMessage {
                 throw new MaxLengthError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix}nestedMessages{}.`, {
+              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(r, r.uint32(), `${prefix}nestedMessages{}.`, {
                 limits: {
                   value: opts.limits?.nestedMessages$value
                 }
@@ -982,7 +982,7 @@ export namespace MessageWithMapMessage {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1073,36 +1073,36 @@ export namespace MessageWithPrimitiveMap {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: ''
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.string()
+                obj.key = r.string()
                 break
               }
               case 2: {
-                obj.value = reader.string()
+                obj.value = r.string()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -1112,26 +1112,26 @@ export namespace MessageWithPrimitiveMap {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -1197,20 +1197,20 @@ export namespace MessageWithPrimitiveMap {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field1: false,
           nestedStrings: new Map<string, string>()
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
@@ -1218,7 +1218,7 @@ export namespace MessageWithPrimitiveMap {
                 throw new MaxSizeError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              const entry = MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.nestedStrings$value
                 }
@@ -1227,19 +1227,19 @@ export namespace MessageWithPrimitiveMap {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           nestedStrings: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1249,14 +1249,14 @@ export namespace MessageWithPrimitiveMap {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
@@ -1265,7 +1265,7 @@ export namespace MessageWithPrimitiveMap {
                 throw new MaxLengthError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix}nestedStrings{}.`, {
+              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(r, r.uint32(), `${prefix}nestedStrings{}.`, {
                 limits: {
                   value: opts.limits?.nestedStrings$value
                 }
@@ -1276,7 +1276,7 @@ export namespace MessageWithPrimitiveMap {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1367,20 +1367,20 @@ export namespace MessageWithRepeatedEnums {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field1: false,
           enums: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
@@ -1388,23 +1388,23 @@ export namespace MessageWithRepeatedEnums {
                 throw new MaxLengthError('Decode error - repeated field "enums" had too many elements')
               }
 
-              obj.enums.push(ENUM.codec().decode(reader))
+              obj.enums.push(ENUM.codec().decode(r))
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           enums: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1414,14 +1414,14 @@ export namespace MessageWithRepeatedEnums {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
@@ -1433,7 +1433,7 @@ export namespace MessageWithRepeatedEnums {
               yield {
                 field: `${prefix}enums[]`,
                 index: obj.enums,
-                value: ENUM.codec().decode(reader)
+                value: ENUM.codec().decode(r)
               }
 
               obj.enums++
@@ -1441,7 +1441,7 @@ export namespace MessageWithRepeatedEnums {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

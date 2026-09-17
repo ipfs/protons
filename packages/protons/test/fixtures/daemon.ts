@@ -105,79 +105,79 @@ export namespace Request {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.IDENTIFY
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = Request.Type.codec().decode(reader)
+              obj.type = Request.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.connect = ConnectRequest.codec().decode(reader, reader.uint32(), {
+              obj.connect = ConnectRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.connect
               })
               break
             }
             case 3: {
-              obj.streamOpen = StreamOpenRequest.codec().decode(reader, reader.uint32(), {
+              obj.streamOpen = StreamOpenRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.streamOpen
               })
               break
             }
             case 4: {
-              obj.streamHandler = StreamHandlerRequest.codec().decode(reader, reader.uint32(), {
+              obj.streamHandler = StreamHandlerRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.streamHandler
               })
               break
             }
             case 5: {
-              obj.dht = DHTRequest.codec().decode(reader, reader.uint32(), {
+              obj.dht = DHTRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.dht
               })
               break
             }
             case 6: {
-              obj.connManager = ConnManagerRequest.codec().decode(reader, reader.uint32(), {
+              obj.connManager = ConnManagerRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.connManager
               })
               break
             }
             case 7: {
-              obj.disconnect = DisconnectRequest.codec().decode(reader, reader.uint32(), {
+              obj.disconnect = DisconnectRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.disconnect
               })
               break
             }
             case 8: {
-              obj.pubsub = PSRequest.codec().decode(reader, reader.uint32(), {
+              obj.pubsub = PSRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.pubsub
               })
               break
             }
             case 9: {
-              obj.peerStore = PeerstoreRequest.codec().decode(reader, reader.uint32(), {
+              obj.peerStore = PeerstoreRequest.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.peerStore
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -187,75 +187,75 @@ export namespace Request {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: Request.Type.codec().decode(reader)
+                value: Request.Type.codec().decode(r)
               }
               break
             }
             case 2: {
-              yield * ConnectRequest.codec().stream(reader, reader.uint32(), `${prefix}connect.`, {
+              yield * ConnectRequest.codec().stream(r, r.uint32(), `${prefix}connect.`, {
                 limits: opts.limits?.connect
               })
 
               break
             }
             case 3: {
-              yield * StreamOpenRequest.codec().stream(reader, reader.uint32(), `${prefix}streamOpen.`, {
+              yield * StreamOpenRequest.codec().stream(r, r.uint32(), `${prefix}streamOpen.`, {
                 limits: opts.limits?.streamOpen
               })
 
               break
             }
             case 4: {
-              yield * StreamHandlerRequest.codec().stream(reader, reader.uint32(), `${prefix}streamHandler.`, {
+              yield * StreamHandlerRequest.codec().stream(r, r.uint32(), `${prefix}streamHandler.`, {
                 limits: opts.limits?.streamHandler
               })
 
               break
             }
             case 5: {
-              yield * DHTRequest.codec().stream(reader, reader.uint32(), `${prefix}dht.`, {
+              yield * DHTRequest.codec().stream(r, r.uint32(), `${prefix}dht.`, {
                 limits: opts.limits?.dht
               })
 
               break
             }
             case 6: {
-              yield * ConnManagerRequest.codec().stream(reader, reader.uint32(), `${prefix}connManager.`, {
+              yield * ConnManagerRequest.codec().stream(r, r.uint32(), `${prefix}connManager.`, {
                 limits: opts.limits?.connManager
               })
 
               break
             }
             case 7: {
-              yield * DisconnectRequest.codec().stream(reader, reader.uint32(), `${prefix}disconnect.`, {
+              yield * DisconnectRequest.codec().stream(r, r.uint32(), `${prefix}disconnect.`, {
                 limits: opts.limits?.disconnect
               })
 
               break
             }
             case 8: {
-              yield * PSRequest.codec().stream(reader, reader.uint32(), `${prefix}pubsub.`, {
+              yield * PSRequest.codec().stream(r, r.uint32(), `${prefix}pubsub.`, {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 9: {
-              yield * PeerstoreRequest.codec().stream(reader, reader.uint32(), `${prefix}peerStore.`, {
+              yield * PeerstoreRequest.codec().stream(r, r.uint32(), `${prefix}peerStore.`, {
                 limits: opts.limits?.peerStore
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -588,42 +588,42 @@ export namespace Response {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.OK,
           peers: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = Response.Type.codec().decode(reader)
+              obj.type = Response.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.error = ErrorResponse.codec().decode(reader, reader.uint32(), {
+              obj.error = ErrorResponse.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.error
               })
               break
             }
             case 3: {
-              obj.streamInfo = StreamInfo.codec().decode(reader, reader.uint32(), {
+              obj.streamInfo = StreamInfo.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.streamInfo
               })
               break
             }
             case 4: {
-              obj.identify = IdentifyResponse.codec().decode(reader, reader.uint32(), {
+              obj.identify = IdentifyResponse.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.identify
               })
               break
             }
             case 5: {
-              obj.dht = DHTResponse.codec().decode(reader, reader.uint32(), {
+              obj.dht = DHTResponse.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.dht
               })
               break
@@ -633,37 +633,37 @@ export namespace Response {
                 throw new MaxLengthError('Decode error - repeated field "peers" had too many elements')
               }
 
-              obj.peers.push(PeerInfo.codec().decode(reader, reader.uint32(), {
+              obj.peers.push(PeerInfo.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.peers$
               }))
               break
             }
             case 7: {
-              obj.pubsub = PSResponse.codec().decode(reader, reader.uint32(), {
+              obj.pubsub = PSResponse.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.pubsub
               })
               break
             }
             case 8: {
-              obj.peerStore = PeerstoreResponse.codec().decode(reader, reader.uint32(), {
+              obj.peerStore = PeerstoreResponse.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.peerStore
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           peers: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -673,40 +673,40 @@ export namespace Response {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: Response.Type.codec().decode(reader)
+                value: Response.Type.codec().decode(r)
               }
               break
             }
             case 2: {
-              yield * ErrorResponse.codec().stream(reader, reader.uint32(), `${prefix}error.`, {
+              yield * ErrorResponse.codec().stream(r, r.uint32(), `${prefix}error.`, {
                 limits: opts.limits?.error
               })
 
               break
             }
             case 3: {
-              yield * StreamInfo.codec().stream(reader, reader.uint32(), `${prefix}streamInfo.`, {
+              yield * StreamInfo.codec().stream(r, r.uint32(), `${prefix}streamInfo.`, {
                 limits: opts.limits?.streamInfo
               })
 
               break
             }
             case 4: {
-              yield * IdentifyResponse.codec().stream(reader, reader.uint32(), `${prefix}identify.`, {
+              yield * IdentifyResponse.codec().stream(r, r.uint32(), `${prefix}identify.`, {
                 limits: opts.limits?.identify
               })
 
               break
             }
             case 5: {
-              yield * DHTResponse.codec().stream(reader, reader.uint32(), `${prefix}dht.`, {
+              yield * DHTResponse.codec().stream(r, r.uint32(), `${prefix}dht.`, {
                 limits: opts.limits?.dht
               })
 
@@ -717,7 +717,7 @@ export namespace Response {
                 throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
               }
 
-              for (const evt of PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}peers[].`, {
+              for (const evt of PeerInfo.codec().stream(r, r.uint32(), `${prefix}peers[].`, {
                 limits: opts.limits?.peers$
               })) {
                 yield {
@@ -731,21 +731,21 @@ export namespace Response {
               break
             }
             case 7: {
-              yield * PSResponse.codec().stream(reader, reader.uint32(), `${prefix}pubsub.`, {
+              yield * PSResponse.codec().stream(r, r.uint32(), `${prefix}pubsub.`, {
                 limits: opts.limits?.pubsub
               })
 
               break
             }
             case 8: {
-              yield * PeerstoreResponse.codec().stream(reader, reader.uint32(), `${prefix}peerStore.`, {
+              yield * PeerstoreResponse.codec().stream(r, r.uint32(), `${prefix}peerStore.`, {
                 limits: opts.limits?.peerStore
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -999,20 +999,20 @@ export namespace IdentifyResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           id: uint8ArrayAlloc(0),
           addrs: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.id = reader.bytes()
+              obj.id = r.bytes()
               break
             }
             case 2: {
@@ -1020,23 +1020,23 @@ export namespace IdentifyResponse {
                 throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
 
-              obj.addrs.push(reader.bytes())
+              obj.addrs.push(r.bytes())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           addrs: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1046,14 +1046,14 @@ export namespace IdentifyResponse {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}id`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -1065,7 +1065,7 @@ export namespace IdentifyResponse {
               yield {
                 field: `${prefix}addrs[]`,
                 index: obj.addrs,
-                value: reader.bytes()
+                value: r.bytes()
               }
 
               obj.addrs++
@@ -1073,7 +1073,7 @@ export namespace IdentifyResponse {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1152,20 +1152,20 @@ export namespace ConnectRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           addrs: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = reader.bytes()
+              obj.peer = r.bytes()
               break
             }
             case 2: {
@@ -1173,27 +1173,27 @@ export namespace ConnectRequest {
                 throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
 
-              obj.addrs.push(reader.bytes())
+              obj.addrs.push(r.bytes())
               break
             }
             case 3: {
-              obj.timeout = reader.int64()
+              obj.timeout = r.int64()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           addrs: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1203,14 +1203,14 @@ export namespace ConnectRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}peer`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -1222,7 +1222,7 @@ export namespace ConnectRequest {
               yield {
                 field: `${prefix}addrs[]`,
                 index: obj.addrs,
-                value: reader.bytes()
+                value: r.bytes()
               }
 
               obj.addrs++
@@ -1232,12 +1232,12 @@ export namespace ConnectRequest {
             case 3: {
               yield {
                 field: `${prefix}timeout`,
-                value: reader.int64()
+                value: r.int64()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1321,20 +1321,20 @@ export namespace StreamOpenRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           proto: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = reader.bytes()
+              obj.peer = r.bytes()
               break
             }
             case 2: {
@@ -1342,27 +1342,27 @@ export namespace StreamOpenRequest {
                 throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
               }
 
-              obj.proto.push(reader.string())
+              obj.proto.push(r.string())
               break
             }
             case 3: {
-              obj.timeout = reader.int64()
+              obj.timeout = r.int64()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           proto: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1372,14 +1372,14 @@ export namespace StreamOpenRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}peer`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -1391,7 +1391,7 @@ export namespace StreamOpenRequest {
               yield {
                 field: `${prefix}proto[]`,
                 index: obj.proto,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.proto++
@@ -1401,12 +1401,12 @@ export namespace StreamOpenRequest {
             case 3: {
               yield {
                 field: `${prefix}timeout`,
-                value: reader.int64()
+                value: r.int64()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1484,20 +1484,20 @@ export namespace StreamHandlerRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           addr: uint8ArrayAlloc(0),
           proto: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.addr = reader.bytes()
+              obj.addr = r.bytes()
               break
             }
             case 2: {
@@ -1505,23 +1505,23 @@ export namespace StreamHandlerRequest {
                 throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
               }
 
-              obj.proto.push(reader.string())
+              obj.proto.push(r.string())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           proto: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1531,14 +1531,14 @@ export namespace StreamHandlerRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}addr`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -1550,7 +1550,7 @@ export namespace StreamHandlerRequest {
               yield {
                 field: `${prefix}proto[]`,
                 index: obj.proto,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.proto++
@@ -1558,7 +1558,7 @@ export namespace StreamHandlerRequest {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1623,31 +1623,31 @@ export namespace ErrorResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           msg: ''
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.msg = reader.string()
+              obj.msg = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1657,19 +1657,19 @@ export namespace ErrorResponse {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}msg`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1740,41 +1740,41 @@ export namespace StreamInfo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           addr: uint8ArrayAlloc(0),
           proto: ''
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = reader.bytes()
+              obj.peer = r.bytes()
               break
             }
             case 2: {
-              obj.addr = reader.bytes()
+              obj.addr = r.bytes()
               break
             }
             case 3: {
-              obj.proto = reader.string()
+              obj.proto = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1784,33 +1784,33 @@ export namespace StreamInfo {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}peer`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}addr`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}proto`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -1945,55 +1945,55 @@ export namespace DHTRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.FIND_PEER
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = DHTRequest.Type.codec().decode(reader)
+              obj.type = DHTRequest.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.peer = reader.bytes()
+              obj.peer = r.bytes()
               break
             }
             case 3: {
-              obj.cid = reader.bytes()
+              obj.cid = r.bytes()
               break
             }
             case 4: {
-              obj.key = reader.bytes()
+              obj.key = r.bytes()
               break
             }
             case 5: {
-              obj.value = reader.bytes()
+              obj.value = r.bytes()
               break
             }
             case 6: {
-              obj.count = reader.int32()
+              obj.count = r.int32()
               break
             }
             case 7: {
-              obj.timeout = reader.int64()
+              obj.timeout = r.int64()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -2003,61 +2003,61 @@ export namespace DHTRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: DHTRequest.Type.codec().decode(reader)
+                value: DHTRequest.Type.codec().decode(r)
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}peer`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}cid`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}key`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}value`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 6: {
               yield {
                 field: `${prefix}count`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             case 7: {
               yield {
                 field: `${prefix}timeout`,
-                value: reader.int64()
+                value: r.int64()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -2176,41 +2176,41 @@ export namespace DHTResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.BEGIN
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = DHTResponse.Type.codec().decode(reader)
+              obj.type = DHTResponse.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.peer = PeerInfo.codec().decode(reader, reader.uint32(), {
+              obj.peer = PeerInfo.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.peer
               })
               break
             }
             case 3: {
-              obj.value = reader.bytes()
+              obj.value = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -2220,19 +2220,19 @@ export namespace DHTResponse {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: DHTResponse.Type.codec().decode(reader)
+                value: DHTResponse.Type.codec().decode(r)
               }
               break
             }
             case 2: {
-              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}peer.`, {
+              yield * PeerInfo.codec().stream(r, r.uint32(), `${prefix}peer.`, {
                 limits: opts.limits?.peer
               })
 
@@ -2241,12 +2241,12 @@ export namespace DHTResponse {
             case 3: {
               yield {
                 field: `${prefix}value`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -2339,20 +2339,20 @@ export namespace PeerInfo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           id: uint8ArrayAlloc(0),
           addrs: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.id = reader.bytes()
+              obj.id = r.bytes()
               break
             }
             case 2: {
@@ -2360,23 +2360,23 @@ export namespace PeerInfo {
                 throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
 
-              obj.addrs.push(reader.bytes())
+              obj.addrs.push(r.bytes())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           addrs: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -2386,14 +2386,14 @@ export namespace PeerInfo {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}id`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -2405,7 +2405,7 @@ export namespace PeerInfo {
               yield {
                 field: `${prefix}addrs[]`,
                 index: obj.addrs,
-                value: reader.bytes()
+                value: r.bytes()
               }
 
               obj.addrs++
@@ -2413,7 +2413,7 @@ export namespace PeerInfo {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -2514,43 +2514,43 @@ export namespace ConnManagerRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.TAG_PEER
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = ConnManagerRequest.Type.codec().decode(reader)
+              obj.type = ConnManagerRequest.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.peer = reader.bytes()
+              obj.peer = r.bytes()
               break
             }
             case 3: {
-              obj.tag = reader.string()
+              obj.tag = r.string()
               break
             }
             case 4: {
-              obj.weight = reader.int64()
+              obj.weight = r.int64()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -2560,40 +2560,40 @@ export namespace ConnManagerRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: ConnManagerRequest.Type.codec().decode(reader)
+                value: ConnManagerRequest.Type.codec().decode(r)
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}peer`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}tag`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}weight`,
-                value: reader.int64()
+                value: r.int64()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -2667,31 +2667,31 @@ export namespace DisconnectRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0)
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = reader.bytes()
+              obj.peer = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -2701,19 +2701,19 @@ export namespace DisconnectRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}peer`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -2804,39 +2804,39 @@ export namespace PSRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.GET_TOPICS
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = PSRequest.Type.codec().decode(reader)
+              obj.type = PSRequest.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.topic = reader.string()
+              obj.topic = r.string()
               break
             }
             case 3: {
-              obj.data = reader.bytes()
+              obj.data = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -2846,33 +2846,33 @@ export namespace PSRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: PSRequest.Type.codec().decode(reader)
+                value: PSRequest.Type.codec().decode(r)
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}topic`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}data`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -2973,27 +2973,27 @@ export namespace PSMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           topicIDs: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.from = reader.bytes()
+              obj.from = r.bytes()
               break
             }
             case 2: {
-              obj.data = reader.bytes()
+              obj.data = r.bytes()
               break
             }
             case 3: {
-              obj.seqno = reader.bytes()
+              obj.seqno = r.bytes()
               break
             }
             case 4: {
@@ -3001,31 +3001,31 @@ export namespace PSMessage {
                 throw new MaxLengthError('Decode error - repeated field "topicIDs" had too many elements')
               }
 
-              obj.topicIDs.push(reader.string())
+              obj.topicIDs.push(r.string())
               break
             }
             case 5: {
-              obj.signature = reader.bytes()
+              obj.signature = r.bytes()
               break
             }
             case 6: {
-              obj.key = reader.bytes()
+              obj.key = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           topicIDs: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -3035,28 +3035,28 @@ export namespace PSMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}from`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}data`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}seqno`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -3068,7 +3068,7 @@ export namespace PSMessage {
               yield {
                 field: `${prefix}topicIDs[]`,
                 index: obj.topicIDs,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.topicIDs++
@@ -3078,19 +3078,19 @@ export namespace PSMessage {
             case 5: {
               yield {
                 field: `${prefix}signature`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 6: {
               yield {
                 field: `${prefix}key`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -3185,16 +3185,16 @@ export namespace PSResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           topics: [],
           peerIDs: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -3202,7 +3202,7 @@ export namespace PSResponse {
                 throw new MaxLengthError('Decode error - repeated field "topics" had too many elements')
               }
 
-              obj.topics.push(reader.string())
+              obj.topics.push(r.string())
               break
             }
             case 2: {
@@ -3210,24 +3210,24 @@ export namespace PSResponse {
                 throw new MaxLengthError('Decode error - repeated field "peerIDs" had too many elements')
               }
 
-              obj.peerIDs.push(reader.bytes())
+              obj.peerIDs.push(r.bytes())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           topics: 0,
           peerIDs: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -3237,8 +3237,8 @@ export namespace PSResponse {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -3249,7 +3249,7 @@ export namespace PSResponse {
               yield {
                 field: `${prefix}topics[]`,
                 index: obj.topics,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.topics++
@@ -3264,7 +3264,7 @@ export namespace PSResponse {
               yield {
                 field: `${prefix}peerIDs[]`,
                 index: obj.peerIDs,
-                value: reader.bytes()
+                value: r.bytes()
               }
 
               obj.peerIDs++
@@ -3272,7 +3272,7 @@ export namespace PSResponse {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -3370,24 +3370,24 @@ export namespace PeerstoreRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           type: Type.INVALID,
           protos: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = PeerstoreRequest.Type.codec().decode(reader)
+              obj.type = PeerstoreRequest.Type.codec().decode(r)
               break
             }
             case 2: {
-              obj.id = reader.bytes()
+              obj.id = r.bytes()
               break
             }
             case 3: {
@@ -3395,23 +3395,23 @@ export namespace PeerstoreRequest {
                 throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
               }
 
-              obj.protos.push(reader.string())
+              obj.protos.push(r.string())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           protos: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -3421,21 +3421,21 @@ export namespace PeerstoreRequest {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: PeerstoreRequest.Type.codec().decode(reader)
+                value: PeerstoreRequest.Type.codec().decode(r)
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}id`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -3447,7 +3447,7 @@ export namespace PeerstoreRequest {
               yield {
                 field: `${prefix}protos[]`,
                 index: obj.protos,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.protos++
@@ -3455,7 +3455,7 @@ export namespace PeerstoreRequest {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -3533,19 +3533,19 @@ export namespace PeerstoreResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           protos: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = PeerInfo.codec().decode(reader, reader.uint32(), {
+              obj.peer = PeerInfo.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.peer
               })
               break
@@ -3555,23 +3555,23 @@ export namespace PeerstoreResponse {
                 throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
               }
 
-              obj.protos.push(reader.string())
+              obj.protos.push(r.string())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           protos: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -3581,12 +3581,12 @@ export namespace PeerstoreResponse {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              yield * PeerInfo.codec().stream(reader, reader.uint32(), `${prefix}peer.`, {
+              yield * PeerInfo.codec().stream(r, r.uint32(), `${prefix}peer.`, {
                 limits: opts.limits?.peer
               })
 
@@ -3600,7 +3600,7 @@ export namespace PeerstoreResponse {
               yield {
                 field: `${prefix}protos[]`,
                 index: obj.protos,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.protos++
@@ -3608,7 +3608,7 @@ export namespace PeerstoreResponse {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

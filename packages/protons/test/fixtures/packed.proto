@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+message SpecPacked {
+  string str = 4;
+  repeated int32 packed = 5;
+}
+
+message DefaultPackedTypes {
+  repeated double doubles = 1;
+  repeated float floats = 2;
+  repeated int32 int32s = 3;
+  repeated int64 int64s = 4;
+  repeated uint32 uint32s = 5;
+  repeated uint64 uint64s = 6;
+  repeated sint32 sint32s = 7;
+  repeated sint64 sint64s = 8;
+  repeated fixed32 fixed32s = 9;
+  repeated fixed64 fixed64s = 10;
+  repeated sfixed32 sfixed32s = 11;
+  repeated sfixed64 sfixed64s = 12;
+  repeated bool bools = 13;
+}
+
+message PackedTypes {
+  repeated double doubles = 1 [packed=true];
+  repeated float floats = 2 [packed=true];
+  repeated int32 int32s = 3 [packed=true];
+  repeated int64 int64s = 4 [packed=true];
+  repeated uint32 uint32s = 5 [packed=true];
+  repeated uint64 uint64s = 6 [packed=true];
+  repeated sint32 sint32s = 7 [packed=true];
+  repeated sint64 sint64s = 8 [packed=true];
+  repeated fixed32 fixed32s = 9 [packed=true];
+  repeated fixed64 fixed64s = 10 [packed=true];
+  repeated sfixed32 sfixed32s = 11 [packed=true];
+  repeated sfixed64 sfixed64s = 12 [packed=true];
+  repeated bool bools = 13 [packed=true];
+}
+
+message ExpandedTypes {
+  repeated double doubles = 1 [packed=false];
+  repeated float floats = 2 [packed=false];
+  repeated int32 int32s = 3 [packed=false];
+  repeated int64 int64s = 4 [packed=false];
+  repeated uint32 uint32s = 5 [packed=false];
+  repeated uint64 uint64s = 6 [packed=false];
+  repeated sint32 sint32s = 7 [packed=false];
+  repeated sint64 sint64s = 8 [packed=false];
+  repeated fixed32 fixed32s = 9 [packed=false];
+  repeated fixed64 fixed64s = 10 [packed=false];
+  repeated sfixed32 sfixed32s = 11 [packed=false];
+  repeated sfixed64 sfixed64s = 12 [packed=false];
+  repeated bool bools = 13 [packed=false];
+}
+
+message NewOptionPackedTypes {
+  repeated double doubles = 1 [features.repeated_field_encoding=PACKED];
+  repeated float floats = 2 [features.repeated_field_encoding=PACKED];
+  repeated int32 int32s = 3 [features.repeated_field_encoding=PACKED];
+  repeated int64 int64s = 4 [features.repeated_field_encoding=PACKED];
+  repeated uint32 uint32s = 5 [features.repeated_field_encoding=PACKED];
+  repeated uint64 uint64s = 6 [features.repeated_field_encoding=PACKED];
+  repeated sint32 sint32s = 7 [features.repeated_field_encoding=PACKED];
+  repeated sint64 sint64s = 8 [features.repeated_field_encoding=PACKED];
+  repeated fixed32 fixed32s = 9 [features.repeated_field_encoding=PACKED];
+  repeated fixed64 fixed64s = 10 [features.repeated_field_encoding=PACKED];
+  repeated sfixed32 sfixed32s = 11 [features.repeated_field_encoding=PACKED];
+  repeated sfixed64 sfixed64s = 12 [features.repeated_field_encoding=PACKED];
+  repeated bool bools = 13 [features.repeated_field_encoding=PACKED];
+}
+
+message NewOptionExpandedTypes {
+  repeated double doubles = 1 [features.repeated_field_encoding=EXPANDED];
+  repeated float floats = 2 [features.repeated_field_encoding=EXPANDED];
+  repeated int32 int32s = 3 [features.repeated_field_encoding=EXPANDED];
+  repeated int64 int64s = 4 [features.repeated_field_encoding=EXPANDED];
+  repeated uint32 uint32s = 5 [features.repeated_field_encoding=EXPANDED];
+  repeated uint64 uint64s = 6 [features.repeated_field_encoding=EXPANDED];
+  repeated sint32 sint32s = 7 [features.repeated_field_encoding=EXPANDED];
+  repeated sint64 sint64s = 8 [features.repeated_field_encoding=EXPANDED];
+  repeated fixed32 fixed32s = 9 [features.repeated_field_encoding=EXPANDED];
+  repeated fixed64 fixed64s = 10 [features.repeated_field_encoding=EXPANDED];
+  repeated sfixed32 sfixed32s = 11 [features.repeated_field_encoding=EXPANDED];
+  repeated sfixed64 sfixed64s = 12 [features.repeated_field_encoding=EXPANDED];
+  repeated bool bools = 13 [features.repeated_field_encoding=EXPANDED];
+}

@@ -80,7 +80,7 @@ export namespace Message {
             if (opts.lengthDelimited !== false) {
               w.ldelim()
             }
-          }, (reader, length, opts = {}) => {
+          }, (r, length, opts = {}) => {
             const obj: any = {
               block: uint8ArrayAlloc(0),
               priority: 0,
@@ -88,42 +88,42 @@ export namespace Message {
               sendDontHave: false
             }
 
-            const end = length == null ? reader.len : reader.pos + length
+            const end = length == null ? r.len : r.pos + length
 
-            while (reader.pos < end) {
-              const tag = reader.uint32()
+            while (r.pos < end) {
+              const tag = r.uint32()
 
               switch (tag >>> 3) {
                 case 1: {
-                  obj.block = reader.bytes()
+                  obj.block = r.bytes()
                   break
                 }
                 case 2: {
-                  obj.priority = reader.int32()
+                  obj.priority = r.int32()
                   break
                 }
                 case 3: {
-                  obj.cancel = reader.bool()
+                  obj.cancel = r.bool()
                   break
                 }
                 case 4: {
-                  obj.wantType = Message.Wantlist.WantType.codec().decode(reader)
+                  obj.wantType = Message.Wantlist.WantType.codec().decode(r)
                   break
                 }
                 case 5: {
-                  obj.sendDontHave = reader.bool()
+                  obj.sendDontHave = r.bool()
                   break
                 }
                 default: {
-                  reader.skipType(tag & 7)
+                  r.skipType(tag & 7)
                   break
                 }
               }
             }
 
             return obj
-          }, function * (reader, length, prefix, opts = {}) {
-            const end = length == null ? reader.len : reader.pos + length
+          }, function * (r, length, prefix, opts = {}) {
+            const end = length == null ? r.len : r.pos + length
 
             if (prefix !== '.') {
               yield {
@@ -133,47 +133,47 @@ export namespace Message {
               }
             }
 
-            while (reader.pos < end) {
-              const tag = reader.uint32()
+            while (r.pos < end) {
+              const tag = r.uint32()
 
               switch (tag >>> 3) {
                 case 1: {
                   yield {
                     field: `${prefix}block`,
-                    value: reader.bytes()
+                    value: r.bytes()
                   }
                   break
                 }
                 case 2: {
                   yield {
                     field: `${prefix}priority`,
-                    value: reader.int32()
+                    value: r.int32()
                   }
                   break
                 }
                 case 3: {
                   yield {
                     field: `${prefix}cancel`,
-                    value: reader.bool()
+                    value: r.bool()
                   }
                   break
                 }
                 case 4: {
                   yield {
                     field: `${prefix}wantType`,
-                    value: Message.Wantlist.WantType.codec().decode(reader)
+                    value: Message.Wantlist.WantType.codec().decode(r)
                   }
                   break
                 }
                 case 5: {
                   yield {
                     field: `${prefix}sendDontHave`,
-                    value: reader.bool()
+                    value: r.bool()
                   }
                   break
                 }
                 default: {
-                  reader.skipType(tag & 7)
+                  r.skipType(tag & 7)
                   break
                 }
               }
@@ -254,16 +254,16 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             entries: [],
             full: false
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
@@ -271,29 +271,29 @@ export namespace Message {
                   throw new MaxLengthError('Decode error - repeated field "entries" had too many elements')
                 }
 
-                obj.entries.push(Message.Wantlist.Entry.codec().decode(reader, reader.uint32(), {
+                obj.entries.push(Message.Wantlist.Entry.codec().decode(r, r.uint32(), {
                   limits: opts.limits?.entries$
                 }))
                 break
               }
               case 2: {
-                obj.full = reader.bool()
+                obj.full = r.bool()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
+        }, function * (r, length, prefix, opts = {}) {
           const obj = {
             entries: 0
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -303,8 +303,8 @@ export namespace Message {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
@@ -312,7 +312,7 @@ export namespace Message {
                   throw new MaxLengthError('Streaming decode error - repeated field "entries" had too many elements')
                 }
 
-                for (const evt of Message.Wantlist.Entry.codec().stream(reader, reader.uint32(), `${prefix}entries[].`, {
+                for (const evt of Message.Wantlist.Entry.codec().stream(r, r.uint32(), `${prefix}entries[].`, {
                   limits: opts.limits?.entries$
                 })) {
                   yield {
@@ -328,12 +328,12 @@ export namespace Message {
               case 2: {
                 yield {
                   field: `${prefix}full`,
-                  value: reader.bool()
+                  value: r.bool()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -442,36 +442,36 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             prefix: uint8ArrayAlloc(0),
             data: uint8ArrayAlloc(0)
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.prefix = reader.bytes()
+                obj.prefix = r.bytes()
                 break
               }
               case 2: {
-                obj.data = reader.bytes()
+                obj.data = r.bytes()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -481,26 +481,26 @@ export namespace Message {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}prefix`,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}data`,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -586,36 +586,36 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             cid: uint8ArrayAlloc(0),
             type: BlockPresenceType.Have
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.cid = reader.bytes()
+                obj.cid = r.bytes()
                 break
               }
               case 2: {
-                obj.type = Message.BlockPresenceType.codec().decode(reader)
+                obj.type = Message.BlockPresenceType.codec().decode(r)
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -625,26 +625,26 @@ export namespace Message {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}cid`,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}type`,
-                  value: Message.BlockPresenceType.codec().decode(reader)
+                  value: Message.BlockPresenceType.codec().decode(r)
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -729,7 +729,7 @@ export namespace Message {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           blocks: [],
           payload: [],
@@ -737,14 +737,14 @@ export namespace Message {
           pendingBytes: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.wantlist = Message.Wantlist.codec().decode(reader, reader.uint32(), {
+              obj.wantlist = Message.Wantlist.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.wantlist
               })
               break
@@ -754,7 +754,7 @@ export namespace Message {
                 throw new MaxLengthError('Decode error - repeated field "blocks" had too many elements')
               }
 
-              obj.blocks.push(reader.bytes())
+              obj.blocks.push(r.bytes())
               break
             }
             case 3: {
@@ -762,7 +762,7 @@ export namespace Message {
                 throw new MaxLengthError('Decode error - repeated field "payload" had too many elements')
               }
 
-              obj.payload.push(Message.Block.codec().decode(reader, reader.uint32(), {
+              obj.payload.push(Message.Block.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.payload$
               }))
               break
@@ -772,31 +772,31 @@ export namespace Message {
                 throw new MaxLengthError('Decode error - repeated field "blockPresences" had too many elements')
               }
 
-              obj.blockPresences.push(Message.BlockPresence.codec().decode(reader, reader.uint32(), {
+              obj.blockPresences.push(Message.BlockPresence.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.blockPresences$
               }))
               break
             }
             case 5: {
-              obj.pendingBytes = reader.int32()
+              obj.pendingBytes = r.int32()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           blocks: 0,
           payload: 0,
           blockPresences: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -806,12 +806,12 @@ export namespace Message {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Message.Wantlist.codec().stream(reader, reader.uint32(), `${prefix}wantlist.`, {
+              yield * Message.Wantlist.codec().stream(r, r.uint32(), `${prefix}wantlist.`, {
                 limits: opts.limits?.wantlist
               })
 
@@ -825,7 +825,7 @@ export namespace Message {
               yield {
                 field: `${prefix}blocks[]`,
                 index: obj.blocks,
-                value: reader.bytes()
+                value: r.bytes()
               }
 
               obj.blocks++
@@ -837,7 +837,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "payload" had too many elements')
               }
 
-              for (const evt of Message.Block.codec().stream(reader, reader.uint32(), `${prefix}payload[].`, {
+              for (const evt of Message.Block.codec().stream(r, r.uint32(), `${prefix}payload[].`, {
                 limits: opts.limits?.payload$
               })) {
                 yield {
@@ -855,7 +855,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "blockPresences" had too many elements')
               }
 
-              for (const evt of Message.BlockPresence.codec().stream(reader, reader.uint32(), `${prefix}blockPresences[].`, {
+              for (const evt of Message.BlockPresence.codec().stream(r, r.uint32(), `${prefix}blockPresences[].`, {
                 limits: opts.limits?.blockPresences$
               })) {
                 yield {
@@ -871,12 +871,12 @@ export namespace Message {
             case 5: {
               yield {
                 field: `${prefix}pendingBytes`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
