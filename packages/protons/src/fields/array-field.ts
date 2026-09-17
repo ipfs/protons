@@ -28,16 +28,34 @@ const PACKABLE_TYPES = [
   'bool'
 ]
 
+function useExpandedEncoding (fieldOptions?: Record<string, any>, globalOptions?: Record<string, any>): boolean {
+  if (fieldOptions?.features?.repeated_field_encoding === 'EXPANDED') {
+    return true
+  }
+
+  if (fieldOptions?.features?.repeated_field_encoding === 'PACKED') {
+    return false
+  }
+
+  if (globalOptions?.features?.repeated_field_encoding === 'EXPANDED') {
+    return true
+  }
+
+  if (globalOptions?.features?.repeated_field_encoding === 'PACKED') {
+    return false
+  }
+
+  return false
+}
+
 export class ArrayField extends Field {
   private lengthLimit?: number
   private packed: boolean
 
-  constructor (name: string, def: ArrayFieldDef, parent: Parent) {
+  constructor (name: string, def: ArrayFieldDef, parent: Message) {
     super(name, def, parent)
 
     this.lengthLimit = def.options?.['(protons.options).limit']
-
-    // console.info(parent)
 
     const type = parent.findType(this.type).pbType
     const supportsPacked = PACKABLE_TYPES.indexOf(type) !== -1
@@ -45,8 +63,8 @@ export class ArrayField extends Field {
     // the default from protobuf3 onwards
     this.packed = supportsPacked
 
-    // check user override
-    if (def.options?.packed === false || def.options?.features?.repeated_field_encoding === 'EXPANDED') {
+    // check user overrides for field encoding
+    if (useExpandedEncoding(def.options, parent.def.options)) {
       this.packed = false
     }
 

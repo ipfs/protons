@@ -1,5 +1,6 @@
 import type { Field } from '../fields/field.ts'
 import type { Flags } from '../index.ts'
+import type { MessageDef } from './message.ts'
 import type { Module } from './module.ts'
 
 export interface Type {
@@ -18,4 +19,8 @@ export interface Parent {
   addImport (module: string, symbol: string, alias?: string): void
   addTypeImport (module: string, symbol: string, alias?: string): void
   addEslintIgnore (rule: string): void
+}
+
+export interface Message extends Parent {
+  def: MessageDef
 }

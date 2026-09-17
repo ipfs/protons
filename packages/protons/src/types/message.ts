@@ -27,6 +27,7 @@ function camelize (input: string): string {
 }
 
 export interface MessageDef {
+  options?: Record<string, any>
   fields?: Record<string, FieldDef>
   oneofs?: Record<string, { oneof: string[] }>
   nested?: Record<string, MessageDef | EnumDef>
@@ -42,7 +43,7 @@ export class Message implements Type {
   public fields: Field[]
   public oneOfs: string[][]
   public nested: Record<string, Message | Enum>
-  private def: MessageDef
+  public def: MessageDef
   private parent: Parent
 
   constructor (pbType: string, jsType: string, def: MessageDef, parent: Parent) {

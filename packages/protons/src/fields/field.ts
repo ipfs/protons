@@ -94,9 +94,9 @@ export class Field implements MessageField {
   public proto2Required: boolean
   public jsTypeOverride?: 'string' | 'number'
   public oneof?: string[]
-  protected parent: Parent
+  protected parent: Message
 
-  constructor (name: string, def: FieldDef, parent: Parent) {
+  constructor (name: string, def: FieldDef, parent: Message) {
     this.id = def.id
     this.name = name
     this.parent = parent

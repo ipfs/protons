@@ -2,6 +2,7 @@ import { expect } from 'aegir/chai'
 import all from 'it-all'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
+import { GlobalPacked } from './fixtures/packed-global.ts'
 import { DefaultPackedTypes, ExpandedTypes, NewOptionExpandedTypes, NewOptionPackedTypes, PackedTypes, SpecPacked } from './fixtures/packed.ts'
 import { testEncodings } from './utils/compat.ts'
 
@@ -150,5 +151,56 @@ describe('packed', () => {
     }
 
     testEncodings(obj, NewOptionExpandedTypes, './test/fixtures/packed.proto', 'NewOptionExpandedTypes')
+  })
+
+  it('should respect global options', () => {
+    expect(uint8ArrayToString(GlobalPacked.encode({
+      expanded: [1, 1],
+      packedOldOption: [],
+      expandedOldOption: [],
+      packedNewOption: [],
+      expandedNewOption: []
+    }), 'base16')).to.equal('08010801', 'file-level repeated-field-encoding set to expanded ignored')
+
+    expect(uint8ArrayToString(GlobalPacked.encode({
+      expanded: [],
+      packedOldOption: [1, 1],
+      expandedOldOption: [],
+      packedNewOption: [],
+      expandedNewOption: []
+    }), 'base16')).to.equal('10011001', 'old field-level repeated-field-encoding set to packed ignored')
+
+    expect(uint8ArrayToString(GlobalPacked.encode({
+      expanded: [],
+      packedOldOption: [],
+      expandedOldOption: [1, 1],
+      packedNewOption: [],
+      expandedNewOption: []
+    }), 'base16')).to.equal('18011801', 'old field-level repeated-field-encoding set to expanded ignored')
+
+    expect(uint8ArrayToString(GlobalPacked.encode({
+      expanded: [],
+      packedOldOption: [],
+      expandedOldOption: [],
+      packedNewOption: [1, 1],
+      expandedNewOption: []
+    }), 'base16')).to.equal('22020101', 'new field-level repeated-field-encoding set to packed ignored')
+
+    expect(uint8ArrayToString(GlobalPacked.encode({
+      expanded: [],
+      packedOldOption: [],
+      expandedOldOption: [],
+      packedNewOption: [],
+      expandedNewOption: [1, 1]
+    }), 'base16')).to.equal('28012801', 'new field-level repeated-field-encoding set to expanded ignored')
+
+    testEncodings({
+      expanded: [1, 1],
+      // protobufjs ignores proto2-style [packed=false] field override
+      packedOldOption: [],
+      expandedOldOption: [1, 1],
+      packedNewOption: [1, 1],
+      expandedNewOption: [1, 1]
+    }, GlobalPacked, './test/fixtures/packed-global.proto', 'GlobalPacked')
   })
 })

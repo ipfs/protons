@@ -2,11 +2,12 @@ import { Enum } from '../types/enum.ts'
 import { Field } from './field.ts'
 import type { FieldDef } from './field.ts'
 import type { Parent } from '../types/index.ts'
+import type { Message } from '../types/message.ts'
 
 export class EnumField extends Field {
   private enum: Enum
 
-  constructor (name: string, def: FieldDef, parent: Parent) {
+  constructor (name: string, def: FieldDef, parent: Message) {
     super(name, def, parent)
 
     const type = parent.findType(def.type)
