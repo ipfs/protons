@@ -1,3 +1,9 @@
+## [protons-runtime-v7.1.2](https://github.com/ipfs/protons/compare/protons-runtime-7.1.1...protons-runtime-7.1.2) (2026-09-17)
+
+### Bug Fixes
+
+* fix typo in skip method documentation ([#204](https://github.com/ipfs/protons/issues/204)) ([070a715](https://github.com/ipfs/protons/commit/070a715202083a0d5d0d081ff57f605998329f08))
+
 ## [protons-runtime-v7.1.1](https://github.com/ipfs/protons/compare/protons-runtime-7.1.0...protons-runtime-7.1.1) (2026-09-14)
 
 ### Bug Fixes
