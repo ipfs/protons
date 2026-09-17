@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -80,20 +80,28 @@ export namespace MessageWithArrayField {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithArrayField'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.field1`,
+                field: `${prefix}field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.field2`,
+                field: `${prefix}field2`,
                 value: reader.uint32()
               }
               break
@@ -104,7 +112,7 @@ export namespace MessageWithArrayField {
               }
 
               yield {
-                field: `${prefix}.arr[]`,
+                field: `${prefix}arr[]`,
                 index: obj.arr,
                 value: reader.string()
               }
@@ -119,6 +127,14 @@ export namespace MessageWithArrayField {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithArrayField'
+          }
+        }
       })
     }
 
@@ -126,17 +142,17 @@ export namespace MessageWithArrayField {
   }
 
   export interface MessageWithArrayFieldField1FieldEvent {
-    field: '$.field1'
+    field: '.field1'
     value: boolean
   }
 
   export interface MessageWithArrayFieldField2FieldEvent {
-    field: '$.field2'
+    field: '.field2'
     value: number
   }
 
   export interface MessageWithArrayFieldArrFieldEvent {
-    field: '$.arr[]'
+    field: '.arr[]'
     index: number
     value: string
   }
@@ -202,13 +218,21 @@ export namespace NestedMessage {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'NestedMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.nestedValue`,
+                field: `${prefix}nestedValue`,
                 value: reader.string()
               }
               break
@@ -219,6 +243,14 @@ export namespace NestedMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'NestedMessage'
+          }
+        }
       })
     }
 
@@ -226,7 +258,7 @@ export namespace NestedMessage {
   }
 
   export interface NestedMessageNestedValueFieldEvent {
-    field: '$.nestedValue'
+    field: '.nestedValue'
     value: string
   }
 
@@ -303,19 +335,27 @@ export namespace MessageWithNestedMessage {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithNestedMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.field1`,
+                field: `${prefix}field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
-              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessage`, {
+              yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessage.`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -327,6 +367,14 @@ export namespace MessageWithNestedMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithNestedMessage'
+          }
+        }
       })
     }
 
@@ -334,12 +382,22 @@ export namespace MessageWithNestedMessage {
   }
 
   export interface MessageWithNestedMessageField1FieldEvent {
-    field: '$.field1'
+    field: '.field1'
     value: boolean
   }
 
+  export interface MessageWithNestedMessageNestedMessageMessageStart {
+    field: '.nestedMessage'
+    type: 'start'
+  }
+
+  export interface MessageWithNestedMessageNestedMessageMessageEnd {
+    field: '.nestedMessage'
+    type: 'end'
+  }
+
   export interface MessageWithNestedMessageNestedMessageNestedValueFieldEvent {
-    field: '$.nestedMessage.nestedValue'
+    field: '.nestedMessage.nestedValue'
     value: string
   }
 
@@ -351,7 +409,7 @@ export namespace MessageWithNestedMessage {
     return decodeMessage(buf, MessageWithNestedMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithNestedMessage>): Generator<MessageWithNestedMessageField1FieldEvent | MessageWithNestedMessageNestedMessageNestedValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithNestedMessage>): Generator<MessageWithNestedMessageField1FieldEvent | MessageWithNestedMessageNestedMessageMessageStart | MessageWithNestedMessageNestedMessageMessageEnd | MessageWithNestedMessageNestedMessageNestedValueFieldEvent> {
     return streamMessage(buf, MessageWithNestedMessage.codec(), opts)
   }
 }
@@ -416,19 +474,27 @@ export namespace MessageWithDeeplyNestedMessage {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithDeeplyNestedMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.field1`,
+                field: `${prefix}field1`,
                 value: reader.bool()
               }
               break
             }
             case 2: {
-              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessage`, {
+              yield * MessageWithNestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessage.`, {
                 limits: opts.limits?.nestedMessage
               })
 
@@ -440,6 +506,14 @@ export namespace MessageWithDeeplyNestedMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithDeeplyNestedMessage'
+          }
+        }
       })
     }
 
@@ -447,17 +521,37 @@ export namespace MessageWithDeeplyNestedMessage {
   }
 
   export interface MessageWithDeeplyNestedMessageField1FieldEvent {
-    field: '$.field1'
+    field: '.field1'
     value: boolean
+  }
+
+  export interface MessageWithDeeplyNestedMessageNestedMessageMessageStart {
+    field: '.nestedMessage'
+    type: 'start'
+  }
+
+  export interface MessageWithDeeplyNestedMessageNestedMessageMessageEnd {
+    field: '.nestedMessage'
+    type: 'end'
   }
 
   export interface MessageWithDeeplyNestedMessageNestedMessageField1FieldEvent {
-    field: '$.nestedMessage.field1'
+    field: '.nestedMessage.field1'
     value: boolean
   }
 
+  export interface MessageWithDeeplyNestedMessageNestedMessageNestedMessageMessageStart {
+    field: '.nestedMessage.nestedMessage'
+    type: 'start'
+  }
+
+  export interface MessageWithDeeplyNestedMessageNestedMessageNestedMessageMessageEnd {
+    field: '.nestedMessage.nestedMessage'
+    type: 'end'
+  }
+
   export interface MessageWithDeeplyNestedMessageNestedMessageNestedMessageNestedValueFieldEvent {
-    field: '$.nestedMessage.nestedMessage.nestedValue'
+    field: '.nestedMessage.nestedMessage.nestedValue'
     value: string
   }
 
@@ -469,7 +563,7 @@ export namespace MessageWithDeeplyNestedMessage {
     return decodeMessage(buf, MessageWithDeeplyNestedMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithDeeplyNestedMessage>): Generator<MessageWithDeeplyNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageNestedMessageNestedValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithDeeplyNestedMessage>): Generator<MessageWithDeeplyNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageMessageStart | MessageWithDeeplyNestedMessageNestedMessageMessageEnd | MessageWithDeeplyNestedMessageNestedMessageField1FieldEvent | MessageWithDeeplyNestedMessageNestedMessageNestedMessageMessageStart | MessageWithDeeplyNestedMessageNestedMessageNestedMessageMessageEnd | MessageWithDeeplyNestedMessageNestedMessageNestedMessageNestedValueFieldEvent> {
     return streamMessage(buf, MessageWithDeeplyNestedMessage.codec(), opts)
   }
 }
@@ -545,13 +639,21 @@ export namespace MessageWithRepeatedMessage {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithRepeatedMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.field1`,
+                field: `${prefix}field1`,
                 value: reader.bool()
               }
               break
@@ -561,7 +663,7 @@ export namespace MessageWithRepeatedMessage {
                 throw new MaxLengthError('Streaming decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessages[]`, {
+              for (const evt of NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}nestedMessages[].`, {
                 limits: opts.limits?.nestedMessages$
               })) {
                 yield {
@@ -580,6 +682,14 @@ export namespace MessageWithRepeatedMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithRepeatedMessage'
+          }
+        }
       })
     }
 
@@ -587,14 +697,28 @@ export namespace MessageWithRepeatedMessage {
   }
 
   export interface MessageWithRepeatedMessageField1FieldEvent {
-    field: '$.field1'
+    field: '.field1'
     value: boolean
   }
 
   export interface MessageWithRepeatedMessageNestedMessagesNestedValueFieldEvent {
-    field: '$.nestedMessages[].nestedValue'
+    field: '.nestedMessages[].nestedValue'
     value: string
     index: number
+  }
+
+  export interface MessageWithRepeatedMessageNestedMessagesMessageStartEvent {
+    field: '.nestedMessages[]'
+    index: number
+    type: 'start'
+    message: string
+  }
+
+  export interface MessageWithRepeatedMessageNestedMessagesMessageEndEvent {
+    field: '.nestedMessages[]'
+    index: number
+    type: 'end'
+    message: string
   }
 
   export function encode (obj: Partial<MessageWithRepeatedMessage>): Uint8Array<ArrayBuffer> {
@@ -605,7 +729,7 @@ export namespace MessageWithRepeatedMessage {
     return decodeMessage(buf, MessageWithRepeatedMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRepeatedMessage>): Generator<MessageWithRepeatedMessageField1FieldEvent | MessageWithRepeatedMessageNestedMessagesNestedValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRepeatedMessage>): Generator<MessageWithRepeatedMessageField1FieldEvent | MessageWithRepeatedMessageNestedMessagesNestedValueFieldEvent | MessageWithRepeatedMessageNestedMessagesMessageStartEvent | MessageWithRepeatedMessageNestedMessagesMessageEndEvent> {
     return streamMessage(buf, MessageWithRepeatedMessage.codec(), opts)
   }
 }
@@ -676,19 +800,27 @@ export namespace MessageWithMapMessage {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
-                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}.value`, {
+                yield * NestedMessage.codec().stream(reader, reader.uint32(), `${prefix}value.`, {
                   limits: opts.limits?.value
                 })
 
@@ -700,6 +832,14 @@ export namespace MessageWithMapMessage {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry'
+            }
+          }
         })
       }
 
@@ -707,12 +847,22 @@ export namespace MessageWithMapMessage {
     }
 
     export interface MessageWithMapMessage$nestedMessagesEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
+    export interface MessageWithMapMessage$nestedMessagesEntryValueMessageStart {
+      field: '.value'
+      type: 'start'
+    }
+
+    export interface MessageWithMapMessage$nestedMessagesEntryValueMessageEnd {
+      field: '.value'
+      type: 'end'
+    }
+
     export interface MessageWithMapMessage$nestedMessagesEntryValueNestedValueFieldEvent {
-      field: '$.value.nestedValue'
+      field: '.value.nestedValue'
       value: string
     }
 
@@ -724,7 +874,7 @@ export namespace MessageWithMapMessage {
       return decodeMessage(buf, MessageWithMapMessage$nestedMessagesEntry.codec(), opts)
     }
 
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage$nestedMessagesEntry>): Generator<MessageWithMapMessage$nestedMessagesEntryKeyFieldEvent | MessageWithMapMessage$nestedMessagesEntryValueNestedValueFieldEvent> {
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage$nestedMessagesEntry>): Generator<MessageWithMapMessage$nestedMessagesEntryKeyFieldEvent | MessageWithMapMessage$nestedMessagesEntryValueMessageStart | MessageWithMapMessage$nestedMessagesEntryValueMessageEnd | MessageWithMapMessage$nestedMessagesEntryValueNestedValueFieldEvent> {
       return streamMessage(buf, MessageWithMapMessage$nestedMessagesEntry.codec(), opts)
     }
   }
@@ -797,13 +947,21 @@ export namespace MessageWithMapMessage {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithMapMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.field1`,
+                field: `${prefix}field1`,
                 value: reader.bool()
               }
               break
@@ -813,7 +971,7 @@ export namespace MessageWithMapMessage {
                 throw new MaxLengthError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix}.nestedMessages{}`, {
+              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(reader, reader.uint32(), `${prefix}nestedMessages{}.`, {
                 limits: {
                   value: opts.limits?.nestedMessages$value
                 }
@@ -829,6 +987,14 @@ export namespace MessageWithMapMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithMapMessage'
+          }
+        }
       })
     }
 
@@ -836,14 +1002,28 @@ export namespace MessageWithMapMessage {
   }
 
   export interface MessageWithMapMessageField1FieldEvent {
-    field: '$.field1'
+    field: '.field1'
     value: boolean
   }
 
   export interface MessageWithMapMessageNestedMessagesNestedValueFieldEvent {
-    field: '$.nestedMessages{}.nestedValue'
+    field: '.nestedMessages{}.nestedValue'
     value: NestedMessage
     key: string
+  }
+
+  export interface MessageWithMapMessageNestedMessagesMessageStartEvent {
+    field: '.nestedMessages{}'
+    key: string
+    type: 'start'
+    message: string
+  }
+
+  export interface MessageWithMapMessageNestedMessagesMessageEndEvent {
+    field: '.nestedMessages{}'
+    key: string
+    type: 'end'
+    message: string
   }
 
   export function encode (obj: Partial<MessageWithMapMessage>): Uint8Array<ArrayBuffer> {
@@ -854,7 +1034,7 @@ export namespace MessageWithMapMessage {
     return decodeMessage(buf, MessageWithMapMessage.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage>): Generator<MessageWithMapMessageField1FieldEvent | MessageWithMapMessageNestedMessagesNestedValueFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithMapMessage>): Generator<MessageWithMapMessageField1FieldEvent | MessageWithMapMessageNestedMessagesNestedValueFieldEvent | MessageWithMapMessageNestedMessagesMessageStartEvent | MessageWithMapMessageNestedMessagesMessageEndEvent> {
     return streamMessage(buf, MessageWithMapMessage.codec(), opts)
   }
 }
@@ -924,20 +1104,28 @@ export namespace MessageWithPrimitiveMap {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.string()
                 }
                 break
@@ -948,6 +1136,14 @@ export namespace MessageWithPrimitiveMap {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry'
+            }
+          }
         })
       }
 
@@ -955,12 +1151,12 @@ export namespace MessageWithPrimitiveMap {
     }
 
     export interface MessageWithPrimitiveMap$nestedStringsEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
     export interface MessageWithPrimitiveMap$nestedStringsEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: string
     }
 
@@ -1045,13 +1241,21 @@ export namespace MessageWithPrimitiveMap {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithPrimitiveMap'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.field1`,
+                field: `${prefix}field1`,
                 value: reader.bool()
               }
               break
@@ -1061,7 +1265,7 @@ export namespace MessageWithPrimitiveMap {
                 throw new MaxLengthError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix}.nestedStrings{}`, {
+              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(reader, reader.uint32(), `${prefix}nestedStrings{}.`, {
                 limits: {
                   value: opts.limits?.nestedStrings$value
                 }
@@ -1077,6 +1281,14 @@ export namespace MessageWithPrimitiveMap {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithPrimitiveMap'
+          }
+        }
       })
     }
 
@@ -1084,12 +1296,12 @@ export namespace MessageWithPrimitiveMap {
   }
 
   export interface MessageWithPrimitiveMapField1FieldEvent {
-    field: '$.field1'
+    field: '.field1'
     value: boolean
   }
 
   export interface MessageWithPrimitiveMapNestedStringsFieldEvent {
-    field: '$.nestedStrings{}'
+    field: '.nestedStrings{}'
     key: string
     value: string
   }
@@ -1104,5 +1316,170 @@ export namespace MessageWithPrimitiveMap {
 
   export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithPrimitiveMap>): Generator<MessageWithPrimitiveMapField1FieldEvent | MessageWithPrimitiveMapNestedStringsFieldEvent> {
     return streamMessage(buf, MessageWithPrimitiveMap.codec(), opts)
+  }
+}
+
+export enum ENUM {
+  VAL_1 = 'VAL_1',
+  VAL_2 = 'VAL_2',
+  VAL_3 = 'VAL_3'
+}
+
+enum __ENUMValues {
+  VAL_1 = 0,
+  VAL_2 = 1,
+  VAL_3 = 3
+}
+
+export namespace ENUM {
+  export const codec = (): Codec<ENUM> => {
+    return enumeration<ENUM>(__ENUMValues)
+  }
+}
+
+export interface MessageWithRepeatedEnums {
+  field1: boolean
+  enums: ENUM[]
+}
+
+export namespace MessageWithRepeatedEnums {
+  let _codec: Codec<MessageWithRepeatedEnums>
+
+  export const codec = (): Codec<MessageWithRepeatedEnums> => {
+    if (_codec == null) {
+      _codec = message<MessageWithRepeatedEnums>((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork()
+        }
+
+        if ((obj.field1 != null && obj.field1 !== false)) {
+          w.uint32(8)
+          w.bool(obj.field1)
+        }
+
+        if (obj.enums != null && obj.enums.length > 0) {
+          for (const value of obj.enums) {
+            w.uint32(16)
+            ENUM.codec().encode(value, w)
+          }
+        }
+
+        if (opts.lengthDelimited !== false) {
+          w.ldelim()
+        }
+      }, (reader, length, opts = {}) => {
+        const obj: any = {
+          field1: false,
+          enums: []
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              obj.field1 = reader.bool()
+              break
+            }
+            case 2: {
+              if (opts.limits?.enums != null && obj.enums.length === opts.limits.enums) {
+                throw new MaxLengthError('Decode error - repeated field "enums" had too many elements')
+              }
+
+              obj.enums.push(ENUM.codec().decode(reader))
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        return obj
+      }, function * (reader, length, prefix, opts = {}) {
+        const obj = {
+          enums: 0
+        }
+
+        const end = length == null ? reader.len : reader.pos + length
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithRepeatedEnums'
+          }
+        }
+
+        while (reader.pos < end) {
+          const tag = reader.uint32()
+
+          switch (tag >>> 3) {
+            case 1: {
+              yield {
+                field: `${prefix}field1`,
+                value: reader.bool()
+              }
+              break
+            }
+            case 2: {
+              if (opts.limits?.enums != null && obj.enums === opts.limits.enums) {
+                throw new MaxLengthError('Streaming decode error - repeated field "enums" had too many elements')
+              }
+
+              yield {
+                field: `${prefix}enums[]`,
+                index: obj.enums,
+                value: ENUM.codec().decode(reader)
+              }
+
+              obj.enums++
+
+              break
+            }
+            default: {
+              reader.skipType(tag & 7)
+              break
+            }
+          }
+        }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithRepeatedEnums'
+          }
+        }
+      })
+    }
+
+    return _codec
+  }
+
+  export interface MessageWithRepeatedEnumsField1FieldEvent {
+    field: '.field1'
+    value: boolean
+  }
+
+  export interface MessageWithRepeatedEnumsEnumsFieldEvent {
+    field: '.enums[]'
+    index: number
+    value: ENUM
+  }
+
+  export function encode (obj: Partial<MessageWithRepeatedEnums>): Uint8Array<ArrayBuffer> {
+    return encodeMessage(obj, MessageWithRepeatedEnums.codec())
+  }
+
+  export function decode (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRepeatedEnums>): MessageWithRepeatedEnums {
+    return decodeMessage(buf, MessageWithRepeatedEnums.codec(), opts)
+  }
+
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MessageWithRepeatedEnums>): Generator<MessageWithRepeatedEnumsField1FieldEvent | MessageWithRepeatedEnumsEnumsFieldEvent> {
+    return streamMessage(buf, MessageWithRepeatedEnums.codec(), opts)
   }
 }

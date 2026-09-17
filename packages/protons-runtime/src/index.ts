@@ -258,7 +258,7 @@ export interface Reader {
   string(): string
 
   /**
-   * Skips the specified number of bytes if specified, otherwise skips a varints`
+   * Skips the specified number of bytes if specified, otherwise skips a varint
    */
   skip(length?: number): void
 

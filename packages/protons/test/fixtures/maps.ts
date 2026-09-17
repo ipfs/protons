@@ -89,13 +89,21 @@ export namespace SubMessage {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'SubMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.foo`,
+                field: `${prefix}foo`,
                 value: reader.string()
               }
               break
@@ -106,7 +114,7 @@ export namespace SubMessage {
               }
 
               yield {
-                field: `${prefix}.bar[]`,
+                field: `${prefix}bar[]`,
                 index: obj.bar,
                 value: reader.uint32()
               }
@@ -121,6 +129,14 @@ export namespace SubMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'SubMessage'
+          }
+        }
       })
     }
 
@@ -128,12 +144,12 @@ export namespace SubMessage {
   }
 
   export interface SubMessageFooFieldEvent {
-    field: '$.foo'
+    field: '.foo'
     value: string
   }
 
   export interface SubMessageBarFieldEvent {
-    field: '$.bar[]'
+    field: '.bar[]'
     index: number
     value: number
   }
@@ -219,20 +235,28 @@ export namespace MapTypes {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MapTypes.MapTypes$stringMapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.string()
                 }
                 break
@@ -243,6 +267,14 @@ export namespace MapTypes {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MapTypes.MapTypes$stringMapEntry'
+            }
+          }
         })
       }
 
@@ -250,12 +282,12 @@ export namespace MapTypes {
     }
 
     export interface MapTypes$stringMapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
     export interface MapTypes$stringMapEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: string
     }
 
@@ -331,20 +363,28 @@ export namespace MapTypes {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MapTypes.MapTypes$intMapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.int32()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.int32()
                 }
                 break
@@ -355,6 +395,14 @@ export namespace MapTypes {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MapTypes.MapTypes$intMapEntry'
+            }
+          }
         })
       }
 
@@ -362,12 +410,12 @@ export namespace MapTypes {
     }
 
     export interface MapTypes$intMapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: number
     }
 
     export interface MapTypes$intMapEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: number
     }
 
@@ -443,20 +491,28 @@ export namespace MapTypes {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MapTypes.MapTypes$boolMapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.bool()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.bool()
                 }
                 break
@@ -467,6 +523,14 @@ export namespace MapTypes {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MapTypes.MapTypes$boolMapEntry'
+            }
+          }
         })
       }
 
@@ -474,12 +538,12 @@ export namespace MapTypes {
     }
 
     export interface MapTypes$boolMapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: boolean
     }
 
     export interface MapTypes$boolMapEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: boolean
     }
 
@@ -556,19 +620,27 @@ export namespace MapTypes {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MapTypes.MapTypes$messageMapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
-                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}.value`, {
+                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}value.`, {
                   limits: opts.limits?.value
                 })
 
@@ -580,6 +652,14 @@ export namespace MapTypes {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MapTypes.MapTypes$messageMapEntry'
+            }
+          }
         })
       }
 
@@ -587,17 +667,27 @@ export namespace MapTypes {
     }
 
     export interface MapTypes$messageMapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
+    export interface MapTypes$messageMapEntryValueMessageStart {
+      field: '.value'
+      type: 'start'
+    }
+
+    export interface MapTypes$messageMapEntryValueMessageEnd {
+      field: '.value'
+      type: 'end'
+    }
+
     export interface MapTypes$messageMapEntryValueFooFieldEvent {
-      field: '$.value.foo'
+      field: '.value.foo'
       value: string
     }
 
     export interface MapTypes$messageMapEntryValueBarFieldEvent {
-      field: '$.value.bar[]'
+      field: '.value.bar[]'
       index: number
       value: number
     }
@@ -610,7 +700,7 @@ export namespace MapTypes {
       return decodeMessage(buf, MapTypes$messageMapEntry.codec(), opts)
     }
 
-    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$messageMapEntry>): Generator<MapTypes$messageMapEntryKeyFieldEvent | MapTypes$messageMapEntryValueFooFieldEvent | MapTypes$messageMapEntryValueBarFieldEvent> {
+    export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes$messageMapEntry>): Generator<MapTypes$messageMapEntryKeyFieldEvent | MapTypes$messageMapEntryValueMessageStart | MapTypes$messageMapEntryValueMessageEnd | MapTypes$messageMapEntryValueFooFieldEvent | MapTypes$messageMapEntryValueBarFieldEvent> {
       return streamMessage(buf, MapTypes$messageMapEntry.codec(), opts)
     }
   }
@@ -674,20 +764,28 @@ export namespace MapTypes {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'MapTypes.MapTypes$enumMapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.string()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: EnumValue.codec().decode(reader)
                 }
                 break
@@ -698,6 +796,14 @@ export namespace MapTypes {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'MapTypes.MapTypes$enumMapEntry'
+            }
+          }
         })
       }
 
@@ -705,12 +811,12 @@ export namespace MapTypes {
     }
 
     export interface MapTypes$enumMapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
     export interface MapTypes$enumMapEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: EnumValue
     }
 
@@ -873,6 +979,14 @@ export namespace MapTypes {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MapTypes'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
@@ -882,7 +996,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "stringMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.stringMap{}`, {
+              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix}stringMap{}.`, {
                 limits: {
                   value: opts.limits?.stringMap$value
                 }
@@ -897,7 +1011,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "intMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.intMap{}`, {
+              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix}intMap{}.`, {
                 limits: {
                   value: opts.limits?.intMap$value
                 }
@@ -912,7 +1026,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "boolMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.boolMap{}`, {
+              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix}boolMap{}.`, {
                 limits: {
                   value: opts.limits?.boolMap$value
                 }
@@ -927,7 +1041,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "messageMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.messageMap{}`, {
+              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix}messageMap{}.`, {
                 limits: {
                   value: opts.limits?.messageMap$value
                 }
@@ -942,7 +1056,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "enumMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix}.enumMap{}`, {
+              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix}enumMap{}.`, {
                 limits: {
                   value: opts.limits?.enumMap$value
                 }
@@ -958,6 +1072,14 @@ export namespace MapTypes {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MapTypes'
+          }
+        }
       })
     }
 
@@ -965,38 +1087,52 @@ export namespace MapTypes {
   }
 
   export interface MapTypesStringMapFieldEvent {
-    field: '$.stringMap{}'
+    field: '.stringMap{}'
     key: string
     value: string
   }
 
   export interface MapTypesIntMapFieldEvent {
-    field: '$.intMap{}'
+    field: '.intMap{}'
     key: number
     value: number
   }
 
   export interface MapTypesBoolMapFieldEvent {
-    field: '$.boolMap{}'
+    field: '.boolMap{}'
     key: boolean
     value: boolean
   }
 
   export interface MapTypesMessageMapFooFieldEvent {
-    field: '$.messageMap{}.foo'
+    field: '.messageMap{}.foo'
     value: SubMessage
     key: string
   }
 
   export interface MapTypesMessageMapBarFieldEvent {
-    field: '$.messageMap{}.bar[]'
+    field: '.messageMap{}.bar[]'
     index: number
     value: SubMessage
     key: string
   }
 
+  export interface MapTypesMessageMapMessageStartEvent {
+    field: '.messageMap{}'
+    key: string
+    type: 'start'
+    message: string
+  }
+
+  export interface MapTypesMessageMapMessageEndEvent {
+    field: '.messageMap{}'
+    key: string
+    type: 'end'
+    message: string
+  }
+
   export interface MapTypesEnumMapFieldEvent {
-    field: '$.enumMap{}'
+    field: '.enumMap{}'
     key: string
     value: EnumValue
   }
@@ -1009,7 +1145,7 @@ export namespace MapTypes {
     return decodeMessage(buf, MapTypes.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes>): Generator<MapTypesStringMapFieldEvent | MapTypesIntMapFieldEvent | MapTypesBoolMapFieldEvent | MapTypesMessageMapFooFieldEvent | MapTypesMessageMapBarFieldEvent | MapTypesEnumMapFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<MapTypes>): Generator<MapTypesStringMapFieldEvent | MapTypesIntMapFieldEvent | MapTypesBoolMapFieldEvent | MapTypesMessageMapFooFieldEvent | MapTypesMessageMapBarFieldEvent | MapTypesMessageMapMessageStartEvent | MapTypesMessageMapMessageEndEvent | MapTypesEnumMapFieldEvent> {
     return streamMessage(buf, MapTypes.codec(), opts)
   }
 }

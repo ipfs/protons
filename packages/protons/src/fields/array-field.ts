@@ -93,9 +93,14 @@ export class ArrayField extends Field {
     }
 
     const type: Type = parent.findType(this.type)
+    let field = `\${prefix}${this.name}[]`
+
+    if (type instanceof Message) {
+      field += '.'
+    }
 
     return `case ${this.id}: {${limit}
-              ${type.getStreamingDecoder(this, `\`\${prefix}.${this.name}[]\``, '  ')}
+              ${type.getStreamingDecoder(this, `\`${field}\``, '  ')}
 
               obj.${this.name}++
 

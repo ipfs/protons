@@ -73,20 +73,28 @@ export namespace CustomOptionNumber {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'CustomOptionNumber.CustomOptionNumber$i64MapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.int64Number()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.int64Number()
                 }
                 break
@@ -97,6 +105,14 @@ export namespace CustomOptionNumber {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'CustomOptionNumber.CustomOptionNumber$i64MapEntry'
+            }
+          }
         })
       }
 
@@ -104,12 +120,12 @@ export namespace CustomOptionNumber {
     }
 
     export interface CustomOptionNumber$i64MapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: number
     }
 
     export interface CustomOptionNumber$i64MapEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: number
     }
 
@@ -261,48 +277,56 @@ export namespace CustomOptionNumber {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'CustomOptionNumber'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.num`,
+                field: `${prefix}num`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.i64`,
+                field: `${prefix}i64`,
                 value: reader.int64Number()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.ui64`,
+                field: `${prefix}ui64`,
                 value: reader.uint64Number()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.si64`,
+                field: `${prefix}si64`,
                 value: reader.sint64Number()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.f64`,
+                field: `${prefix}f64`,
                 value: reader.fixed64Number()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix}.sf64`,
+                field: `${prefix}sf64`,
                 value: reader.sfixed64Number()
               }
               break
@@ -313,7 +337,7 @@ export namespace CustomOptionNumber {
               }
 
               yield {
-                field: `${prefix}.i64Array[]`,
+                field: `${prefix}i64Array[]`,
                 index: obj.i64Array,
                 value: reader.int64Number()
               }
@@ -327,7 +351,7 @@ export namespace CustomOptionNumber {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}.i64Map{}`, {
+              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}i64Map{}.`, {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -343,6 +367,14 @@ export namespace CustomOptionNumber {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'CustomOptionNumber'
+          }
+        }
       })
     }
 
@@ -350,43 +382,43 @@ export namespace CustomOptionNumber {
   }
 
   export interface CustomOptionNumberNumFieldEvent {
-    field: '$.num'
+    field: '.num'
     value: number
   }
 
   export interface CustomOptionNumberI64FieldEvent {
-    field: '$.i64'
+    field: '.i64'
     value: number
   }
 
   export interface CustomOptionNumberUi64FieldEvent {
-    field: '$.ui64'
+    field: '.ui64'
     value: number
   }
 
   export interface CustomOptionNumberSi64FieldEvent {
-    field: '$.si64'
+    field: '.si64'
     value: number
   }
 
   export interface CustomOptionNumberF64FieldEvent {
-    field: '$.f64'
+    field: '.f64'
     value: number
   }
 
   export interface CustomOptionNumberSf64FieldEvent {
-    field: '$.sf64'
+    field: '.sf64'
     value: number
   }
 
   export interface CustomOptionNumberI64ArrayFieldEvent {
-    field: '$.i64Array[]'
+    field: '.i64Array[]'
     index: number
     value: number
   }
 
   export interface CustomOptionNumberI64MapFieldEvent {
-    field: '$.i64Map{}'
+    field: '.i64Map{}'
     key: number
     value: number
   }
@@ -475,20 +507,28 @@ export namespace CustomOptionString {
         }, function * (reader, length, prefix, opts = {}) {
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'CustomOptionString.CustomOptionString$i64MapEntry'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.key`,
+                  field: `${prefix}key`,
                   value: reader.int64String()
                 }
                 break
               }
               case 2: {
                 yield {
-                  field: `${prefix}.value`,
+                  field: `${prefix}value`,
                   value: reader.int64String()
                 }
                 break
@@ -499,6 +539,14 @@ export namespace CustomOptionString {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'CustomOptionString.CustomOptionString$i64MapEntry'
+            }
+          }
         })
       }
 
@@ -506,12 +554,12 @@ export namespace CustomOptionString {
     }
 
     export interface CustomOptionString$i64MapEntryKeyFieldEvent {
-      field: '$.key'
+      field: '.key'
       value: string
     }
 
     export interface CustomOptionString$i64MapEntryValueFieldEvent {
-      field: '$.value'
+      field: '.value'
       value: string
     }
 
@@ -663,48 +711,56 @@ export namespace CustomOptionString {
 
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'CustomOptionString'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.num`,
+                field: `${prefix}num`,
                 value: reader.int32()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.i64`,
+                field: `${prefix}i64`,
                 value: reader.int64String()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.ui64`,
+                field: `${prefix}ui64`,
                 value: reader.uint64String()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.si64`,
+                field: `${prefix}si64`,
                 value: reader.sint64String()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.f64`,
+                field: `${prefix}f64`,
                 value: reader.fixed64String()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix}.sf64`,
+                field: `${prefix}sf64`,
                 value: reader.sfixed64String()
               }
               break
@@ -715,7 +771,7 @@ export namespace CustomOptionString {
               }
 
               yield {
-                field: `${prefix}.i64Array[]`,
+                field: `${prefix}i64Array[]`,
                 index: obj.i64Array,
                 value: reader.int64String()
               }
@@ -729,7 +785,7 @@ export namespace CustomOptionString {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}.i64Map{}`, {
+              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}i64Map{}.`, {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -745,6 +801,14 @@ export namespace CustomOptionString {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'CustomOptionString'
+          }
+        }
       })
     }
 
@@ -752,43 +816,43 @@ export namespace CustomOptionString {
   }
 
   export interface CustomOptionStringNumFieldEvent {
-    field: '$.num'
+    field: '.num'
     value: number
   }
 
   export interface CustomOptionStringI64FieldEvent {
-    field: '$.i64'
+    field: '.i64'
     value: string
   }
 
   export interface CustomOptionStringUi64FieldEvent {
-    field: '$.ui64'
+    field: '.ui64'
     value: string
   }
 
   export interface CustomOptionStringSi64FieldEvent {
-    field: '$.si64'
+    field: '.si64'
     value: string
   }
 
   export interface CustomOptionStringF64FieldEvent {
-    field: '$.f64'
+    field: '.f64'
     value: string
   }
 
   export interface CustomOptionStringSf64FieldEvent {
-    field: '$.sf64'
+    field: '.sf64'
     value: string
   }
 
   export interface CustomOptionStringI64ArrayFieldEvent {
-    field: '$.i64Array[]'
+    field: '.i64Array[]'
     index: number
     value: string
   }
 
   export interface CustomOptionStringI64MapFieldEvent {
-    field: '$.i64Map{}'
+    field: '.i64Map{}'
     key: string
     value: string
   }

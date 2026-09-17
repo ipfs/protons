@@ -1,3 +1,21 @@
+## [protons-runtime-v7.1.2](https://github.com/ipfs/protons/compare/protons-runtime-7.1.1...protons-runtime-7.1.2) (2026-09-17)
+
+### Bug Fixes
+
+* fix typo in skip method documentation ([#204](https://github.com/ipfs/protons/issues/204)) ([070a715](https://github.com/ipfs/protons/commit/070a715202083a0d5d0d081ff57f605998329f08))
+
+## [protons-runtime-v7.1.1](https://github.com/ipfs/protons/compare/protons-runtime-7.1.0...protons-runtime-7.1.1) (2026-09-14)
+
+### Bug Fixes
+
+* stream function argument order ([#202](https://github.com/ipfs/protons/issues/202)) ([bc9c0a2](https://github.com/ipfs/protons/commit/bc9c0a25197933eefb34e0242728ed8dff1ea075))
+
+## [protons-runtime-v7.1.0](https://github.com/ipfs/protons/compare/protons-runtime-7.0.0...protons-runtime-7.1.0) (2026-09-10)
+
+### Features
+
+* generate start/end events for sub messages ([#201](https://github.com/ipfs/protons/issues/201)) ([c879d0c](https://github.com/ipfs/protons/commit/c879d0cb6719defdfbb51d5406e6acf7daafcc10))
+
 ## [protons-runtime-v7.0.0](https://github.com/ipfs/protons/compare/protons-runtime-6.0.2...protons-runtime-7.0.0) (2026-05-07)
 
 ### ⚠ BREAKING CHANGES

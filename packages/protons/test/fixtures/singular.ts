@@ -80,20 +80,28 @@ export namespace SingularSubMessage {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'SingularSubMessage'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.foo`,
+                field: `${prefix}foo`,
                 value: reader.string()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.bar`,
+                field: `${prefix}bar`,
                 value: reader.int32()
               }
               break
@@ -104,6 +112,14 @@ export namespace SingularSubMessage {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'SingularSubMessage'
+          }
+        }
       })
     }
 
@@ -111,12 +127,12 @@ export namespace SingularSubMessage {
   }
 
   export interface SingularSubMessageFooFieldEvent {
-    field: '$.foo'
+    field: '.foo'
     value: string
   }
 
   export interface SingularSubMessageBarFieldEvent {
-    field: '$.bar'
+    field: '.bar'
     value: number
   }
 
@@ -358,124 +374,132 @@ export namespace Singular {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'Singular'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.double`,
+                field: `${prefix}double`,
                 value: reader.double()
               }
               break
             }
             case 2: {
               yield {
-                field: `${prefix}.float`,
+                field: `${prefix}float`,
                 value: reader.float()
               }
               break
             }
             case 3: {
               yield {
-                field: `${prefix}.int32`,
+                field: `${prefix}int32`,
                 value: reader.int32()
               }
               break
             }
             case 4: {
               yield {
-                field: `${prefix}.int64`,
+                field: `${prefix}int64`,
                 value: reader.int64()
               }
               break
             }
             case 5: {
               yield {
-                field: `${prefix}.uint32`,
+                field: `${prefix}uint32`,
                 value: reader.uint32()
               }
               break
             }
             case 6: {
               yield {
-                field: `${prefix}.uint64`,
+                field: `${prefix}uint64`,
                 value: reader.uint64()
               }
               break
             }
             case 7: {
               yield {
-                field: `${prefix}.sint32`,
+                field: `${prefix}sint32`,
                 value: reader.sint32()
               }
               break
             }
             case 8: {
               yield {
-                field: `${prefix}.sint64`,
+                field: `${prefix}sint64`,
                 value: reader.sint64()
               }
               break
             }
             case 9: {
               yield {
-                field: `${prefix}.fixed32`,
+                field: `${prefix}fixed32`,
                 value: reader.fixed32()
               }
               break
             }
             case 10: {
               yield {
-                field: `${prefix}.fixed64`,
+                field: `${prefix}fixed64`,
                 value: reader.fixed64()
               }
               break
             }
             case 11: {
               yield {
-                field: `${prefix}.sfixed32`,
+                field: `${prefix}sfixed32`,
                 value: reader.sfixed32()
               }
               break
             }
             case 12: {
               yield {
-                field: `${prefix}.sfixed64`,
+                field: `${prefix}sfixed64`,
                 value: reader.sfixed64()
               }
               break
             }
             case 13: {
               yield {
-                field: `${prefix}.bool`,
+                field: `${prefix}bool`,
                 value: reader.bool()
               }
               break
             }
             case 14: {
               yield {
-                field: `${prefix}.string`,
+                field: `${prefix}string`,
                 value: reader.string()
               }
               break
             }
             case 15: {
               yield {
-                field: `${prefix}.bytes`,
+                field: `${prefix}bytes`,
                 value: reader.bytes()
               }
               break
             }
             case 16: {
               yield {
-                field: `${prefix}.enum`,
+                field: `${prefix}enum`,
                 value: SingularEnum.codec().decode(reader)
               }
               break
             }
             case 17: {
-              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix}.subMessage`, {
+              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix}subMessage.`, {
                 limits: opts.limits?.subMessage
               })
 
@@ -487,6 +511,14 @@ export namespace Singular {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'Singular'
+          }
+        }
       })
     }
 
@@ -494,92 +526,102 @@ export namespace Singular {
   }
 
   export interface SingularDoubleFieldEvent {
-    field: '$.double'
+    field: '.double'
     value: number
   }
 
   export interface SingularFloatFieldEvent {
-    field: '$.float'
+    field: '.float'
     value: number
   }
 
   export interface SingularInt32FieldEvent {
-    field: '$.int32'
+    field: '.int32'
     value: number
   }
 
   export interface SingularInt64FieldEvent {
-    field: '$.int64'
+    field: '.int64'
     value: bigint
   }
 
   export interface SingularUint32FieldEvent {
-    field: '$.uint32'
+    field: '.uint32'
     value: number
   }
 
   export interface SingularUint64FieldEvent {
-    field: '$.uint64'
+    field: '.uint64'
     value: bigint
   }
 
   export interface SingularSint32FieldEvent {
-    field: '$.sint32'
+    field: '.sint32'
     value: number
   }
 
   export interface SingularSint64FieldEvent {
-    field: '$.sint64'
+    field: '.sint64'
     value: bigint
   }
 
   export interface SingularFixed32FieldEvent {
-    field: '$.fixed32'
+    field: '.fixed32'
     value: number
   }
 
   export interface SingularFixed64FieldEvent {
-    field: '$.fixed64'
+    field: '.fixed64'
     value: bigint
   }
 
   export interface SingularSfixed32FieldEvent {
-    field: '$.sfixed32'
+    field: '.sfixed32'
     value: number
   }
 
   export interface SingularSfixed64FieldEvent {
-    field: '$.sfixed64'
+    field: '.sfixed64'
     value: bigint
   }
 
   export interface SingularBoolFieldEvent {
-    field: '$.bool'
+    field: '.bool'
     value: boolean
   }
 
   export interface SingularStringFieldEvent {
-    field: '$.string'
+    field: '.string'
     value: string
   }
 
   export interface SingularBytesFieldEvent {
-    field: '$.bytes'
+    field: '.bytes'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface SingularEnumFieldEvent {
-    field: '$.enum'
+    field: '.enum'
     value: SingularEnum
   }
 
+  export interface SingularSubMessageMessageStart {
+    field: '.subMessage'
+    type: 'start'
+  }
+
+  export interface SingularSubMessageMessageEnd {
+    field: '.subMessage'
+    type: 'end'
+  }
+
   export interface SingularSubMessageFooFieldEvent {
-    field: '$.subMessage.foo'
+    field: '.subMessage.foo'
     value: string
   }
 
   export interface SingularSubMessageBarFieldEvent {
-    field: '$.subMessage.bar'
+    field: '.subMessage.bar'
     value: number
   }
 
@@ -591,7 +633,7 @@ export namespace Singular {
     return decodeMessage(buf, Singular.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Singular>): Generator<SingularDoubleFieldEvent | SingularFloatFieldEvent | SingularInt32FieldEvent | SingularInt64FieldEvent | SingularUint32FieldEvent | SingularUint64FieldEvent | SingularSint32FieldEvent | SingularSint64FieldEvent | SingularFixed32FieldEvent | SingularFixed64FieldEvent | SingularSfixed32FieldEvent | SingularSfixed64FieldEvent | SingularBoolFieldEvent | SingularStringFieldEvent | SingularBytesFieldEvent | SingularEnumFieldEvent | SingularSubMessageFooFieldEvent | SingularSubMessageBarFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<Singular>): Generator<SingularDoubleFieldEvent | SingularFloatFieldEvent | SingularInt32FieldEvent | SingularInt64FieldEvent | SingularUint32FieldEvent | SingularUint64FieldEvent | SingularSint32FieldEvent | SingularSint64FieldEvent | SingularFixed32FieldEvent | SingularFixed64FieldEvent | SingularSfixed32FieldEvent | SingularSfixed64FieldEvent | SingularBoolFieldEvent | SingularStringFieldEvent | SingularBytesFieldEvent | SingularEnumFieldEvent | SingularSubMessageMessageStart | SingularSubMessageMessageEnd | SingularSubMessageFooFieldEvent | SingularSubMessageBarFieldEvent> {
     return streamMessage(buf, Singular.codec(), opts)
   }
 }

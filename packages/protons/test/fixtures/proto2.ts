@@ -50,13 +50,21 @@ export namespace MessageWithRequired {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'MessageWithRequired'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.scalarField`,
+                field: `${prefix}scalarField`,
                 value: reader.int32()
               }
               break
@@ -67,6 +75,14 @@ export namespace MessageWithRequired {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'MessageWithRequired'
+          }
+        }
       })
     }
 
@@ -74,7 +90,7 @@ export namespace MessageWithRequired {
   }
 
   export interface MessageWithRequiredScalarFieldFieldEvent {
-    field: '$.scalarField'
+    field: '.scalarField'
     value: number
   }
 

@@ -144,13 +144,21 @@ export namespace CircuitRelay {
 
           const end = length == null ? reader.len : reader.pos + length
 
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'start',
+              message: 'CircuitRelay.Peer'
+            }
+          }
+
           while (reader.pos < end) {
             const tag = reader.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
-                  field: `${prefix}.id`,
+                  field: `${prefix}id`,
                   value: reader.bytes()
                 }
                 break
@@ -161,7 +169,7 @@ export namespace CircuitRelay {
                 }
 
                 yield {
-                  field: `${prefix}.addrs[]`,
+                  field: `${prefix}addrs[]`,
                   index: obj.addrs,
                   value: reader.bytes()
                 }
@@ -176,6 +184,14 @@ export namespace CircuitRelay {
               }
             }
           }
+
+          if (prefix !== '.') {
+            yield {
+              field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+              type: 'end',
+              message: 'CircuitRelay.Peer'
+            }
+          }
         })
       }
 
@@ -183,12 +199,12 @@ export namespace CircuitRelay {
     }
 
     export interface PeerIdFieldEvent {
-      field: '$.id'
+      field: '.id'
       value: Uint8Array<ArrayBuffer>
     }
 
     export interface PeerAddrsFieldEvent {
-      field: '$.addrs[]'
+      field: '.addrs[]'
       index: number
       value: Uint8Array<ArrayBuffer>
     }
@@ -278,26 +294,34 @@ export namespace CircuitRelay {
       }, function * (reader, length, prefix, opts = {}) {
         const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: 'CircuitRelay'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
-                field: `${prefix}.type`,
+                field: `${prefix}type`,
                 value: CircuitRelay.Type.codec().decode(reader)
               }
               break
             }
             case 2: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}.srcPeer`, {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}srcPeer.`, {
                 limits: opts.limits?.srcPeer
               })
 
               break
             }
             case 3: {
-              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}.dstPeer`, {
+              yield * CircuitRelay.Peer.codec().stream(reader, reader.uint32(), `${prefix}dstPeer.`, {
                 limits: opts.limits?.dstPeer
               })
 
@@ -305,7 +329,7 @@ export namespace CircuitRelay {
             }
             case 4: {
               yield {
-                field: `${prefix}.code`,
+                field: `${prefix}code`,
                 value: CircuitRelay.Status.codec().decode(reader)
               }
               break
@@ -316,6 +340,14 @@ export namespace CircuitRelay {
             }
           }
         }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: 'CircuitRelay'
+          }
+        }
       })
     }
 
@@ -323,34 +355,54 @@ export namespace CircuitRelay {
   }
 
   export interface CircuitRelayTypeFieldEvent {
-    field: '$.type'
+    field: '.type'
     value: CircuitRelay.Type
   }
 
+  export interface CircuitRelaySrcPeerMessageStart {
+    field: '.srcPeer'
+    type: 'start'
+  }
+
+  export interface CircuitRelaySrcPeerMessageEnd {
+    field: '.srcPeer'
+    type: 'end'
+  }
+
   export interface CircuitRelaySrcPeerIdFieldEvent {
-    field: '$.srcPeer.id'
+    field: '.srcPeer.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelaySrcPeerAddrsFieldEvent {
-    field: '$.srcPeer.addrs[]'
+    field: '.srcPeer.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
+  export interface CircuitRelayDstPeerMessageStart {
+    field: '.dstPeer'
+    type: 'start'
+  }
+
+  export interface CircuitRelayDstPeerMessageEnd {
+    field: '.dstPeer'
+    type: 'end'
+  }
+
   export interface CircuitRelayDstPeerIdFieldEvent {
-    field: '$.dstPeer.id'
+    field: '.dstPeer.id'
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelayDstPeerAddrsFieldEvent {
-    field: '$.dstPeer.addrs[]'
+    field: '.dstPeer.addrs[]'
     index: number
     value: Uint8Array<ArrayBuffer>
   }
 
   export interface CircuitRelayCodeFieldEvent {
-    field: '$.code'
+    field: '.code'
     value: CircuitRelay.Status
   }
 
@@ -362,7 +414,7 @@ export namespace CircuitRelay {
     return decodeMessage(buf, CircuitRelay.codec(), opts)
   }
 
-  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): Generator<CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerIdFieldEvent | CircuitRelaySrcPeerAddrsFieldEvent | CircuitRelayDstPeerIdFieldEvent | CircuitRelayDstPeerAddrsFieldEvent | CircuitRelayCodeFieldEvent> {
+  export function stream (buf: Uint8Array | Uint8ArrayList, opts?: DecodeOptions<CircuitRelay>): Generator<CircuitRelayTypeFieldEvent | CircuitRelaySrcPeerMessageStart | CircuitRelaySrcPeerMessageEnd | CircuitRelaySrcPeerIdFieldEvent | CircuitRelaySrcPeerAddrsFieldEvent | CircuitRelayDstPeerMessageStart | CircuitRelayDstPeerMessageEnd | CircuitRelayDstPeerIdFieldEvent | CircuitRelayDstPeerAddrsFieldEvent | CircuitRelayCodeFieldEvent> {
     return streamMessage(buf, CircuitRelay.codec(), opts)
   }
 }

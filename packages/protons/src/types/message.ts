@@ -16,6 +16,7 @@ interface StreamEvent {
   type: 'field'
     | 'collection-primitive-member'
     | 'collection-message-member-field'
+    | 'sub-message'
     | 'sub-message-field'
     | 'sub-message-collection-primitive-member'
     | 'sub-message-collection-message-member-field'
@@ -186,7 +187,7 @@ ${indent}              }`
     return `${this.jsType}.codec().decode(reader, reader.uint32()${opts})`
   }
 
-  getStreamingDecoder (field: Field, prefix: string, indent = ''): string {
+  getStreamingDecoder (field: Field, prefix: string, indent: ''): string {
     let opts = ''
 
     if (field instanceof MessageField) {
@@ -199,11 +200,11 @@ ${indent}              limits: opts.limits?.${field.name}$
 ${indent}            }`
 
       return `for (const evt of ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})) {
-                yield {
-                  ...evt,
-                  index: obj.${field.name}
-                }
-              }`
+${indent}              yield {
+${indent}                ...evt,
+${indent}                index: obj.${field.name}
+${indent}              }
+${indent}            }`
     } else if (field instanceof MapField) {
       opts = `, {
 ${indent}              limits: {
@@ -281,7 +282,6 @@ export interface ${this.pbType} {
     const streamGeneratorEvents = streamEvents.map(evt => evt.name)
 
     if (streamGeneratorEvents.length === 0) {
-      this.addEslintIgnore('require-yield')
       streamGeneratorEvents.push('{}')
     }
 
@@ -318,6 +318,14 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
       }, function * (reader, length, prefix, opts = {}) {
         ${this.createLimitObject()}const end = length == null ? reader.len : reader.pos + length
 
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'start',
+            message: '${this.jsType}'
+          }
+        }
+
         while (reader.pos < end) {
           const tag = reader.uint32()
 
@@ -326,6 +334,14 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
               reader.skipType(tag & 7)
               break
             }
+          }
+        }
+
+        if (prefix !== '.') {
+          yield {
+            field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
+            type: 'end',
+            message: '${this.jsType}'
           }
         }
       })
@@ -459,7 +475,7 @@ ${fields
             ${fields.join(delimiter)}`
   }
 
-  getStreamEvents (fieldPrefix = '$.'): StreamEvent[] {
+  getStreamEvents (fieldPrefix = '.'): StreamEvent[] {
     const streamEvents: StreamEvent[] = []
 
     const addMessageFields = (field: Field, message: Message, extraFields: string[]): void => {
@@ -469,6 +485,24 @@ ${fields
         fieldSuffix = '[].'
       } else if (field instanceof MapField) {
         fieldSuffix = '{}.'
+      } else {
+        streamEvents.push({
+          name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}MessageStart`,
+          type: 'sub-message',
+          fields: [
+            `field: '${fieldPrefix}${field.name}'`,
+            "type: 'start'"
+          ]
+        })
+
+        streamEvents.push({
+          name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}MessageEnd`,
+          type: 'sub-message',
+          fields: [
+            `field: '${fieldPrefix}${field.name}'`,
+            "type: 'end'"
+          ]
+        })
       }
 
       // include sub messages
@@ -495,7 +529,7 @@ ${fields
 
         return {
           ...evt,
-          name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}${evt.name}`,
+          name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}${evt.name}`,
           type,
           fields: [...fields.entries()].map(([key, value]) => `${key}: ${value}`)
         }
@@ -509,7 +543,7 @@ ${fields
 
         if (valueType instanceof Primitive || valueType instanceof Enum) {
           streamEvents.push({
-            name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}{}'`,
               `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
@@ -522,13 +556,34 @@ ${fields
             `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
             `value: ${field.jsValueTypeOverride ?? valueType.jsType}`
           ])
+
+          streamEvents.push({
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}MessageStartEvent`,
+            type: 'sub-message',
+            fields: [
+              `field: '${fieldPrefix}${field.name}{}'`,
+              `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
+              "type: 'start'",
+              'message: string'
+            ]
+          })
+          streamEvents.push({
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}MessageEndEvent`,
+            type: 'sub-message',
+            fields: [
+              `field: '${fieldPrefix}${field.name}{}'`,
+              `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
+              "type: 'end'",
+              'message: string'
+            ]
+          })
         }
       } else if (field instanceof ArrayField) {
         const type = this.findType(field.type)
 
         if (type instanceof Primitive || type instanceof Enum) {
           streamEvents.push({
-            name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}[]'`,
               'index: number',
@@ -540,13 +595,35 @@ ${fields
           addMessageFields(field, type, [
             'index: number'
           ])
+
+          // events for the start and end of a given array entry
+          streamEvents.push({
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}MessageStartEvent`,
+            type: 'sub-message',
+            fields: [
+              `field: '${fieldPrefix}${field.name}[]'`,
+              'index: number',
+              "type: 'start'",
+              'message: string'
+            ]
+          })
+          streamEvents.push({
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}MessageEndEvent`,
+            type: 'sub-message',
+            fields: [
+              `field: '${fieldPrefix}${field.name}[]'`,
+              'index: number',
+              "type: 'end'",
+              'message: string'
+            ]
+          })
         }
       } else {
         const type = this.findType(field.type)
 
         if (type instanceof Primitive || type instanceof Enum) {
           streamEvents.push({
-            name: `${fieldPrefix === '$.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
+            name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}'`,
               `value: ${field.jsTypeOverride ?? type.jsType}`
