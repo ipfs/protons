@@ -54,36 +54,36 @@ export namespace SingularSubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           foo: '',
           bar: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.foo = reader.string()
+              obj.foo = r.string()
               break
             }
             case 2: {
-              obj.bar = reader.int32()
+              obj.bar = r.int32()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -93,26 +93,26 @@ export namespace SingularSubMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}foo`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}bar`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -292,7 +292,7 @@ export namespace Singular {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           double: 0,
           float: 0,
@@ -312,92 +312,92 @@ export namespace Singular {
           enum: SingularEnum.NO_VALUE
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.double = reader.double()
+              obj.double = r.double()
               break
             }
             case 2: {
-              obj.float = reader.float()
+              obj.float = r.float()
               break
             }
             case 3: {
-              obj.int32 = reader.int32()
+              obj.int32 = r.int32()
               break
             }
             case 4: {
-              obj.int64 = reader.int64()
+              obj.int64 = r.int64()
               break
             }
             case 5: {
-              obj.uint32 = reader.uint32()
+              obj.uint32 = r.uint32()
               break
             }
             case 6: {
-              obj.uint64 = reader.uint64()
+              obj.uint64 = r.uint64()
               break
             }
             case 7: {
-              obj.sint32 = reader.sint32()
+              obj.sint32 = r.sint32()
               break
             }
             case 8: {
-              obj.sint64 = reader.sint64()
+              obj.sint64 = r.sint64()
               break
             }
             case 9: {
-              obj.fixed32 = reader.fixed32()
+              obj.fixed32 = r.fixed32()
               break
             }
             case 10: {
-              obj.fixed64 = reader.fixed64()
+              obj.fixed64 = r.fixed64()
               break
             }
             case 11: {
-              obj.sfixed32 = reader.sfixed32()
+              obj.sfixed32 = r.sfixed32()
               break
             }
             case 12: {
-              obj.sfixed64 = reader.sfixed64()
+              obj.sfixed64 = r.sfixed64()
               break
             }
             case 13: {
-              obj.bool = reader.bool()
+              obj.bool = r.bool()
               break
             }
             case 14: {
-              obj.string = reader.string()
+              obj.string = r.string()
               break
             }
             case 15: {
-              obj.bytes = reader.bytes()
+              obj.bytes = r.bytes()
               break
             }
             case 16: {
-              obj.enum = SingularEnum.codec().decode(reader)
+              obj.enum = SingularEnum.codec().decode(r)
               break
             }
             case 17: {
-              obj.subMessage = SingularSubMessage.codec().decode(reader, reader.uint32(), {
+              obj.subMessage = SingularSubMessage.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.subMessage
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -407,131 +407,131 @@ export namespace Singular {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}double`,
-                value: reader.double()
+                value: r.double()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}float`,
-                value: reader.float()
+                value: r.float()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}int32`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}int64`,
-                value: reader.int64()
+                value: r.int64()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}uint32`,
-                value: reader.uint32()
+                value: r.uint32()
               }
               break
             }
             case 6: {
               yield {
                 field: `${prefix}uint64`,
-                value: reader.uint64()
+                value: r.uint64()
               }
               break
             }
             case 7: {
               yield {
                 field: `${prefix}sint32`,
-                value: reader.sint32()
+                value: r.sint32()
               }
               break
             }
             case 8: {
               yield {
                 field: `${prefix}sint64`,
-                value: reader.sint64()
+                value: r.sint64()
               }
               break
             }
             case 9: {
               yield {
                 field: `${prefix}fixed32`,
-                value: reader.fixed32()
+                value: r.fixed32()
               }
               break
             }
             case 10: {
               yield {
                 field: `${prefix}fixed64`,
-                value: reader.fixed64()
+                value: r.fixed64()
               }
               break
             }
             case 11: {
               yield {
                 field: `${prefix}sfixed32`,
-                value: reader.sfixed32()
+                value: r.sfixed32()
               }
               break
             }
             case 12: {
               yield {
                 field: `${prefix}sfixed64`,
-                value: reader.sfixed64()
+                value: r.sfixed64()
               }
               break
             }
             case 13: {
               yield {
                 field: `${prefix}bool`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
             case 14: {
               yield {
                 field: `${prefix}string`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 15: {
               yield {
                 field: `${prefix}bytes`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 16: {
               yield {
                 field: `${prefix}enum`,
-                value: SingularEnum.codec().decode(reader)
+                value: SingularEnum.codec().decode(r)
               }
               break
             }
             case 17: {
-              yield * SingularSubMessage.codec().stream(reader, reader.uint32(), `${prefix}subMessage.`, {
+              yield * SingularSubMessage.codec().stream(r, r.uint32(), `${prefix}subMessage.`, {
                 limits: opts.limits?.subMessage
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

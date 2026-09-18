@@ -30,15 +30,15 @@ export namespace MessageWithSizeLimitedRepeatedField {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           repeatedField: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -50,23 +50,23 @@ export namespace MessageWithSizeLimitedRepeatedField {
                 throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
               }
 
-              obj.repeatedField.push(reader.string())
+              obj.repeatedField.push(r.string())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           repeatedField: 1
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -76,8 +76,8 @@ export namespace MessageWithSizeLimitedRepeatedField {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -92,7 +92,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
               yield {
                 field: `${prefix}repeatedField[]`,
                 index: obj.repeatedField,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.repeatedField++
@@ -100,7 +100,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -180,36 +180,36 @@ export namespace MessageWithSizeLimitedMap {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: ''
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.string()
+                obj.key = r.string()
                 break
               }
               case 2: {
-                obj.value = reader.string()
+                obj.value = r.string()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -219,26 +219,26 @@ export namespace MessageWithSizeLimitedMap {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -299,15 +299,15 @@ export namespace MessageWithSizeLimitedMap {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           mapField: new Map<string, string>()
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -319,7 +319,7 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
 
-              const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.mapField$value
                 }
@@ -328,19 +328,19 @@ export namespace MessageWithSizeLimitedMap {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           mapField: 1
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -350,8 +350,8 @@ export namespace MessageWithSizeLimitedMap {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -363,7 +363,7 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxLengthError('Decode error - repeated field "mapField" had too many elements')
               }
 
-              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(reader, reader.uint32(), `${prefix}mapField{}.`, {
+              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(r, r.uint32(), `${prefix}mapField{}.`, {
                 limits: {
                   value: opts.limits?.mapField$value
                 }
@@ -374,7 +374,7 @@ export namespace MessageWithSizeLimitedMap {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

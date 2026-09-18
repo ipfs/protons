@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option features.repeated_field_encoding = EXPANDED;
+
+message GlobalPacked {
+  repeated int32 expanded = 1;
+  repeated int32 packed_old_option = 2 [packed=true];
+  repeated int32 expanded_old_option = 3 [packed=false];
+  repeated int32 packed_new_option = 4 [features.repeated_field_encoding=PACKED];
+  repeated int32 expanded_new_option = 5 [features.repeated_field_encoding=EXPANDED];
+}

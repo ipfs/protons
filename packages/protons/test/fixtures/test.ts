@@ -44,31 +44,31 @@ export namespace SubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           foo: ''
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.foo = reader.string()
+              obj.foo = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -78,19 +78,19 @@ export namespace SubMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}foo`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -274,67 +274,67 @@ export namespace AllTheTypes {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           field14: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.field1 = reader.bool()
+              obj.field1 = r.bool()
               break
             }
             case 2: {
-              obj.field2 = reader.int32()
+              obj.field2 = r.int32()
               break
             }
             case 3: {
-              obj.field3 = reader.int64()
+              obj.field3 = r.int64()
               break
             }
             case 4: {
-              obj.field4 = reader.uint32()
+              obj.field4 = r.uint32()
               break
             }
             case 5: {
-              obj.field5 = reader.uint64()
+              obj.field5 = r.uint64()
               break
             }
             case 6: {
-              obj.field6 = reader.sint32()
+              obj.field6 = r.sint32()
               break
             }
             case 7: {
-              obj.field7 = reader.sint64()
+              obj.field7 = r.sint64()
               break
             }
             case 8: {
-              obj.field8 = reader.double()
+              obj.field8 = r.double()
               break
             }
             case 9: {
-              obj.field9 = reader.float()
+              obj.field9 = r.float()
               break
             }
             case 10: {
-              obj.field10 = reader.string()
+              obj.field10 = r.string()
               break
             }
             case 11: {
-              obj.field11 = reader.bytes()
+              obj.field11 = r.bytes()
               break
             }
             case 12: {
-              obj.field12 = AnEnum.codec().decode(reader)
+              obj.field12 = AnEnum.codec().decode(r)
               break
             }
             case 13: {
-              obj.field13 = SubMessage.codec().decode(reader, reader.uint32(), {
+              obj.field13 = SubMessage.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.field13
               })
               break
@@ -344,39 +344,39 @@ export namespace AllTheTypes {
                 throw new MaxLengthError('Decode error - repeated field "field14" had too many elements')
               }
 
-              obj.field14.push(reader.string())
+              obj.field14.push(r.string())
               break
             }
             case 15: {
-              obj.field15 = reader.fixed32()
+              obj.field15 = r.fixed32()
               break
             }
             case 16: {
-              obj.field16 = reader.fixed64()
+              obj.field16 = r.fixed64()
               break
             }
             case 17: {
-              obj.field17 = reader.sfixed32()
+              obj.field17 = r.sfixed32()
               break
             }
             case 18: {
-              obj.field18 = reader.sfixed64()
+              obj.field18 = r.sfixed64()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           field14: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -386,96 +386,96 @@ export namespace AllTheTypes {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}field1`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}field2`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}field3`,
-                value: reader.int64()
+                value: r.int64()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}field4`,
-                value: reader.uint32()
+                value: r.uint32()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}field5`,
-                value: reader.uint64()
+                value: r.uint64()
               }
               break
             }
             case 6: {
               yield {
                 field: `${prefix}field6`,
-                value: reader.sint32()
+                value: r.sint32()
               }
               break
             }
             case 7: {
               yield {
                 field: `${prefix}field7`,
-                value: reader.sint64()
+                value: r.sint64()
               }
               break
             }
             case 8: {
               yield {
                 field: `${prefix}field8`,
-                value: reader.double()
+                value: r.double()
               }
               break
             }
             case 9: {
               yield {
                 field: `${prefix}field9`,
-                value: reader.float()
+                value: r.float()
               }
               break
             }
             case 10: {
               yield {
                 field: `${prefix}field10`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 11: {
               yield {
                 field: `${prefix}field11`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 12: {
               yield {
                 field: `${prefix}field12`,
-                value: AnEnum.codec().decode(reader)
+                value: AnEnum.codec().decode(r)
               }
               break
             }
             case 13: {
-              yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}field13.`, {
+              yield * SubMessage.codec().stream(r, r.uint32(), `${prefix}field13.`, {
                 limits: opts.limits?.field13
               })
 
@@ -489,7 +489,7 @@ export namespace AllTheTypes {
               yield {
                 field: `${prefix}field14[]`,
                 index: obj.field14,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.field14++
@@ -499,33 +499,33 @@ export namespace AllTheTypes {
             case 15: {
               yield {
                 field: `${prefix}field15`,
-                value: reader.fixed32()
+                value: r.fixed32()
               }
               break
             }
             case 16: {
               yield {
                 field: `${prefix}field16`,
-                value: reader.fixed64()
+                value: r.fixed64()
               }
               break
             }
             case 17: {
               yield {
                 field: `${prefix}field17`,
-                value: reader.sfixed32()
+                value: r.sfixed32()
               }
               break
             }
             case 18: {
               yield {
                 field: `${prefix}field18`,
-                value: reader.sfixed64()
+                value: r.sfixed64()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

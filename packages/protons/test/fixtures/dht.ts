@@ -56,45 +56,45 @@ export namespace Record {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.key = reader.bytes()
+              obj.key = r.bytes()
               break
             }
             case 2: {
-              obj.value = reader.bytes()
+              obj.value = r.bytes()
               break
             }
             case 3: {
-              obj.author = reader.bytes()
+              obj.author = r.bytes()
               break
             }
             case 4: {
-              obj.signature = reader.bytes()
+              obj.signature = r.bytes()
               break
             }
             case 5: {
-              obj.timeReceived = reader.string()
+              obj.timeReceived = r.string()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -104,47 +104,47 @@ export namespace Record {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}key`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}value`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}author`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}signature`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}timeReceived`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -306,19 +306,19 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             addrs: []
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.id = reader.bytes()
+                obj.id = r.bytes()
                 break
               }
               case 2: {
@@ -326,27 +326,27 @@ export namespace Message {
                   throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
 
-                obj.addrs.push(reader.bytes())
+                obj.addrs.push(r.bytes())
                 break
               }
               case 3: {
-                obj.connection = Message.ConnectionType.codec().decode(reader)
+                obj.connection = Message.ConnectionType.codec().decode(r)
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
+        }, function * (r, length, prefix, opts = {}) {
           const obj = {
             addrs: 0
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -356,14 +356,14 @@ export namespace Message {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}id`,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
                 break
               }
@@ -375,7 +375,7 @@ export namespace Message {
                 yield {
                   field: `${prefix}addrs[]`,
                   index: obj.addrs,
-                  value: reader.bytes()
+                  value: r.bytes()
                 }
 
                 obj.addrs++
@@ -385,12 +385,12 @@ export namespace Message {
               case 3: {
                 yield {
                   field: `${prefix}connection`,
-                  value: Message.ConnectionType.codec().decode(reader)
+                  value: Message.ConnectionType.codec().decode(r)
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -484,32 +484,32 @@ export namespace Message {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           closerPeers: [],
           providerPeers: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.type = Message.MessageType.codec().decode(reader)
+              obj.type = Message.MessageType.codec().decode(r)
               break
             }
             case 10: {
-              obj.clusterLevelRaw = reader.int32()
+              obj.clusterLevelRaw = r.int32()
               break
             }
             case 2: {
-              obj.key = reader.bytes()
+              obj.key = r.bytes()
               break
             }
             case 3: {
-              obj.record = reader.bytes()
+              obj.record = r.bytes()
               break
             }
             case 8: {
@@ -517,7 +517,7 @@ export namespace Message {
                 throw new MaxLengthError('Decode error - repeated field "closerPeers" had too many elements')
               }
 
-              obj.closerPeers.push(Message.Peer.codec().decode(reader, reader.uint32(), {
+              obj.closerPeers.push(Message.Peer.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.closerPeers$
               }))
               break
@@ -527,26 +527,26 @@ export namespace Message {
                 throw new MaxLengthError('Decode error - repeated field "providerPeers" had too many elements')
               }
 
-              obj.providerPeers.push(Message.Peer.codec().decode(reader, reader.uint32(), {
+              obj.providerPeers.push(Message.Peer.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.providerPeers$
               }))
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           closerPeers: 0,
           providerPeers: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -556,35 +556,35 @@ export namespace Message {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}type`,
-                value: Message.MessageType.codec().decode(reader)
+                value: Message.MessageType.codec().decode(r)
               }
               break
             }
             case 10: {
               yield {
                 field: `${prefix}clusterLevelRaw`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}key`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}record`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
@@ -593,7 +593,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}closerPeers[].`, {
+              for (const evt of Message.Peer.codec().stream(r, r.uint32(), `${prefix}closerPeers[].`, {
                 limits: opts.limits?.closerPeers$
               })) {
                 yield {
@@ -611,7 +611,7 @@ export namespace Message {
                 throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(reader, reader.uint32(), `${prefix}providerPeers[].`, {
+              for (const evt of Message.Peer.codec().stream(r, r.uint32(), `${prefix}providerPeers[].`, {
                 limits: opts.limits?.providerPeers$
               })) {
                 yield {
@@ -625,7 +625,7 @@ export namespace Message {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

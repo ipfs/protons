@@ -1,5 +1,6 @@
 import type { Field } from '../fields/field.ts'
 import type { Flags } from '../index.ts'
+import type { MessageDef } from './message.ts'
 import type { Module } from './module.ts'
 
 export interface TypeCodec {
@@ -11,8 +12,8 @@ export interface Type {
   jsType: TypeCodec
   pbType: string
   init(module: Module): void
-  getDecoder(field: Field, indent?: string): string
-  getStreamingDecoder(field: Field, prefix: string, indent?: string): string
+  getDecoder(field: Field, indent?: string, reader?: string): string
+  getStreamingDecoder(field: Field, prefix: string, indent?: string, reader?: string): string
   getEncoder(field: Field, accessor: string): string
   getValueTest(field: Field, accessor: string): string
 }
@@ -23,4 +24,8 @@ export interface Parent {
   addImport (module: string, symbol: string, alias?: string): void
   addTypeImport (module: string, symbol: string, alias?: string): void
   addEslintIgnore (rule: string): void
+}
+
+export interface Message extends Parent {
+  def: MessageDef
 }

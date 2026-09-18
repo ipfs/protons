@@ -1,6 +1,7 @@
 import { codecTypes, Field, jsTypeOverrides } from './field.ts'
 import type { FieldDef } from './field.ts'
 import type { Parent } from '../types/index.ts'
+import type { Message } from '../types/message.ts'
 
 export interface MapFieldDef extends FieldDef {
   keyType?: string
@@ -19,7 +20,7 @@ export class MapField extends Field {
   public jsValueTypeOverride?: 'string' | 'number'
   private lengthLimit?: number
 
-  constructor (name: string, def: MapFieldDef, parent: Parent) {
+  constructor (name: string, def: MapFieldDef, parent: Message) {
     super(name, def, parent)
 
     this.type = 'message'

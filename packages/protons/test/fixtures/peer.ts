@@ -63,17 +63,17 @@ export namespace Peer {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           addresses: [],
           protocols: [],
           metadata: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -81,7 +81,7 @@ export namespace Peer {
                 throw new MaxLengthError('Decode error - repeated field "addresses" had too many elements')
               }
 
-              obj.addresses.push(Address.codec().decode(reader, reader.uint32(), {
+              obj.addresses.push(Address.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.addresses$
               }))
               break
@@ -91,7 +91,7 @@ export namespace Peer {
                 throw new MaxLengthError('Decode error - repeated field "protocols" had too many elements')
               }
 
-              obj.protocols.push(reader.string())
+              obj.protocols.push(r.string())
               break
             }
             case 3: {
@@ -99,35 +99,35 @@ export namespace Peer {
                 throw new MaxLengthError('Decode error - repeated field "metadata" had too many elements')
               }
 
-              obj.metadata.push(Metadata.codec().decode(reader, reader.uint32(), {
+              obj.metadata.push(Metadata.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.metadata$
               }))
               break
             }
             case 4: {
-              obj.pubKey = reader.bytes()
+              obj.pubKey = r.bytes()
               break
             }
             case 5: {
-              obj.peerRecordEnvelope = reader.bytes()
+              obj.peerRecordEnvelope = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           addresses: 0,
           protocols: 0,
           metadata: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -137,8 +137,8 @@ export namespace Peer {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -146,7 +146,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
               }
 
-              for (const evt of Address.codec().stream(reader, reader.uint32(), `${prefix}addresses[].`, {
+              for (const evt of Address.codec().stream(r, r.uint32(), `${prefix}addresses[].`, {
                 limits: opts.limits?.addresses$
               })) {
                 yield {
@@ -167,7 +167,7 @@ export namespace Peer {
               yield {
                 field: `${prefix}protocols[]`,
                 index: obj.protocols,
-                value: reader.string()
+                value: r.string()
               }
 
               obj.protocols++
@@ -179,7 +179,7 @@ export namespace Peer {
                 throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
               }
 
-              for (const evt of Metadata.codec().stream(reader, reader.uint32(), `${prefix}metadata[].`, {
+              for (const evt of Metadata.codec().stream(r, r.uint32(), `${prefix}metadata[].`, {
                 limits: opts.limits?.metadata$
               })) {
                 yield {
@@ -195,19 +195,19 @@ export namespace Peer {
             case 4: {
               yield {
                 field: `${prefix}pubKey`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}peerRecordEnvelope`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -340,35 +340,35 @@ export namespace Address {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           multiaddr: uint8ArrayAlloc(0)
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.multiaddr = reader.bytes()
+              obj.multiaddr = r.bytes()
               break
             }
             case 2: {
-              obj.isCertified = reader.bool()
+              obj.isCertified = r.bool()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -378,26 +378,26 @@ export namespace Address {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}multiaddr`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}isCertified`,
-                value: reader.bool()
+                value: r.bool()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -472,36 +472,36 @@ export namespace Metadata {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           key: '',
           value: uint8ArrayAlloc(0)
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.key = reader.string()
+              obj.key = r.string()
               break
             }
             case 2: {
-              obj.value = reader.bytes()
+              obj.value = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -511,26 +511,26 @@ export namespace Metadata {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}key`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}value`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

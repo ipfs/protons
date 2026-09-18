@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -58,36 +58,36 @@ export namespace CustomOptionNumber {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: 0,
             value: 0
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.int64Number()
+                obj.key = r.int64Number()
                 break
               }
               case 2: {
-                obj.value = reader.int64Number()
+                obj.value = r.int64Number()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -97,26 +97,26 @@ export namespace CustomOptionNumber {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.int64Number()
+                  value: r.int64Number()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.int64Number()
+                  value: r.int64Number()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -198,10 +198,14 @@ export namespace CustomOptionNumber {
         }
 
         if (obj.i64Array != null && obj.i64Array.length > 0) {
+          w.uint32(58)
+          w.fork()
+
           for (const value of obj.i64Array) {
-            w.uint32(56)
             w.int64Number(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.i64Map != null && obj.i64Map.size > 0) {
@@ -214,7 +218,7 @@ export namespace CustomOptionNumber {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           num: 0,
           i64: 0,
@@ -226,42 +230,48 @@ export namespace CustomOptionNumber {
           i64Map: new Map<number, number>()
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.num = reader.int32()
+              obj.num = r.int32()
               break
             }
             case 2: {
-              obj.i64 = reader.int64Number()
+              obj.i64 = r.int64Number()
               break
             }
             case 3: {
-              obj.ui64 = reader.uint64Number()
+              obj.ui64 = r.uint64Number()
               break
             }
             case 4: {
-              obj.si64 = reader.sint64Number()
+              obj.si64 = r.sint64Number()
               break
             }
             case 5: {
-              obj.f64 = reader.fixed64Number()
+              obj.f64 = r.fixed64Number()
               break
             }
             case 6: {
-              obj.sf64 = reader.sfixed64Number()
+              obj.sf64 = r.sfixed64Number()
               break
             }
             case 7: {
-              if (opts.limits?.i64Array != null && obj.i64Array.length === opts.limits.i64Array) {
-                throw new MaxLengthError('Decode error - repeated field "i64Array" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.i64Array != null && obj.i64Array.length === opts.limits.i64Array) {
+                  throw new MaxLengthError('Decode error - repeated field "i64Array" had too many elements')
+                }
+
+                obj.i64Array.push(r2.int64Number())
               }
 
-              obj.i64Array.push(reader.int64Number())
               break
             }
             case 8: {
@@ -269,7 +279,7 @@ export namespace CustomOptionNumber {
                 throw new MaxSizeError('Decode error - map field "i64Map" had too many elements')
               }
 
-              const entry = CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -278,20 +288,20 @@ export namespace CustomOptionNumber {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           i64Array: 0,
           i64Map: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -301,64 +311,69 @@ export namespace CustomOptionNumber {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}num`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}i64`,
-                value: reader.int64Number()
+                value: r.int64Number()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}ui64`,
-                value: reader.uint64Number()
+                value: r.uint64Number()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}si64`,
-                value: reader.sint64Number()
+                value: r.sint64Number()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}f64`,
-                value: reader.fixed64Number()
+                value: r.fixed64Number()
               }
               break
             }
             case 6: {
               yield {
                 field: `${prefix}sf64`,
-                value: reader.sfixed64Number()
+                value: r.sfixed64Number()
               }
               break
             }
             case 7: {
-              if (opts.limits?.i64Array != null && obj.i64Array === opts.limits.i64Array) {
-                throw new MaxLengthError('Streaming decode error - repeated field "i64Array" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}i64Array[]`,
-                index: obj.i64Array,
-                value: reader.int64Number()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.i64Array != null && obj.i64Array === opts.limits.i64Array) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "i64Array" had too many elements')
+                }
 
-              obj.i64Array++
+                yield {
+                  field: `${prefix}i64Array[]`,
+                  index: obj.i64Array,
+                  value: r2.int64Number()
+                }
+
+                obj.i64Array++
+              }
 
               break
             }
@@ -367,7 +382,7 @@ export namespace CustomOptionNumber {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}i64Map{}.`, {
+              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(r, r.uint32(), `${prefix}i64Map{}.`, {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -378,7 +393,7 @@ export namespace CustomOptionNumber {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -508,36 +523,36 @@ export namespace CustomOptionString {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: ''
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.int64String()
+                obj.key = r.int64String()
                 break
               }
               case 2: {
-                obj.value = reader.int64String()
+                obj.value = r.int64String()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -547,26 +562,26 @@ export namespace CustomOptionString {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.int64String()
+                  value: r.int64String()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.int64String()
+                  value: r.int64String()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -648,10 +663,14 @@ export namespace CustomOptionString {
         }
 
         if (obj.i64Array != null && obj.i64Array.length > 0) {
+          w.uint32(58)
+          w.fork()
+
           for (const value of obj.i64Array) {
-            w.uint32(56)
             w.int64String(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.i64Map != null && obj.i64Map.size > 0) {
@@ -664,7 +683,7 @@ export namespace CustomOptionString {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           num: 0,
           i64: '',
@@ -676,42 +695,48 @@ export namespace CustomOptionString {
           i64Map: new Map<string, string>()
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.num = reader.int32()
+              obj.num = r.int32()
               break
             }
             case 2: {
-              obj.i64 = reader.int64String()
+              obj.i64 = r.int64String()
               break
             }
             case 3: {
-              obj.ui64 = reader.uint64String()
+              obj.ui64 = r.uint64String()
               break
             }
             case 4: {
-              obj.si64 = reader.sint64String()
+              obj.si64 = r.sint64String()
               break
             }
             case 5: {
-              obj.f64 = reader.fixed64String()
+              obj.f64 = r.fixed64String()
               break
             }
             case 6: {
-              obj.sf64 = reader.sfixed64String()
+              obj.sf64 = r.sfixed64String()
               break
             }
             case 7: {
-              if (opts.limits?.i64Array != null && obj.i64Array.length === opts.limits.i64Array) {
-                throw new MaxLengthError('Decode error - repeated field "i64Array" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.i64Array != null && obj.i64Array.length === opts.limits.i64Array) {
+                  throw new MaxLengthError('Decode error - repeated field "i64Array" had too many elements')
+                }
+
+                obj.i64Array.push(r2.int64String())
               }
 
-              obj.i64Array.push(reader.int64String())
               break
             }
             case 8: {
@@ -719,7 +744,7 @@ export namespace CustomOptionString {
                 throw new MaxSizeError('Decode error - map field "i64Map" had too many elements')
               }
 
-              const entry = CustomOptionString.CustomOptionString$i64MapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = CustomOptionString.CustomOptionString$i64MapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -728,20 +753,20 @@ export namespace CustomOptionString {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           i64Array: 0,
           i64Map: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -751,64 +776,69 @@ export namespace CustomOptionString {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}num`,
-                value: reader.int32()
+                value: r.int32()
               }
               break
             }
             case 2: {
               yield {
                 field: `${prefix}i64`,
-                value: reader.int64String()
+                value: r.int64String()
               }
               break
             }
             case 3: {
               yield {
                 field: `${prefix}ui64`,
-                value: reader.uint64String()
+                value: r.uint64String()
               }
               break
             }
             case 4: {
               yield {
                 field: `${prefix}si64`,
-                value: reader.sint64String()
+                value: r.sint64String()
               }
               break
             }
             case 5: {
               yield {
                 field: `${prefix}f64`,
-                value: reader.fixed64String()
+                value: r.fixed64String()
               }
               break
             }
             case 6: {
               yield {
                 field: `${prefix}sf64`,
-                value: reader.sfixed64String()
+                value: r.sfixed64String()
               }
               break
             }
             case 7: {
-              if (opts.limits?.i64Array != null && obj.i64Array === opts.limits.i64Array) {
-                throw new MaxLengthError('Streaming decode error - repeated field "i64Array" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}i64Array[]`,
-                index: obj.i64Array,
-                value: reader.int64String()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.i64Array != null && obj.i64Array === opts.limits.i64Array) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "i64Array" had too many elements')
+                }
 
-              obj.i64Array++
+                yield {
+                  field: `${prefix}i64Array[]`,
+                  index: obj.i64Array,
+                  value: r2.int64String()
+                }
+
+                obj.i64Array++
+              }
 
               break
             }
@@ -817,7 +847,7 @@ export namespace CustomOptionString {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(reader, reader.uint32(), `${prefix}i64Map{}.`, {
+              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(r, r.uint32(), `${prefix}i64Map{}.`, {
                 limits: {
                   value: opts.limits?.i64Map$value
                 }
@@ -828,7 +858,7 @@ export namespace CustomOptionString {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }

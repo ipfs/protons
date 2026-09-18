@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -46,53 +46,63 @@ export namespace SubMessage {
         }
 
         if (obj.bar != null && obj.bar.length > 0) {
+          w.uint32(18)
+          w.fork()
+
           for (const value of obj.bar) {
-            w.uint32(16)
             w.uint32(value)
           }
+
+          w.ldelim()
         }
 
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           foo: '',
           bar: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.foo = reader.string()
+              obj.foo = r.string()
               break
             }
             case 2: {
-              if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
-                throw new MaxLengthError('Decode error - repeated field "bar" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
+                  throw new MaxLengthError('Decode error - repeated field "bar" had too many elements')
+                }
+
+                obj.bar.push(r2.uint32())
               }
 
-              obj.bar.push(reader.uint32())
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           bar: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -102,34 +112,39 @@ export namespace SubMessage {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}foo`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 2: {
-              if (opts.limits?.bar != null && obj.bar === opts.limits.bar) {
-                throw new MaxLengthError('Streaming decode error - repeated field "bar" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}bar[]`,
-                index: obj.bar,
-                value: reader.uint32()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.bar != null && obj.bar === opts.limits.bar) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "bar" had too many elements')
+                }
 
-              obj.bar++
+                yield {
+                  field: `${prefix}bar[]`,
+                  index: obj.bar,
+                  value: r2.uint32()
+                }
+
+                obj.bar++
+              }
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -222,36 +237,36 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: ''
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.string()
+                obj.key = r.string()
                 break
               }
               case 2: {
-                obj.value = reader.string()
+                obj.value = r.string()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -261,26 +276,26 @@ export namespace MapTypes {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -355,36 +370,36 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: 0,
             value: 0
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.int32()
+                obj.key = r.int32()
                 break
               }
               case 2: {
-                obj.value = reader.int32()
+                obj.value = r.int32()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -394,26 +409,26 @@ export namespace MapTypes {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.int32()
+                  value: r.int32()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.int32()
+                  value: r.int32()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -488,36 +503,36 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: false,
             value: false
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.bool()
+                obj.key = r.bool()
                 break
               }
               case 2: {
-                obj.value = reader.bool()
+                obj.value = r.bool()
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -527,26 +542,26 @@ export namespace MapTypes {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.bool()
+                  value: r.bool()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: reader.bool()
+                  value: r.bool()
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -621,37 +636,37 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: ''
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.string()
+                obj.key = r.string()
                 break
               }
               case 2: {
-                obj.value = SubMessage.codec().decode(reader, reader.uint32(), {
+                obj.value = SubMessage.codec().decode(r, r.uint32(), {
                   limits: opts.limits?.value
                 })
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -661,26 +676,26 @@ export namespace MapTypes {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               case 2: {
-                yield * SubMessage.codec().stream(reader, reader.uint32(), `${prefix}value.`, {
+                yield * SubMessage.codec().stream(r, r.uint32(), `${prefix}value.`, {
                   limits: opts.limits?.value
                 })
 
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -771,36 +786,36 @@ export namespace MapTypes {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (reader, length, opts = {}) => {
+        }, (r, length, opts = {}) => {
           const obj: any = {
             key: '',
             value: EnumValue.NO_VALUE
           }
 
-          const end = length == null ? reader.len : reader.pos + length
+          const end = length == null ? r.len : r.pos + length
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
-                obj.key = reader.string()
+                obj.key = r.string()
                 break
               }
               case 2: {
-                obj.value = EnumValue.codec().decode(reader)
+                obj.value = EnumValue.codec().decode(r)
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
           }
 
           return obj
-        }, function * (reader, length, prefix, opts = {}) {
-          const end = length == null ? reader.len : reader.pos + length
+        }, function * (r, length, prefix, opts = {}) {
+          const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
             yield {
@@ -810,26 +825,26 @@ export namespace MapTypes {
             }
           }
 
-          while (reader.pos < end) {
-            const tag = reader.uint32()
+          while (r.pos < end) {
+            const tag = r.uint32()
 
             switch (tag >>> 3) {
               case 1: {
                 yield {
                   field: `${prefix}key`,
-                  value: reader.string()
+                  value: r.string()
                 }
                 break
               }
               case 2: {
                 yield {
                   field: `${prefix}value`,
-                  value: EnumValue.codec().decode(reader)
+                  value: EnumValue.codec().decode(r)
                 }
                 break
               }
               default: {
-                reader.skipType(tag & 7)
+                r.skipType(tag & 7)
                 break
               }
             }
@@ -918,7 +933,7 @@ export namespace MapTypes {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           stringMap: new Map<string, string>(),
           intMap: new Map<number, number>(),
@@ -927,10 +942,10 @@ export namespace MapTypes {
           enumMap: new Map<string, EnumValue>()
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -938,7 +953,7 @@ export namespace MapTypes {
                 throw new MaxSizeError('Decode error - map field "stringMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.stringMap$value
                 }
@@ -951,7 +966,7 @@ export namespace MapTypes {
                 throw new MaxSizeError('Decode error - map field "intMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$intMapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MapTypes.MapTypes$intMapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.intMap$value
                 }
@@ -964,7 +979,7 @@ export namespace MapTypes {
                 throw new MaxSizeError('Decode error - map field "boolMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.boolMap$value
                 }
@@ -977,7 +992,7 @@ export namespace MapTypes {
                 throw new MaxSizeError('Decode error - map field "messageMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.messageMap$value
                 }
@@ -990,7 +1005,7 @@ export namespace MapTypes {
                 throw new MaxSizeError('Decode error - map field "enumMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(reader, reader.uint32(), {
+              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(r, r.uint32(), {
                 limits: {
                   value: opts.limits?.enumMap$value
                 }
@@ -999,14 +1014,14 @@ export namespace MapTypes {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           stringMap: 0,
           intMap: 0,
@@ -1015,7 +1030,7 @@ export namespace MapTypes {
           enumMap: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -1025,8 +1040,8 @@ export namespace MapTypes {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -1034,7 +1049,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "stringMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(reader, reader.uint32(), `${prefix}stringMap{}.`, {
+              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(r, r.uint32(), `${prefix}stringMap{}.`, {
                 limits: {
                   value: opts.limits?.stringMap$value
                 }
@@ -1049,7 +1064,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "intMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$intMapEntry.codec().stream(reader, reader.uint32(), `${prefix}intMap{}.`, {
+              yield * MapTypes.MapTypes$intMapEntry.codec().stream(r, r.uint32(), `${prefix}intMap{}.`, {
                 limits: {
                   value: opts.limits?.intMap$value
                 }
@@ -1064,7 +1079,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "boolMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(reader, reader.uint32(), `${prefix}boolMap{}.`, {
+              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(r, r.uint32(), `${prefix}boolMap{}.`, {
                 limits: {
                   value: opts.limits?.boolMap$value
                 }
@@ -1079,7 +1094,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "messageMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(reader, reader.uint32(), `${prefix}messageMap{}.`, {
+              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(r, r.uint32(), `${prefix}messageMap{}.`, {
                 limits: {
                   value: opts.limits?.messageMap$value
                 }
@@ -1094,7 +1109,7 @@ export namespace MapTypes {
                 throw new MaxLengthError('Decode error - map field "enumMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(reader, reader.uint32(), `${prefix}enumMap{}.`, {
+              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(r, r.uint32(), `${prefix}enumMap{}.`, {
                 limits: {
                   value: opts.limits?.enumMap$value
                 }
@@ -1105,7 +1120,7 @@ export namespace MapTypes {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
