@@ -20,10 +20,8 @@ export namespace MessageWithRequired {
           w.fork()
         }
 
-        if (obj.scalarField != null) {
-          w.uint32(8)
-          w.int32(obj.scalarField)
-        }
+        w.uint32(8)
+        w.int32(obj.scalarField)
 
         if (opts.lengthDelimited !== false) {
           w.ldelim()

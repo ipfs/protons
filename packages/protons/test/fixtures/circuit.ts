@@ -88,7 +88,7 @@ export namespace CircuitRelay {
   }
 
   export interface PeerInput {
-    id: Uint8Array
+    id?: Uint8Array
     addrs?: Uint8Array[]
   }
 

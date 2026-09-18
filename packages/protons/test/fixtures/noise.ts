@@ -15,9 +15,9 @@ export namespace pb {
   }
 
   export interface NoiseHandshakePayloadInput {
-    identityKey: Uint8Array
-    identitySig: Uint8Array
-    data: Uint8Array
+    identityKey?: Uint8Array
+    identitySig?: Uint8Array
+    data?: Uint8Array
   }
 
   export namespace NoiseHandshakePayload {

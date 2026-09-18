@@ -14,12 +14,12 @@ export interface CustomOptionNumber {
 }
 
 export interface CustomOptionNumberInput {
-  num: number
-  i64: number
-  ui64: number
-  si64: number
-  f64: number
-  sf64: number
+  num?: number
+  i64?: number
+  ui64?: number
+  si64?: number
+  f64?: number
+  sf64?: number
   i64Array?: number[]
   i64Map?: Map<number, number>
 }
@@ -31,8 +31,8 @@ export namespace CustomOptionNumber {
   }
 
   export interface CustomOptionNumber$i64MapEntryInput {
-    key: number
-    value: number
+    key?: number
+    value?: number
   }
 
   export namespace CustomOptionNumber$i64MapEntry {
@@ -464,12 +464,12 @@ export interface CustomOptionString {
 }
 
 export interface CustomOptionStringInput {
-  num: number
-  i64: string
-  ui64: string
-  si64: string
-  f64: string
-  sf64: string
+  num?: number
+  i64?: string
+  ui64?: string
+  si64?: string
+  f64?: string
+  sf64?: string
   i64Array?: string[]
   i64Map?: Map<string, string>
 }
@@ -481,8 +481,8 @@ export namespace CustomOptionString {
   }
 
   export interface CustomOptionString$i64MapEntryInput {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace CustomOptionString$i64MapEntry {

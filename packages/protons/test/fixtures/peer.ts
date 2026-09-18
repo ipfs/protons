@@ -313,7 +313,7 @@ export interface Address {
 }
 
 export interface AddressInput {
-  multiaddr: Uint8Array
+  multiaddr?: Uint8Array
   isCertified?: boolean
 }
 
@@ -445,8 +445,8 @@ export interface Metadata {
 }
 
 export interface MetadataInput {
-  key: string
-  value: Uint8Array
+  key?: string
+  value?: Uint8Array
 }
 
 export namespace Metadata {

@@ -181,7 +181,7 @@ export interface NestedMessage {
 }
 
 export interface NestedMessageInput {
-  nestedValue: string
+  nestedValue?: string
 }
 
 export namespace NestedMessage {
@@ -291,7 +291,7 @@ export interface MessageWithNestedMessage {
 }
 
 export interface MessageWithNestedMessageInput {
-  field1: boolean
+  field1?: boolean
   nestedMessage?: NestedMessageInput
 }
 
@@ -435,7 +435,7 @@ export interface MessageWithDeeplyNestedMessage {
 }
 
 export interface MessageWithDeeplyNestedMessageInput {
-  field1: boolean
+  field1?: boolean
   nestedMessage?: MessageWithNestedMessageInput
 }
 
@@ -594,7 +594,7 @@ export interface MessageWithRepeatedMessage {
 }
 
 export interface MessageWithRepeatedMessageInput {
-  field1: boolean
+  field1?: boolean
   nestedMessages?: NestedMessageInput[]
 }
 
@@ -765,7 +765,7 @@ export interface MessageWithMapMessage {
 }
 
 export interface MessageWithMapMessageInput {
-  field1: boolean
+  field1?: boolean
   nestedMessages?: Map<string, NestedMessageInput>
 }
 
@@ -776,7 +776,7 @@ export namespace MessageWithMapMessage {
   }
 
   export interface MessageWithMapMessage$nestedMessagesEntryInput {
-    key: string
+    key?: string
     value?: NestedMessageInput
   }
 
@@ -1080,7 +1080,7 @@ export interface MessageWithPrimitiveMap {
 }
 
 export interface MessageWithPrimitiveMapInput {
-  field1: boolean
+  field1?: boolean
   nestedStrings?: Map<string, string>
 }
 
@@ -1091,8 +1091,8 @@ export namespace MessageWithPrimitiveMap {
   }
 
   export interface MessageWithPrimitiveMap$nestedStringsEntryInput {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace MessageWithPrimitiveMap$nestedStringsEntry {
@@ -1388,7 +1388,7 @@ export interface MessageWithRepeatedEnums {
 }
 
 export interface MessageWithRepeatedEnumsInput {
-  field1: boolean
+  field1?: boolean
   enums?: ENUM[]
 }
 

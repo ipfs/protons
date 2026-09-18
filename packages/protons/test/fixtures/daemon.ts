@@ -16,7 +16,7 @@ export interface Request {
 }
 
 export interface RequestInput {
-  type: Request.Type
+  type?: Request.Type
   connect?: ConnectRequestInput
   streamOpen?: StreamOpenRequestInput
   streamHandler?: StreamHandlerRequestInput
@@ -530,7 +530,7 @@ export interface Response {
 }
 
 export interface ResponseInput {
-  type: Response.Type
+  type?: Response.Type
   error?: ErrorResponseInput
   streamInfo?: StreamInfoInput
   identify?: IdentifyResponseInput
@@ -998,7 +998,7 @@ export interface IdentifyResponse {
 }
 
 export interface IdentifyResponseInput {
-  id: Uint8Array
+  id?: Uint8Array
   addrs?: Uint8Array[]
 }
 
@@ -1151,7 +1151,7 @@ export interface ConnectRequest {
 }
 
 export interface ConnectRequestInput {
-  peer: Uint8Array
+  peer?: Uint8Array
   addrs?: Uint8Array[]
   timeout?: bigint
 }
@@ -1326,7 +1326,7 @@ export interface StreamOpenRequest {
 }
 
 export interface StreamOpenRequestInput {
-  peer: Uint8Array
+  peer?: Uint8Array
   proto?: string[]
   timeout?: bigint
 }
@@ -1500,7 +1500,7 @@ export interface StreamHandlerRequest {
 }
 
 export interface StreamHandlerRequestInput {
-  addr: Uint8Array
+  addr?: Uint8Array
   proto?: string[]
 }
 
@@ -1651,7 +1651,7 @@ export interface ErrorResponse {
 }
 
 export interface ErrorResponseInput {
-  msg: string
+  msg?: string
 }
 
 export namespace ErrorResponse {
@@ -1762,9 +1762,9 @@ export interface StreamInfo {
 }
 
 export interface StreamInfoInput {
-  peer: Uint8Array
-  addr: Uint8Array
-  proto: string
+  peer?: Uint8Array
+  addr?: Uint8Array
+  proto?: string
 }
 
 export namespace StreamInfo {
@@ -1923,7 +1923,7 @@ export interface DHTRequest {
 }
 
 export interface DHTRequestInput {
-  type: DHTRequest.Type
+  type?: DHTRequest.Type
   peer?: Uint8Array
   cid?: Uint8Array
   key?: Uint8Array
@@ -2196,7 +2196,7 @@ export interface DHTResponse {
 }
 
 export interface DHTResponseInput {
-  type: DHTResponse.Type
+  type?: DHTResponse.Type
   peer?: PeerInfoInput
   value?: Uint8Array
 }
@@ -2386,7 +2386,7 @@ export interface PeerInfo {
 }
 
 export interface PeerInfoInput {
-  id: Uint8Array
+  id?: Uint8Array
   addrs?: Uint8Array[]
 }
 
@@ -2540,7 +2540,7 @@ export interface ConnManagerRequest {
 }
 
 export interface ConnManagerRequestInput {
-  type: ConnManagerRequest.Type
+  type?: ConnManagerRequest.Type
   peer?: Uint8Array
   tag?: string
   weight?: bigint
@@ -2733,7 +2733,7 @@ export interface DisconnectRequest {
 }
 
 export interface DisconnectRequestInput {
-  peer: Uint8Array
+  peer?: Uint8Array
 }
 
 export namespace DisconnectRequest {
@@ -2844,7 +2844,7 @@ export interface PSRequest {
 }
 
 export interface PSRequestInput {
-  type: PSRequest.Type
+  type?: PSRequest.Type
   topic?: string
   data?: Uint8Array
 }
@@ -3430,7 +3430,7 @@ export interface PeerstoreRequest {
 }
 
 export interface PeerstoreRequestInput {
-  type: PeerstoreRequest.Type
+  type?: PeerstoreRequest.Type
   id?: Uint8Array
   protos?: string[]
 }

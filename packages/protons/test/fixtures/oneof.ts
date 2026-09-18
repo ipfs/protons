@@ -31,7 +31,7 @@ export interface OneOfMessageInput {
   fieldTwo?: string
   fieldThree?: EnumType
   fieldFour?: EnumType
-  fieldFive: string
+  fieldFive?: string
 }
 
 export namespace OneOfMessage {
@@ -262,11 +262,11 @@ export interface MessageWithoutOneOfs {
 }
 
 export interface MessageWithoutOneOfsInput {
-  fieldOne: string
-  fieldTwo: string
-  fieldThree: EnumType
-  fieldFour: EnumType
-  fieldFive: string
+  fieldOne?: string
+  fieldTwo?: string
+  fieldThree?: EnumType
+  fieldFour?: EnumType
+  fieldFive?: string
 }
 
 export namespace MessageWithoutOneOfs {

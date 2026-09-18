@@ -27,8 +27,8 @@ export interface SingularSubMessage {
 }
 
 export interface SingularSubMessageInput {
-  foo: string
-  bar: number
+  foo?: string
+  bar?: number
 }
 
 export namespace SingularSubMessage {
@@ -175,22 +175,22 @@ export interface Singular {
 }
 
 export interface SingularInput {
-  double: number
-  float: number
-  int32: number
-  int64: bigint
-  uint32: number
-  uint64: bigint
-  sint32: number
-  sint64: bigint
-  fixed32: number
-  fixed64: bigint
-  sfixed32: number
-  sfixed64: bigint
-  bool: boolean
-  string: string
-  bytes: Uint8Array
-  enum: SingularEnum
+  double?: number
+  float?: number
+  int32?: number
+  int64?: bigint
+  uint32?: number
+  uint64?: bigint
+  sint32?: number
+  sint64?: bigint
+  fixed32?: number
+  fixed64?: bigint
+  sfixed32?: number
+  sfixed64?: bigint
+  bool?: boolean
+  string?: string
+  bytes?: Uint8Array
+  enum?: SingularEnum
   subMessage?: SingularSubMessageInput
 }
 

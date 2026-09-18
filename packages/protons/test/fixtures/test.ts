@@ -23,7 +23,7 @@ export interface SubMessage {
 }
 
 export interface SubMessageInput {
-  foo: string
+  foo?: string
 }
 
 export namespace SubMessage {

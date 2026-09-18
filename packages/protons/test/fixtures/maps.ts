@@ -26,7 +26,7 @@ export interface SubMessage {
 }
 
 export interface SubMessageInput {
-  foo: string
+  foo?: string
   bar?: number[]
 }
 
@@ -195,8 +195,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$stringMapEntryInput {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace MapTypes$stringMapEntry {
@@ -328,8 +328,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$intMapEntryInput {
-    key: number
-    value: number
+    key?: number
+    value?: number
   }
 
   export namespace MapTypes$intMapEntry {
@@ -461,8 +461,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$boolMapEntryInput {
-    key: boolean
-    value: boolean
+    key?: boolean
+    value?: boolean
   }
 
   export namespace MapTypes$boolMapEntry {
@@ -594,7 +594,7 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$messageMapEntryInput {
-    key: string
+    key?: string
     value?: SubMessageInput
   }
 
@@ -744,8 +744,8 @@ export namespace MapTypes {
   }
 
   export interface MapTypes$enumMapEntryInput {
-    key: string
-    value: EnumValue
+    key?: string
+    value?: EnumValue
   }
 
   export namespace MapTypes$enumMapEntry {

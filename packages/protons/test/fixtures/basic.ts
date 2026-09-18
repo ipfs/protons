@@ -9,7 +9,7 @@ export interface Basic {
 
 export interface BasicInput {
   foo?: string
-  num: number
+  num?: number
 }
 
 export namespace Basic {

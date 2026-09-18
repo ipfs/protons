@@ -153,8 +153,8 @@ export namespace MessageWithSizeLimitedMap {
   }
 
   export interface MessageWithSizeLimitedMap$mapFieldEntryInput {
-    key: string
-    value: string
+    key?: string
+    value?: string
   }
 
   export namespace MessageWithSizeLimitedMap$mapFieldEntry {

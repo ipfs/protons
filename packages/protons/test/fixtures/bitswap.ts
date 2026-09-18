@@ -16,7 +16,7 @@ export interface MessageInput {
   blocks?: Uint8Array[]
   payload?: Message.BlockInput[]
   blockPresences?: Message.BlockPresenceInput[]
-  pendingBytes: number
+  pendingBytes?: number
 }
 
 export namespace Message {
@@ -27,7 +27,7 @@ export namespace Message {
 
   export interface WantlistInput {
     entries?: Message.Wantlist.EntryInput[]
-    full: boolean
+    full?: boolean
   }
 
   export namespace Wantlist {
@@ -56,11 +56,11 @@ export namespace Message {
     }
 
     export interface EntryInput {
-      block: Uint8Array
-      priority: number
+      block?: Uint8Array
+      priority?: number
       cancel?: boolean
-      wantType: Message.Wantlist.WantType
-      sendDontHave: boolean
+      wantType?: Message.Wantlist.WantType
+      sendDontHave?: boolean
     }
 
     export namespace Entry {
@@ -441,8 +441,8 @@ export namespace Message {
   }
 
   export interface BlockInput {
-    prefix: Uint8Array
-    data: Uint8Array
+    prefix?: Uint8Array
+    data?: Uint8Array
   }
 
   export namespace Block {
@@ -590,8 +590,8 @@ export namespace Message {
   }
 
   export interface BlockPresenceInput {
-    cid: Uint8Array
-    type: Message.BlockPresenceType
+    cid?: Uint8Array
+    type?: Message.BlockPresenceType
   }
 
   export namespace BlockPresence {

@@ -429,7 +429,6 @@ describe('encode', () => {
   })
 
   it('does not write singular field values when defaults are omitted', () => {
-    // @ts-expect-error fields are required
     const buf = Singular.encode({})
 
     expect(buf.byteLength).to.equal(0, 'wrote default values for singular fields')
