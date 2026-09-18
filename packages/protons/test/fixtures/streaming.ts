@@ -202,7 +202,7 @@ export namespace NestedMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           nestedValue: ''
         }
@@ -225,7 +225,7 @@ export namespace NestedMessage {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -1118,7 +1118,7 @@ export namespace MessageWithPrimitiveMap {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (r, length, opts = {}) => {
+        }, (r, length) => {
           const obj: any = {
             key: '',
             value: ''
@@ -1146,7 +1146,7 @@ export namespace MessageWithPrimitiveMap {
           }
 
           return obj
-        }, function * (r, length, prefix, opts = {}) {
+        }, function * (r, length, prefix) {
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {

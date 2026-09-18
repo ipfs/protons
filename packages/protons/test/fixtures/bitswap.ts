@@ -101,7 +101,7 @@ export namespace Message {
             if (opts.lengthDelimited !== false) {
               w.ldelim()
             }
-          }, (r, length, opts = {}) => {
+          }, (r, length) => {
             const obj: any = {
               block: uint8ArrayAlloc(0),
               priority: 0,
@@ -143,7 +143,7 @@ export namespace Message {
             }
 
             return obj
-          }, function * (r, length, prefix, opts = {}) {
+          }, function * (r, length, prefix) {
             const end = length == null ? r.len : r.pos + length
 
             if (prefix !== '.') {
@@ -468,7 +468,7 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (r, length, opts = {}) => {
+        }, (r, length) => {
           const obj: any = {
             prefix: uint8ArrayAlloc(0),
             data: uint8ArrayAlloc(0)
@@ -496,7 +496,7 @@ export namespace Message {
           }
 
           return obj
-        }, function * (r, length, prefix, opts = {}) {
+        }, function * (r, length, prefix) {
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
@@ -617,7 +617,7 @@ export namespace Message {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (r, length, opts = {}) => {
+        }, (r, length) => {
           const obj: any = {
             cid: uint8ArrayAlloc(0),
             type: BlockPresenceType.Have
@@ -645,7 +645,7 @@ export namespace Message {
           }
 
           return obj
-        }, function * (r, length, prefix, opts = {}) {
+        }, function * (r, length, prefix) {
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {

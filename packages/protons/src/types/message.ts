@@ -296,6 +296,13 @@ export interface ${this.pbType}Input {
       streamGeneratorEvents.push('{}')
     }
 
+    // the only decode options are repeated field limits, so only declare the
+    // variable if we have repeated fields or a sub message field to pass
+    // options to
+    const decodeOpts = this.fields.some(field => field instanceof ArrayField || field instanceof MapField || field instanceof MessageField)
+      ? ', opts = {}'
+      : ''
+
     interfaceCodecDef = `
   let _codec: Codec<${this.pbType}, ${this.pbType}Input>
 
@@ -309,7 +316,7 @@ export interface ${this.pbType}Input {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length${decodeOpts}) => {
         const obj: any = {${this.createDefaultObject()}}
 
         const end = length == null ? r.len : r.pos + length
@@ -326,7 +333,7 @@ export interface ${this.pbType}Input {
         }
 ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix${decodeOpts}) {
         ${this.createLimitObject()}const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {

@@ -58,7 +58,7 @@ export namespace CustomOptionNumber {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (r, length, opts = {}) => {
+        }, (r, length) => {
           const obj: any = {
             key: 0,
             value: 0
@@ -86,7 +86,7 @@ export namespace CustomOptionNumber {
           }
 
           return obj
-        }, function * (r, length, prefix, opts = {}) {
+        }, function * (r, length, prefix) {
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
@@ -523,7 +523,7 @@ export namespace CustomOptionString {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (r, length, opts = {}) => {
+        }, (r, length) => {
           const obj: any = {
             key: '',
             value: ''
@@ -551,7 +551,7 @@ export namespace CustomOptionString {
           }
 
           return obj
-        }, function * (r, length, prefix, opts = {}) {
+        }, function * (r, length, prefix) {
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
