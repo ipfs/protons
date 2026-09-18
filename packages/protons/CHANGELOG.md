@@ -1,3 +1,15 @@
+## [protons-v10.0.0](https://github.com/ipfs/protons/compare/protons-9.1.2...protons-10.0.0) (2026-09-18)
+
+### ⚠ BREAKING CHANGES
+
+* non-string/byte scalar fields are now packed by default in proto3 or later files as per the protobuf spec - annotate fields with `[features.repeated_field_encoding=EXPANDED]` for the previous behavior
+* definitions will need to be regenerated
+
+### Features
+
+* accept any Uint8Array for encoding ([#203](https://github.com/ipfs/protons/issues/203)) ([6556bc4](https://github.com/ipfs/protons/commit/6556bc404669cbc66f93af4b36f10b02cc33f11d))
+* support packed fields ([#205](https://github.com/ipfs/protons/issues/205)) ([35bd501](https://github.com/ipfs/protons/commit/35bd50106fa4d3b4f84d3b10aee8b9bd9006b651)), closes [#24](https://github.com/ipfs/protons/issues/24)
+
 ## [protons-v9.1.2](https://github.com/ipfs/protons/compare/protons-9.1.1...protons-9.1.2) (2026-09-17)
 
 ### Dependencies
