@@ -27,6 +27,7 @@ function camelize (input: string): string {
 }
 
 export interface MessageDef {
+  edition: string
   options?: Record<string, any>
   fields?: Record<string, FieldDef>
   oneofs?: Record<string, { oneof: string[] }>
@@ -69,6 +70,7 @@ export class Message implements Type {
       const mapEntryType = `${this.pbType}$${fieldName}Entry`
 
       def.nested[mapEntryType] = {
+        edition: def.edition,
         fields: {
           key: {
             type: fieldDef.keyType,

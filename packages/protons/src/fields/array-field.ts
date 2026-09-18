@@ -28,6 +28,9 @@ const PACKABLE_TYPES = [
   'bool'
 ]
 
+/**
+ * Detect proto3 (and later) expanded field override
+ */
 function useExpandedEncoding (fieldOptions?: Record<string, any>, globalOptions?: Record<string, any>): boolean {
   if (fieldOptions?.features?.repeated_field_encoding === 'EXPANDED') {
     return true
@@ -48,6 +51,13 @@ function useExpandedEncoding (fieldOptions?: Record<string, any>, globalOptions?
   return false
 }
 
+/**
+ * Detect proto2 packed field override
+ */
+function usePackedEncoding (fieldOptions?: Record<string, any>, globalOptions?: Record<string, any>): boolean {
+  return fieldOptions?.packed === true
+}
+
 export class ArrayField extends Field {
   private lengthLimit?: number
   private packed: boolean
@@ -60,12 +70,21 @@ export class ArrayField extends Field {
     const type = parent.findType(this.type).pbType
     const supportsPacked = PACKABLE_TYPES.indexOf(type) !== -1
 
-    // the default from protobuf3 onwards
-    this.packed = supportsPacked
-
-    // check user overrides for field encoding
-    if (useExpandedEncoding(def.options, parent.def.options)) {
+    if (parent.def.edition === 'proto2') {
       this.packed = false
+
+      // check user overrides for field encoding
+      if (usePackedEncoding(def.options, parent.def.options)) {
+        this.packed = true
+      }
+    } else {
+      // the default from protobuf3 onwards
+      this.packed = supportsPacked
+
+      // check user overrides for field encoding
+      if (useExpandedEncoding(def.options, parent.def.options)) {
+        this.packed = false
+      }
     }
 
     if (this.packed && !supportsPacked) {

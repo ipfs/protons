@@ -3,7 +3,8 @@ import all from 'it-all'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { GlobalPacked } from './fixtures/packed-global.ts'
-import { DefaultPackedTypes, ExpandedTypes, NewOptionExpandedTypes, NewOptionPackedTypes, PackedTypes, SpecPacked } from './fixtures/packed.ts'
+import { Proto2DefaultPackedTypes, Proto2ExpandedTypes, Proto2PackedTypes } from './fixtures/packed-proto2.ts'
+import { DefaultPackedTypes, OptionExpandedTypes, OptionPackedTypes, SpecPacked } from './fixtures/packed.ts'
 import { testEncodings } from './utils/compat.ts'
 
 describe('packed', () => {
@@ -51,7 +52,6 @@ describe('packed', () => {
     }])
   })
 
-  // protobufjs doesn't pack by default for proto3 and later but it should?
   it('should encode default packed types to same bytes as other implementations', () => {
     const obj: DefaultPackedTypes = {
       doubles: [1.0, 2.0, 3.0],
@@ -72,49 +72,8 @@ describe('packed', () => {
     testEncodings(obj, DefaultPackedTypes, './test/fixtures/packed.proto', 'DefaultPackedTypes')
   })
 
-  // protobufjs doesn't understand [packed=true|false]
-  it('should encode packed types to same bytes as other implementations', () => {
-    const obj: PackedTypes = {
-      doubles: [1.0, 2.0, 3.0],
-      floats: [1.0, 2.0, 3.0],
-      int32s: [1, 2, 3],
-      int64s: [1n, 2n, 3n],
-      uint32s: [1, 2, 3],
-      uint64s: [1n, 2n, 3n],
-      sint32s: [1, 2, 3],
-      sint64s: [1n, 2n, 3n],
-      fixed32s: [1, 2, 3],
-      fixed64s: [1n, 2n, 3n],
-      sfixed32s: [1, 2, 3],
-      sfixed64s: [1n, 2n, 3n],
-      bools: [true, true, false]
-    }
-
-    testEncodings(obj, PackedTypes, './test/fixtures/packed.proto', 'PackedTypes')
-  })
-
-  it('should encode expanded types to same bytes as other implementations', () => {
-    const obj: ExpandedTypes = {
-      doubles: [1.0, 2.0, 3.0],
-      floats: [1.0, 2.0, 3.0],
-      int32s: [1, 2, 3],
-      int64s: [1n, 2n, 3n],
-      uint32s: [1, 2, 3],
-      uint64s: [1n, 2n, 3n],
-      sint32s: [1, 2, 3],
-      sint64s: [1n, 2n, 3n],
-      fixed32s: [1, 2, 3],
-      fixed64s: [1n, 2n, 3n],
-      sfixed32s: [1, 2, 3],
-      sfixed64s: [1n, 2n, 3n],
-      bools: [true, true, false]
-    }
-
-    testEncodings(obj, ExpandedTypes, './test/fixtures/packed.proto', 'ExpandedTypes')
-  })
-
   it('should encode new option packed types to same bytes as other implementations', () => {
-    const obj: NewOptionPackedTypes = {
+    const obj: OptionPackedTypes = {
       doubles: [1.0, 2.0, 3.0],
       floats: [1.0, 2.0, 3.0],
       int32s: [1, 2, 3],
@@ -130,11 +89,11 @@ describe('packed', () => {
       bools: [true, true, false]
     }
 
-    testEncodings(obj, NewOptionPackedTypes, './test/fixtures/packed.proto', 'NewOptionPackedTypes')
+    testEncodings(obj, OptionPackedTypes, './test/fixtures/packed.proto', 'OptionPackedTypes')
   })
 
   it('should encode new option expanded types to same bytes as other implementations', () => {
-    const obj: NewOptionExpandedTypes = {
+    const obj: OptionExpandedTypes = {
       doubles: [1.0, 2.0, 3.0],
       floats: [1.0, 2.0, 3.0],
       int32s: [1, 2, 3],
@@ -150,37 +109,101 @@ describe('packed', () => {
       bools: [true, true, false]
     }
 
-    testEncodings(obj, NewOptionExpandedTypes, './test/fixtures/packed.proto', 'NewOptionExpandedTypes')
+    testEncodings(obj, OptionExpandedTypes, './test/fixtures/packed.proto', 'OptionExpandedTypes')
   })
 
-  it('should respect global options', () => {
-    expect(uint8ArrayToString(GlobalPacked.encode({
-      expanded: [1, 1]
-    }), 'base16')).to.equal('08010801', 'file-level repeated-field-encoding set to expanded ignored')
+  describe('global options', () => {
+    it('should respect global options', () => {
+      expect(uint8ArrayToString(GlobalPacked.encode({
+        expanded: [1, 1]
+      }), 'base16')).to.equal('08010801', 'file-level repeated-field-encoding set to expanded ignored')
 
-    expect(uint8ArrayToString(GlobalPacked.encode({
-      packedOldOption: [1, 1]
-    }), 'base16')).to.equal('10011001', 'old field-level repeated-field-encoding set to packed ignored')
+      expect(uint8ArrayToString(GlobalPacked.encode({
+        packedOldOption: [1, 1]
+      }), 'base16')).to.equal('10011001', 'old field-level repeated-field-encoding set to packed ignored')
 
-    expect(uint8ArrayToString(GlobalPacked.encode({
-      expandedOldOption: [1, 1]
-    }), 'base16')).to.equal('18011801', 'old field-level repeated-field-encoding set to expanded ignored')
+      expect(uint8ArrayToString(GlobalPacked.encode({
+        expandedOldOption: [1, 1]
+      }), 'base16')).to.equal('18011801', 'old field-level repeated-field-encoding set to expanded ignored')
 
-    expect(uint8ArrayToString(GlobalPacked.encode({
-      packedNewOption: [1, 1]
-    }), 'base16')).to.equal('22020101', 'new field-level repeated-field-encoding set to packed ignored')
+      expect(uint8ArrayToString(GlobalPacked.encode({
+        packedNewOption: [1, 1]
+      }), 'base16')).to.equal('22020101', 'new field-level repeated-field-encoding set to packed ignored')
 
-    expect(uint8ArrayToString(GlobalPacked.encode({
-      expandedNewOption: [1, 1]
-    }), 'base16')).to.equal('28012801', 'new field-level repeated-field-encoding set to expanded ignored')
+      expect(uint8ArrayToString(GlobalPacked.encode({
+        expandedNewOption: [1, 1]
+      }), 'base16')).to.equal('28012801', 'new field-level repeated-field-encoding set to expanded ignored')
 
-    testEncodings({
-      expanded: [1, 1],
-      // protobufjs ignores proto2-style [packed=false] field override
-      packedOldOption: [],
-      expandedOldOption: [1, 1],
-      packedNewOption: [1, 1],
-      expandedNewOption: [1, 1]
-    }, GlobalPacked, './test/fixtures/packed-global.proto', 'GlobalPacked')
+      testEncodings({
+        expanded: [1, 1],
+        // protobufjs ignores proto2-style [packed=false] field override
+        packedOldOption: [],
+        expandedOldOption: [1, 1],
+        packedNewOption: [1, 1],
+        expandedNewOption: [1, 1]
+      }, GlobalPacked, './test/fixtures/packed-global.proto', 'GlobalPacked')
+    })
+  })
+
+  describe('proto2', () => {
+    it('should encode default packed types to same bytes as other implementations', () => {
+      const obj: Proto2DefaultPackedTypes = {
+        doubles: [1.0, 2.0, 3.0],
+        floats: [1.0, 2.0, 3.0],
+        int32s: [1, 2, 3],
+        int64s: [1n, 2n, 3n],
+        uint32s: [1, 2, 3],
+        uint64s: [1n, 2n, 3n],
+        sint32s: [1, 2, 3],
+        sint64s: [1n, 2n, 3n],
+        fixed32s: [1, 2, 3],
+        fixed64s: [1n, 2n, 3n],
+        sfixed32s: [1, 2, 3],
+        sfixed64s: [1n, 2n, 3n],
+        bools: [true, true, false]
+      }
+
+      testEncodings(obj, Proto2DefaultPackedTypes, './test/fixtures/packed-proto2.proto', 'Proto2DefaultPackedTypes')
+    })
+
+    it('should encode packed types to same bytes as other implementations', () => {
+      const obj: Proto2PackedTypes = {
+        doubles: [1.0, 2.0, 3.0],
+        floats: [1.0, 2.0, 3.0],
+        int32s: [1, 2, 3],
+        int64s: [1n, 2n, 3n],
+        uint32s: [1, 2, 3],
+        uint64s: [1n, 2n, 3n],
+        sint32s: [1, 2, 3],
+        sint64s: [1n, 2n, 3n],
+        fixed32s: [1, 2, 3],
+        fixed64s: [1n, 2n, 3n],
+        sfixed32s: [1, 2, 3],
+        sfixed64s: [1n, 2n, 3n],
+        bools: [true, true, false]
+      }
+
+      testEncodings(obj, Proto2PackedTypes, './test/fixtures/packed-proto2.proto', 'Proto2PackedTypes')
+    })
+
+    it('should encode expanded types to same bytes as other implementations', () => {
+      const obj: Proto2ExpandedTypes = {
+        doubles: [1.0, 2.0, 3.0],
+        floats: [1.0, 2.0, 3.0],
+        int32s: [1, 2, 3],
+        int64s: [1n, 2n, 3n],
+        uint32s: [1, 2, 3],
+        uint64s: [1n, 2n, 3n],
+        sint32s: [1, 2, 3],
+        sint64s: [1n, 2n, 3n],
+        fixed32s: [1, 2, 3],
+        fixed64s: [1n, 2n, 3n],
+        sfixed32s: [1, 2, 3],
+        sfixed64s: [1n, 2n, 3n],
+        bools: [true, true, false]
+      }
+
+      testEncodings(obj, Proto2ExpandedTypes, './test/fixtures/packed-proto2.proto', 'Proto2ExpandedTypes')
+    })
   })
 })
