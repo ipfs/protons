@@ -136,7 +136,7 @@ export class Field implements MessageField {
 
     if (parent.def.edition === 'proto2') {
       if (def.options?.features?.repeated_field_encoding != null) {
-        const message = `field "${name}" has the features.repeated_field_encoding=${def.options.features.repeated_field_encoding} option, this is unsupported in proto2. Please use packed=${def.options?.features?.repeated_field_encoding === 'PACKED' ? true : false} instead - see https://protobuf.dev/editions/features/#repeated_field_encoding`
+        const message = `field "${name}" has the features.repeated_field_encoding=${def.options.features.repeated_field_encoding} option, this is unsupported in proto2. Please use packed=${def.options?.features?.repeated_field_encoding === 'PACKED'} instead - see https://protobuf.dev/editions/features/#repeated_field_encoding`
 
         if (parent.flags?.strict === true) {
           throw new ParseError(message)
