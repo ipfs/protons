@@ -3,8 +3,12 @@ import { Field } from './field.ts'
 import type { Parent, Type } from '../types/index.ts'
 
 export class MessageField extends Field {
-  getInterfaceField (parent: Parent, indent = ''): string {
-    return `${indent}${this.name}?: ${parent.findType(this.type).jsType}`
+  getDecoderInterfaceField (parent: Parent, indent = ''): string {
+    return `${indent}${this.name}?: ${parent.findType(this.type).jsType.decode}`
+  }
+
+  getEncoderInterfaceField (parent: Parent, indent = ''): string {
+    return `${indent}${this.name}?: ${parent.findType(this.type).jsType.encode}`
   }
 
   getMessage (parent: Parent): Message {

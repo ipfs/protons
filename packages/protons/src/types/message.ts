@@ -6,7 +6,7 @@ import { MessageField } from '../fields/message-field.ts'
 import { Enum } from './enum.ts'
 import { Primitive } from './primitive.ts'
 import type { EnumDef } from './enum.ts'
-import type { Parent, Type } from './index.ts'
+import type { Parent, Type, TypeCodec } from './index.ts'
 import type { FieldDef } from '../fields/field.ts'
 import type { Flags } from '../index.ts'
 
@@ -38,14 +38,14 @@ export function isMessageDef (obj?: any): obj is MessageDef {
 
 export class Message implements Type {
   public pbType: string
-  public jsType: string
+  public jsType: TypeCodec
   public fields: Field[]
   public oneOfs: string[][]
   public nested: Record<string, Message | Enum>
   private def: MessageDef
   private parent: Parent
 
-  constructor (pbType: string, jsType: string, def: MessageDef, parent: Parent) {
+  constructor (pbType: string, jsType: TypeCodec, def: MessageDef, parent: Parent) {
     this.pbType = pbType
     this.jsType = jsType
     this.oneOfs = []
@@ -92,12 +92,16 @@ export class Message implements Type {
     }
 
     Object.entries(def.nested ?? {}).forEach(([name, def]) => {
-      const fullName = `${this.jsType}.${name}`
-
       if (isMessageDef(def)) {
-        this.nested[name] = new Message(name, fullName, def, this)
+        this.nested[name] = new Message(name, {
+          encode: `${this.jsType.decode}.${name}Input`,
+          decode: `${this.jsType.decode}.${name}`
+        }, def, this)
       } else {
-        this.nested[name] = new Enum(name, fullName, def)
+        this.nested[name] = new Enum(name, {
+          encode: `${this.jsType.decode}.${name}`,
+          decode: `${this.jsType.decode}.${name}`
+        }, def)
       }
     })
 
@@ -184,7 +188,7 @@ ${indent}                  value: opts.limits?.${field.name}$value
 ${indent}              }`
     }
 
-    return `${this.jsType}.codec().decode(reader, reader.uint32()${opts})`
+    return `${this.jsType.decode}.codec().decode(reader, reader.uint32()${opts})`
   }
 
   getStreamingDecoder (field: Field, prefix: string, indent: ''): string {
@@ -199,7 +203,7 @@ ${indent}            }`
 ${indent}              limits: opts.limits?.${field.name}$
 ${indent}            }`
 
-      return `for (const evt of ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})) {
+      return `for (const evt of ${this.jsType.decode}.codec().stream(reader, reader.uint32(), ${prefix}${opts})) {
 ${indent}              yield {
 ${indent}                ...evt,
 ${indent}                index: obj.${field.name}
@@ -213,7 +217,7 @@ ${indent}                value: opts.limits?.${field.name}$value
 ${indent}            }`
     }
 
-    return `yield * ${this.jsType}.codec().stream(reader, reader.uint32(), ${prefix}${opts})`
+    return `yield * ${this.jsType.decode}.codec().stream(reader, reader.uint32(), ${prefix}${opts})`
   }
 
   getEncoder (field: Field, accessor: string): string {
@@ -222,10 +226,10 @@ ${indent}            }`
       // is part of a repeated field, and consists of only default values it
       // won't be written, so write a zero-length buffer if that's the case
       // writeField = (): string => `w.uint32(${id})
-      // ${type.jsType}.codec().encode(${valueVar}, w)`
+      // ${type.jsType.decode}.codec().encode(${valueVar}, w)`
     }
 
-    return `${this.jsType}.codec().encode(${accessor}, w)`
+    return `${this.jsType.decode}.codec().encode(${accessor}, w)`
   }
 
   getValueTest (field: Field): string {
@@ -254,20 +258,24 @@ ${indent}            }`
 `
     }
 
-    const interfaceFields = this.fields.map(field => field.getInterfaceField(this))
-      .join('\n  ')
-      .trim()
-
+    const decoderFields = this.fields.map(field => field.getDecoderInterfaceField(this))
+    const encoderFields = this.fields.map(field => field.getEncoderInterfaceField(this))
     let interfaceDef = ''
     let interfaceCodecDef = ''
 
-    if (interfaceFields === '') {
+    if (decoderFields.length === 0) {
       interfaceDef = `
+export interface ${this.pbType}Input {}
+
 export interface ${this.pbType} {}`
     } else {
       interfaceDef = `
 export interface ${this.pbType} {
-  ${interfaceFields}
+  ${decoderFields.join('\n  ').trim()}
+}
+
+export interface ${this.pbType}Input {
+  ${encoderFields.join('\n  ').trim()}
 }`
     }
 
@@ -286,11 +294,11 @@ export interface ${this.pbType} {
     }
 
     interfaceCodecDef = `
-  let _codec: Codec<${this.pbType}>
+  let _codec: Codec<${this.pbType}, ${this.pbType}Input>
 
-  export const codec = (): Codec<${this.pbType}> => {
+  export const codec = (): Codec<${this.pbType}, ${this.pbType}Input> => {
     if (_codec == null) {
-      _codec = message<${this.pbType}>((obj, w, opts = {}) => {
+      _codec = message<${this.pbType}, ${this.pbType}Input>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }${enforceOneOfEncoding}${this.formatFields(encodeFields)}
@@ -322,7 +330,7 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
           yield {
             field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
             type: 'start',
-            message: '${this.jsType}'
+            message: '${this.jsType.decode}'
           }
         }
 
@@ -341,7 +349,7 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
           yield {
             field: prefix.endsWith('.') ? prefix.substring(0, prefix.length - 1) : prefix,
             type: 'end',
-            message: '${this.jsType}'
+            message: '${this.jsType.decode}'
           }
         }
       })
@@ -350,7 +358,7 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
     return _codec
   }${this.formatStreamEvents(streamEvents)}
 
-  export function encode (obj: Partial<${this.pbType}>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ${this.pbType}Input): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ${this.pbType}.codec())
   }
 
@@ -546,15 +554,15 @@ ${fields
             name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}{}'`,
-              `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
-              `value: ${field.jsValueTypeOverride ?? valueType.jsType}`
+              `key: ${field.jsKeyTypeOverride ?? keyType.jsType.decode}`,
+              `value: ${field.jsValueTypeOverride ?? valueType.jsType.decode}`
             ],
             type: 'collection-primitive-member'
           })
         } else if (valueType instanceof Message) {
           addMessageFields(field, valueType, [
-            `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
-            `value: ${field.jsValueTypeOverride ?? valueType.jsType}`
+            `key: ${field.jsKeyTypeOverride ?? keyType.jsType.decode}`,
+            `value: ${field.jsValueTypeOverride ?? valueType.jsType.decode}`
           ])
 
           streamEvents.push({
@@ -562,7 +570,7 @@ ${fields
             type: 'sub-message',
             fields: [
               `field: '${fieldPrefix}${field.name}{}'`,
-              `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
+              `key: ${field.jsKeyTypeOverride ?? keyType.jsType.decode}`,
               "type: 'start'",
               'message: string'
             ]
@@ -572,7 +580,7 @@ ${fields
             type: 'sub-message',
             fields: [
               `field: '${fieldPrefix}${field.name}{}'`,
-              `key: ${field.jsKeyTypeOverride ?? keyType.jsType}`,
+              `key: ${field.jsKeyTypeOverride ?? keyType.jsType.decode}`,
               "type: 'end'",
               'message: string'
             ]
@@ -587,7 +595,7 @@ ${fields
             fields: [
               `field: '${fieldPrefix}${field.name}[]'`,
               'index: number',
-              `value: ${field.jsTypeOverride ?? type.jsType}`
+              `value: ${field.jsTypeOverride ?? type.jsType.decode}`
             ],
             type: 'collection-primitive-member'
           })
@@ -626,7 +634,7 @@ ${fields
             name: `${fieldPrefix === '.' ? this.pbType : ''}${camelize(field.name)}FieldEvent`,
             fields: [
               `field: '${fieldPrefix}${field.name}'`,
-              `value: ${field.jsTypeOverride ?? type.jsType}`
+              `value: ${field.jsTypeOverride ?? type.jsType.decode}`
             ],
             type: 'field'
           })

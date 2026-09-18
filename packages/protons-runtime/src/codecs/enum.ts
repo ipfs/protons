@@ -1,7 +1,7 @@
 import { createCodec, CODEC_TYPES } from '../codec.ts'
 import type { DecodeFunction, EncodeFunction, Codec, StreamFunction } from '../codec.ts'
 
-export function enumeration <T> (v: any): Codec<T> {
+export function enumeration <T> (v: any): Codec<T, T> {
   function findValue (val: any): number {
     // Use the reverse mapping to look up the enum key for the stored value
     // https://www.typescriptlang.org/docs/handbook/enums.html#reverse-mappings
@@ -28,5 +28,5 @@ export function enumeration <T> (v: any): Codec<T> {
     // enums are simple values that are decoded inline so this is a no-op
   }
 
-  return createCodec<T>('enum', CODEC_TYPES.VARINT, encode, decode, stream)
+  return createCodec<T, T>('enum', CODEC_TYPES.VARINT, encode, decode, stream)
 }

@@ -1,6 +1,6 @@
 import { ParseError } from 'protons-runtime'
 import { ArrayField } from '../fields/array-field.ts'
-import type { Parent, Type } from './index.ts'
+import type { Parent, Type, TypeCodec } from './index.ts'
 import type { Field } from '../fields/field.ts'
 
 export interface EnumDef {
@@ -13,12 +13,12 @@ export function isEnumDef (obj?: any): obj is EnumDef {
 
 export class Enum implements Type {
   public pbType: string
-  public jsType: string
+  public jsType: TypeCodec
   public values: Map<string, number>
   public lowestValue: number
   public lowestValueName: string
 
-  constructor (pbType: string, jsType: string, def: EnumDef) {
+  constructor (pbType: string, jsType: TypeCodec, def: EnumDef) {
     this.pbType = pbType
     this.jsType = jsType
     this.values = new Map(Object.entries(def.values))
@@ -51,7 +51,7 @@ export class Enum implements Type {
   }
 
   getDecoder (field: Field): string {
-    return `${this.jsType}.codec().decode(reader)`
+    return `${this.jsType.decode}.codec().decode(reader)`
   }
 
   getStreamingDecoder (field: Field, prefix: string, indent: ''): string {
@@ -59,18 +59,18 @@ export class Enum implements Type {
       return `yield {
 ${indent}              field: ${prefix},
 ${indent}              index: obj.${field.name},
-${indent}              value: ${this.jsType}.codec().decode(reader)
+${indent}              value: ${this.jsType.decode}.codec().decode(reader)
 ${indent}            }`
     }
 
     return `yield {
 ${indent}              field: ${prefix},
-${indent}              value: ${this.jsType}.codec().decode(reader)
+${indent}              value: ${this.jsType.decode}.codec().decode(reader)
 ${indent}            }`
   }
 
   getEncoder (field: Field, accessor: string): string {
-    return `${this.jsType}.codec().encode(${accessor}, w)`
+    return `${this.jsType.decode}.codec().encode(${accessor}, w)`
   }
 
   getValueTest (field: Field, accessor: string): string {
@@ -115,7 +115,7 @@ enum __${this.pbType}Values {
 }
 
 export namespace ${this.pbType} {
-  export const codec = (): Codec<${this.pbType}> => {
+  export const codec = (): Codec<${this.pbType}, ${this.pbType}> => {
     return enumeration<${this.pbType}>(__${this.pbType}Values)
   }
 }

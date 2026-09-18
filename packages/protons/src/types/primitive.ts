@@ -1,5 +1,5 @@
 import { ArrayField } from '../fields/array-field.ts'
-import type { Type } from './index.ts'
+import type { Type, TypeCodec } from './index.ts'
 import type { Field } from '../fields/field.ts'
 
 const decoderGenerators: Record<string, (jsTypeOverride?: 'number' | 'string') => string> = {
@@ -166,10 +166,10 @@ const defaultValueTestGeneratorsJsTypeOverrides: Record<string, DefaultValueTest
 }
 
 export class Primitive implements Type {
-  public jsType: string
+  public jsType: TypeCodec
   public pbType: string
 
-  constructor (pbType: string, jsType: string) {
+  constructor (pbType: string, jsType: TypeCodec) {
     this.jsType = jsType
     this.pbType = pbType
   }

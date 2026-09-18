@@ -10,6 +10,13 @@ export interface CircuitRelay {
   code?: CircuitRelay.Status
 }
 
+export interface CircuitRelayInput {
+  type?: CircuitRelay.Type
+  srcPeer?: CircuitRelay.PeerInput
+  dstPeer?: CircuitRelay.PeerInput
+  code?: CircuitRelay.Status
+}
+
 export namespace CircuitRelay {
   export enum Status {
     SUCCESS = 'SUCCESS',
@@ -50,7 +57,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Status {
-    export const codec = (): Codec<Status> => {
+    export const codec = (): Codec<Status, Status> => {
       return enumeration<Status>(__StatusValues)
     }
   }
@@ -70,7 +77,7 @@ export namespace CircuitRelay {
   }
 
   export namespace Type {
-    export const codec = (): Codec<Type> => {
+    export const codec = (): Codec<Type, Type> => {
       return enumeration<Type>(__TypeValues)
     }
   }
@@ -80,12 +87,17 @@ export namespace CircuitRelay {
     addrs: Uint8Array<ArrayBuffer>[]
   }
 
-  export namespace Peer {
-    let _codec: Codec<Peer>
+  export interface PeerInput {
+    id?: Uint8Array
+    addrs?: Uint8Array[]
+  }
 
-    export const codec = (): Codec<Peer> => {
+  export namespace Peer {
+    let _codec: Codec<Peer, PeerInput>
+
+    export const codec = (): Codec<Peer, PeerInput> => {
       if (_codec == null) {
-        _codec = message<Peer>((obj, w, opts = {}) => {
+        _codec = message<Peer, PeerInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -209,7 +221,7 @@ export namespace CircuitRelay {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: Partial<Peer>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: PeerInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -222,11 +234,11 @@ export namespace CircuitRelay {
     }
   }
 
-  let _codec: Codec<CircuitRelay>
+  let _codec: Codec<CircuitRelay, CircuitRelayInput>
 
-  export const codec = (): Codec<CircuitRelay> => {
+  export const codec = (): Codec<CircuitRelay, CircuitRelayInput> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay>((obj, w, opts = {}) => {
+      _codec = message<CircuitRelay, CircuitRelayInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -406,7 +418,7 @@ export namespace CircuitRelay {
     value: CircuitRelay.Status
   }
 
-  export function encode (obj: Partial<CircuitRelay>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CircuitRelayInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 

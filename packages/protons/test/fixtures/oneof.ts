@@ -13,7 +13,7 @@ enum __EnumTypeValues {
 }
 
 export namespace EnumType {
-  export const codec = (): Codec<EnumType> => {
+  export const codec = (): Codec<EnumType, EnumType> => {
     return enumeration<EnumType>(__EnumTypeValues)
   }
 }
@@ -26,12 +26,20 @@ export interface OneOfMessage {
   fieldFive: string
 }
 
-export namespace OneOfMessage {
-  let _codec: Codec<OneOfMessage>
+export interface OneOfMessageInput {
+  fieldOne?: string
+  fieldTwo?: string
+  fieldThree?: EnumType
+  fieldFour?: EnumType
+  fieldFive?: string
+}
 
-  export const codec = (): Codec<OneOfMessage> => {
+export namespace OneOfMessage {
+  let _codec: Codec<OneOfMessage, OneOfMessageInput>
+
+  export const codec = (): Codec<OneOfMessage, OneOfMessageInput> => {
     if (_codec == null) {
-      _codec = message<OneOfMessage>((obj, w, opts = {}) => {
+      _codec = message<OneOfMessage, OneOfMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -232,7 +240,7 @@ export namespace OneOfMessage {
     value: string
   }
 
-  export function encode (obj: Partial<OneOfMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: OneOfMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, OneOfMessage.codec())
   }
 
@@ -253,12 +261,20 @@ export interface MessageWithoutOneOfs {
   fieldFive: string
 }
 
-export namespace MessageWithoutOneOfs {
-  let _codec: Codec<MessageWithoutOneOfs>
+export interface MessageWithoutOneOfsInput {
+  fieldOne?: string
+  fieldTwo?: string
+  fieldThree?: EnumType
+  fieldFour?: EnumType
+  fieldFive?: string
+}
 
-  export const codec = (): Codec<MessageWithoutOneOfs> => {
+export namespace MessageWithoutOneOfs {
+  let _codec: Codec<MessageWithoutOneOfs, MessageWithoutOneOfsInput>
+
+  export const codec = (): Codec<MessageWithoutOneOfs, MessageWithoutOneOfsInput> => {
     if (_codec == null) {
-      _codec = message<MessageWithoutOneOfs>((obj, w, opts = {}) => {
+      _codec = message<MessageWithoutOneOfs, MessageWithoutOneOfsInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -429,7 +445,7 @@ export namespace MessageWithoutOneOfs {
     value: string
   }
 
-  export function encode (obj: Partial<MessageWithoutOneOfs>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithoutOneOfsInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithoutOneOfs.codec())
   }
 
