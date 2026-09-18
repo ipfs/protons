@@ -9,11 +9,11 @@ import { testEncodings } from './utils/compat.ts'
 
 describe('packed', () => {
   it('should encode packed by default', () => {
-      const buf = DefaultPackedTypes.encode({
-        int32s: [1, 2, 3]
-      })
-      expect(uint8ArrayToString(buf, 'base16')).to.equal('1a03010203')
+    const buf = DefaultPackedTypes.encode({
+      int32s: [1, 2, 3]
     })
+    expect(uint8ArrayToString(buf, 'base16')).to.equal('1a03010203')
+  })
 
   it('encodes the spec example', () => {
     const obj: SpecPacked = {
