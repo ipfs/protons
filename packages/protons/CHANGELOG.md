@@ -1,3 +1,9 @@
+## [protons-v10.0.3](https://github.com/ipfs/protons/compare/protons-10.0.2...protons-10.0.3) (2026-09-18)
+
+### Bug Fixes
+
+* add warning for incorrect packed option usage ([#208](https://github.com/ipfs/protons/issues/208)) ([1fb677f](https://github.com/ipfs/protons/commit/1fb677f8e226940f63463fa8fae7ebb7d4ddf276))
+
 ## [protons-v10.0.2](https://github.com/ipfs/protons/compare/protons-10.0.1...protons-10.0.2) (2026-09-18)
 
 ### Bug Fixes
