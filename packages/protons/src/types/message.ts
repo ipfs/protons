@@ -300,7 +300,8 @@ export interface ${this.pbType}Input {
     // variable if we have repeated fields or a sub message field to pass
     // options to
     const decodeOpts = this.fields.some(field => field instanceof ArrayField || field instanceof MapField || field instanceof MessageField)
-      ? ', opts = {}' : ''
+      ? ', opts = {}'
+      : ''
 
     interfaceCodecDef = `
   let _codec: Codec<${this.pbType}, ${this.pbType}Input>
