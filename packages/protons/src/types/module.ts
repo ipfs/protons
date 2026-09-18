@@ -114,7 +114,7 @@ export class Module {
         }, def)
       } else {
         type = new Message(name, {
-          encode: `${name}Encoder`,
+          encode: `${name}Input`,
           decode: name
         }, def, this)
       }

@@ -26,17 +26,17 @@ export interface SingularSubMessage {
   bar: number
 }
 
-export interface SingularSubMessageEncoder {
-  foo?: string
-  bar?: number
+export interface SingularSubMessageInput {
+  foo: string
+  bar: number
 }
 
 export namespace SingularSubMessage {
-  let _codec: Codec<SingularSubMessage, SingularSubMessageEncoder>
+  let _codec: Codec<SingularSubMessage, SingularSubMessageInput>
 
-  export const codec = (): Codec<SingularSubMessage, SingularSubMessageEncoder> => {
+  export const codec = (): Codec<SingularSubMessage, SingularSubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SingularSubMessage, SingularSubMessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<SingularSubMessage, SingularSubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -141,7 +141,7 @@ export namespace SingularSubMessage {
     value: number
   }
 
-  export function encode (obj: SingularSubMessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SingularSubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
 
@@ -174,32 +174,32 @@ export interface Singular {
   subMessage?: SingularSubMessage
 }
 
-export interface SingularEncoder {
-  double?: number
-  float?: number
-  int32?: number
-  int64?: bigint
-  uint32?: number
-  uint64?: bigint
-  sint32?: number
-  sint64?: bigint
-  fixed32?: number
-  fixed64?: bigint
-  sfixed32?: number
-  sfixed64?: bigint
-  bool?: boolean
-  string?: string
-  bytes?: Uint8Array
-  enum?: SingularEnum
-  subMessage?: SingularSubMessageEncoder
+export interface SingularInput {
+  double: number
+  float: number
+  int32: number
+  int64: bigint
+  uint32: number
+  uint64: bigint
+  sint32: number
+  sint64: bigint
+  fixed32: number
+  fixed64: bigint
+  sfixed32: number
+  sfixed64: bigint
+  bool: boolean
+  string: string
+  bytes: Uint8Array
+  enum: SingularEnum
+  subMessage?: SingularSubMessageInput
 }
 
 export namespace Singular {
-  let _codec: Codec<Singular, SingularEncoder>
+  let _codec: Codec<Singular, SingularInput>
 
-  export const codec = (): Codec<Singular, SingularEncoder> => {
+  export const codec = (): Codec<Singular, SingularInput> => {
     if (_codec == null) {
-      _codec = message<Singular, SingularEncoder>((obj, w, opts = {}) => {
+      _codec = message<Singular, SingularInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -650,7 +650,7 @@ export namespace Singular {
     value: number
   }
 
-  export function encode (obj: SingularEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SingularInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Singular.codec())
   }
 

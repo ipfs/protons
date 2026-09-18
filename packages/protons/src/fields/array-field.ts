@@ -26,7 +26,7 @@ export class ArrayField extends Field {
   }
 
   getEncoderInterfaceField (parent: Parent, indent = ''): string {
-    return `${super.getEncoderInterfaceField(parent, indent)}[]`
+    return `${indent}${this.name}?: ${this.jsTypeOverride ?? parent.findType(this.type).jsType.encode}[]`
   }
 
   getDefaultField (parent: Parent): string {

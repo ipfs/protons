@@ -11,12 +11,12 @@ export interface Message {
   pendingBytes: number
 }
 
-export interface MessageEncoder {
-  wantlist?: Message.WantlistEncoder
+export interface MessageInput {
+  wantlist?: Message.WantlistInput
   blocks?: Uint8Array[]
-  payload?: Message.BlockEncoder[]
-  blockPresences?: Message.BlockPresenceEncoder[]
-  pendingBytes?: number
+  payload?: Message.BlockInput[]
+  blockPresences?: Message.BlockPresenceInput[]
+  pendingBytes: number
 }
 
 export namespace Message {
@@ -25,9 +25,9 @@ export namespace Message {
     full: boolean
   }
 
-  export interface WantlistEncoder {
-    entries?: Message.Wantlist.EntryEncoder[]
-    full?: boolean
+  export interface WantlistInput {
+    entries?: Message.Wantlist.EntryInput[]
+    full: boolean
   }
 
   export namespace Wantlist {
@@ -55,20 +55,20 @@ export namespace Message {
       sendDontHave: boolean
     }
 
-    export interface EntryEncoder {
-      block?: Uint8Array
-      priority?: number
+    export interface EntryInput {
+      block: Uint8Array
+      priority: number
       cancel?: boolean
-      wantType?: Message.Wantlist.WantType
-      sendDontHave?: boolean
+      wantType: Message.Wantlist.WantType
+      sendDontHave: boolean
     }
 
     export namespace Entry {
-      let _codec: Codec<Entry, EntryEncoder>
+      let _codec: Codec<Entry, EntryInput>
 
-      export const codec = (): Codec<Entry, EntryEncoder> => {
+      export const codec = (): Codec<Entry, EntryInput> => {
         if (_codec == null) {
-          _codec = message<Entry, EntryEncoder>((obj, w, opts = {}) => {
+          _codec = message<Entry, EntryInput>((obj, w, opts = {}) => {
             if (opts.lengthDelimited !== false) {
               w.fork()
             }
@@ -238,7 +238,7 @@ export namespace Message {
         value: boolean
       }
 
-      export function encode (obj: EntryEncoder): Uint8Array<ArrayBuffer> {
+      export function encode (obj: EntryInput): Uint8Array<ArrayBuffer> {
         return encodeMessage(obj, Entry.codec())
       }
 
@@ -251,11 +251,11 @@ export namespace Message {
       }
     }
 
-    let _codec: Codec<Wantlist, WantlistEncoder>
+    let _codec: Codec<Wantlist, WantlistInput>
 
-    export const codec = (): Codec<Wantlist, WantlistEncoder> => {
+    export const codec = (): Codec<Wantlist, WantlistInput> => {
       if (_codec == null) {
-        _codec = message<Wantlist, WantlistEncoder>((obj, w, opts = {}) => {
+        _codec = message<Wantlist, WantlistInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -422,7 +422,7 @@ export namespace Message {
       value: boolean
     }
 
-    export function encode (obj: WantlistEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: WantlistInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Wantlist.codec())
     }
 
@@ -440,17 +440,17 @@ export namespace Message {
     data: Uint8Array<ArrayBuffer>
   }
 
-  export interface BlockEncoder {
-    prefix?: Uint8Array
-    data?: Uint8Array
+  export interface BlockInput {
+    prefix: Uint8Array
+    data: Uint8Array
   }
 
   export namespace Block {
-    let _codec: Codec<Block, BlockEncoder>
+    let _codec: Codec<Block, BlockInput>
 
-    export const codec = (): Codec<Block, BlockEncoder> => {
+    export const codec = (): Codec<Block, BlockInput> => {
       if (_codec == null) {
-        _codec = message<Block, BlockEncoder>((obj, w, opts = {}) => {
+        _codec = message<Block, BlockInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -555,7 +555,7 @@ export namespace Message {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: BlockEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: BlockInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Block.codec())
     }
 
@@ -589,17 +589,17 @@ export namespace Message {
     type: Message.BlockPresenceType
   }
 
-  export interface BlockPresenceEncoder {
-    cid?: Uint8Array
-    type?: Message.BlockPresenceType
+  export interface BlockPresenceInput {
+    cid: Uint8Array
+    type: Message.BlockPresenceType
   }
 
   export namespace BlockPresence {
-    let _codec: Codec<BlockPresence, BlockPresenceEncoder>
+    let _codec: Codec<BlockPresence, BlockPresenceInput>
 
-    export const codec = (): Codec<BlockPresence, BlockPresenceEncoder> => {
+    export const codec = (): Codec<BlockPresence, BlockPresenceInput> => {
       if (_codec == null) {
-        _codec = message<BlockPresence, BlockPresenceEncoder>((obj, w, opts = {}) => {
+        _codec = message<BlockPresence, BlockPresenceInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -704,7 +704,7 @@ export namespace Message {
       value: Message.BlockPresenceType
     }
 
-    export function encode (obj: BlockPresenceEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: BlockPresenceInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, BlockPresence.codec())
     }
 
@@ -717,11 +717,11 @@ export namespace Message {
     }
   }
 
-  let _codec: Codec<Message, MessageEncoder>
+  let _codec: Codec<Message, MessageInput>
 
-  export const codec = (): Codec<Message, MessageEncoder> => {
+  export const codec = (): Codec<Message, MessageInput> => {
     if (_codec == null) {
-      _codec = message<Message, MessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<Message, MessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1048,7 +1048,7 @@ export namespace Message {
     value: number
   }
 
-  export function encode (obj: MessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Message.codec())
   }
 

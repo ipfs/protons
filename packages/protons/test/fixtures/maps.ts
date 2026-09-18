@@ -25,17 +25,17 @@ export interface SubMessage {
   bar: number[]
 }
 
-export interface SubMessageEncoder {
-  foo?: string
+export interface SubMessageInput {
+  foo: string
   bar?: number[]
 }
 
 export namespace SubMessage {
-  let _codec: Codec<SubMessage, SubMessageEncoder>
+  let _codec: Codec<SubMessage, SubMessageInput>
 
-  export const codec = (): Codec<SubMessage, SubMessageEncoder> => {
+  export const codec = (): Codec<SubMessage, SubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SubMessage, SubMessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<SubMessage, SubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -159,7 +159,7 @@ export namespace SubMessage {
     value: number
   }
 
-  export function encode (obj: SubMessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -180,11 +180,11 @@ export interface MapTypes {
   enumMap: Map<string, EnumValue>
 }
 
-export interface MapTypesEncoder {
+export interface MapTypesInput {
   stringMap?: Map<string, string>
   intMap?: Map<number, number>
   boolMap?: Map<boolean, boolean>
-  messageMap?: Map<string, SubMessageEncoder>
+  messageMap?: Map<string, SubMessageInput>
   enumMap?: Map<string, EnumValue>
 }
 
@@ -194,17 +194,17 @@ export namespace MapTypes {
     value: string
   }
 
-  export interface MapTypes$stringMapEntryEncoder {
-    key?: string
-    value?: string
+  export interface MapTypes$stringMapEntryInput {
+    key: string
+    value: string
   }
 
   export namespace MapTypes$stringMapEntry {
-    let _codec: Codec<MapTypes$stringMapEntry, MapTypes$stringMapEntryEncoder>
+    let _codec: Codec<MapTypes$stringMapEntry, MapTypes$stringMapEntryInput>
 
-    export const codec = (): Codec<MapTypes$stringMapEntry, MapTypes$stringMapEntryEncoder> => {
+    export const codec = (): Codec<MapTypes$stringMapEntry, MapTypes$stringMapEntryInput> => {
       if (_codec == null) {
-        _codec = message<MapTypes$stringMapEntry, MapTypes$stringMapEntryEncoder>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$stringMapEntry, MapTypes$stringMapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -309,7 +309,7 @@ export namespace MapTypes {
       value: string
     }
 
-    export function encode (obj: MapTypes$stringMapEntryEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$stringMapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$stringMapEntry.codec())
     }
 
@@ -327,17 +327,17 @@ export namespace MapTypes {
     value: number
   }
 
-  export interface MapTypes$intMapEntryEncoder {
-    key?: number
-    value?: number
+  export interface MapTypes$intMapEntryInput {
+    key: number
+    value: number
   }
 
   export namespace MapTypes$intMapEntry {
-    let _codec: Codec<MapTypes$intMapEntry, MapTypes$intMapEntryEncoder>
+    let _codec: Codec<MapTypes$intMapEntry, MapTypes$intMapEntryInput>
 
-    export const codec = (): Codec<MapTypes$intMapEntry, MapTypes$intMapEntryEncoder> => {
+    export const codec = (): Codec<MapTypes$intMapEntry, MapTypes$intMapEntryInput> => {
       if (_codec == null) {
-        _codec = message<MapTypes$intMapEntry, MapTypes$intMapEntryEncoder>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$intMapEntry, MapTypes$intMapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -442,7 +442,7 @@ export namespace MapTypes {
       value: number
     }
 
-    export function encode (obj: MapTypes$intMapEntryEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$intMapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$intMapEntry.codec())
     }
 
@@ -460,17 +460,17 @@ export namespace MapTypes {
     value: boolean
   }
 
-  export interface MapTypes$boolMapEntryEncoder {
-    key?: boolean
-    value?: boolean
+  export interface MapTypes$boolMapEntryInput {
+    key: boolean
+    value: boolean
   }
 
   export namespace MapTypes$boolMapEntry {
-    let _codec: Codec<MapTypes$boolMapEntry, MapTypes$boolMapEntryEncoder>
+    let _codec: Codec<MapTypes$boolMapEntry, MapTypes$boolMapEntryInput>
 
-    export const codec = (): Codec<MapTypes$boolMapEntry, MapTypes$boolMapEntryEncoder> => {
+    export const codec = (): Codec<MapTypes$boolMapEntry, MapTypes$boolMapEntryInput> => {
       if (_codec == null) {
-        _codec = message<MapTypes$boolMapEntry, MapTypes$boolMapEntryEncoder>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$boolMapEntry, MapTypes$boolMapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -575,7 +575,7 @@ export namespace MapTypes {
       value: boolean
     }
 
-    export function encode (obj: MapTypes$boolMapEntryEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$boolMapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$boolMapEntry.codec())
     }
 
@@ -593,17 +593,17 @@ export namespace MapTypes {
     value?: SubMessage
   }
 
-  export interface MapTypes$messageMapEntryEncoder {
-    key?: string
-    value?: SubMessageEncoder
+  export interface MapTypes$messageMapEntryInput {
+    key: string
+    value?: SubMessageInput
   }
 
   export namespace MapTypes$messageMapEntry {
-    let _codec: Codec<MapTypes$messageMapEntry, MapTypes$messageMapEntryEncoder>
+    let _codec: Codec<MapTypes$messageMapEntry, MapTypes$messageMapEntryInput>
 
-    export const codec = (): Codec<MapTypes$messageMapEntry, MapTypes$messageMapEntryEncoder> => {
+    export const codec = (): Codec<MapTypes$messageMapEntry, MapTypes$messageMapEntryInput> => {
       if (_codec == null) {
-        _codec = message<MapTypes$messageMapEntry, MapTypes$messageMapEntryEncoder>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$messageMapEntry, MapTypes$messageMapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -725,7 +725,7 @@ export namespace MapTypes {
       value: number
     }
 
-    export function encode (obj: MapTypes$messageMapEntryEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$messageMapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$messageMapEntry.codec())
     }
 
@@ -743,17 +743,17 @@ export namespace MapTypes {
     value: EnumValue
   }
 
-  export interface MapTypes$enumMapEntryEncoder {
-    key?: string
-    value?: EnumValue
+  export interface MapTypes$enumMapEntryInput {
+    key: string
+    value: EnumValue
   }
 
   export namespace MapTypes$enumMapEntry {
-    let _codec: Codec<MapTypes$enumMapEntry, MapTypes$enumMapEntryEncoder>
+    let _codec: Codec<MapTypes$enumMapEntry, MapTypes$enumMapEntryInput>
 
-    export const codec = (): Codec<MapTypes$enumMapEntry, MapTypes$enumMapEntryEncoder> => {
+    export const codec = (): Codec<MapTypes$enumMapEntry, MapTypes$enumMapEntryInput> => {
       if (_codec == null) {
-        _codec = message<MapTypes$enumMapEntry, MapTypes$enumMapEntryEncoder>((obj, w, opts = {}) => {
+        _codec = message<MapTypes$enumMapEntry, MapTypes$enumMapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -858,7 +858,7 @@ export namespace MapTypes {
       value: EnumValue
     }
 
-    export function encode (obj: MapTypes$enumMapEntryEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MapTypes$enumMapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MapTypes$enumMapEntry.codec())
     }
 
@@ -871,11 +871,11 @@ export namespace MapTypes {
     }
   }
 
-  let _codec: Codec<MapTypes, MapTypesEncoder>
+  let _codec: Codec<MapTypes, MapTypesInput>
 
-  export const codec = (): Codec<MapTypes, MapTypesEncoder> => {
+  export const codec = (): Codec<MapTypes, MapTypesInput> => {
     if (_codec == null) {
-      _codec = message<MapTypes, MapTypesEncoder>((obj, w, opts = {}) => {
+      _codec = message<MapTypes, MapTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1175,7 +1175,7 @@ export namespace MapTypes {
     value: EnumValue
   }
 
-  export function encode (obj: MapTypesEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MapTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MapTypes.codec())
   }
 

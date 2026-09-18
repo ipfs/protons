@@ -94,7 +94,7 @@ export class Message implements Type {
     Object.entries(def.nested ?? {}).forEach(([name, def]) => {
       if (isMessageDef(def)) {
         this.nested[name] = new Message(name, {
-          encode: `${this.jsType.decode}.${name}Encoder`,
+          encode: `${this.jsType.decode}.${name}Input`,
           decode: `${this.jsType.decode}.${name}`
         }, def, this)
       } else {
@@ -265,7 +265,7 @@ ${indent}            }`
 
     if (decoderFields.length === 0) {
       interfaceDef = `
-export interface ${this.pbType}Encoder {}
+export interface ${this.pbType}Input {}
 
 export interface ${this.pbType} {}`
     } else {
@@ -274,7 +274,7 @@ export interface ${this.pbType} {
   ${decoderFields.join('\n  ').trim()}
 }
 
-export interface ${this.pbType}Encoder {
+export interface ${this.pbType}Input {
   ${encoderFields.join('\n  ').trim()}
 }`
     }
@@ -294,11 +294,11 @@ export interface ${this.pbType}Encoder {
     }
 
     interfaceCodecDef = `
-  let _codec: Codec<${this.pbType}, ${this.pbType}Encoder>
+  let _codec: Codec<${this.pbType}, ${this.pbType}Input>
 
-  export const codec = (): Codec<${this.pbType}, ${this.pbType}Encoder> => {
+  export const codec = (): Codec<${this.pbType}, ${this.pbType}Input> => {
     if (_codec == null) {
-      _codec = message<${this.pbType}, ${this.pbType}Encoder>((obj, w, opts = {}) => {
+      _codec = message<${this.pbType}, ${this.pbType}Input>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }${enforceOneOfEncoding}${this.formatFields(encodeFields)}
@@ -358,7 +358,7 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
     return _codec
   }${this.formatStreamEvents(streamEvents)}
 
-  export function encode (obj: ${this.pbType}Encoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ${this.pbType}Input): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ${this.pbType}.codec())
   }
 

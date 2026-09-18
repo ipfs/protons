@@ -137,7 +137,7 @@ export class Field implements MessageField {
   }
 
   getEncoderInterfaceField (parent: Parent, indent = ''): string {
-    return `${indent}${this.name}?: ${this.jsTypeOverride ?? parent.findType(this.type).jsType.encode}`
+    return `${indent}${this.name}${(this.optional) ? '?' : ''}: ${this.jsTypeOverride ?? parent.findType(this.type).jsType.encode}`
   }
 
   getDefaultField (parent: Parent): string {

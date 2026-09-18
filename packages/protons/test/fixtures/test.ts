@@ -22,16 +22,16 @@ export interface SubMessage {
   foo: string
 }
 
-export interface SubMessageEncoder {
-  foo?: string
+export interface SubMessageInput {
+  foo: string
 }
 
 export namespace SubMessage {
-  let _codec: Codec<SubMessage, SubMessageEncoder>
+  let _codec: Codec<SubMessage, SubMessageInput>
 
-  export const codec = (): Codec<SubMessage, SubMessageEncoder> => {
+  export const codec = (): Codec<SubMessage, SubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SubMessage, SubMessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<SubMessage, SubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -114,7 +114,7 @@ export namespace SubMessage {
     value: string
   }
 
-  export function encode (obj: SubMessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -148,7 +148,7 @@ export interface AllTheTypes {
   field18?: bigint
 }
 
-export interface AllTheTypesEncoder {
+export interface AllTheTypesInput {
   field1?: boolean
   field2?: number
   field3?: bigint
@@ -161,7 +161,7 @@ export interface AllTheTypesEncoder {
   field10?: string
   field11?: Uint8Array
   field12?: AnEnum
-  field13?: SubMessageEncoder
+  field13?: SubMessageInput
   field14?: string[]
   field15?: number
   field16?: bigint
@@ -170,11 +170,11 @@ export interface AllTheTypesEncoder {
 }
 
 export namespace AllTheTypes {
-  let _codec: Codec<AllTheTypes, AllTheTypesEncoder>
+  let _codec: Codec<AllTheTypes, AllTheTypesInput>
 
-  export const codec = (): Codec<AllTheTypes, AllTheTypesEncoder> => {
+  export const codec = (): Codec<AllTheTypes, AllTheTypesInput> => {
     if (_codec == null) {
-      _codec = message<AllTheTypes, AllTheTypesEncoder>((obj, w, opts = {}) => {
+      _codec = message<AllTheTypes, AllTheTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -645,7 +645,7 @@ export namespace AllTheTypes {
     value: bigint
   }
 
-  export function encode (obj: AllTheTypesEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: AllTheTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 

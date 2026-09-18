@@ -10,7 +10,7 @@ export interface Record {
   timeReceived?: string
 }
 
-export interface RecordEncoder {
+export interface RecordInput {
   key?: Uint8Array
   value?: Uint8Array
   author?: Uint8Array
@@ -19,11 +19,11 @@ export interface RecordEncoder {
 }
 
 export namespace Record {
-  let _codec: Codec<Record, RecordEncoder>
+  let _codec: Codec<Record, RecordInput>
 
-  export const codec = (): Codec<Record, RecordEncoder> => {
+  export const codec = (): Codec<Record, RecordInput> => {
     if (_codec == null) {
-      _codec = message<Record, RecordEncoder>((obj, w, opts = {}) => {
+      _codec = message<Record, RecordInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -188,7 +188,7 @@ export namespace Record {
     value: string
   }
 
-  export function encode (obj: RecordEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: RecordInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Record.codec())
   }
 
@@ -210,13 +210,13 @@ export interface Message {
   providerPeers: Message.Peer[]
 }
 
-export interface MessageEncoder {
+export interface MessageInput {
   type?: Message.MessageType
   clusterLevelRaw?: number
   key?: Uint8Array
   record?: Uint8Array
-  closerPeers?: Message.PeerEncoder[]
-  providerPeers?: Message.PeerEncoder[]
+  closerPeers?: Message.PeerInput[]
+  providerPeers?: Message.PeerInput[]
 }
 
 export namespace Message {
@@ -270,18 +270,18 @@ export namespace Message {
     connection?: Message.ConnectionType
   }
 
-  export interface PeerEncoder {
+  export interface PeerInput {
     id?: Uint8Array
     addrs?: Uint8Array[]
     connection?: Message.ConnectionType
   }
 
   export namespace Peer {
-    let _codec: Codec<Peer, PeerEncoder>
+    let _codec: Codec<Peer, PeerInput>
 
-    export const codec = (): Codec<Peer, PeerEncoder> => {
+    export const codec = (): Codec<Peer, PeerInput> => {
       if (_codec == null) {
-        _codec = message<Peer, PeerEncoder>((obj, w, opts = {}) => {
+        _codec = message<Peer, PeerInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -425,7 +425,7 @@ export namespace Message {
       value: Message.ConnectionType
     }
 
-    export function encode (obj: PeerEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: PeerInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -438,11 +438,11 @@ export namespace Message {
     }
   }
 
-  let _codec: Codec<Message, MessageEncoder>
+  let _codec: Codec<Message, MessageInput>
 
-  export const codec = (): Codec<Message, MessageEncoder> => {
+  export const codec = (): Codec<Message, MessageInput> => {
     if (_codec == null) {
-      _codec = message<Message, MessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<Message, MessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -728,7 +728,7 @@ export namespace Message {
     message: string
   }
 
-  export function encode (obj: MessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Message.codec())
   }
 

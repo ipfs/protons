@@ -10,10 +10,10 @@ export interface CircuitRelay {
   code?: CircuitRelay.Status
 }
 
-export interface CircuitRelayEncoder {
+export interface CircuitRelayInput {
   type?: CircuitRelay.Type
-  srcPeer?: CircuitRelay.PeerEncoder
-  dstPeer?: CircuitRelay.PeerEncoder
+  srcPeer?: CircuitRelay.PeerInput
+  dstPeer?: CircuitRelay.PeerInput
   code?: CircuitRelay.Status
 }
 
@@ -87,17 +87,17 @@ export namespace CircuitRelay {
     addrs: Uint8Array<ArrayBuffer>[]
   }
 
-  export interface PeerEncoder {
-    id?: Uint8Array
+  export interface PeerInput {
+    id: Uint8Array
     addrs?: Uint8Array[]
   }
 
   export namespace Peer {
-    let _codec: Codec<Peer, PeerEncoder>
+    let _codec: Codec<Peer, PeerInput>
 
-    export const codec = (): Codec<Peer, PeerEncoder> => {
+    export const codec = (): Codec<Peer, PeerInput> => {
       if (_codec == null) {
-        _codec = message<Peer, PeerEncoder>((obj, w, opts = {}) => {
+        _codec = message<Peer, PeerInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -221,7 +221,7 @@ export namespace CircuitRelay {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: PeerEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: PeerInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, Peer.codec())
     }
 
@@ -234,11 +234,11 @@ export namespace CircuitRelay {
     }
   }
 
-  let _codec: Codec<CircuitRelay, CircuitRelayEncoder>
+  let _codec: Codec<CircuitRelay, CircuitRelayInput>
 
-  export const codec = (): Codec<CircuitRelay, CircuitRelayEncoder> => {
+  export const codec = (): Codec<CircuitRelay, CircuitRelayInput> => {
     if (_codec == null) {
-      _codec = message<CircuitRelay, CircuitRelayEncoder>((obj, w, opts = {}) => {
+      _codec = message<CircuitRelay, CircuitRelayInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -418,7 +418,7 @@ export namespace CircuitRelay {
     value: CircuitRelay.Status
   }
 
-  export function encode (obj: CircuitRelayEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CircuitRelayInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CircuitRelay.codec())
   }
 

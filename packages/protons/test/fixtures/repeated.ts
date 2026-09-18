@@ -7,17 +7,17 @@ export interface SubSubMessage {
   nonRepeating?: number
 }
 
-export interface SubSubMessageEncoder {
+export interface SubSubMessageInput {
   foo?: string[]
   nonRepeating?: number
 }
 
 export namespace SubSubMessage {
-  let _codec: Codec<SubSubMessage, SubSubMessageEncoder>
+  let _codec: Codec<SubSubMessage, SubSubMessageInput>
 
-  export const codec = (): Codec<SubSubMessage, SubSubMessageEncoder> => {
+  export const codec = (): Codec<SubSubMessage, SubSubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SubSubMessage, SubSubMessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<SubSubMessage, SubSubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -140,7 +140,7 @@ export namespace SubSubMessage {
     value: number
   }
 
-  export function encode (obj: SubSubMessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubSubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubSubMessage.codec())
   }
 
@@ -160,19 +160,19 @@ export interface SubMessage {
   messages: SubSubMessage[]
 }
 
-export interface SubMessageEncoder {
+export interface SubMessageInput {
   foo?: string[]
   nonRepeating?: number
-  message?: SubSubMessageEncoder
-  messages?: SubSubMessageEncoder[]
+  message?: SubSubMessageInput
+  messages?: SubSubMessageInput[]
 }
 
 export namespace SubMessage {
-  let _codec: Codec<SubMessage, SubMessageEncoder>
+  let _codec: Codec<SubMessage, SubMessageInput>
 
-  export const codec = (): Codec<SubMessage, SubMessageEncoder> => {
+  export const codec = (): Codec<SubMessage, SubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SubMessage, SubMessageEncoder>((obj, w, opts = {}) => {
+      _codec = message<SubMessage, SubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -397,7 +397,7 @@ export namespace SubMessage {
     message: string
   }
 
-  export function encode (obj: SubMessageEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -418,20 +418,20 @@ export interface RepeatedTypes {
   nonRepeating?: number
 }
 
-export interface RepeatedTypesEncoder {
+export interface RepeatedTypesInput {
   number?: number[]
   limitedNumber?: number[]
-  messages?: SubMessageEncoder[]
-  message?: SubMessageEncoder
+  messages?: SubMessageInput[]
+  message?: SubMessageInput
   nonRepeating?: number
 }
 
 export namespace RepeatedTypes {
-  let _codec: Codec<RepeatedTypes, RepeatedTypesEncoder>
+  let _codec: Codec<RepeatedTypes, RepeatedTypesInput>
 
-  export const codec = (): Codec<RepeatedTypes, RepeatedTypesEncoder> => {
+  export const codec = (): Codec<RepeatedTypes, RepeatedTypesInput> => {
     if (_codec == null) {
-      _codec = message<RepeatedTypes, RepeatedTypesEncoder>((obj, w, opts = {}) => {
+      _codec = message<RepeatedTypes, RepeatedTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -799,7 +799,7 @@ export namespace RepeatedTypes {
     value: number
   }
 
-  export function encode (obj: RepeatedTypesEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: RepeatedTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, RepeatedTypes.codec())
   }
 

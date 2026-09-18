@@ -3,7 +3,7 @@ import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
-export interface pbEncoder {}
+export interface pbInput {}
 
 export interface pb {}
 
@@ -14,18 +14,18 @@ export namespace pb {
     data: Uint8Array<ArrayBuffer>
   }
 
-  export interface NoiseHandshakePayloadEncoder {
-    identityKey?: Uint8Array
-    identitySig?: Uint8Array
-    data?: Uint8Array
+  export interface NoiseHandshakePayloadInput {
+    identityKey: Uint8Array
+    identitySig: Uint8Array
+    data: Uint8Array
   }
 
   export namespace NoiseHandshakePayload {
-    let _codec: Codec<NoiseHandshakePayload, NoiseHandshakePayloadEncoder>
+    let _codec: Codec<NoiseHandshakePayload, NoiseHandshakePayloadInput>
 
-    export const codec = (): Codec<NoiseHandshakePayload, NoiseHandshakePayloadEncoder> => {
+    export const codec = (): Codec<NoiseHandshakePayload, NoiseHandshakePayloadInput> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload, NoiseHandshakePayloadEncoder>((obj, w, opts = {}) => {
+        _codec = message<NoiseHandshakePayload, NoiseHandshakePayloadInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -152,7 +152,7 @@ export namespace pb {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: NoiseHandshakePayloadEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: NoiseHandshakePayloadInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
@@ -165,11 +165,11 @@ export namespace pb {
     }
   }
 
-  let _codec: Codec<pb, pbEncoder>
+  let _codec: Codec<pb, pbInput>
 
-  export const codec = (): Codec<pb, pbEncoder> => {
+  export const codec = (): Codec<pb, pbInput> => {
     if (_codec == null) {
-      _codec = message<pb, pbEncoder>((obj, w, opts = {}) => {
+      _codec = message<pb, pbInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -229,7 +229,7 @@ export namespace pb {
     return _codec
   }
 
-  export function encode (obj: pbEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: pbInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, pb.codec())
   }
 

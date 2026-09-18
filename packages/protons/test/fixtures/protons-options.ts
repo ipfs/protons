@@ -6,16 +6,16 @@ export interface MessageWithSizeLimitedRepeatedField {
   repeatedField: string[]
 }
 
-export interface MessageWithSizeLimitedRepeatedFieldEncoder {
+export interface MessageWithSizeLimitedRepeatedFieldInput {
   repeatedField?: string[]
 }
 
 export namespace MessageWithSizeLimitedRepeatedField {
-  let _codec: Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldEncoder>
+  let _codec: Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldInput>
 
-  export const codec = (): Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldEncoder> => {
+  export const codec = (): Codec<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldInput> => {
     if (_codec == null) {
-      _codec = message<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldEncoder>((obj, w, opts = {}) => {
+      _codec = message<MessageWithSizeLimitedRepeatedField, MessageWithSizeLimitedRepeatedFieldInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -125,7 +125,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
     value: string
   }
 
-  export function encode (obj: MessageWithSizeLimitedRepeatedFieldEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithSizeLimitedRepeatedFieldInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedRepeatedField.codec())
   }
 
@@ -142,7 +142,7 @@ export interface MessageWithSizeLimitedMap {
   mapField: Map<string, string>
 }
 
-export interface MessageWithSizeLimitedMapEncoder {
+export interface MessageWithSizeLimitedMapInput {
   mapField?: Map<string, string>
 }
 
@@ -152,17 +152,17 @@ export namespace MessageWithSizeLimitedMap {
     value: string
   }
 
-  export interface MessageWithSizeLimitedMap$mapFieldEntryEncoder {
-    key?: string
-    value?: string
+  export interface MessageWithSizeLimitedMap$mapFieldEntryInput {
+    key: string
+    value: string
   }
 
   export namespace MessageWithSizeLimitedMap$mapFieldEntry {
-    let _codec: Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryEncoder>
+    let _codec: Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryInput>
 
-    export const codec = (): Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryEncoder> => {
+    export const codec = (): Codec<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryInput> => {
       if (_codec == null) {
-        _codec = message<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryEncoder>((obj, w, opts = {}) => {
+        _codec = message<MessageWithSizeLimitedMap$mapFieldEntry, MessageWithSizeLimitedMap$mapFieldEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -267,7 +267,7 @@ export namespace MessageWithSizeLimitedMap {
       value: string
     }
 
-    export function encode (obj: MessageWithSizeLimitedMap$mapFieldEntryEncoder): Uint8Array<ArrayBuffer> {
+    export function encode (obj: MessageWithSizeLimitedMap$mapFieldEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, MessageWithSizeLimitedMap$mapFieldEntry.codec())
     }
 
@@ -280,11 +280,11 @@ export namespace MessageWithSizeLimitedMap {
     }
   }
 
-  let _codec: Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapEncoder>
+  let _codec: Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapInput>
 
-  export const codec = (): Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapEncoder> => {
+  export const codec = (): Codec<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapInput> => {
     if (_codec == null) {
-      _codec = message<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapEncoder>((obj, w, opts = {}) => {
+      _codec = message<MessageWithSizeLimitedMap, MessageWithSizeLimitedMapInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -399,7 +399,7 @@ export namespace MessageWithSizeLimitedMap {
     value: string
   }
 
-  export function encode (obj: MessageWithSizeLimitedMapEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithSizeLimitedMapInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithSizeLimitedMap.codec())
   }
 

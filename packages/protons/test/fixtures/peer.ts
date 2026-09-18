@@ -11,20 +11,20 @@ export interface Peer {
   peerRecordEnvelope?: Uint8Array<ArrayBuffer>
 }
 
-export interface PeerEncoder {
-  addresses?: AddressEncoder[]
+export interface PeerInput {
+  addresses?: AddressInput[]
   protocols?: string[]
-  metadata?: MetadataEncoder[]
+  metadata?: MetadataInput[]
   pubKey?: Uint8Array
   peerRecordEnvelope?: Uint8Array
 }
 
 export namespace Peer {
-  let _codec: Codec<Peer, PeerEncoder>
+  let _codec: Codec<Peer, PeerInput>
 
-  export const codec = (): Codec<Peer, PeerEncoder> => {
+  export const codec = (): Codec<Peer, PeerInput> => {
     if (_codec == null) {
-      _codec = message<Peer, PeerEncoder>((obj, w, opts = {}) => {
+      _codec = message<Peer, PeerInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -294,7 +294,7 @@ export namespace Peer {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: PeerEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PeerInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Peer.codec())
   }
 
@@ -312,17 +312,17 @@ export interface Address {
   isCertified?: boolean
 }
 
-export interface AddressEncoder {
-  multiaddr?: Uint8Array
+export interface AddressInput {
+  multiaddr: Uint8Array
   isCertified?: boolean
 }
 
 export namespace Address {
-  let _codec: Codec<Address, AddressEncoder>
+  let _codec: Codec<Address, AddressInput>
 
-  export const codec = (): Codec<Address, AddressEncoder> => {
+  export const codec = (): Codec<Address, AddressInput> => {
     if (_codec == null) {
-      _codec = message<Address, AddressEncoder>((obj, w, opts = {}) => {
+      _codec = message<Address, AddressInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -426,7 +426,7 @@ export namespace Address {
     value: boolean
   }
 
-  export function encode (obj: AddressEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: AddressInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Address.codec())
   }
 
@@ -444,17 +444,17 @@ export interface Metadata {
   value: Uint8Array<ArrayBuffer>
 }
 
-export interface MetadataEncoder {
-  key?: string
-  value?: Uint8Array
+export interface MetadataInput {
+  key: string
+  value: Uint8Array
 }
 
 export namespace Metadata {
-  let _codec: Codec<Metadata, MetadataEncoder>
+  let _codec: Codec<Metadata, MetadataInput>
 
-  export const codec = (): Codec<Metadata, MetadataEncoder> => {
+  export const codec = (): Codec<Metadata, MetadataInput> => {
     if (_codec == null) {
-      _codec = message<Metadata, MetadataEncoder>((obj, w, opts = {}) => {
+      _codec = message<Metadata, MetadataInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -559,7 +559,7 @@ export namespace Metadata {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: MetadataEncoder): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MetadataInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Metadata.codec())
   }
 
