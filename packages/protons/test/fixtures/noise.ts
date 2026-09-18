@@ -48,7 +48,7 @@ export namespace pb {
           if (opts.lengthDelimited !== false) {
             w.ldelim()
           }
-        }, (r, length, opts = {}) => {
+        }, (r, length) => {
           const obj: any = {
             identityKey: uint8ArrayAlloc(0),
             identitySig: uint8ArrayAlloc(0),
@@ -81,7 +81,7 @@ export namespace pb {
           }
 
           return obj
-        }, function * (r, length, prefix, opts = {}) {
+        }, function * (r, length, prefix) {
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
@@ -177,7 +177,7 @@ export namespace pb {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {}
 
         const end = length == null ? r.len : r.pos + length
@@ -194,7 +194,7 @@ export namespace pb {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {

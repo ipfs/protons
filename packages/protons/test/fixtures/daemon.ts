@@ -1672,7 +1672,7 @@ export namespace ErrorResponse {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           msg: ''
         }
@@ -1695,7 +1695,7 @@ export namespace ErrorResponse {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -1795,7 +1795,7 @@ export namespace StreamInfo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           addr: uint8ArrayAlloc(0),
@@ -1828,7 +1828,7 @@ export namespace StreamInfo {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -2010,7 +2010,7 @@ export namespace DHTRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           type: Type.FIND_PEER
         }
@@ -2057,7 +2057,7 @@ export namespace DHTRequest {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -2597,7 +2597,7 @@ export namespace ConnManagerRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           type: Type.TAG_PEER
         }
@@ -2632,7 +2632,7 @@ export namespace ConnManagerRequest {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -2754,7 +2754,7 @@ export namespace DisconnectRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           peer: uint8ArrayAlloc(0)
         }
@@ -2777,7 +2777,7 @@ export namespace DisconnectRequest {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -2897,7 +2897,7 @@ export namespace PSRequest {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           type: Type.GET_TOPICS
         }
@@ -2928,7 +2928,7 @@ export namespace PSRequest {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {

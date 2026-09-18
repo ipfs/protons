@@ -44,7 +44,7 @@ export namespace SubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           foo: ''
         }
@@ -67,7 +67,7 @@ export namespace SubMessage {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {

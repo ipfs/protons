@@ -54,7 +54,7 @@ export namespace SingularSubMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           foo: '',
           bar: 0
@@ -82,7 +82,7 @@ export namespace SingularSubMessage {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {

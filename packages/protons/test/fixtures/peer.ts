@@ -340,7 +340,7 @@ export namespace Address {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           multiaddr: uint8ArrayAlloc(0)
         }
@@ -367,7 +367,7 @@ export namespace Address {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -472,7 +472,7 @@ export namespace Metadata {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           key: '',
           value: uint8ArrayAlloc(0)
@@ -500,7 +500,7 @@ export namespace Metadata {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {

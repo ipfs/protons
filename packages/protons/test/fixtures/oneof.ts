@@ -90,7 +90,7 @@ export namespace OneOfMessage {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           fieldFive: ''
         }
@@ -145,7 +145,7 @@ export namespace OneOfMessage {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -307,7 +307,7 @@ export namespace MessageWithoutOneOfs {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length, opts = {}) => {
+      }, (r, length) => {
         const obj: any = {
           fieldOne: '',
           fieldTwo: '',
@@ -350,7 +350,7 @@ export namespace MessageWithoutOneOfs {
         }
 
         return obj
-      }, function * (r, length, prefix, opts = {}) {
+      }, function * (r, length, prefix) {
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
