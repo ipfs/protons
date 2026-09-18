@@ -1,3 +1,9 @@
+## [protons-v10.0.2](https://github.com/ipfs/protons/compare/protons-10.0.1...protons-10.0.2) (2026-09-18)
+
+### Bug Fixes
+
+* only declare decode opts if used ([#206](https://github.com/ipfs/protons/issues/206)) ([545ca31](https://github.com/ipfs/protons/commit/545ca31f382fbed8bf2e296cc46c18c79b221b53)), closes [#130](https://github.com/ipfs/protons/issues/130)
+
 ## [protons-v10.0.1](https://github.com/ipfs/protons/compare/protons-10.0.0...protons-10.0.1) (2026-09-18)
 
 ### Bug Fixes
