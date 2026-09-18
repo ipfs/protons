@@ -1,3 +1,9 @@
+## [protons-v10.0.4](https://github.com/ipfs/protons/compare/protons-10.0.3...protons-10.0.4) (2026-09-18)
+
+### Bug Fixes
+
+* document message naming conventions ([#209](https://github.com/ipfs/protons/issues/209)) ([c1e3bcb](https://github.com/ipfs/protons/commit/c1e3bcb31e6be41101916999264f6d78ca14acce)), closes [#64](https://github.com/ipfs/protons/issues/64)
+
 ## [protons-v10.0.3](https://github.com/ipfs/protons/compare/protons-10.0.2...protons-10.0.3) (2026-09-18)
 
 ### Bug Fixes
