@@ -19,34 +19,46 @@ export interface EncodeFunction<T> {
   (value: T, writer: Writer, opts?: EncodeOptions): void
 }
 
-// protobuf types that contain multiple values
-type CollectionTypes = any[] | Map<any, any>
+/**
+ * Protobuf types that contain multiple values
+ */
+export type CollectionTypes = any[] | Map<any, any>
 
-// protobuf types that are not collections or messages
-type PrimitiveTypes = boolean | number | string | bigint | Uint8Array
+/**
+ * Protobuf types that are not collections or messages
+ */
+export type PrimitiveTypes = boolean | number | string | bigint | Uint8Array
 
-// recursive array/map field length limits
-type CollectionLimits <T> = {
+/**
+ * Recursive array/map field length limits
+ */
+export type CollectionLimits <T> = {
   [K in keyof T]: T[K] extends CollectionTypes ? number :
     T[K] extends PrimitiveTypes ? never : Limits<T[K]>
 }
 
-// recursive array member array/map field length limits
-type ArrayElementLimits <T> = {
+/**
+ * Recursive array member array/map field length limits
+ */
+export type ArrayElementLimits <T> = {
   [K in keyof T as `${string & K}$`]: T[K] extends Array<infer ElementType> ?
       (ElementType extends PrimitiveTypes ? never : Limits<ElementType>) :
       (T[K] extends PrimitiveTypes ? never : Limits<T[K]>)
 }
 
-// recursive map value array/map field length limits
-type MapValueLimits <T> = {
+/**
+ * Recursive map value array/map field length limits
+ */
+export type MapValueLimits <T> = {
   [K in keyof T as `${string & K}$value`]: T[K] extends Map<any, infer MapValueType> ?
       (MapValueType extends PrimitiveTypes ? never : Limits<MapValueType>) :
       (T[K] extends PrimitiveTypes ? never : Limits<T[K]>)
 }
 
-// union of collection and array elements
-type Limits<T> = Partial<CollectionLimits<T> & ArrayElementLimits<T> & MapValueLimits<T>>
+/**
+ * Union of collection and array elements
+ */
+export type Limits<T> = Partial<CollectionLimits<T> & ArrayElementLimits<T> & MapValueLimits<T>>
 
 export interface DecodeOptions<T> {
   /**

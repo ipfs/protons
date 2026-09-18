@@ -57,6 +57,16 @@
  * 5. `map` fields can have keys of any type - protobufs.js [only supports strings](https://github.com/protobufjs/protobuf.js/issues/1203#issuecomment-488637338)
  * 6. `map` fields are deserialized as ES6 `Map`s - protobuf.js uses `Object`s
  *
+ * ## .proto Message naming conventions
+ *
+ * Protobuf messages in `.proto` files are transformed into TypeScript classes,
+ * so they must not conflict with built-in JavaScript types (`Number`, `Error`,
+ * etc).
+ *
+ * Message names are not encoded onto the wire, only field types and ids so you
+ * can name things in your `.proto` file however you like, as long as the above
+ * rule is respected.
+ *
  * ## Extra features
  *
  * ### Limiting the size of repeated/map elements
