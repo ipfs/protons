@@ -32,6 +32,18 @@ export {
   streamMessage
 } from './stream.ts'
 
+export type {
+  StreamFunction,
+  DecodeFunction,
+  EncodeFunction,
+  CollectionTypes,
+  PrimitiveTypes,
+  CollectionLimits,
+  ArrayElementLimits,
+  MapValueLimits,
+  Limits
+} from './codec.ts'
+
 export { enumeration } from './codecs/enum.ts'
 export { message } from './codecs/message.ts'
 export { createReader as reader } from './utils/reader.ts'
