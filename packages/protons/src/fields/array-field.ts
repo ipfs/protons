@@ -70,18 +70,28 @@ export class ArrayField extends Field {
     const type = parent.findType(this.type).pbType
     const supportsPacked = PACKABLE_TYPES.indexOf(type) !== -1
 
+    console.info(parent)
+
     if (parent.def.edition === 'proto2') {
       this.packed = false
 
-      // check user overrides for field encoding
+      // check only old-school user overrides for field encoding
       if (usePackedEncoding(def.options, parent.def.options)) {
         this.packed = true
       }
-    } else {
-      // the default from protobuf3 onwards
+    } else if (parent.def.edition === 'proto3') {
+      // the default from editions onwards
       this.packed = supportsPacked
 
-      // check user overrides for field encoding
+      // check old and new-school user overrides for field encoding
+      if (def.options?.packed === false || useExpandedEncoding(def.options, parent.def.options)) {
+        this.packed = false
+      }
+    } else {
+      // the default from editions onwards
+      this.packed = supportsPacked
+
+      // check only new-school user overrides for field encoding
       if (useExpandedEncoding(def.options, parent.def.options)) {
         this.packed = false
       }

@@ -106,6 +106,7 @@ export class Module {
 
     for (const [name, def] of Object.entries(defs)) {
       let type: Message | Enum
+      def.edition ??= 'proto3'
 
       if (isEnumDef(def)) {
         type = new Enum(name, {
