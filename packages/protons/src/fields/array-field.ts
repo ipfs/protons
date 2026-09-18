@@ -77,17 +77,14 @@ export class ArrayField extends Field {
       if (usePackedEncoding(def.options, parent.def.options)) {
         this.packed = true
       }
-    } else if (parent.def.edition === 'proto3') {
-      // the default from editions onwards
-      this.packed = supportsPacked
-
-      // check old and new-school user overrides for field encoding
-      if (def.options?.packed === false || useExpandedEncoding(def.options, parent.def.options)) {
-        this.packed = false
-      }
     } else {
       // the default from editions onwards
       this.packed = supportsPacked
+
+      // support older `packed` option in proto3 only
+      if (parent.def.edition === 'proto3' && def.options?.packed === false) {
+        this.packed = false
+      }
 
       // check only new-school user overrides for field encoding
       if (useExpandedEncoding(def.options, parent.def.options)) {
