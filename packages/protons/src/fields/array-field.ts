@@ -70,8 +70,6 @@ export class ArrayField extends Field {
     const type = parent.findType(this.type).pbType
     const supportsPacked = PACKABLE_TYPES.indexOf(type) !== -1
 
-    console.info(parent)
-
     if (parent.def.edition === 'proto2') {
       this.packed = false
 
