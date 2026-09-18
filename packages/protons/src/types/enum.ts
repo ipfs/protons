@@ -4,6 +4,7 @@ import type { Parent, Type, TypeCodec } from './index.ts'
 import type { Field } from '../fields/field.ts'
 
 export interface EnumDef {
+  edition: string
   values: Record<string, number>
 }
 

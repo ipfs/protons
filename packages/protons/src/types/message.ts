@@ -70,7 +70,7 @@ export class Message implements Type {
       const mapEntryType = `${this.pbType}$${fieldName}Entry`
 
       def.nested[mapEntryType] = {
-        edition: def.edition,
+        edition: def.edition || 'proto3',
         fields: {
           key: {
             type: fieldDef.keyType,

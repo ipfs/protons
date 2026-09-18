@@ -73,15 +73,20 @@ export class ArrayField extends Field {
     if (parent.def.edition === 'proto2') {
       this.packed = false
 
-      // check user overrides for field encoding
+      // check only old-school user overrides for field encoding
       if (usePackedEncoding(def.options, parent.def.options)) {
         this.packed = true
       }
     } else {
-      // the default from protobuf3 onwards
+      // the default from editions onwards
       this.packed = supportsPacked
 
-      // check user overrides for field encoding
+      // support older `packed` option in proto3 only
+      if (parent.def.edition === 'proto3' && def.options?.packed === false) {
+        this.packed = false
+      }
+
+      // check only new-school user overrides for field encoding
       if (useExpandedEncoding(def.options, parent.def.options)) {
         this.packed = false
       }

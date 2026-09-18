@@ -137,7 +137,7 @@
   },
   "dependencies": {
     "meow": "^14.1.0",
-    "protobufjs-cli": "^2.6.1",
+    "protobufjs-cli": "^2.7.0",
     "protons-runtime": "^8.0.0"
   },
   "devDependencies": {

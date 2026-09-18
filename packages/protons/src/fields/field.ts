@@ -145,7 +145,7 @@ export class Field implements MessageField {
           console.info(`[WARN] ${message}`)
         }
       }
-    } else {
+    } else if (parent.def.edition != null && parent.def.edition !== 'proto3') {
       if (def.options?.packed != null) {
         const message = `field "${name}" has the packed=${def.options.packed} option, this is unsupported in edition="${parent.def.edition}". Please use features.repeated_field_encoding=${def.options?.packed === true ? 'PACKED' : 'EXPANDED'} instead - see https://protobuf.dev/editions/features/#repeated_field_encoding`
 
