@@ -1,3 +1,9 @@
+## [protons-runtime-v8.0.1](https://github.com/ipfs/protons/compare/protons-runtime-8.0.0...protons-runtime-8.0.1) (2026-09-18)
+
+### Bug Fixes
+
+* document message naming conventions ([#209](https://github.com/ipfs/protons/issues/209)) ([c1e3bcb](https://github.com/ipfs/protons/commit/c1e3bcb31e6be41101916999264f6d78ca14acce)), closes [#64](https://github.com/ipfs/protons/issues/64)
+
 ## [protons-runtime-v8.0.0](https://github.com/ipfs/protons/compare/protons-runtime-7.1.2...protons-runtime-8.0.0) (2026-09-18)
 
 ### ⚠ BREAKING CHANGES
