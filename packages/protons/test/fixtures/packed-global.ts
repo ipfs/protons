@@ -10,12 +10,20 @@ export interface GlobalPacked {
   expandedNewOption: number[]
 }
 
-export namespace GlobalPacked {
-  let _codec: Codec<GlobalPacked>
+export interface GlobalPackedInput {
+  expanded?: number[]
+  packedOldOption?: number[]
+  expandedOldOption?: number[]
+  packedNewOption?: number[]
+  expandedNewOption?: number[]
+}
 
-  export const codec = (): Codec<GlobalPacked> => {
+export namespace GlobalPacked {
+  let _codec: Codec<GlobalPacked, GlobalPackedInput>
+
+  export const codec = (): Codec<GlobalPacked, GlobalPackedInput> => {
     if (_codec == null) {
-      _codec = message<GlobalPacked>((obj, w, opts = {}) => {
+      _codec = message<GlobalPacked, GlobalPackedInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -284,7 +292,7 @@ export namespace GlobalPacked {
     value: number
   }
 
-  export function encode (obj: Partial<GlobalPacked>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: GlobalPackedInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, GlobalPacked.codec())
   }
 

@@ -7,12 +7,17 @@ export interface SpecPacked {
   packed: number[]
 }
 
-export namespace SpecPacked {
-  let _codec: Codec<SpecPacked>
+export interface SpecPackedInput {
+  str?: string
+  packed?: number[]
+}
 
-  export const codec = (): Codec<SpecPacked> => {
+export namespace SpecPacked {
+  let _codec: Codec<SpecPacked, SpecPackedInput>
+
+  export const codec = (): Codec<SpecPacked, SpecPackedInput> => {
     if (_codec == null) {
-      _codec = message<SpecPacked>((obj, w, opts = {}) => {
+      _codec = message<SpecPacked, SpecPackedInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -151,7 +156,7 @@ export namespace SpecPacked {
     value: number
   }
 
-  export function encode (obj: Partial<SpecPacked>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SpecPackedInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SpecPacked.codec())
   }
 
@@ -180,12 +185,28 @@ export interface DefaultPackedTypes {
   bools: boolean[]
 }
 
-export namespace DefaultPackedTypes {
-  let _codec: Codec<DefaultPackedTypes>
+export interface DefaultPackedTypesInput {
+  doubles?: number[]
+  floats?: number[]
+  int32s?: number[]
+  int64s?: bigint[]
+  uint32s?: number[]
+  uint64s?: bigint[]
+  sint32s?: number[]
+  sint64s?: bigint[]
+  fixed32s?: number[]
+  fixed64s?: bigint[]
+  sfixed32s?: number[]
+  sfixed64s?: bigint[]
+  bools?: boolean[]
+}
 
-  export const codec = (): Codec<DefaultPackedTypes> => {
+export namespace DefaultPackedTypes {
+  let _codec: Codec<DefaultPackedTypes, DefaultPackedTypesInput>
+
+  export const codec = (): Codec<DefaultPackedTypes, DefaultPackedTypesInput> => {
     if (_codec == null) {
-      _codec = message<DefaultPackedTypes>((obj, w, opts = {}) => {
+      _codec = message<DefaultPackedTypes, DefaultPackedTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -938,7 +959,7 @@ export namespace DefaultPackedTypes {
     value: boolean
   }
 
-  export function encode (obj: Partial<DefaultPackedTypes>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: DefaultPackedTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, DefaultPackedTypes.codec())
   }
 
@@ -967,12 +988,28 @@ export interface PackedTypes {
   bools: boolean[]
 }
 
-export namespace PackedTypes {
-  let _codec: Codec<PackedTypes>
+export interface PackedTypesInput {
+  doubles?: number[]
+  floats?: number[]
+  int32s?: number[]
+  int64s?: bigint[]
+  uint32s?: number[]
+  uint64s?: bigint[]
+  sint32s?: number[]
+  sint64s?: bigint[]
+  fixed32s?: number[]
+  fixed64s?: bigint[]
+  sfixed32s?: number[]
+  sfixed64s?: bigint[]
+  bools?: boolean[]
+}
 
-  export const codec = (): Codec<PackedTypes> => {
+export namespace PackedTypes {
+  let _codec: Codec<PackedTypes, PackedTypesInput>
+
+  export const codec = (): Codec<PackedTypes, PackedTypesInput> => {
     if (_codec == null) {
-      _codec = message<PackedTypes>((obj, w, opts = {}) => {
+      _codec = message<PackedTypes, PackedTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -1725,7 +1762,7 @@ export namespace PackedTypes {
     value: boolean
   }
 
-  export function encode (obj: Partial<PackedTypes>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: PackedTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, PackedTypes.codec())
   }
 
@@ -1754,105 +1791,173 @@ export interface ExpandedTypes {
   bools: boolean[]
 }
 
-export namespace ExpandedTypes {
-  let _codec: Codec<ExpandedTypes>
+export interface ExpandedTypesInput {
+  doubles?: number[]
+  floats?: number[]
+  int32s?: number[]
+  int64s?: bigint[]
+  uint32s?: number[]
+  uint64s?: bigint[]
+  sint32s?: number[]
+  sint64s?: bigint[]
+  fixed32s?: number[]
+  fixed64s?: bigint[]
+  sfixed32s?: number[]
+  sfixed64s?: bigint[]
+  bools?: boolean[]
+}
 
-  export const codec = (): Codec<ExpandedTypes> => {
+export namespace ExpandedTypes {
+  let _codec: Codec<ExpandedTypes, ExpandedTypesInput>
+
+  export const codec = (): Codec<ExpandedTypes, ExpandedTypesInput> => {
     if (_codec == null) {
-      _codec = message<ExpandedTypes>((obj, w, opts = {}) => {
+      _codec = message<ExpandedTypes, ExpandedTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
 
         if (obj.doubles != null && obj.doubles.length > 0) {
+          w.uint32(10)
+          w.fork()
+
           for (const value of obj.doubles) {
-            w.uint32(9)
             w.double(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.floats != null && obj.floats.length > 0) {
+          w.uint32(18)
+          w.fork()
+
           for (const value of obj.floats) {
-            w.uint32(21)
             w.float(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.int32s != null && obj.int32s.length > 0) {
+          w.uint32(26)
+          w.fork()
+
           for (const value of obj.int32s) {
-            w.uint32(24)
             w.int32(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.int64s != null && obj.int64s.length > 0) {
+          w.uint32(34)
+          w.fork()
+
           for (const value of obj.int64s) {
-            w.uint32(32)
             w.int64(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.uint32s != null && obj.uint32s.length > 0) {
+          w.uint32(42)
+          w.fork()
+
           for (const value of obj.uint32s) {
-            w.uint32(40)
             w.uint32(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.uint64s != null && obj.uint64s.length > 0) {
+          w.uint32(50)
+          w.fork()
+
           for (const value of obj.uint64s) {
-            w.uint32(48)
             w.uint64(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.sint32s != null && obj.sint32s.length > 0) {
+          w.uint32(58)
+          w.fork()
+
           for (const value of obj.sint32s) {
-            w.uint32(56)
             w.sint32(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.sint64s != null && obj.sint64s.length > 0) {
+          w.uint32(66)
+          w.fork()
+
           for (const value of obj.sint64s) {
-            w.uint32(64)
             w.sint64(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.fixed32s != null && obj.fixed32s.length > 0) {
+          w.uint32(74)
+          w.fork()
+
           for (const value of obj.fixed32s) {
-            w.uint32(77)
             w.fixed32(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.fixed64s != null && obj.fixed64s.length > 0) {
+          w.uint32(82)
+          w.fork()
+
           for (const value of obj.fixed64s) {
-            w.uint32(81)
             w.fixed64(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.sfixed32s != null && obj.sfixed32s.length > 0) {
+          w.uint32(90)
+          w.fork()
+
           for (const value of obj.sfixed32s) {
-            w.uint32(93)
             w.sfixed32(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.sfixed64s != null && obj.sfixed64s.length > 0) {
+          w.uint32(98)
+          w.fork()
+
           for (const value of obj.sfixed64s) {
-            w.uint32(97)
             w.sfixed64(value)
           }
+
+          w.ldelim()
         }
 
         if (obj.bools != null && obj.bools.length > 0) {
+          w.uint32(106)
+          w.fork()
+
           for (const value of obj.bools) {
-            w.uint32(104)
             w.bool(value)
           }
+
+          w.ldelim()
         }
 
         if (opts.lengthDelimited !== false) {
@@ -1882,107 +1987,185 @@ export namespace ExpandedTypes {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.doubles != null && obj.doubles.length === opts.limits.doubles) {
-                throw new MaxLengthError('Decode error - repeated field "doubles" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.doubles != null && obj.doubles.length === opts.limits.doubles) {
+                  throw new MaxLengthError('Decode error - repeated field "doubles" had too many elements')
+                }
+
+                obj.doubles.push(r2.double())
               }
 
-              obj.doubles.push(r.double())
               break
             }
             case 2: {
-              if (opts.limits?.floats != null && obj.floats.length === opts.limits.floats) {
-                throw new MaxLengthError('Decode error - repeated field "floats" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.floats != null && obj.floats.length === opts.limits.floats) {
+                  throw new MaxLengthError('Decode error - repeated field "floats" had too many elements')
+                }
+
+                obj.floats.push(r2.float())
               }
 
-              obj.floats.push(r.float())
               break
             }
             case 3: {
-              if (opts.limits?.int32s != null && obj.int32s.length === opts.limits.int32s) {
-                throw new MaxLengthError('Decode error - repeated field "int32s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.int32s != null && obj.int32s.length === opts.limits.int32s) {
+                  throw new MaxLengthError('Decode error - repeated field "int32s" had too many elements')
+                }
+
+                obj.int32s.push(r2.int32())
               }
 
-              obj.int32s.push(r.int32())
               break
             }
             case 4: {
-              if (opts.limits?.int64s != null && obj.int64s.length === opts.limits.int64s) {
-                throw new MaxLengthError('Decode error - repeated field "int64s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.int64s != null && obj.int64s.length === opts.limits.int64s) {
+                  throw new MaxLengthError('Decode error - repeated field "int64s" had too many elements')
+                }
+
+                obj.int64s.push(r2.int64())
               }
 
-              obj.int64s.push(r.int64())
               break
             }
             case 5: {
-              if (opts.limits?.uint32s != null && obj.uint32s.length === opts.limits.uint32s) {
-                throw new MaxLengthError('Decode error - repeated field "uint32s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.uint32s != null && obj.uint32s.length === opts.limits.uint32s) {
+                  throw new MaxLengthError('Decode error - repeated field "uint32s" had too many elements')
+                }
+
+                obj.uint32s.push(r2.uint32())
               }
 
-              obj.uint32s.push(r.uint32())
               break
             }
             case 6: {
-              if (opts.limits?.uint64s != null && obj.uint64s.length === opts.limits.uint64s) {
-                throw new MaxLengthError('Decode error - repeated field "uint64s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.uint64s != null && obj.uint64s.length === opts.limits.uint64s) {
+                  throw new MaxLengthError('Decode error - repeated field "uint64s" had too many elements')
+                }
+
+                obj.uint64s.push(r2.uint64())
               }
 
-              obj.uint64s.push(r.uint64())
               break
             }
             case 7: {
-              if (opts.limits?.sint32s != null && obj.sint32s.length === opts.limits.sint32s) {
-                throw new MaxLengthError('Decode error - repeated field "sint32s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sint32s != null && obj.sint32s.length === opts.limits.sint32s) {
+                  throw new MaxLengthError('Decode error - repeated field "sint32s" had too many elements')
+                }
+
+                obj.sint32s.push(r2.sint32())
               }
 
-              obj.sint32s.push(r.sint32())
               break
             }
             case 8: {
-              if (opts.limits?.sint64s != null && obj.sint64s.length === opts.limits.sint64s) {
-                throw new MaxLengthError('Decode error - repeated field "sint64s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sint64s != null && obj.sint64s.length === opts.limits.sint64s) {
+                  throw new MaxLengthError('Decode error - repeated field "sint64s" had too many elements')
+                }
+
+                obj.sint64s.push(r2.sint64())
               }
 
-              obj.sint64s.push(r.sint64())
               break
             }
             case 9: {
-              if (opts.limits?.fixed32s != null && obj.fixed32s.length === opts.limits.fixed32s) {
-                throw new MaxLengthError('Decode error - repeated field "fixed32s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.fixed32s != null && obj.fixed32s.length === opts.limits.fixed32s) {
+                  throw new MaxLengthError('Decode error - repeated field "fixed32s" had too many elements')
+                }
+
+                obj.fixed32s.push(r2.fixed32())
               }
 
-              obj.fixed32s.push(r.fixed32())
               break
             }
             case 10: {
-              if (opts.limits?.fixed64s != null && obj.fixed64s.length === opts.limits.fixed64s) {
-                throw new MaxLengthError('Decode error - repeated field "fixed64s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.fixed64s != null && obj.fixed64s.length === opts.limits.fixed64s) {
+                  throw new MaxLengthError('Decode error - repeated field "fixed64s" had too many elements')
+                }
+
+                obj.fixed64s.push(r2.fixed64())
               }
 
-              obj.fixed64s.push(r.fixed64())
               break
             }
             case 11: {
-              if (opts.limits?.sfixed32s != null && obj.sfixed32s.length === opts.limits.sfixed32s) {
-                throw new MaxLengthError('Decode error - repeated field "sfixed32s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sfixed32s != null && obj.sfixed32s.length === opts.limits.sfixed32s) {
+                  throw new MaxLengthError('Decode error - repeated field "sfixed32s" had too many elements')
+                }
+
+                obj.sfixed32s.push(r2.sfixed32())
               }
 
-              obj.sfixed32s.push(r.sfixed32())
               break
             }
             case 12: {
-              if (opts.limits?.sfixed64s != null && obj.sfixed64s.length === opts.limits.sfixed64s) {
-                throw new MaxLengthError('Decode error - repeated field "sfixed64s" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sfixed64s != null && obj.sfixed64s.length === opts.limits.sfixed64s) {
+                  throw new MaxLengthError('Decode error - repeated field "sfixed64s" had too many elements')
+                }
+
+                obj.sfixed64s.push(r2.sfixed64())
               }
 
-              obj.sfixed64s.push(r.sfixed64())
               break
             }
             case 13: {
-              if (opts.limits?.bools != null && obj.bools.length === opts.limits.bools) {
-                throw new MaxLengthError('Decode error - repeated field "bools" had too many elements')
+              const b = r.bytes()
+              const r2 = reader(b)
+
+              while (r2.pos < r2.len) {
+                if (opts.limits?.bools != null && obj.bools.length === opts.limits.bools) {
+                  throw new MaxLengthError('Decode error - repeated field "bools" had too many elements')
+                }
+
+                obj.bools.push(r2.bool())
               }
 
-              obj.bools.push(r.bool())
               break
             }
             default: {
@@ -2025,197 +2208,262 @@ export namespace ExpandedTypes {
 
           switch (tag >>> 3) {
             case 1: {
-              if (opts.limits?.doubles != null && obj.doubles === opts.limits.doubles) {
-                throw new MaxLengthError('Streaming decode error - repeated field "doubles" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}doubles[]`,
-                index: obj.doubles,
-                value: r.double()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.doubles != null && obj.doubles === opts.limits.doubles) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "doubles" had too many elements')
+                }
 
-              obj.doubles++
+                yield {
+                  field: `${prefix}doubles[]`,
+                  index: obj.doubles,
+                  value: r2.double()
+                }
+
+                obj.doubles++
+              }
 
               break
             }
             case 2: {
-              if (opts.limits?.floats != null && obj.floats === opts.limits.floats) {
-                throw new MaxLengthError('Streaming decode error - repeated field "floats" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}floats[]`,
-                index: obj.floats,
-                value: r.float()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.floats != null && obj.floats === opts.limits.floats) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "floats" had too many elements')
+                }
 
-              obj.floats++
+                yield {
+                  field: `${prefix}floats[]`,
+                  index: obj.floats,
+                  value: r2.float()
+                }
+
+                obj.floats++
+              }
 
               break
             }
             case 3: {
-              if (opts.limits?.int32s != null && obj.int32s === opts.limits.int32s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "int32s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}int32s[]`,
-                index: obj.int32s,
-                value: r.int32()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.int32s != null && obj.int32s === opts.limits.int32s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "int32s" had too many elements')
+                }
 
-              obj.int32s++
+                yield {
+                  field: `${prefix}int32s[]`,
+                  index: obj.int32s,
+                  value: r2.int32()
+                }
+
+                obj.int32s++
+              }
 
               break
             }
             case 4: {
-              if (opts.limits?.int64s != null && obj.int64s === opts.limits.int64s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "int64s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}int64s[]`,
-                index: obj.int64s,
-                value: r.int64()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.int64s != null && obj.int64s === opts.limits.int64s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "int64s" had too many elements')
+                }
 
-              obj.int64s++
+                yield {
+                  field: `${prefix}int64s[]`,
+                  index: obj.int64s,
+                  value: r2.int64()
+                }
+
+                obj.int64s++
+              }
 
               break
             }
             case 5: {
-              if (opts.limits?.uint32s != null && obj.uint32s === opts.limits.uint32s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "uint32s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}uint32s[]`,
-                index: obj.uint32s,
-                value: r.uint32()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.uint32s != null && obj.uint32s === opts.limits.uint32s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "uint32s" had too many elements')
+                }
 
-              obj.uint32s++
+                yield {
+                  field: `${prefix}uint32s[]`,
+                  index: obj.uint32s,
+                  value: r2.uint32()
+                }
+
+                obj.uint32s++
+              }
 
               break
             }
             case 6: {
-              if (opts.limits?.uint64s != null && obj.uint64s === opts.limits.uint64s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "uint64s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}uint64s[]`,
-                index: obj.uint64s,
-                value: r.uint64()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.uint64s != null && obj.uint64s === opts.limits.uint64s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "uint64s" had too many elements')
+                }
 
-              obj.uint64s++
+                yield {
+                  field: `${prefix}uint64s[]`,
+                  index: obj.uint64s,
+                  value: r2.uint64()
+                }
+
+                obj.uint64s++
+              }
 
               break
             }
             case 7: {
-              if (opts.limits?.sint32s != null && obj.sint32s === opts.limits.sint32s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "sint32s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}sint32s[]`,
-                index: obj.sint32s,
-                value: r.sint32()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sint32s != null && obj.sint32s === opts.limits.sint32s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "sint32s" had too many elements')
+                }
 
-              obj.sint32s++
+                yield {
+                  field: `${prefix}sint32s[]`,
+                  index: obj.sint32s,
+                  value: r2.sint32()
+                }
+
+                obj.sint32s++
+              }
 
               break
             }
             case 8: {
-              if (opts.limits?.sint64s != null && obj.sint64s === opts.limits.sint64s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "sint64s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}sint64s[]`,
-                index: obj.sint64s,
-                value: r.sint64()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sint64s != null && obj.sint64s === opts.limits.sint64s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "sint64s" had too many elements')
+                }
 
-              obj.sint64s++
+                yield {
+                  field: `${prefix}sint64s[]`,
+                  index: obj.sint64s,
+                  value: r2.sint64()
+                }
+
+                obj.sint64s++
+              }
 
               break
             }
             case 9: {
-              if (opts.limits?.fixed32s != null && obj.fixed32s === opts.limits.fixed32s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "fixed32s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}fixed32s[]`,
-                index: obj.fixed32s,
-                value: r.fixed32()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.fixed32s != null && obj.fixed32s === opts.limits.fixed32s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "fixed32s" had too many elements')
+                }
 
-              obj.fixed32s++
+                yield {
+                  field: `${prefix}fixed32s[]`,
+                  index: obj.fixed32s,
+                  value: r2.fixed32()
+                }
+
+                obj.fixed32s++
+              }
 
               break
             }
             case 10: {
-              if (opts.limits?.fixed64s != null && obj.fixed64s === opts.limits.fixed64s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "fixed64s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}fixed64s[]`,
-                index: obj.fixed64s,
-                value: r.fixed64()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.fixed64s != null && obj.fixed64s === opts.limits.fixed64s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "fixed64s" had too many elements')
+                }
 
-              obj.fixed64s++
+                yield {
+                  field: `${prefix}fixed64s[]`,
+                  index: obj.fixed64s,
+                  value: r2.fixed64()
+                }
+
+                obj.fixed64s++
+              }
 
               break
             }
             case 11: {
-              if (opts.limits?.sfixed32s != null && obj.sfixed32s === opts.limits.sfixed32s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "sfixed32s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}sfixed32s[]`,
-                index: obj.sfixed32s,
-                value: r.sfixed32()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sfixed32s != null && obj.sfixed32s === opts.limits.sfixed32s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "sfixed32s" had too many elements')
+                }
 
-              obj.sfixed32s++
+                yield {
+                  field: `${prefix}sfixed32s[]`,
+                  index: obj.sfixed32s,
+                  value: r2.sfixed32()
+                }
+
+                obj.sfixed32s++
+              }
 
               break
             }
             case 12: {
-              if (opts.limits?.sfixed64s != null && obj.sfixed64s === opts.limits.sfixed64s) {
-                throw new MaxLengthError('Streaming decode error - repeated field "sfixed64s" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}sfixed64s[]`,
-                index: obj.sfixed64s,
-                value: r.sfixed64()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.sfixed64s != null && obj.sfixed64s === opts.limits.sfixed64s) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "sfixed64s" had too many elements')
+                }
 
-              obj.sfixed64s++
+                yield {
+                  field: `${prefix}sfixed64s[]`,
+                  index: obj.sfixed64s,
+                  value: r2.sfixed64()
+                }
+
+                obj.sfixed64s++
+              }
 
               break
             }
             case 13: {
-              if (opts.limits?.bools != null && obj.bools === opts.limits.bools) {
-                throw new MaxLengthError('Streaming decode error - repeated field "bools" had too many elements')
-              }
+              const b = r.bytes()
+              const r2 = reader(b)
 
-              yield {
-                field: `${prefix}bools[]`,
-                index: obj.bools,
-                value: r.bool()
-              }
+              while (r2.pos < r2.len) {
+                if (opts.limits?.bools != null && obj.bools === opts.limits.bools) {
+                  throw new MaxLengthError('Streaming decode error - repeated field "bools" had too many elements')
+                }
 
-              obj.bools++
+                yield {
+                  field: `${prefix}bools[]`,
+                  index: obj.bools,
+                  value: r2.bool()
+                }
+
+                obj.bools++
+              }
 
               break
             }
@@ -2317,7 +2565,7 @@ export namespace ExpandedTypes {
     value: boolean
   }
 
-  export function encode (obj: Partial<ExpandedTypes>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: ExpandedTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, ExpandedTypes.codec())
   }
 
@@ -2346,12 +2594,28 @@ export interface NewOptionPackedTypes {
   bools: boolean[]
 }
 
-export namespace NewOptionPackedTypes {
-  let _codec: Codec<NewOptionPackedTypes>
+export interface NewOptionPackedTypesInput {
+  doubles?: number[]
+  floats?: number[]
+  int32s?: number[]
+  int64s?: bigint[]
+  uint32s?: number[]
+  uint64s?: bigint[]
+  sint32s?: number[]
+  sint64s?: bigint[]
+  fixed32s?: number[]
+  fixed64s?: bigint[]
+  sfixed32s?: number[]
+  sfixed64s?: bigint[]
+  bools?: boolean[]
+}
 
-  export const codec = (): Codec<NewOptionPackedTypes> => {
+export namespace NewOptionPackedTypes {
+  let _codec: Codec<NewOptionPackedTypes, NewOptionPackedTypesInput>
+
+  export const codec = (): Codec<NewOptionPackedTypes, NewOptionPackedTypesInput> => {
     if (_codec == null) {
-      _codec = message<NewOptionPackedTypes>((obj, w, opts = {}) => {
+      _codec = message<NewOptionPackedTypes, NewOptionPackedTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -3104,7 +3368,7 @@ export namespace NewOptionPackedTypes {
     value: boolean
   }
 
-  export function encode (obj: Partial<NewOptionPackedTypes>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: NewOptionPackedTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, NewOptionPackedTypes.codec())
   }
 
@@ -3133,12 +3397,28 @@ export interface NewOptionExpandedTypes {
   bools: boolean[]
 }
 
-export namespace NewOptionExpandedTypes {
-  let _codec: Codec<NewOptionExpandedTypes>
+export interface NewOptionExpandedTypesInput {
+  doubles?: number[]
+  floats?: number[]
+  int32s?: number[]
+  int64s?: bigint[]
+  uint32s?: number[]
+  uint64s?: bigint[]
+  sint32s?: number[]
+  sint64s?: bigint[]
+  fixed32s?: number[]
+  fixed64s?: bigint[]
+  sfixed32s?: number[]
+  sfixed64s?: bigint[]
+  bools?: boolean[]
+}
 
-  export const codec = (): Codec<NewOptionExpandedTypes> => {
+export namespace NewOptionExpandedTypes {
+  let _codec: Codec<NewOptionExpandedTypes, NewOptionExpandedTypesInput>
+
+  export const codec = (): Codec<NewOptionExpandedTypes, NewOptionExpandedTypesInput> => {
     if (_codec == null) {
-      _codec = message<NewOptionExpandedTypes>((obj, w, opts = {}) => {
+      _codec = message<NewOptionExpandedTypes, NewOptionExpandedTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -3696,7 +3976,7 @@ export namespace NewOptionExpandedTypes {
     value: boolean
   }
 
-  export function encode (obj: Partial<NewOptionExpandedTypes>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: NewOptionExpandedTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, NewOptionExpandedTypes.codec())
   }
 

@@ -28,29 +28,29 @@ export namespace Foo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.baz = reader.uint32()
+              obj.baz = r.uint32()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -60,19 +60,19 @@ export namespace Foo {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}baz`,
-                value: reader.uint32()
+                value: r.uint32()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -135,31 +135,31 @@ export namespace Bar {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.tmp = Foo.codec().decode(reader, reader.uint32(), {
+              obj.tmp = Foo.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.tmp
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -169,19 +169,19 @@ export namespace Bar {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Foo.codec().stream(reader, reader.uint32(), `${prefix}tmp.`, {
+              yield * Foo.codec().stream(r, r.uint32(), `${prefix}tmp.`, {
                 limits: opts.limits?.tmp
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -274,15 +274,15 @@ export namespace Yo {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {
           lol: []
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -290,23 +290,23 @@ export namespace Yo {
                 throw new MaxLengthError('Decode error - repeated field "lol" had too many elements')
               }
 
-              obj.lol.push(FOO.codec().decode(reader))
+              obj.lol.push(FOO.codec().decode(r))
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
+      }, function * (r, length, prefix, opts = {}) {
         const obj = {
           lol: 0
         }
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -316,8 +316,8 @@ export namespace Yo {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
@@ -328,7 +328,7 @@ export namespace Yo {
               yield {
                 field: `${prefix}lol[]`,
                 index: obj.lol,
-                value: FOO.codec().decode(reader)
+                value: FOO.codec().decode(r)
               }
 
               obj.lol++
@@ -336,7 +336,7 @@ export namespace Yo {
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -407,35 +407,35 @@ export namespace Lol {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
-              obj.lol = reader.string()
+              obj.lol = r.string()
               break
             }
             case 2: {
-              obj.b = Bar.codec().decode(reader, reader.uint32(), {
+              obj.b = Bar.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.b
               })
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -445,26 +445,26 @@ export namespace Lol {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 1: {
               yield {
                 field: `${prefix}lol`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 2: {
-              yield * Bar.codec().stream(reader, reader.uint32(), `${prefix}b.`, {
+              yield * Bar.codec().stream(r, r.uint32(), `${prefix}b.`, {
                 limits: opts.limits?.b
               })
 
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
@@ -573,43 +573,43 @@ export namespace Test {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (reader, length, opts = {}) => {
+      }, (r, length, opts = {}) => {
         const obj: any = {}
 
-        const end = length == null ? reader.len : reader.pos + length
+        const end = length == null ? r.len : r.pos + length
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 6: {
-              obj.meh = Lol.codec().decode(reader, reader.uint32(), {
+              obj.meh = Lol.codec().decode(r, r.uint32(), {
                 limits: opts.limits?.meh
               })
               break
             }
             case 3: {
-              obj.hello = reader.uint32()
+              obj.hello = r.uint32()
               break
             }
             case 1: {
-              obj.foo = reader.string()
+              obj.foo = r.string()
               break
             }
             case 7: {
-              obj.payload = reader.bytes()
+              obj.payload = r.bytes()
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
         }
 
         return obj
-      }, function * (reader, length, prefix, opts = {}) {
-        const end = length == null ? reader.len : reader.pos + length
+      }, function * (r, length, prefix, opts = {}) {
+        const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
           yield {
@@ -619,12 +619,12 @@ export namespace Test {
           }
         }
 
-        while (reader.pos < end) {
-          const tag = reader.uint32()
+        while (r.pos < end) {
+          const tag = r.uint32()
 
           switch (tag >>> 3) {
             case 6: {
-              yield * Lol.codec().stream(reader, reader.uint32(), `${prefix}meh.`, {
+              yield * Lol.codec().stream(r, r.uint32(), `${prefix}meh.`, {
                 limits: opts.limits?.meh
               })
 
@@ -633,26 +633,26 @@ export namespace Test {
             case 3: {
               yield {
                 field: `${prefix}hello`,
-                value: reader.uint32()
+                value: r.uint32()
               }
               break
             }
             case 1: {
               yield {
                 field: `${prefix}foo`,
-                value: reader.string()
+                value: r.string()
               }
               break
             }
             case 7: {
               yield {
                 field: `${prefix}payload`,
-                value: reader.bytes()
+                value: r.bytes()
               }
               break
             }
             default: {
-              reader.skipType(tag & 7)
+              r.skipType(tag & 7)
               break
             }
           }
