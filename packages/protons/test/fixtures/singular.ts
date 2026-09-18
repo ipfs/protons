@@ -16,7 +16,7 @@ enum __SingularEnumValues {
 }
 
 export namespace SingularEnum {
-  export const codec = (): Codec<SingularEnum> => {
+  export const codec = (): Codec<SingularEnum, SingularEnum> => {
     return enumeration<SingularEnum>(__SingularEnumValues)
   }
 }
@@ -26,12 +26,17 @@ export interface SingularSubMessage {
   bar: number
 }
 
-export namespace SingularSubMessage {
-  let _codec: Codec<SingularSubMessage>
+export interface SingularSubMessageInput {
+  foo?: string
+  bar?: number
+}
 
-  export const codec = (): Codec<SingularSubMessage> => {
+export namespace SingularSubMessage {
+  let _codec: Codec<SingularSubMessage, SingularSubMessageInput>
+
+  export const codec = (): Codec<SingularSubMessage, SingularSubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SingularSubMessage>((obj, w, opts = {}) => {
+      _codec = message<SingularSubMessage, SingularSubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -136,7 +141,7 @@ export namespace SingularSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<SingularSubMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SingularSubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SingularSubMessage.codec())
   }
 
@@ -169,12 +174,32 @@ export interface Singular {
   subMessage?: SingularSubMessage
 }
 
-export namespace Singular {
-  let _codec: Codec<Singular>
+export interface SingularInput {
+  double?: number
+  float?: number
+  int32?: number
+  int64?: bigint
+  uint32?: number
+  uint64?: bigint
+  sint32?: number
+  sint64?: bigint
+  fixed32?: number
+  fixed64?: bigint
+  sfixed32?: number
+  sfixed64?: bigint
+  bool?: boolean
+  string?: string
+  bytes?: Uint8Array
+  enum?: SingularEnum
+  subMessage?: SingularSubMessageInput
+}
 
-  export const codec = (): Codec<Singular> => {
+export namespace Singular {
+  let _codec: Codec<Singular, SingularInput>
+
+  export const codec = (): Codec<Singular, SingularInput> => {
     if (_codec == null) {
-      _codec = message<Singular>((obj, w, opts = {}) => {
+      _codec = message<Singular, SingularInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -625,7 +650,7 @@ export namespace Singular {
     value: number
   }
 
-  export function encode (obj: Partial<Singular>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SingularInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Singular.codec())
   }
 

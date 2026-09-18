@@ -1,3 +1,9 @@
+## [protons-v9.1.2](https://github.com/ipfs/protons/compare/protons-9.1.1...protons-9.1.2) (2026-09-17)
+
+### Dependencies
+
+* bump protobufjs from 7.6.5 to 8.7.1 ([#200](https://github.com/ipfs/protons/issues/200)) ([a19225b](https://github.com/ipfs/protons/commit/a19225b93481bf645927e162a72c060e99b61046))
+
 ## [protons-v9.1.1](https://github.com/ipfs/protons/compare/protons-9.1.0...protons-9.1.1) (2026-09-14)
 
 ### Bug Fixes

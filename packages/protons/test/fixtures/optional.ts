@@ -15,7 +15,7 @@ enum __OptionalEnumValues {
 }
 
 export namespace OptionalEnum {
-  export const codec = (): Codec<OptionalEnum> => {
+  export const codec = (): Codec<OptionalEnum, OptionalEnum> => {
     return enumeration<OptionalEnum>(__OptionalEnumValues)
   }
 }
@@ -25,12 +25,17 @@ export interface OptionalSubMessage {
   bar?: number
 }
 
-export namespace OptionalSubMessage {
-  let _codec: Codec<OptionalSubMessage>
+export interface OptionalSubMessageInput {
+  foo?: string
+  bar?: number
+}
 
-  export const codec = (): Codec<OptionalSubMessage> => {
+export namespace OptionalSubMessage {
+  let _codec: Codec<OptionalSubMessage, OptionalSubMessageInput>
+
+  export const codec = (): Codec<OptionalSubMessage, OptionalSubMessageInput> => {
     if (_codec == null) {
-      _codec = message<OptionalSubMessage>((obj, w, opts = {}) => {
+      _codec = message<OptionalSubMessage, OptionalSubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -132,7 +137,7 @@ export namespace OptionalSubMessage {
     value: number
   }
 
-  export function encode (obj: Partial<OptionalSubMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: OptionalSubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, OptionalSubMessage.codec())
   }
 
@@ -165,12 +170,32 @@ export interface Optional {
   subMessage?: OptionalSubMessage
 }
 
-export namespace Optional {
-  let _codec: Codec<Optional>
+export interface OptionalInput {
+  double?: number
+  float?: number
+  int32?: number
+  int64?: bigint
+  uint32?: number
+  uint64?: bigint
+  sint32?: number
+  sint64?: bigint
+  fixed32?: number
+  fixed64?: bigint
+  sfixed32?: number
+  sfixed64?: bigint
+  bool?: boolean
+  string?: string
+  bytes?: Uint8Array
+  enum?: OptionalEnum
+  subMessage?: OptionalSubMessageInput
+}
 
-  export const codec = (): Codec<Optional> => {
+export namespace Optional {
+  let _codec: Codec<Optional, OptionalInput>
+
+  export const codec = (): Codec<Optional, OptionalInput> => {
     if (_codec == null) {
-      _codec = message<Optional>((obj, w, opts = {}) => {
+      _codec = message<Optional, OptionalInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -604,7 +629,7 @@ export namespace Optional {
     value: number
   }
 
-  export function encode (obj: Partial<Optional>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: OptionalInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Optional.codec())
   }
 

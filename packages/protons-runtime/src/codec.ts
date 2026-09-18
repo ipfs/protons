@@ -16,7 +16,7 @@ export interface EncodeOptions {
 }
 
 export interface EncodeFunction<T> {
-  (value: Partial<T>, writer: Writer, opts?: EncodeOptions): void
+  (value: T, writer: Writer, opts?: EncodeOptions): void
 }
 
 // protobuf types that contain multiple values
@@ -63,15 +63,15 @@ export interface StreamFunction<T> {
   (reader: Reader, length: number | undefined, prefix: string, opts?: DecodeOptions<T>): Generator<any>
 }
 
-export interface Codec<T> {
+export interface Codec<D, E> {
   name: string
   type: number
-  encode: EncodeFunction<T>
-  decode: DecodeFunction<T>
-  stream: StreamFunction<T>
+  encode: EncodeFunction<E>
+  decode: DecodeFunction<D>
+  stream: StreamFunction<D>
 }
 
-export function createCodec <T> (name: string, type: number, encode: EncodeFunction<T>, decode: DecodeFunction<T>, stream: StreamFunction<T>): Codec<T> {
+export function createCodec <D, E> (name: string, type: number, encode: EncodeFunction<E>, decode: DecodeFunction<D>, stream: StreamFunction<D>): Codec<D, E> {
   return {
     name,
     type,

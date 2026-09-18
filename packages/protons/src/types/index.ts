@@ -3,8 +3,13 @@ import type { Flags } from '../index.ts'
 import type { MessageDef } from './message.ts'
 import type { Module } from './module.ts'
 
+export interface TypeCodec {
+  encode: string
+  decode: string
+}
+
 export interface Type {
-  jsType: string
+  jsType: TypeCodec
   pbType: string
   init(module: Module): void
   getDecoder(field: Field, indent?: string, reader?: string): string

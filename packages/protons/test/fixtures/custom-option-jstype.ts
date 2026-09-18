@@ -13,18 +13,34 @@ export interface CustomOptionNumber {
   i64Map: Map<number, number>
 }
 
+export interface CustomOptionNumberInput {
+  num?: number
+  i64?: number
+  ui64?: number
+  si64?: number
+  f64?: number
+  sf64?: number
+  i64Array?: number[]
+  i64Map?: Map<number, number>
+}
+
 export namespace CustomOptionNumber {
   export interface CustomOptionNumber$i64MapEntry {
     key: number
     value: number
   }
 
-  export namespace CustomOptionNumber$i64MapEntry {
-    let _codec: Codec<CustomOptionNumber$i64MapEntry>
+  export interface CustomOptionNumber$i64MapEntryInput {
+    key?: number
+    value?: number
+  }
 
-    export const codec = (): Codec<CustomOptionNumber$i64MapEntry> => {
+  export namespace CustomOptionNumber$i64MapEntry {
+    let _codec: Codec<CustomOptionNumber$i64MapEntry, CustomOptionNumber$i64MapEntryInput>
+
+    export const codec = (): Codec<CustomOptionNumber$i64MapEntry, CustomOptionNumber$i64MapEntryInput> => {
       if (_codec == null) {
-        _codec = message<CustomOptionNumber$i64MapEntry>((obj, w, opts = {}) => {
+        _codec = message<CustomOptionNumber$i64MapEntry, CustomOptionNumber$i64MapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -129,7 +145,7 @@ export namespace CustomOptionNumber {
       value: number
     }
 
-    export function encode (obj: Partial<CustomOptionNumber$i64MapEntry>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: CustomOptionNumber$i64MapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, CustomOptionNumber$i64MapEntry.codec())
     }
 
@@ -142,11 +158,11 @@ export namespace CustomOptionNumber {
     }
   }
 
-  let _codec: Codec<CustomOptionNumber>
+  let _codec: Codec<CustomOptionNumber, CustomOptionNumberInput>
 
-  export const codec = (): Codec<CustomOptionNumber> => {
+  export const codec = (): Codec<CustomOptionNumber, CustomOptionNumberInput> => {
     if (_codec == null) {
-      _codec = message<CustomOptionNumber>((obj, w, opts = {}) => {
+      _codec = message<CustomOptionNumber, CustomOptionNumberInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -438,7 +454,7 @@ export namespace CustomOptionNumber {
     value: number
   }
 
-  export function encode (obj: Partial<CustomOptionNumber>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CustomOptionNumberInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CustomOptionNumber.codec())
   }
 
@@ -462,18 +478,34 @@ export interface CustomOptionString {
   i64Map: Map<string, string>
 }
 
+export interface CustomOptionStringInput {
+  num?: number
+  i64?: string
+  ui64?: string
+  si64?: string
+  f64?: string
+  sf64?: string
+  i64Array?: string[]
+  i64Map?: Map<string, string>
+}
+
 export namespace CustomOptionString {
   export interface CustomOptionString$i64MapEntry {
     key: string
     value: string
   }
 
-  export namespace CustomOptionString$i64MapEntry {
-    let _codec: Codec<CustomOptionString$i64MapEntry>
+  export interface CustomOptionString$i64MapEntryInput {
+    key?: string
+    value?: string
+  }
 
-    export const codec = (): Codec<CustomOptionString$i64MapEntry> => {
+  export namespace CustomOptionString$i64MapEntry {
+    let _codec: Codec<CustomOptionString$i64MapEntry, CustomOptionString$i64MapEntryInput>
+
+    export const codec = (): Codec<CustomOptionString$i64MapEntry, CustomOptionString$i64MapEntryInput> => {
       if (_codec == null) {
-        _codec = message<CustomOptionString$i64MapEntry>((obj, w, opts = {}) => {
+        _codec = message<CustomOptionString$i64MapEntry, CustomOptionString$i64MapEntryInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -578,7 +610,7 @@ export namespace CustomOptionString {
       value: string
     }
 
-    export function encode (obj: Partial<CustomOptionString$i64MapEntry>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: CustomOptionString$i64MapEntryInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, CustomOptionString$i64MapEntry.codec())
     }
 
@@ -591,11 +623,11 @@ export namespace CustomOptionString {
     }
   }
 
-  let _codec: Codec<CustomOptionString>
+  let _codec: Codec<CustomOptionString, CustomOptionStringInput>
 
-  export const codec = (): Codec<CustomOptionString> => {
+  export const codec = (): Codec<CustomOptionString, CustomOptionStringInput> => {
     if (_codec == null) {
-      _codec = message<CustomOptionString>((obj, w, opts = {}) => {
+      _codec = message<CustomOptionString, CustomOptionStringInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -887,7 +919,7 @@ export namespace CustomOptionString {
     value: string
   }
 
-  export function encode (obj: Partial<CustomOptionString>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: CustomOptionStringInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, CustomOptionString.codec())
   }
 

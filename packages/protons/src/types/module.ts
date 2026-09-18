@@ -5,24 +5,69 @@ import { Primitive } from './primitive.ts'
 import type { EnumDef } from './enum.ts'
 import type { MessageDef } from './message.ts'
 import type { Flags } from '../index.ts'
-import type { Type } from './index.ts'
+import type { Type, TypeCodec } from './index.ts'
 
-const types: Record<string, string> = {
-  bool: 'boolean',
-  bytes: 'Uint8Array<ArrayBuffer>',
-  double: 'number',
-  fixed32: 'number',
-  fixed64: 'bigint',
-  float: 'number',
-  int32: 'number',
-  int64: 'bigint',
-  sfixed32: 'number',
-  sfixed64: 'bigint',
-  sint32: 'number',
-  sint64: 'bigint',
-  string: 'string',
-  uint32: 'number',
-  uint64: 'bigint'
+const types: Record<string, TypeCodec> = {
+  bool: {
+    encode: 'boolean',
+    decode: 'boolean'
+  },
+  bytes: {
+    encode: 'Uint8Array',
+    decode: 'Uint8Array<ArrayBuffer>'
+  },
+  double: {
+    encode: 'number',
+    decode: 'number'
+  },
+  fixed32: {
+    encode: 'number',
+    decode: 'number'
+  },
+  fixed64: {
+    encode: 'bigint',
+    decode: 'bigint'
+  },
+  float: {
+    encode: 'number',
+    decode: 'number'
+  },
+  int32: {
+    encode: 'number',
+    decode: 'number'
+  },
+  int64: {
+    encode: 'bigint',
+    decode: 'bigint'
+  },
+  sfixed32: {
+    encode: 'number',
+    decode: 'number'
+  },
+  sfixed64: {
+    encode: 'bigint',
+    decode: 'bigint'
+  },
+  sint32: {
+    encode: 'number',
+    decode: 'number'
+  },
+  sint64: {
+    encode: 'bigint',
+    decode: 'bigint'
+  },
+  string: {
+    encode: 'string',
+    decode: 'string'
+  },
+  uint32: {
+    encode: 'number',
+    decode: 'number'
+  },
+  uint64: {
+    encode: 'bigint',
+    decode: 'bigint'
+  }
 }
 
 interface Import {
@@ -63,9 +108,15 @@ export class Module {
       let type: Message | Enum
 
       if (isEnumDef(def)) {
-        type = new Enum(name, name, def)
+        type = new Enum(name, {
+          encode: name,
+          decode: name
+        }, def)
       } else {
-        type = new Message(name, name, def, this)
+        type = new Message(name, {
+          encode: `${name}Input`,
+          decode: name
+        }, def, this)
       }
 
       this.globals.push(type)

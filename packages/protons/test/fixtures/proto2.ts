@@ -6,20 +6,22 @@ export interface MessageWithRequired {
   scalarField: number
 }
 
-export namespace MessageWithRequired {
-  let _codec: Codec<MessageWithRequired>
+export interface MessageWithRequiredInput {
+  scalarField: number
+}
 
-  export const codec = (): Codec<MessageWithRequired> => {
+export namespace MessageWithRequired {
+  let _codec: Codec<MessageWithRequired, MessageWithRequiredInput>
+
+  export const codec = (): Codec<MessageWithRequired, MessageWithRequiredInput> => {
     if (_codec == null) {
-      _codec = message<MessageWithRequired>((obj, w, opts = {}) => {
+      _codec = message<MessageWithRequired, MessageWithRequiredInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
 
-        if (obj.scalarField != null) {
-          w.uint32(8)
-          w.int32(obj.scalarField)
-        }
+        w.uint32(8)
+        w.int32(obj.scalarField)
 
         if (opts.lengthDelimited !== false) {
           w.ldelim()
@@ -94,7 +96,7 @@ export namespace MessageWithRequired {
     value: number
   }
 
-  export function encode (obj: Partial<MessageWithRequired>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: MessageWithRequiredInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, MessageWithRequired.codec())
   }
 

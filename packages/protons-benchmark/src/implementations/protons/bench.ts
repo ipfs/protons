@@ -6,12 +6,16 @@ export interface Foo {
   baz?: number
 }
 
-export namespace Foo {
-  let _codec: Codec<Foo>
+export interface FooInput {
+  baz?: number
+}
 
-  export const codec = (): Codec<Foo> => {
+export namespace Foo {
+  let _codec: Codec<Foo, FooInput>
+
+  export const codec = (): Codec<Foo, FooInput> => {
     if (_codec == null) {
-      _codec = message<Foo>((obj, w, opts = {}) => {
+      _codec = message<Foo, FooInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -92,7 +96,7 @@ export namespace Foo {
     value: number
   }
 
-  export function encode (obj: Partial<Foo>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: FooInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Foo.codec())
   }
 
@@ -109,12 +113,16 @@ export interface Bar {
   tmp?: Foo
 }
 
-export namespace Bar {
-  let _codec: Codec<Bar>
+export interface BarInput {
+  tmp?: FooInput
+}
 
-  export const codec = (): Codec<Bar> => {
+export namespace Bar {
+  let _codec: Codec<Bar, BarInput>
+
+  export const codec = (): Codec<Bar, BarInput> => {
     if (_codec == null) {
-      _codec = message<Bar>((obj, w, opts = {}) => {
+      _codec = message<Bar, BarInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -207,7 +215,7 @@ export namespace Bar {
     value: number
   }
 
-  export function encode (obj: Partial<Bar>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: BarInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Bar.codec())
   }
 
@@ -233,7 +241,7 @@ enum __FOOValues {
 }
 
 export namespace FOO {
-  export const codec = (): Codec<FOO> => {
+  export const codec = (): Codec<FOO, FOO> => {
     return enumeration<FOO>(__FOOValues)
   }
 }
@@ -242,12 +250,16 @@ export interface Yo {
   lol: FOO[]
 }
 
-export namespace Yo {
-  let _codec: Codec<Yo>
+export interface YoInput {
+  lol?: FOO[]
+}
 
-  export const codec = (): Codec<Yo> => {
+export namespace Yo {
+  let _codec: Codec<Yo, YoInput>
+
+  export const codec = (): Codec<Yo, YoInput> => {
     if (_codec == null) {
-      _codec = message<Yo>((obj, w, opts = {}) => {
+      _codec = message<Yo, YoInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -349,7 +361,7 @@ export namespace Yo {
     value: FOO
   }
 
-  export function encode (obj: Partial<Yo>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: YoInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Yo.codec())
   }
 
@@ -367,12 +379,17 @@ export interface Lol {
   b?: Bar
 }
 
-export namespace Lol {
-  let _codec: Codec<Lol>
+export interface LolInput {
+  lol?: string
+  b?: BarInput
+}
 
-  export const codec = (): Codec<Lol> => {
+export namespace Lol {
+  let _codec: Codec<Lol, LolInput>
+
+  export const codec = (): Codec<Lol, LolInput> => {
     if (_codec == null) {
-      _codec = message<Lol>((obj, w, opts = {}) => {
+      _codec = message<Lol, LolInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -496,7 +513,7 @@ export namespace Lol {
     value: number
   }
 
-  export function encode (obj: Partial<Lol>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: LolInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Lol.codec())
   }
 
@@ -516,12 +533,19 @@ export interface Test {
   payload?: Uint8Array<ArrayBuffer>
 }
 
-export namespace Test {
-  let _codec: Codec<Test>
+export interface TestInput {
+  meh?: LolInput
+  hello?: number
+  foo?: string
+  payload?: Uint8Array
+}
 
-  export const codec = (): Codec<Test> => {
+export namespace Test {
+  let _codec: Codec<Test, TestInput>
+
+  export const codec = (): Codec<Test, TestInput> => {
     if (_codec == null) {
-      _codec = message<Test>((obj, w, opts = {}) => {
+      _codec = message<Test, TestInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -702,7 +726,7 @@ export namespace Test {
     value: Uint8Array<ArrayBuffer>
   }
 
-  export function encode (obj: Partial<Test>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: TestInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, Test.codec())
   }
 

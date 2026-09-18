@@ -3,6 +3,8 @@ import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
+export interface pbInput {}
+
 export interface pb {}
 
 export namespace pb {
@@ -12,12 +14,18 @@ export namespace pb {
     data: Uint8Array<ArrayBuffer>
   }
 
-  export namespace NoiseHandshakePayload {
-    let _codec: Codec<NoiseHandshakePayload>
+  export interface NoiseHandshakePayloadInput {
+    identityKey?: Uint8Array
+    identitySig?: Uint8Array
+    data?: Uint8Array
+  }
 
-    export const codec = (): Codec<NoiseHandshakePayload> => {
+  export namespace NoiseHandshakePayload {
+    let _codec: Codec<NoiseHandshakePayload, NoiseHandshakePayloadInput>
+
+    export const codec = (): Codec<NoiseHandshakePayload, NoiseHandshakePayloadInput> => {
       if (_codec == null) {
-        _codec = message<NoiseHandshakePayload>((obj, w, opts = {}) => {
+        _codec = message<NoiseHandshakePayload, NoiseHandshakePayloadInput>((obj, w, opts = {}) => {
           if (opts.lengthDelimited !== false) {
             w.fork()
           }
@@ -144,7 +152,7 @@ export namespace pb {
       value: Uint8Array<ArrayBuffer>
     }
 
-    export function encode (obj: Partial<NoiseHandshakePayload>): Uint8Array<ArrayBuffer> {
+    export function encode (obj: NoiseHandshakePayloadInput): Uint8Array<ArrayBuffer> {
       return encodeMessage(obj, NoiseHandshakePayload.codec())
     }
 
@@ -157,11 +165,11 @@ export namespace pb {
     }
   }
 
-  let _codec: Codec<pb>
+  let _codec: Codec<pb, pbInput>
 
-  export const codec = (): Codec<pb> => {
+  export const codec = (): Codec<pb, pbInput> => {
     if (_codec == null) {
-      _codec = message<pb>((obj, w, opts = {}) => {
+      _codec = message<pb, pbInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -221,7 +229,7 @@ export namespace pb {
     return _codec
   }
 
-  export function encode (obj: Partial<pb>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: pbInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, pb.codec())
   }
 

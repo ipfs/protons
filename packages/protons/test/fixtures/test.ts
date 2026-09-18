@@ -13,7 +13,7 @@ enum __AnEnumValues {
 }
 
 export namespace AnEnum {
-  export const codec = (): Codec<AnEnum> => {
+  export const codec = (): Codec<AnEnum, AnEnum> => {
     return enumeration<AnEnum>(__AnEnumValues)
   }
 }
@@ -22,12 +22,16 @@ export interface SubMessage {
   foo: string
 }
 
-export namespace SubMessage {
-  let _codec: Codec<SubMessage>
+export interface SubMessageInput {
+  foo?: string
+}
 
-  export const codec = (): Codec<SubMessage> => {
+export namespace SubMessage {
+  let _codec: Codec<SubMessage, SubMessageInput>
+
+  export const codec = (): Codec<SubMessage, SubMessageInput> => {
     if (_codec == null) {
-      _codec = message<SubMessage>((obj, w, opts = {}) => {
+      _codec = message<SubMessage, SubMessageInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -110,7 +114,7 @@ export namespace SubMessage {
     value: string
   }
 
-  export function encode (obj: Partial<SubMessage>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: SubMessageInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, SubMessage.codec())
   }
 
@@ -144,12 +148,33 @@ export interface AllTheTypes {
   field18?: bigint
 }
 
-export namespace AllTheTypes {
-  let _codec: Codec<AllTheTypes>
+export interface AllTheTypesInput {
+  field1?: boolean
+  field2?: number
+  field3?: bigint
+  field4?: number
+  field5?: bigint
+  field6?: number
+  field7?: bigint
+  field8?: number
+  field9?: number
+  field10?: string
+  field11?: Uint8Array
+  field12?: AnEnum
+  field13?: SubMessageInput
+  field14?: string[]
+  field15?: number
+  field16?: bigint
+  field17?: number
+  field18?: bigint
+}
 
-  export const codec = (): Codec<AllTheTypes> => {
+export namespace AllTheTypes {
+  let _codec: Codec<AllTheTypes, AllTheTypesInput>
+
+  export const codec = (): Codec<AllTheTypes, AllTheTypesInput> => {
     if (_codec == null) {
-      _codec = message<AllTheTypes>((obj, w, opts = {}) => {
+      _codec = message<AllTheTypes, AllTheTypesInput>((obj, w, opts = {}) => {
         if (opts.lengthDelimited !== false) {
           w.fork()
         }
@@ -620,7 +645,7 @@ export namespace AllTheTypes {
     value: bigint
   }
 
-  export function encode (obj: Partial<AllTheTypes>): Uint8Array<ArrayBuffer> {
+  export function encode (obj: AllTheTypesInput): Uint8Array<ArrayBuffer> {
     return encodeMessage(obj, AllTheTypes.codec())
   }
 
