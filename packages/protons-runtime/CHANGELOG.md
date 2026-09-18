@@ -1,3 +1,13 @@
+## [protons-runtime-v8.0.0](https://github.com/ipfs/protons/compare/protons-runtime-7.1.2...protons-runtime-8.0.0) (2026-09-18)
+
+### ⚠ BREAKING CHANGES
+
+* definitions will need to be regenerated
+
+### Features
+
+* accept any Uint8Array for encoding ([#203](https://github.com/ipfs/protons/issues/203)) ([6556bc4](https://github.com/ipfs/protons/commit/6556bc404669cbc66f93af4b36f10b02cc33f11d))
+
 ## [protons-runtime-v7.1.2](https://github.com/ipfs/protons/compare/protons-runtime-7.1.1...protons-runtime-7.1.2) (2026-09-17)
 
 ### Bug Fixes
