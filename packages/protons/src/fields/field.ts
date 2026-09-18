@@ -133,6 +133,30 @@ export class Field implements MessageField {
         console.info(`[WARN] ${message}`)
       }
     }
+
+    if (parent.def.edition === 'proto2') {
+      if (def.options?.features?.repeated_field_encoding != null) {
+        const message = `field "${name}" has the features.repeated_field_encoding=${def.options.features.repeated_field_encoding} option, this is unsupported in proto2. Please use packed=${def.options?.features?.repeated_field_encoding === 'PACKED' ? true : false} instead - see https://protobuf.dev/editions/features/#repeated_field_encoding`
+
+        if (parent.flags?.strict === true) {
+          throw new ParseError(message)
+        } else {
+          // eslint-disable-next-line no-console
+          console.info(`[WARN] ${message}`)
+        }
+      }
+    } else {
+      if (def.options?.packed != null) {
+        const message = `field "${name}" has the packed=${def.options.packed} option, this is unsupported in edition="${parent.def.edition}". Please use features.repeated_field_encoding=${def.options?.packed === true ? 'PACKED' : 'EXPANDED'} instead - see https://protobuf.dev/editions/features/#repeated_field_encoding`
+
+        if (parent.flags?.strict === true) {
+          throw new ParseError(message)
+        } else {
+          // eslint-disable-next-line no-console
+          console.info(`[WARN] ${message}`)
+        }
+      }
+    }
   }
 
   getDecoderInterfaceField (parent: Parent, indent = ''): string {
