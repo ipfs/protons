@@ -80,7 +80,7 @@ It does have one or two differences:
 5. `map` fields can have keys of any type - protobufs.js [only supports strings](https://github.com/protobufjs/protobuf.js/issues/1203#issuecomment-488637338)
 6. `map` fields are deserialized as ES6 `Map`s - protobuf.js uses `Object`s
 
-\## .proto Message naming conventions
+## .proto Message naming conventions
 
 Protobuf messages in `.proto` files are transformed into TypeScript classes,
 so they must not conflict with built-in JavaScript types (`Number`, `Error`,
