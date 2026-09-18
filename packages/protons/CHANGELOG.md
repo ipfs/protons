@@ -1,3 +1,9 @@
+## [protons-v10.0.5](https://github.com/ipfs/protons/compare/protons-10.0.4...protons-10.0.5) (2026-09-18)
+
+### Bug Fixes
+
+* support packed option in proto3 ([#210](https://github.com/ipfs/protons/issues/210)) ([3d6c248](https://github.com/ipfs/protons/commit/3d6c2484cf1a8b8a7988d60f35911aaa2c2c5479))
+
 ## [protons-v10.0.4](https://github.com/ipfs/protons/compare/protons-10.0.3...protons-10.0.4) (2026-09-18)
 
 ### Bug Fixes
