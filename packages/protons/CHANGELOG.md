@@ -1,3 +1,9 @@
+## [protons-v10.0.1](https://github.com/ipfs/protons/compare/protons-10.0.0...protons-10.0.1) (2026-09-18)
+
+### Bug Fixes
+
+* update sibling deps ([#207](https://github.com/ipfs/protons/issues/207)) ([ff1aade](https://github.com/ipfs/protons/commit/ff1aade226d907b67f4167be4fa9ed274eb09399))
+
 ## [protons-v10.0.0](https://github.com/ipfs/protons/compare/protons-9.1.2...protons-10.0.0) (2026-09-18)
 
 ### ⚠ BREAKING CHANGES
