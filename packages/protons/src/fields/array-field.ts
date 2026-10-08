@@ -148,6 +148,7 @@ export class ArrayField extends Field {
     parent.addImport('protons-runtime', 'MaxLengthError')
 
     let limit = `
+              decodeContext?.consume('${this.name}', opts.totalLimits?.${this.name})
               if (opts.limits?.${this.name} != null && obj.${this.name}.length === opts.limits.${this.name}) {
                 throw new MaxLengthError('Decode error - repeated field "${this.name}" had too many elements')
               }
@@ -188,6 +189,7 @@ export class ArrayField extends Field {
     parent.addImport('protons-runtime', 'MaxLengthError')
 
     let limit = `
+              decodeContext?.consume('${this.name}', opts.totalLimits?.${this.name})
               if (opts.limits?.${this.name} != null && obj.${this.name} === opts.limits.${this.name}) {
                 throw new MaxLengthError('Streaming decode error - repeated field "${this.name}" had too many elements')
               }

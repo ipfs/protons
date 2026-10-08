@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -118,6 +118,7 @@ export namespace CircuitRelay {
             w.ldelim()
           }
         }, (r, length, opts = {}) => {
+          const decodeContext = DecodeContext.get(opts)
           const obj: any = {
             id: uint8ArrayAlloc(0),
             addrs: []
@@ -134,6 +135,7 @@ export namespace CircuitRelay {
                 break
               }
               case 2: {
+                decodeContext?.consume('addrs', opts.totalLimits?.addrs)
                 if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
                   throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
@@ -150,6 +152,7 @@ export namespace CircuitRelay {
 
           return obj
         }, function * (r, length, prefix, opts = {}) {
+          const decodeContext = DecodeContext.get(opts)
           const obj = {
             addrs: 0
           }
@@ -176,6 +179,7 @@ export namespace CircuitRelay {
                 break
               }
               case 2: {
+                decodeContext?.consume('addrs', opts.totalLimits?.addrs)
                 if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
                   throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
                 }
@@ -204,7 +208,7 @@ export namespace CircuitRelay {
               message: 'CircuitRelay.Peer'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -267,6 +271,7 @@ export namespace CircuitRelay {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {}
 
         const end = length == null ? r.len : r.pos + length
@@ -280,15 +285,17 @@ export namespace CircuitRelay {
               break
             }
             case 2: {
-              obj.srcPeer = CircuitRelay.Peer.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.srcPeer
-              })
+              obj.srcPeer = CircuitRelay.Peer.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'srcPeer', {
+                limits: opts.limits?.srcPeer,
+                totalLimits: opts.totalLimits?.srcPeer
+              }))
               break
             }
             case 3: {
-              obj.dstPeer = CircuitRelay.Peer.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.dstPeer
-              })
+              obj.dstPeer = CircuitRelay.Peer.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'dstPeer', {
+                limits: opts.limits?.dstPeer,
+                totalLimits: opts.totalLimits?.dstPeer
+              }))
               break
             }
             case 4: {
@@ -304,6 +311,7 @@ export namespace CircuitRelay {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -326,16 +334,18 @@ export namespace CircuitRelay {
               break
             }
             case 2: {
-              yield * CircuitRelay.Peer.codec().stream(r, r.uint32(), `${prefix}srcPeer.`, {
-                limits: opts.limits?.srcPeer
-              })
+              yield * CircuitRelay.Peer.codec().stream(r, r.uint32(), `${prefix}srcPeer.`, DecodeContext.child(decodeContext, 'srcPeer', {
+                limits: opts.limits?.srcPeer,
+                totalLimits: opts.totalLimits?.srcPeer
+              }))
 
               break
             }
             case 3: {
-              yield * CircuitRelay.Peer.codec().stream(r, r.uint32(), `${prefix}dstPeer.`, {
-                limits: opts.limits?.dstPeer
-              })
+              yield * CircuitRelay.Peer.codec().stream(r, r.uint32(), `${prefix}dstPeer.`, DecodeContext.child(decodeContext, 'dstPeer', {
+                limits: opts.limits?.dstPeer,
+                totalLimits: opts.totalLimits?.dstPeer
+              }))
 
               break
             }
@@ -360,7 +370,7 @@ export namespace CircuitRelay {
             message: 'CircuitRelay'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

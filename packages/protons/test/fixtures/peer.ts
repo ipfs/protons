@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -64,6 +64,7 @@ export namespace Peer {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           addresses: [],
           protocols: [],
@@ -77,16 +78,19 @@ export namespace Peer {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('addresses', opts.totalLimits?.addresses)
               if (opts.limits?.addresses != null && obj.addresses.length === opts.limits.addresses) {
                 throw new MaxLengthError('Decode error - repeated field "addresses" had too many elements')
               }
 
-              obj.addresses.push(Address.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.addresses$
-              }))
+              obj.addresses.push(Address.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'addresses', {
+                limits: opts.limits?.addresses$,
+                totalLimits: opts.totalLimits?.addresses$
+              })))
               break
             }
             case 2: {
+              decodeContext?.consume('protocols', opts.totalLimits?.protocols)
               if (opts.limits?.protocols != null && obj.protocols.length === opts.limits.protocols) {
                 throw new MaxLengthError('Decode error - repeated field "protocols" had too many elements')
               }
@@ -95,13 +99,15 @@ export namespace Peer {
               break
             }
             case 3: {
+              decodeContext?.consume('metadata', opts.totalLimits?.metadata)
               if (opts.limits?.metadata != null && obj.metadata.length === opts.limits.metadata) {
                 throw new MaxLengthError('Decode error - repeated field "metadata" had too many elements')
               }
 
-              obj.metadata.push(Metadata.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.metadata$
-              }))
+              obj.metadata.push(Metadata.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'metadata', {
+                limits: opts.limits?.metadata$,
+                totalLimits: opts.totalLimits?.metadata$
+              })))
               break
             }
             case 4: {
@@ -121,6 +127,7 @@ export namespace Peer {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           addresses: 0,
           protocols: 0,
@@ -142,13 +149,15 @@ export namespace Peer {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('addresses', opts.totalLimits?.addresses)
               if (opts.limits?.addresses != null && obj.addresses === opts.limits.addresses) {
                 throw new MaxLengthError('Streaming decode error - repeated field "addresses" had too many elements')
               }
 
-              for (const evt of Address.codec().stream(r, r.uint32(), `${prefix}addresses[].`, {
-                limits: opts.limits?.addresses$
-              })) {
+              for (const evt of Address.codec().stream(r, r.uint32(), `${prefix}addresses[].`, DecodeContext.child(decodeContext, 'addresses', {
+                limits: opts.limits?.addresses$,
+                totalLimits: opts.totalLimits?.addresses$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.addresses
@@ -160,6 +169,7 @@ export namespace Peer {
               break
             }
             case 2: {
+              decodeContext?.consume('protocols', opts.totalLimits?.protocols)
               if (opts.limits?.protocols != null && obj.protocols === opts.limits.protocols) {
                 throw new MaxLengthError('Streaming decode error - repeated field "protocols" had too many elements')
               }
@@ -175,13 +185,15 @@ export namespace Peer {
               break
             }
             case 3: {
+              decodeContext?.consume('metadata', opts.totalLimits?.metadata)
               if (opts.limits?.metadata != null && obj.metadata === opts.limits.metadata) {
                 throw new MaxLengthError('Streaming decode error - repeated field "metadata" had too many elements')
               }
 
-              for (const evt of Metadata.codec().stream(r, r.uint32(), `${prefix}metadata[].`, {
-                limits: opts.limits?.metadata$
-              })) {
+              for (const evt of Metadata.codec().stream(r, r.uint32(), `${prefix}metadata[].`, DecodeContext.child(decodeContext, 'metadata', {
+                limits: opts.limits?.metadata$,
+                totalLimits: opts.totalLimits?.metadata$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.metadata
@@ -220,7 +232,7 @@ export namespace Peer {
             message: 'Peer'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -410,7 +422,7 @@ export namespace Address {
             message: 'Address'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -543,7 +555,7 @@ export namespace Metadata {
             message: 'Metadata'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

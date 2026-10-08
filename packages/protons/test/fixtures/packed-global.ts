@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, message, reader, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, MaxLengthError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -71,6 +71,7 @@ export namespace GlobalPacked {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           expanded: [],
           packedOldOption: [],
@@ -86,6 +87,7 @@ export namespace GlobalPacked {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('expanded', opts.totalLimits?.expanded)
               if (opts.limits?.expanded != null && obj.expanded.length === opts.limits.expanded) {
                 throw new MaxLengthError('Decode error - repeated field "expanded" had too many elements')
               }
@@ -94,6 +96,7 @@ export namespace GlobalPacked {
               break
             }
             case 2: {
+              decodeContext?.consume('packedOldOption', opts.totalLimits?.packedOldOption)
               if (opts.limits?.packedOldOption != null && obj.packedOldOption.length === opts.limits.packedOldOption) {
                 throw new MaxLengthError('Decode error - repeated field "packedOldOption" had too many elements')
               }
@@ -102,6 +105,7 @@ export namespace GlobalPacked {
               break
             }
             case 3: {
+              decodeContext?.consume('expandedOldOption', opts.totalLimits?.expandedOldOption)
               if (opts.limits?.expandedOldOption != null && obj.expandedOldOption.length === opts.limits.expandedOldOption) {
                 throw new MaxLengthError('Decode error - repeated field "expandedOldOption" had too many elements')
               }
@@ -114,6 +118,7 @@ export namespace GlobalPacked {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('packedNewOption', opts.totalLimits?.packedNewOption)
                 if (opts.limits?.packedNewOption != null && obj.packedNewOption.length === opts.limits.packedNewOption) {
                   throw new MaxLengthError('Decode error - repeated field "packedNewOption" had too many elements')
                 }
@@ -124,6 +129,7 @@ export namespace GlobalPacked {
               break
             }
             case 5: {
+              decodeContext?.consume('expandedNewOption', opts.totalLimits?.expandedNewOption)
               if (opts.limits?.expandedNewOption != null && obj.expandedNewOption.length === opts.limits.expandedNewOption) {
                 throw new MaxLengthError('Decode error - repeated field "expandedNewOption" had too many elements')
               }
@@ -140,6 +146,7 @@ export namespace GlobalPacked {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           expanded: 0,
           packedOldOption: 0,
@@ -163,6 +170,7 @@ export namespace GlobalPacked {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('expanded', opts.totalLimits?.expanded)
               if (opts.limits?.expanded != null && obj.expanded === opts.limits.expanded) {
                 throw new MaxLengthError('Streaming decode error - repeated field "expanded" had too many elements')
               }
@@ -178,6 +186,7 @@ export namespace GlobalPacked {
               break
             }
             case 2: {
+              decodeContext?.consume('packedOldOption', opts.totalLimits?.packedOldOption)
               if (opts.limits?.packedOldOption != null && obj.packedOldOption === opts.limits.packedOldOption) {
                 throw new MaxLengthError('Streaming decode error - repeated field "packedOldOption" had too many elements')
               }
@@ -193,6 +202,7 @@ export namespace GlobalPacked {
               break
             }
             case 3: {
+              decodeContext?.consume('expandedOldOption', opts.totalLimits?.expandedOldOption)
               if (opts.limits?.expandedOldOption != null && obj.expandedOldOption === opts.limits.expandedOldOption) {
                 throw new MaxLengthError('Streaming decode error - repeated field "expandedOldOption" had too many elements')
               }
@@ -212,6 +222,7 @@ export namespace GlobalPacked {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('packedNewOption', opts.totalLimits?.packedNewOption)
                 if (opts.limits?.packedNewOption != null && obj.packedNewOption === opts.limits.packedNewOption) {
                   throw new MaxLengthError('Streaming decode error - repeated field "packedNewOption" had too many elements')
                 }
@@ -228,6 +239,7 @@ export namespace GlobalPacked {
               break
             }
             case 5: {
+              decodeContext?.consume('expandedNewOption', opts.totalLimits?.expandedNewOption)
               if (opts.limits?.expandedNewOption != null && obj.expandedNewOption === opts.limits.expandedNewOption) {
                 throw new MaxLengthError('Streaming decode error - repeated field "expandedNewOption" had too many elements')
               }
@@ -256,7 +268,7 @@ export namespace GlobalPacked {
             message: 'GlobalPacked'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
