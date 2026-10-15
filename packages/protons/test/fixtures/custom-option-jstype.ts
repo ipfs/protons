@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, reader, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -129,7 +129,7 @@ export namespace CustomOptionNumber {
               message: 'CustomOptionNumber.CustomOptionNumber$i64MapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -219,6 +219,7 @@ export namespace CustomOptionNumber {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           num: 0,
           i64: 0,
@@ -265,6 +266,7 @@ export namespace CustomOptionNumber {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('i64Array', opts.totalLimits?.i64Array)
                 if (opts.limits?.i64Array != null && obj.i64Array.length === opts.limits.i64Array) {
                   throw new MaxLengthError('Decode error - repeated field "i64Array" had too many elements')
                 }
@@ -275,15 +277,17 @@ export namespace CustomOptionNumber {
               break
             }
             case 8: {
+              decodeContext?.consume('i64Map', opts.totalLimits?.i64Map, MaxSizeError)
               if (opts.limits?.i64Map != null && obj.i64Map.size === opts.limits.i64Map) {
                 throw new MaxSizeError('Decode error - map field "i64Map" had too many elements')
               }
 
-              const entry = CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().decode(r, r.uint32(), {
+              const entry = CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'i64Map', {
                 limits: {
                   value: opts.limits?.i64Map$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.i64Map$value == null ? undefined : { value: opts.totalLimits.i64Map$value }
+              }))
               obj.i64Map.set(entry.key, entry.value)
               break
             }
@@ -296,6 +300,7 @@ export namespace CustomOptionNumber {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           i64Array: 0,
           i64Map: 0
@@ -362,6 +367,7 @@ export namespace CustomOptionNumber {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('i64Array', opts.totalLimits?.i64Array)
                 if (opts.limits?.i64Array != null && obj.i64Array === opts.limits.i64Array) {
                   throw new MaxLengthError('Streaming decode error - repeated field "i64Array" had too many elements')
                 }
@@ -378,15 +384,17 @@ export namespace CustomOptionNumber {
               break
             }
             case 8: {
+              decodeContext?.consume('i64Map', opts.totalLimits?.i64Map, MaxSizeError)
               if (opts.limits?.i64Map != null && obj.i64Map === opts.limits.i64Map) {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(r, r.uint32(), `${prefix}i64Map{}.`, {
+              yield * CustomOptionNumber.CustomOptionNumber$i64MapEntry.codec().stream(r, r.uint32(), `${prefix}i64Map{}.`, DecodeContext.child(decodeContext, 'i64Map', {
                 limits: {
                   value: opts.limits?.i64Map$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.i64Map$value == null ? undefined : { value: opts.totalLimits.i64Map$value }
+              }))
 
               obj.i64Map++
 
@@ -406,7 +414,7 @@ export namespace CustomOptionNumber {
             message: 'CustomOptionNumber'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -594,7 +602,7 @@ export namespace CustomOptionString {
               message: 'CustomOptionString.CustomOptionString$i64MapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -684,6 +692,7 @@ export namespace CustomOptionString {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           num: 0,
           i64: '',
@@ -730,6 +739,7 @@ export namespace CustomOptionString {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('i64Array', opts.totalLimits?.i64Array)
                 if (opts.limits?.i64Array != null && obj.i64Array.length === opts.limits.i64Array) {
                   throw new MaxLengthError('Decode error - repeated field "i64Array" had too many elements')
                 }
@@ -740,15 +750,17 @@ export namespace CustomOptionString {
               break
             }
             case 8: {
+              decodeContext?.consume('i64Map', opts.totalLimits?.i64Map, MaxSizeError)
               if (opts.limits?.i64Map != null && obj.i64Map.size === opts.limits.i64Map) {
                 throw new MaxSizeError('Decode error - map field "i64Map" had too many elements')
               }
 
-              const entry = CustomOptionString.CustomOptionString$i64MapEntry.codec().decode(r, r.uint32(), {
+              const entry = CustomOptionString.CustomOptionString$i64MapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'i64Map', {
                 limits: {
                   value: opts.limits?.i64Map$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.i64Map$value == null ? undefined : { value: opts.totalLimits.i64Map$value }
+              }))
               obj.i64Map.set(entry.key, entry.value)
               break
             }
@@ -761,6 +773,7 @@ export namespace CustomOptionString {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           i64Array: 0,
           i64Map: 0
@@ -827,6 +840,7 @@ export namespace CustomOptionString {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('i64Array', opts.totalLimits?.i64Array)
                 if (opts.limits?.i64Array != null && obj.i64Array === opts.limits.i64Array) {
                   throw new MaxLengthError('Streaming decode error - repeated field "i64Array" had too many elements')
                 }
@@ -843,15 +857,17 @@ export namespace CustomOptionString {
               break
             }
             case 8: {
+              decodeContext?.consume('i64Map', opts.totalLimits?.i64Map, MaxSizeError)
               if (opts.limits?.i64Map != null && obj.i64Map === opts.limits.i64Map) {
                 throw new MaxLengthError('Decode error - map field "i64Map" had too many elements')
               }
 
-              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(r, r.uint32(), `${prefix}i64Map{}.`, {
+              yield * CustomOptionString.CustomOptionString$i64MapEntry.codec().stream(r, r.uint32(), `${prefix}i64Map{}.`, DecodeContext.child(decodeContext, 'i64Map', {
                 limits: {
                   value: opts.limits?.i64Map$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.i64Map$value == null ? undefined : { value: opts.totalLimits.i64Map$value }
+              }))
 
               obj.i64Map++
 
@@ -871,7 +887,7 @@ export namespace CustomOptionString {
             message: 'CustomOptionString'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

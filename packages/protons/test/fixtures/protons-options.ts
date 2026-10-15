@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -31,6 +31,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           repeatedField: []
         }
@@ -42,6 +43,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('repeatedField', opts.totalLimits?.repeatedField)
               if (opts.limits?.repeatedField != null && obj.repeatedField.length === opts.limits.repeatedField) {
                 throw new MaxLengthError('Decode error - repeated field "repeatedField" had too many elements')
               }
@@ -62,6 +64,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           repeatedField: 1
         }
@@ -81,6 +84,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('repeatedField', opts.totalLimits?.repeatedField)
               if (opts.limits?.repeatedField != null && obj.repeatedField === opts.limits.repeatedField) {
                 throw new MaxLengthError('Streaming decode error - repeated field "repeatedField" had too many elements')
               }
@@ -113,7 +117,7 @@ export namespace MessageWithSizeLimitedRepeatedField {
             message: 'MessageWithSizeLimitedRepeatedField'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -251,7 +255,7 @@ export namespace MessageWithSizeLimitedMap {
               message: 'MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -300,6 +304,7 @@ export namespace MessageWithSizeLimitedMap {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           mapField: new Map<string, string>()
         }
@@ -311,6 +316,7 @@ export namespace MessageWithSizeLimitedMap {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('mapField', opts.totalLimits?.mapField, MaxSizeError)
               if (opts.limits?.mapField != null && obj.mapField.size === opts.limits.mapField) {
                 throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
@@ -319,11 +325,12 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxSizeError('Decode error - map field "mapField" had too many elements')
               }
 
-              const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(r, r.uint32(), {
+              const entry = MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'mapField', {
                 limits: {
                   value: opts.limits?.mapField$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.mapField$value == null ? undefined : { value: opts.totalLimits.mapField$value }
+              }))
               obj.mapField.set(entry.key, entry.value)
               break
             }
@@ -336,6 +343,7 @@ export namespace MessageWithSizeLimitedMap {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           mapField: 1
         }
@@ -355,6 +363,7 @@ export namespace MessageWithSizeLimitedMap {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('mapField', opts.totalLimits?.mapField, MaxSizeError)
               if (opts.limits?.mapField != null && obj.mapField === opts.limits.mapField) {
                 throw new MaxLengthError('Decode error - map field "mapField" had too many elements')
               }
@@ -363,11 +372,12 @@ export namespace MessageWithSizeLimitedMap {
                 throw new MaxLengthError('Decode error - repeated field "mapField" had too many elements')
               }
 
-              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(r, r.uint32(), `${prefix}mapField{}.`, {
+              yield * MessageWithSizeLimitedMap.MessageWithSizeLimitedMap$mapFieldEntry.codec().stream(r, r.uint32(), `${prefix}mapField{}.`, DecodeContext.child(decodeContext, 'mapField', {
                 limits: {
                   value: opts.limits?.mapField$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.mapField$value == null ? undefined : { value: opts.totalLimits.mapField$value }
+              }))
 
               obj.mapField++
 
@@ -387,7 +397,7 @@ export namespace MessageWithSizeLimitedMap {
             message: 'MessageWithSizeLimitedMap'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

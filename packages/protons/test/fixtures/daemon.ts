@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -118,6 +118,7 @@ export namespace Request {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           type: Type.IDENTIFY
         }
@@ -133,51 +134,59 @@ export namespace Request {
               break
             }
             case 2: {
-              obj.connect = ConnectRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.connect
-              })
+              obj.connect = ConnectRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'connect', {
+                limits: opts.limits?.connect,
+                totalLimits: opts.totalLimits?.connect
+              }))
               break
             }
             case 3: {
-              obj.streamOpen = StreamOpenRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.streamOpen
-              })
+              obj.streamOpen = StreamOpenRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'streamOpen', {
+                limits: opts.limits?.streamOpen,
+                totalLimits: opts.totalLimits?.streamOpen
+              }))
               break
             }
             case 4: {
-              obj.streamHandler = StreamHandlerRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.streamHandler
-              })
+              obj.streamHandler = StreamHandlerRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'streamHandler', {
+                limits: opts.limits?.streamHandler,
+                totalLimits: opts.totalLimits?.streamHandler
+              }))
               break
             }
             case 5: {
-              obj.dht = DHTRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.dht
-              })
+              obj.dht = DHTRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'dht', {
+                limits: opts.limits?.dht,
+                totalLimits: opts.totalLimits?.dht
+              }))
               break
             }
             case 6: {
-              obj.connManager = ConnManagerRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.connManager
-              })
+              obj.connManager = ConnManagerRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'connManager', {
+                limits: opts.limits?.connManager,
+                totalLimits: opts.totalLimits?.connManager
+              }))
               break
             }
             case 7: {
-              obj.disconnect = DisconnectRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.disconnect
-              })
+              obj.disconnect = DisconnectRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'disconnect', {
+                limits: opts.limits?.disconnect,
+                totalLimits: opts.totalLimits?.disconnect
+              }))
               break
             }
             case 8: {
-              obj.pubsub = PSRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.pubsub
-              })
+              obj.pubsub = PSRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'pubsub', {
+                limits: opts.limits?.pubsub,
+                totalLimits: opts.totalLimits?.pubsub
+              }))
               break
             }
             case 9: {
-              obj.peerStore = PeerstoreRequest.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.peerStore
-              })
+              obj.peerStore = PeerstoreRequest.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'peerStore', {
+                limits: opts.limits?.peerStore,
+                totalLimits: opts.totalLimits?.peerStore
+              }))
               break
             }
             default: {
@@ -189,6 +198,7 @@ export namespace Request {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -211,58 +221,66 @@ export namespace Request {
               break
             }
             case 2: {
-              yield * ConnectRequest.codec().stream(r, r.uint32(), `${prefix}connect.`, {
-                limits: opts.limits?.connect
-              })
+              yield * ConnectRequest.codec().stream(r, r.uint32(), `${prefix}connect.`, DecodeContext.child(decodeContext, 'connect', {
+                limits: opts.limits?.connect,
+                totalLimits: opts.totalLimits?.connect
+              }))
 
               break
             }
             case 3: {
-              yield * StreamOpenRequest.codec().stream(r, r.uint32(), `${prefix}streamOpen.`, {
-                limits: opts.limits?.streamOpen
-              })
+              yield * StreamOpenRequest.codec().stream(r, r.uint32(), `${prefix}streamOpen.`, DecodeContext.child(decodeContext, 'streamOpen', {
+                limits: opts.limits?.streamOpen,
+                totalLimits: opts.totalLimits?.streamOpen
+              }))
 
               break
             }
             case 4: {
-              yield * StreamHandlerRequest.codec().stream(r, r.uint32(), `${prefix}streamHandler.`, {
-                limits: opts.limits?.streamHandler
-              })
+              yield * StreamHandlerRequest.codec().stream(r, r.uint32(), `${prefix}streamHandler.`, DecodeContext.child(decodeContext, 'streamHandler', {
+                limits: opts.limits?.streamHandler,
+                totalLimits: opts.totalLimits?.streamHandler
+              }))
 
               break
             }
             case 5: {
-              yield * DHTRequest.codec().stream(r, r.uint32(), `${prefix}dht.`, {
-                limits: opts.limits?.dht
-              })
+              yield * DHTRequest.codec().stream(r, r.uint32(), `${prefix}dht.`, DecodeContext.child(decodeContext, 'dht', {
+                limits: opts.limits?.dht,
+                totalLimits: opts.totalLimits?.dht
+              }))
 
               break
             }
             case 6: {
-              yield * ConnManagerRequest.codec().stream(r, r.uint32(), `${prefix}connManager.`, {
-                limits: opts.limits?.connManager
-              })
+              yield * ConnManagerRequest.codec().stream(r, r.uint32(), `${prefix}connManager.`, DecodeContext.child(decodeContext, 'connManager', {
+                limits: opts.limits?.connManager,
+                totalLimits: opts.totalLimits?.connManager
+              }))
 
               break
             }
             case 7: {
-              yield * DisconnectRequest.codec().stream(r, r.uint32(), `${prefix}disconnect.`, {
-                limits: opts.limits?.disconnect
-              })
+              yield * DisconnectRequest.codec().stream(r, r.uint32(), `${prefix}disconnect.`, DecodeContext.child(decodeContext, 'disconnect', {
+                limits: opts.limits?.disconnect,
+                totalLimits: opts.totalLimits?.disconnect
+              }))
 
               break
             }
             case 8: {
-              yield * PSRequest.codec().stream(r, r.uint32(), `${prefix}pubsub.`, {
-                limits: opts.limits?.pubsub
-              })
+              yield * PSRequest.codec().stream(r, r.uint32(), `${prefix}pubsub.`, DecodeContext.child(decodeContext, 'pubsub', {
+                limits: opts.limits?.pubsub,
+                totalLimits: opts.totalLimits?.pubsub
+              }))
 
               break
             }
             case 9: {
-              yield * PeerstoreRequest.codec().stream(r, r.uint32(), `${prefix}peerStore.`, {
-                limits: opts.limits?.peerStore
-              })
+              yield * PeerstoreRequest.codec().stream(r, r.uint32(), `${prefix}peerStore.`, DecodeContext.child(decodeContext, 'peerStore', {
+                limits: opts.limits?.peerStore,
+                totalLimits: opts.totalLimits?.peerStore
+              }))
 
               break
             }
@@ -280,7 +298,7 @@ export namespace Request {
             message: 'Request'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -612,6 +630,7 @@ export namespace Response {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           type: Type.OK,
           peers: []
@@ -628,49 +647,57 @@ export namespace Response {
               break
             }
             case 2: {
-              obj.error = ErrorResponse.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.error
-              })
+              obj.error = ErrorResponse.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'error', {
+                limits: opts.limits?.error,
+                totalLimits: opts.totalLimits?.error
+              }))
               break
             }
             case 3: {
-              obj.streamInfo = StreamInfo.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.streamInfo
-              })
+              obj.streamInfo = StreamInfo.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'streamInfo', {
+                limits: opts.limits?.streamInfo,
+                totalLimits: opts.totalLimits?.streamInfo
+              }))
               break
             }
             case 4: {
-              obj.identify = IdentifyResponse.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.identify
-              })
+              obj.identify = IdentifyResponse.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'identify', {
+                limits: opts.limits?.identify,
+                totalLimits: opts.totalLimits?.identify
+              }))
               break
             }
             case 5: {
-              obj.dht = DHTResponse.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.dht
-              })
+              obj.dht = DHTResponse.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'dht', {
+                limits: opts.limits?.dht,
+                totalLimits: opts.totalLimits?.dht
+              }))
               break
             }
             case 6: {
+              decodeContext?.consume('peers', opts.totalLimits?.peers)
               if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
                 throw new MaxLengthError('Decode error - repeated field "peers" had too many elements')
               }
 
-              obj.peers.push(PeerInfo.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.peers$
-              }))
+              obj.peers.push(PeerInfo.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'peers', {
+                limits: opts.limits?.peers$,
+                totalLimits: opts.totalLimits?.peers$
+              })))
               break
             }
             case 7: {
-              obj.pubsub = PSResponse.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.pubsub
-              })
+              obj.pubsub = PSResponse.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'pubsub', {
+                limits: opts.limits?.pubsub,
+                totalLimits: opts.totalLimits?.pubsub
+              }))
               break
             }
             case 8: {
-              obj.peerStore = PeerstoreResponse.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.peerStore
-              })
+              obj.peerStore = PeerstoreResponse.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'peerStore', {
+                limits: opts.limits?.peerStore,
+                totalLimits: opts.totalLimits?.peerStore
+              }))
               break
             }
             default: {
@@ -682,6 +709,7 @@ export namespace Response {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           peers: 0
         }
@@ -708,41 +736,47 @@ export namespace Response {
               break
             }
             case 2: {
-              yield * ErrorResponse.codec().stream(r, r.uint32(), `${prefix}error.`, {
-                limits: opts.limits?.error
-              })
+              yield * ErrorResponse.codec().stream(r, r.uint32(), `${prefix}error.`, DecodeContext.child(decodeContext, 'error', {
+                limits: opts.limits?.error,
+                totalLimits: opts.totalLimits?.error
+              }))
 
               break
             }
             case 3: {
-              yield * StreamInfo.codec().stream(r, r.uint32(), `${prefix}streamInfo.`, {
-                limits: opts.limits?.streamInfo
-              })
+              yield * StreamInfo.codec().stream(r, r.uint32(), `${prefix}streamInfo.`, DecodeContext.child(decodeContext, 'streamInfo', {
+                limits: opts.limits?.streamInfo,
+                totalLimits: opts.totalLimits?.streamInfo
+              }))
 
               break
             }
             case 4: {
-              yield * IdentifyResponse.codec().stream(r, r.uint32(), `${prefix}identify.`, {
-                limits: opts.limits?.identify
-              })
+              yield * IdentifyResponse.codec().stream(r, r.uint32(), `${prefix}identify.`, DecodeContext.child(decodeContext, 'identify', {
+                limits: opts.limits?.identify,
+                totalLimits: opts.totalLimits?.identify
+              }))
 
               break
             }
             case 5: {
-              yield * DHTResponse.codec().stream(r, r.uint32(), `${prefix}dht.`, {
-                limits: opts.limits?.dht
-              })
+              yield * DHTResponse.codec().stream(r, r.uint32(), `${prefix}dht.`, DecodeContext.child(decodeContext, 'dht', {
+                limits: opts.limits?.dht,
+                totalLimits: opts.totalLimits?.dht
+              }))
 
               break
             }
             case 6: {
+              decodeContext?.consume('peers', opts.totalLimits?.peers)
               if (opts.limits?.peers != null && obj.peers === opts.limits.peers) {
                 throw new MaxLengthError('Streaming decode error - repeated field "peers" had too many elements')
               }
 
-              for (const evt of PeerInfo.codec().stream(r, r.uint32(), `${prefix}peers[].`, {
-                limits: opts.limits?.peers$
-              })) {
+              for (const evt of PeerInfo.codec().stream(r, r.uint32(), `${prefix}peers[].`, DecodeContext.child(decodeContext, 'peers', {
+                limits: opts.limits?.peers$,
+                totalLimits: opts.totalLimits?.peers$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.peers
@@ -754,16 +788,18 @@ export namespace Response {
               break
             }
             case 7: {
-              yield * PSResponse.codec().stream(r, r.uint32(), `${prefix}pubsub.`, {
-                limits: opts.limits?.pubsub
-              })
+              yield * PSResponse.codec().stream(r, r.uint32(), `${prefix}pubsub.`, DecodeContext.child(decodeContext, 'pubsub', {
+                limits: opts.limits?.pubsub,
+                totalLimits: opts.totalLimits?.pubsub
+              }))
 
               break
             }
             case 8: {
-              yield * PeerstoreResponse.codec().stream(r, r.uint32(), `${prefix}peerStore.`, {
-                limits: opts.limits?.peerStore
-              })
+              yield * PeerstoreResponse.codec().stream(r, r.uint32(), `${prefix}peerStore.`, DecodeContext.child(decodeContext, 'peerStore', {
+                limits: opts.limits?.peerStore,
+                totalLimits: opts.totalLimits?.peerStore
+              }))
 
               break
             }
@@ -781,7 +817,7 @@ export namespace Response {
             message: 'Response'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1028,6 +1064,7 @@ export namespace IdentifyResponse {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           id: uint8ArrayAlloc(0),
           addrs: []
@@ -1044,6 +1081,7 @@ export namespace IdentifyResponse {
               break
             }
             case 2: {
+              decodeContext?.consume('addrs', opts.totalLimits?.addrs)
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
                 throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
@@ -1060,6 +1098,7 @@ export namespace IdentifyResponse {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           addrs: 0
         }
@@ -1086,6 +1125,7 @@ export namespace IdentifyResponse {
               break
             }
             case 2: {
+              decodeContext?.consume('addrs', opts.totalLimits?.addrs)
               if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
                 throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
               }
@@ -1114,7 +1154,7 @@ export namespace IdentifyResponse {
             message: 'IdentifyResponse'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1187,6 +1227,7 @@ export namespace ConnectRequest {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           addrs: []
@@ -1203,6 +1244,7 @@ export namespace ConnectRequest {
               break
             }
             case 2: {
+              decodeContext?.consume('addrs', opts.totalLimits?.addrs)
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
                 throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
@@ -1223,6 +1265,7 @@ export namespace ConnectRequest {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           addrs: 0
         }
@@ -1249,6 +1292,7 @@ export namespace ConnectRequest {
               break
             }
             case 2: {
+              decodeContext?.consume('addrs', opts.totalLimits?.addrs)
               if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
                 throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
               }
@@ -1284,7 +1328,7 @@ export namespace ConnectRequest {
             message: 'ConnectRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1362,6 +1406,7 @@ export namespace StreamOpenRequest {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           peer: uint8ArrayAlloc(0),
           proto: []
@@ -1378,6 +1423,7 @@ export namespace StreamOpenRequest {
               break
             }
             case 2: {
+              decodeContext?.consume('proto', opts.totalLimits?.proto)
               if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
                 throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
               }
@@ -1398,6 +1444,7 @@ export namespace StreamOpenRequest {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           proto: 0
         }
@@ -1424,6 +1471,7 @@ export namespace StreamOpenRequest {
               break
             }
             case 2: {
+              decodeContext?.consume('proto', opts.totalLimits?.proto)
               if (opts.limits?.proto != null && obj.proto === opts.limits.proto) {
                 throw new MaxLengthError('Streaming decode error - repeated field "proto" had too many elements')
               }
@@ -1459,7 +1507,7 @@ export namespace StreamOpenRequest {
             message: 'StreamOpenRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1530,6 +1578,7 @@ export namespace StreamHandlerRequest {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           addr: uint8ArrayAlloc(0),
           proto: []
@@ -1546,6 +1595,7 @@ export namespace StreamHandlerRequest {
               break
             }
             case 2: {
+              decodeContext?.consume('proto', opts.totalLimits?.proto)
               if (opts.limits?.proto != null && obj.proto.length === opts.limits.proto) {
                 throw new MaxLengthError('Decode error - repeated field "proto" had too many elements')
               }
@@ -1562,6 +1612,7 @@ export namespace StreamHandlerRequest {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           proto: 0
         }
@@ -1588,6 +1639,7 @@ export namespace StreamHandlerRequest {
               break
             }
             case 2: {
+              decodeContext?.consume('proto', opts.totalLimits?.proto)
               if (opts.limits?.proto != null && obj.proto === opts.limits.proto) {
                 throw new MaxLengthError('Streaming decode error - repeated field "proto" had too many elements')
               }
@@ -1616,7 +1668,7 @@ export namespace StreamHandlerRequest {
             message: 'StreamHandlerRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1731,7 +1783,7 @@ export namespace ErrorResponse {
             message: 'ErrorResponse'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1878,7 +1930,7 @@ export namespace StreamInfo {
             message: 'StreamInfo'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -2135,7 +2187,7 @@ export namespace DHTRequest {
             message: 'DHTRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -2248,6 +2300,7 @@ export namespace DHTResponse {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           type: Type.BEGIN
         }
@@ -2263,9 +2316,10 @@ export namespace DHTResponse {
               break
             }
             case 2: {
-              obj.peer = PeerInfo.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.peer
-              })
+              obj.peer = PeerInfo.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'peer', {
+                limits: opts.limits?.peer,
+                totalLimits: opts.totalLimits?.peer
+              }))
               break
             }
             case 3: {
@@ -2281,6 +2335,7 @@ export namespace DHTResponse {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -2303,9 +2358,10 @@ export namespace DHTResponse {
               break
             }
             case 2: {
-              yield * PeerInfo.codec().stream(r, r.uint32(), `${prefix}peer.`, {
-                limits: opts.limits?.peer
-              })
+              yield * PeerInfo.codec().stream(r, r.uint32(), `${prefix}peer.`, DecodeContext.child(decodeContext, 'peer', {
+                limits: opts.limits?.peer,
+                totalLimits: opts.totalLimits?.peer
+              }))
 
               break
             }
@@ -2330,7 +2386,7 @@ export namespace DHTResponse {
             message: 'DHTResponse'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -2416,6 +2472,7 @@ export namespace PeerInfo {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           id: uint8ArrayAlloc(0),
           addrs: []
@@ -2432,6 +2489,7 @@ export namespace PeerInfo {
               break
             }
             case 2: {
+              decodeContext?.consume('addrs', opts.totalLimits?.addrs)
               if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
                 throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
               }
@@ -2448,6 +2506,7 @@ export namespace PeerInfo {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           addrs: 0
         }
@@ -2474,6 +2533,7 @@ export namespace PeerInfo {
               break
             }
             case 2: {
+              decodeContext?.consume('addrs', opts.totalLimits?.addrs)
               if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
                 throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
               }
@@ -2502,7 +2562,7 @@ export namespace PeerInfo {
             message: 'PeerInfo'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -2689,7 +2749,7 @@ export namespace ConnManagerRequest {
             message: 'ConnManagerRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -2813,7 +2873,7 @@ export namespace DisconnectRequest {
             message: 'DisconnectRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -2978,7 +3038,7 @@ export namespace PSRequest {
             message: 'PSRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -3076,6 +3136,7 @@ export namespace PSMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           topicIDs: []
         }
@@ -3099,6 +3160,7 @@ export namespace PSMessage {
               break
             }
             case 4: {
+              decodeContext?.consume('topicIDs', opts.totalLimits?.topicIDs)
               if (opts.limits?.topicIDs != null && obj.topicIDs.length === opts.limits.topicIDs) {
                 throw new MaxLengthError('Decode error - repeated field "topicIDs" had too many elements')
               }
@@ -3123,6 +3185,7 @@ export namespace PSMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           topicIDs: 0
         }
@@ -3163,6 +3226,7 @@ export namespace PSMessage {
               break
             }
             case 4: {
+              decodeContext?.consume('topicIDs', opts.totalLimits?.topicIDs)
               if (opts.limits?.topicIDs != null && obj.topicIDs === opts.limits.topicIDs) {
                 throw new MaxLengthError('Streaming decode error - repeated field "topicIDs" had too many elements')
               }
@@ -3205,7 +3269,7 @@ export namespace PSMessage {
             message: 'PSMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -3293,6 +3357,7 @@ export namespace PSResponse {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           topics: [],
           peerIDs: []
@@ -3305,6 +3370,7 @@ export namespace PSResponse {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('topics', opts.totalLimits?.topics)
               if (opts.limits?.topics != null && obj.topics.length === opts.limits.topics) {
                 throw new MaxLengthError('Decode error - repeated field "topics" had too many elements')
               }
@@ -3313,6 +3379,7 @@ export namespace PSResponse {
               break
             }
             case 2: {
+              decodeContext?.consume('peerIDs', opts.totalLimits?.peerIDs)
               if (opts.limits?.peerIDs != null && obj.peerIDs.length === opts.limits.peerIDs) {
                 throw new MaxLengthError('Decode error - repeated field "peerIDs" had too many elements')
               }
@@ -3329,6 +3396,7 @@ export namespace PSResponse {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           topics: 0,
           peerIDs: 0
@@ -3349,6 +3417,7 @@ export namespace PSResponse {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('topics', opts.totalLimits?.topics)
               if (opts.limits?.topics != null && obj.topics === opts.limits.topics) {
                 throw new MaxLengthError('Streaming decode error - repeated field "topics" had too many elements')
               }
@@ -3364,6 +3433,7 @@ export namespace PSResponse {
               break
             }
             case 2: {
+              decodeContext?.consume('peerIDs', opts.totalLimits?.peerIDs)
               if (opts.limits?.peerIDs != null && obj.peerIDs === opts.limits.peerIDs) {
                 throw new MaxLengthError('Streaming decode error - repeated field "peerIDs" had too many elements')
               }
@@ -3392,7 +3462,7 @@ export namespace PSResponse {
             message: 'PSResponse'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -3484,6 +3554,7 @@ export namespace PeerstoreRequest {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           type: Type.INVALID,
           protos: []
@@ -3504,6 +3575,7 @@ export namespace PeerstoreRequest {
               break
             }
             case 3: {
+              decodeContext?.consume('protos', opts.totalLimits?.protos)
               if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
                 throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
               }
@@ -3520,6 +3592,7 @@ export namespace PeerstoreRequest {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           protos: 0
         }
@@ -3553,6 +3626,7 @@ export namespace PeerstoreRequest {
               break
             }
             case 3: {
+              decodeContext?.consume('protos', opts.totalLimits?.protos)
               if (opts.limits?.protos != null && obj.protos === opts.limits.protos) {
                 throw new MaxLengthError('Streaming decode error - repeated field "protos" had too many elements')
               }
@@ -3581,7 +3655,7 @@ export namespace PeerstoreRequest {
             message: 'PeerstoreRequest'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -3652,6 +3726,7 @@ export namespace PeerstoreResponse {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           protos: []
         }
@@ -3663,12 +3738,14 @@ export namespace PeerstoreResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              obj.peer = PeerInfo.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.peer
-              })
+              obj.peer = PeerInfo.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'peer', {
+                limits: opts.limits?.peer,
+                totalLimits: opts.totalLimits?.peer
+              }))
               break
             }
             case 2: {
+              decodeContext?.consume('protos', opts.totalLimits?.protos)
               if (opts.limits?.protos != null && obj.protos.length === opts.limits.protos) {
                 throw new MaxLengthError('Decode error - repeated field "protos" had too many elements')
               }
@@ -3685,6 +3762,7 @@ export namespace PeerstoreResponse {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           protos: 0
         }
@@ -3704,13 +3782,15 @@ export namespace PeerstoreResponse {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * PeerInfo.codec().stream(r, r.uint32(), `${prefix}peer.`, {
-                limits: opts.limits?.peer
-              })
+              yield * PeerInfo.codec().stream(r, r.uint32(), `${prefix}peer.`, DecodeContext.child(decodeContext, 'peer', {
+                limits: opts.limits?.peer,
+                totalLimits: opts.totalLimits?.peer
+              }))
 
               break
             }
             case 2: {
+              decodeContext?.consume('protos', opts.totalLimits?.protos)
               if (opts.limits?.protos != null && obj.protos === opts.limits.protos) {
                 throw new MaxLengthError('Streaming decode error - repeated field "protos" had too many elements')
               }
@@ -3739,7 +3819,7 @@ export namespace PeerstoreResponse {
             message: 'PeerstoreResponse'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

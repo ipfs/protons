@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -125,7 +125,7 @@ export namespace SingularSubMessage {
             message: 'SingularSubMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -293,6 +293,7 @@ export namespace Singular {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           double: 0,
           float: 0,
@@ -383,9 +384,10 @@ export namespace Singular {
               break
             }
             case 17: {
-              obj.subMessage = SingularSubMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.subMessage
-              })
+              obj.subMessage = SingularSubMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'subMessage', {
+                limits: opts.limits?.subMessage,
+                totalLimits: opts.totalLimits?.subMessage
+              }))
               break
             }
             default: {
@@ -397,6 +399,7 @@ export namespace Singular {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -524,9 +527,10 @@ export namespace Singular {
               break
             }
             case 17: {
-              yield * SingularSubMessage.codec().stream(r, r.uint32(), `${prefix}subMessage.`, {
-                limits: opts.limits?.subMessage
-              })
+              yield * SingularSubMessage.codec().stream(r, r.uint32(), `${prefix}subMessage.`, DecodeContext.child(decodeContext, 'subMessage', {
+                limits: opts.limits?.subMessage,
+                totalLimits: opts.totalLimits?.subMessage
+              }))
 
               break
             }
@@ -544,7 +548,7 @@ export namespace Singular {
             message: 'Singular'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

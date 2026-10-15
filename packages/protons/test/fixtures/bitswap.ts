@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import { alloc as uint8ArrayAlloc } from 'uint8arrays/alloc'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
@@ -207,7 +207,7 @@ export namespace Message {
                 message: 'Message.Wantlist.Entry'
               }
             }
-          })
+          }, { totalLimits: true })
         }
 
         return _codec
@@ -276,6 +276,7 @@ export namespace Message {
             w.ldelim()
           }
         }, (r, length, opts = {}) => {
+          const decodeContext = DecodeContext.get(opts)
           const obj: any = {
             entries: [],
             full: false
@@ -288,13 +289,15 @@ export namespace Message {
 
             switch (tag >>> 3) {
               case 1: {
+                decodeContext?.consume('entries', opts.totalLimits?.entries)
                 if (opts.limits?.entries != null && obj.entries.length === opts.limits.entries) {
                   throw new MaxLengthError('Decode error - repeated field "entries" had too many elements')
                 }
 
-                obj.entries.push(Message.Wantlist.Entry.codec().decode(r, r.uint32(), {
-                  limits: opts.limits?.entries$
-                }))
+                obj.entries.push(Message.Wantlist.Entry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'entries', {
+                  limits: opts.limits?.entries$,
+                  totalLimits: opts.totalLimits?.entries$
+                })))
                 break
               }
               case 2: {
@@ -310,6 +313,7 @@ export namespace Message {
 
           return obj
         }, function * (r, length, prefix, opts = {}) {
+          const decodeContext = DecodeContext.get(opts)
           const obj = {
             entries: 0
           }
@@ -329,13 +333,15 @@ export namespace Message {
 
             switch (tag >>> 3) {
               case 1: {
+                decodeContext?.consume('entries', opts.totalLimits?.entries)
                 if (opts.limits?.entries != null && obj.entries === opts.limits.entries) {
                   throw new MaxLengthError('Streaming decode error - repeated field "entries" had too many elements')
                 }
 
-                for (const evt of Message.Wantlist.Entry.codec().stream(r, r.uint32(), `${prefix}entries[].`, {
-                  limits: opts.limits?.entries$
-                })) {
+                for (const evt of Message.Wantlist.Entry.codec().stream(r, r.uint32(), `${prefix}entries[].`, DecodeContext.child(decodeContext, 'entries', {
+                  limits: opts.limits?.entries$,
+                  totalLimits: opts.totalLimits?.entries$
+                }))) {
                   yield {
                     ...evt,
                     index: obj.entries
@@ -367,7 +373,7 @@ export namespace Message {
               message: 'Message.Wantlist'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -539,7 +545,7 @@ export namespace Message {
               message: 'Message.Block'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -688,7 +694,7 @@ export namespace Message {
               message: 'Message.BlockPresence'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -761,6 +767,7 @@ export namespace Message {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           blocks: [],
           payload: [],
@@ -775,12 +782,14 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              obj.wantlist = Message.Wantlist.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.wantlist
-              })
+              obj.wantlist = Message.Wantlist.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'wantlist', {
+                limits: opts.limits?.wantlist,
+                totalLimits: opts.totalLimits?.wantlist
+              }))
               break
             }
             case 2: {
+              decodeContext?.consume('blocks', opts.totalLimits?.blocks)
               if (opts.limits?.blocks != null && obj.blocks.length === opts.limits.blocks) {
                 throw new MaxLengthError('Decode error - repeated field "blocks" had too many elements')
               }
@@ -789,23 +798,27 @@ export namespace Message {
               break
             }
             case 3: {
+              decodeContext?.consume('payload', opts.totalLimits?.payload)
               if (opts.limits?.payload != null && obj.payload.length === opts.limits.payload) {
                 throw new MaxLengthError('Decode error - repeated field "payload" had too many elements')
               }
 
-              obj.payload.push(Message.Block.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.payload$
-              }))
+              obj.payload.push(Message.Block.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'payload', {
+                limits: opts.limits?.payload$,
+                totalLimits: opts.totalLimits?.payload$
+              })))
               break
             }
             case 4: {
+              decodeContext?.consume('blockPresences', opts.totalLimits?.blockPresences)
               if (opts.limits?.blockPresences != null && obj.blockPresences.length === opts.limits.blockPresences) {
                 throw new MaxLengthError('Decode error - repeated field "blockPresences" had too many elements')
               }
 
-              obj.blockPresences.push(Message.BlockPresence.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.blockPresences$
-              }))
+              obj.blockPresences.push(Message.BlockPresence.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'blockPresences', {
+                limits: opts.limits?.blockPresences$,
+                totalLimits: opts.totalLimits?.blockPresences$
+              })))
               break
             }
             case 5: {
@@ -821,6 +834,7 @@ export namespace Message {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           blocks: 0,
           payload: 0,
@@ -842,13 +856,15 @@ export namespace Message {
 
           switch (tag >>> 3) {
             case 1: {
-              yield * Message.Wantlist.codec().stream(r, r.uint32(), `${prefix}wantlist.`, {
-                limits: opts.limits?.wantlist
-              })
+              yield * Message.Wantlist.codec().stream(r, r.uint32(), `${prefix}wantlist.`, DecodeContext.child(decodeContext, 'wantlist', {
+                limits: opts.limits?.wantlist,
+                totalLimits: opts.totalLimits?.wantlist
+              }))
 
               break
             }
             case 2: {
+              decodeContext?.consume('blocks', opts.totalLimits?.blocks)
               if (opts.limits?.blocks != null && obj.blocks === opts.limits.blocks) {
                 throw new MaxLengthError('Streaming decode error - repeated field "blocks" had too many elements')
               }
@@ -864,13 +880,15 @@ export namespace Message {
               break
             }
             case 3: {
+              decodeContext?.consume('payload', opts.totalLimits?.payload)
               if (opts.limits?.payload != null && obj.payload === opts.limits.payload) {
                 throw new MaxLengthError('Streaming decode error - repeated field "payload" had too many elements')
               }
 
-              for (const evt of Message.Block.codec().stream(r, r.uint32(), `${prefix}payload[].`, {
-                limits: opts.limits?.payload$
-              })) {
+              for (const evt of Message.Block.codec().stream(r, r.uint32(), `${prefix}payload[].`, DecodeContext.child(decodeContext, 'payload', {
+                limits: opts.limits?.payload$,
+                totalLimits: opts.totalLimits?.payload$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.payload
@@ -882,13 +900,15 @@ export namespace Message {
               break
             }
             case 4: {
+              decodeContext?.consume('blockPresences', opts.totalLimits?.blockPresences)
               if (opts.limits?.blockPresences != null && obj.blockPresences === opts.limits.blockPresences) {
                 throw new MaxLengthError('Streaming decode error - repeated field "blockPresences" had too many elements')
               }
 
-              for (const evt of Message.BlockPresence.codec().stream(r, r.uint32(), `${prefix}blockPresences[].`, {
-                limits: opts.limits?.blockPresences$
-              })) {
+              for (const evt of Message.BlockPresence.codec().stream(r, r.uint32(), `${prefix}blockPresences[].`, DecodeContext.child(decodeContext, 'blockPresences', {
+                limits: opts.limits?.blockPresences$,
+                totalLimits: opts.totalLimits?.blockPresences$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.blockPresences
@@ -920,7 +940,7 @@ export namespace Message {
             message: 'Message'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

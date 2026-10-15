@@ -105,7 +105,7 @@ export namespace Basic {
             message: 'Basic'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -197,7 +197,7 @@ export namespace Empty {
             message: 'Empty'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

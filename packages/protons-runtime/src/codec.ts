@@ -65,6 +65,13 @@ export interface DecodeOptions<T> {
    * Runtime-specified limits for lengths of repeated/map fields
    */
   limits?: Limits<T>
+
+  /**
+   * Maximum wire elements at each repeated/map field path across the entire
+   * decode or stream operation. Uses the same shape as `limits`; map entries
+   * count even when duplicate keys overwrite earlier entries.
+   */
+  totalLimits?: Limits<T>
 }
 
 export interface DecodeFunction<T> {

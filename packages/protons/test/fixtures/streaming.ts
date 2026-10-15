@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -45,6 +45,7 @@ export namespace MessageWithArrayField {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           arr: []
         }
@@ -64,6 +65,7 @@ export namespace MessageWithArrayField {
               break
             }
             case 3: {
+              decodeContext?.consume('arr', opts.totalLimits?.arr)
               if (opts.limits?.arr != null && obj.arr.length === opts.limits.arr) {
                 throw new MaxLengthError('Decode error - repeated field "arr" had too many elements')
               }
@@ -80,6 +82,7 @@ export namespace MessageWithArrayField {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           arr: 0
         }
@@ -113,6 +116,7 @@ export namespace MessageWithArrayField {
               break
             }
             case 3: {
+              decodeContext?.consume('arr', opts.totalLimits?.arr)
               if (opts.limits?.arr != null && obj.arr === opts.limits.arr) {
                 throw new MaxLengthError('Streaming decode error - repeated field "arr" had too many elements')
               }
@@ -141,7 +145,7 @@ export namespace MessageWithArrayField {
             message: 'MessageWithArrayField'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -261,7 +265,7 @@ export namespace NestedMessage {
             message: 'NestedMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -319,6 +323,7 @@ export namespace MessageWithNestedMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           field1: false
         }
@@ -334,9 +339,10 @@ export namespace MessageWithNestedMessage {
               break
             }
             case 2: {
-              obj.nestedMessage = NestedMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.nestedMessage
-              })
+              obj.nestedMessage = NestedMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'nestedMessage', {
+                limits: opts.limits?.nestedMessage,
+                totalLimits: opts.totalLimits?.nestedMessage
+              }))
               break
             }
             default: {
@@ -348,6 +354,7 @@ export namespace MessageWithNestedMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -370,9 +377,10 @@ export namespace MessageWithNestedMessage {
               break
             }
             case 2: {
-              yield * NestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessage.`, {
-                limits: opts.limits?.nestedMessage
-              })
+              yield * NestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessage.`, DecodeContext.child(decodeContext, 'nestedMessage', {
+                limits: opts.limits?.nestedMessage,
+                totalLimits: opts.totalLimits?.nestedMessage
+              }))
 
               break
             }
@@ -390,7 +398,7 @@ export namespace MessageWithNestedMessage {
             message: 'MessageWithNestedMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -463,6 +471,7 @@ export namespace MessageWithDeeplyNestedMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           field1: false
         }
@@ -478,9 +487,10 @@ export namespace MessageWithDeeplyNestedMessage {
               break
             }
             case 2: {
-              obj.nestedMessage = MessageWithNestedMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.nestedMessage
-              })
+              obj.nestedMessage = MessageWithNestedMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'nestedMessage', {
+                limits: opts.limits?.nestedMessage,
+                totalLimits: opts.totalLimits?.nestedMessage
+              }))
               break
             }
             default: {
@@ -492,6 +502,7 @@ export namespace MessageWithDeeplyNestedMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -514,9 +525,10 @@ export namespace MessageWithDeeplyNestedMessage {
               break
             }
             case 2: {
-              yield * MessageWithNestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessage.`, {
-                limits: opts.limits?.nestedMessage
-              })
+              yield * MessageWithNestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessage.`, DecodeContext.child(decodeContext, 'nestedMessage', {
+                limits: opts.limits?.nestedMessage,
+                totalLimits: opts.totalLimits?.nestedMessage
+              }))
 
               break
             }
@@ -534,7 +546,7 @@ export namespace MessageWithDeeplyNestedMessage {
             message: 'MessageWithDeeplyNestedMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -624,6 +636,7 @@ export namespace MessageWithRepeatedMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           field1: false,
           nestedMessages: []
@@ -640,13 +653,15 @@ export namespace MessageWithRepeatedMessage {
               break
             }
             case 2: {
+              decodeContext?.consume('nestedMessages', opts.totalLimits?.nestedMessages)
               if (opts.limits?.nestedMessages != null && obj.nestedMessages.length === opts.limits.nestedMessages) {
                 throw new MaxLengthError('Decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              obj.nestedMessages.push(NestedMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.nestedMessages$
-              }))
+              obj.nestedMessages.push(NestedMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'nestedMessages', {
+                limits: opts.limits?.nestedMessages$,
+                totalLimits: opts.totalLimits?.nestedMessages$
+              })))
               break
             }
             default: {
@@ -658,6 +673,7 @@ export namespace MessageWithRepeatedMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           nestedMessages: 0
         }
@@ -684,13 +700,15 @@ export namespace MessageWithRepeatedMessage {
               break
             }
             case 2: {
+              decodeContext?.consume('nestedMessages', opts.totalLimits?.nestedMessages)
               if (opts.limits?.nestedMessages != null && obj.nestedMessages === opts.limits.nestedMessages) {
                 throw new MaxLengthError('Streaming decode error - repeated field "nestedMessages" had too many elements')
               }
 
-              for (const evt of NestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessages[].`, {
-                limits: opts.limits?.nestedMessages$
-              })) {
+              for (const evt of NestedMessage.codec().stream(r, r.uint32(), `${prefix}nestedMessages[].`, DecodeContext.child(decodeContext, 'nestedMessages', {
+                limits: opts.limits?.nestedMessages$,
+                totalLimits: opts.totalLimits?.nestedMessages$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.nestedMessages
@@ -715,7 +733,7 @@ export namespace MessageWithRepeatedMessage {
             message: 'MessageWithRepeatedMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -804,6 +822,7 @@ export namespace MessageWithMapMessage {
             w.ldelim()
           }
         }, (r, length, opts = {}) => {
+          const decodeContext = DecodeContext.get(opts)
           const obj: any = {
             key: ''
           }
@@ -819,9 +838,10 @@ export namespace MessageWithMapMessage {
                 break
               }
               case 2: {
-                obj.value = NestedMessage.codec().decode(r, r.uint32(), {
-                  limits: opts.limits?.value
-                })
+                obj.value = NestedMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'value', {
+                  limits: opts.limits?.value,
+                  totalLimits: opts.totalLimits?.value
+                }))
                 break
               }
               default: {
@@ -833,6 +853,7 @@ export namespace MessageWithMapMessage {
 
           return obj
         }, function * (r, length, prefix, opts = {}) {
+          const decodeContext = DecodeContext.get(opts)
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
@@ -855,9 +876,10 @@ export namespace MessageWithMapMessage {
                 break
               }
               case 2: {
-                yield * NestedMessage.codec().stream(r, r.uint32(), `${prefix}value.`, {
-                  limits: opts.limits?.value
-                })
+                yield * NestedMessage.codec().stream(r, r.uint32(), `${prefix}value.`, DecodeContext.child(decodeContext, 'value', {
+                  limits: opts.limits?.value,
+                  totalLimits: opts.totalLimits?.value
+                }))
 
                 break
               }
@@ -875,7 +897,7 @@ export namespace MessageWithMapMessage {
               message: 'MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -939,6 +961,7 @@ export namespace MessageWithMapMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           field1: false,
           nestedMessages: new Map<string, NestedMessage>()
@@ -955,15 +978,17 @@ export namespace MessageWithMapMessage {
               break
             }
             case 2: {
+              decodeContext?.consume('nestedMessages', opts.totalLimits?.nestedMessages, MaxSizeError)
               if (opts.limits?.nestedMessages != null && obj.nestedMessages.size === opts.limits.nestedMessages) {
                 throw new MaxSizeError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              const entry = MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().decode(r, r.uint32(), {
+              const entry = MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'nestedMessages', {
                 limits: {
                   value: opts.limits?.nestedMessages$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.nestedMessages$value == null ? undefined : { value: opts.totalLimits.nestedMessages$value }
+              }))
               obj.nestedMessages.set(entry.key, entry.value)
               break
             }
@@ -976,6 +1001,7 @@ export namespace MessageWithMapMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           nestedMessages: 0
         }
@@ -1002,15 +1028,17 @@ export namespace MessageWithMapMessage {
               break
             }
             case 2: {
+              decodeContext?.consume('nestedMessages', opts.totalLimits?.nestedMessages, MaxSizeError)
               if (opts.limits?.nestedMessages != null && obj.nestedMessages === opts.limits.nestedMessages) {
                 throw new MaxLengthError('Decode error - map field "nestedMessages" had too many elements')
               }
 
-              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(r, r.uint32(), `${prefix}nestedMessages{}.`, {
+              yield * MessageWithMapMessage.MessageWithMapMessage$nestedMessagesEntry.codec().stream(r, r.uint32(), `${prefix}nestedMessages{}.`, DecodeContext.child(decodeContext, 'nestedMessages', {
                 limits: {
                   value: opts.limits?.nestedMessages$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.nestedMessages$value == null ? undefined : { value: opts.totalLimits.nestedMessages$value }
+              }))
 
               obj.nestedMessages++
 
@@ -1030,7 +1058,7 @@ export namespace MessageWithMapMessage {
             message: 'MessageWithMapMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1189,7 +1217,7 @@ export namespace MessageWithPrimitiveMap {
               message: 'MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -1243,6 +1271,7 @@ export namespace MessageWithPrimitiveMap {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           field1: false,
           nestedStrings: new Map<string, string>()
@@ -1259,15 +1288,17 @@ export namespace MessageWithPrimitiveMap {
               break
             }
             case 2: {
+              decodeContext?.consume('nestedStrings', opts.totalLimits?.nestedStrings, MaxSizeError)
               if (opts.limits?.nestedStrings != null && obj.nestedStrings.size === opts.limits.nestedStrings) {
                 throw new MaxSizeError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              const entry = MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().decode(r, r.uint32(), {
+              const entry = MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'nestedStrings', {
                 limits: {
                   value: opts.limits?.nestedStrings$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.nestedStrings$value == null ? undefined : { value: opts.totalLimits.nestedStrings$value }
+              }))
               obj.nestedStrings.set(entry.key, entry.value)
               break
             }
@@ -1280,6 +1311,7 @@ export namespace MessageWithPrimitiveMap {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           nestedStrings: 0
         }
@@ -1306,15 +1338,17 @@ export namespace MessageWithPrimitiveMap {
               break
             }
             case 2: {
+              decodeContext?.consume('nestedStrings', opts.totalLimits?.nestedStrings, MaxSizeError)
               if (opts.limits?.nestedStrings != null && obj.nestedStrings === opts.limits.nestedStrings) {
                 throw new MaxLengthError('Decode error - map field "nestedStrings" had too many elements')
               }
 
-              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(r, r.uint32(), `${prefix}nestedStrings{}.`, {
+              yield * MessageWithPrimitiveMap.MessageWithPrimitiveMap$nestedStringsEntry.codec().stream(r, r.uint32(), `${prefix}nestedStrings{}.`, DecodeContext.child(decodeContext, 'nestedStrings', {
                 limits: {
                   value: opts.limits?.nestedStrings$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.nestedStrings$value == null ? undefined : { value: opts.totalLimits.nestedStrings$value }
+              }))
 
               obj.nestedStrings++
 
@@ -1334,7 +1368,7 @@ export namespace MessageWithPrimitiveMap {
             message: 'MessageWithPrimitiveMap'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1418,6 +1452,7 @@ export namespace MessageWithRepeatedEnums {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           field1: false,
           enums: []
@@ -1434,6 +1469,7 @@ export namespace MessageWithRepeatedEnums {
               break
             }
             case 2: {
+              decodeContext?.consume('enums', opts.totalLimits?.enums)
               if (opts.limits?.enums != null && obj.enums.length === opts.limits.enums) {
                 throw new MaxLengthError('Decode error - repeated field "enums" had too many elements')
               }
@@ -1450,6 +1486,7 @@ export namespace MessageWithRepeatedEnums {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           enums: 0
         }
@@ -1476,6 +1513,7 @@ export namespace MessageWithRepeatedEnums {
               break
             }
             case 2: {
+              decodeContext?.consume('enums', opts.totalLimits?.enums)
               if (opts.limits?.enums != null && obj.enums === opts.limits.enums) {
                 throw new MaxLengthError('Streaming decode error - repeated field "enums" had too many elements')
               }
@@ -1504,7 +1542,7 @@ export namespace MessageWithRepeatedEnums {
             message: 'MessageWithRepeatedEnums'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

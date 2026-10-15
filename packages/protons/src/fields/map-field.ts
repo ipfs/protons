@@ -77,6 +77,7 @@ export class MapField extends Field {
     const entryType = parent.findType(this.entryType)
 
     let limit = `
+              decodeContext?.consume('${this.name}', opts.totalLimits?.${this.name}, MaxSizeError)
               if (opts.limits?.${this.name} != null && obj.${this.name}.size === opts.limits.${this.name}) {
                 throw new MaxSizeError('Decode error - map field "${this.name}" had too many elements')
               }
@@ -98,9 +99,11 @@ export class MapField extends Field {
   }
 
   getStreamingDecoder (parent: Parent): string {
+    parent.addImport('protons-runtime', 'MaxSizeError')
     parent.addImport('protons-runtime', 'MaxLengthError')
 
     let limit = `
+              decodeContext?.consume('${this.name}', opts.totalLimits?.${this.name}, MaxSizeError)
               if (opts.limits?.${this.name} != null && obj.${this.name} === opts.limits.${this.name}) {
                 throw new MaxLengthError('Decode error - map field "${this.name}" had too many elements')
               }
