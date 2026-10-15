@@ -1,3 +1,9 @@
+## [protons-runtime-v8.0.2](https://github.com/ipfs/protons/compare/protons-runtime-8.0.1...protons-runtime-8.0.2) (2026-10-15)
+
+### Bug Fixes
+
+* store LongBits words unsigned ([#212](https://github.com/ipfs/protons/issues/212)) ([815bfb7](https://github.com/ipfs/protons/commit/815bfb707ee3da790d5c31057878a1478a17d708)), closes [#213](https://github.com/ipfs/protons/issues/213)
+
 ## [protons-runtime-v8.0.1](https://github.com/ipfs/protons/compare/protons-runtime-8.0.0...protons-runtime-8.0.1) (2026-09-18)
 
 ### Bug Fixes
