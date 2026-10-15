@@ -22,12 +22,12 @@ export class LongBits {
     /**
      * Low bits
      */
-    this.lo = lo | 0
+    this.lo = lo >>> 0
 
     /**
      * High bits
      */
-    this.hi = hi | 0
+    this.hi = hi >>> 0
   }
 
   /**
