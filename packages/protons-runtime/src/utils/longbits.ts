@@ -122,26 +122,10 @@ export class LongBits {
       return this.fromNumber(Number(value))
     }
 
-    const negative = value < 0n
+    // two's complement in one step, so a zero low word carries into the high word
+    const bits = BigInt.asUintN(64, value)
 
-    if (negative) {
-      value = -value
-    }
-
-    let hi = value >> 32n
-    let lo = value - (hi << 32n)
-
-    if (negative) {
-      hi = ~hi | 0n
-      lo = ~lo | 0n
-
-      if (++lo > TWO_32) {
-        lo = 0n
-        if (++hi > TWO_32) { hi = 0n }
-      }
-    }
-
-    return new LongBits(Number(lo), Number(hi))
+    return new LongBits(Number(bits & 0xffffffffn), Number(bits >> 32n))
   }
 
   /**
@@ -185,5 +169,3 @@ const zero = new LongBits(0, 0)
 zero.toBigInt = function () { return 0n }
 zero.zzEncode = zero.zzDecode = function () { return this }
 zero.length = function () { return 1 }
-
-const TWO_32 = 4294967296n
