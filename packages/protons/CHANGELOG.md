@@ -1,3 +1,9 @@
+## [protons-v10.0.6](https://github.com/ipfs/protons/compare/protons-10.0.5...protons-10.0.6) (2026-10-23)
+
+### Bug Fixes
+
+* store LongBits words unsigned ([#212](https://github.com/ipfs/protons/issues/212)) ([815bfb7](https://github.com/ipfs/protons/commit/815bfb707ee3da790d5c31057878a1478a17d708)), closes [#213](https://github.com/ipfs/protons/issues/213)
+
 ## [protons-v10.0.5](https://github.com/ipfs/protons/compare/protons-10.0.4...protons-10.0.5) (2026-09-18)
 
 ### Bug Fixes
