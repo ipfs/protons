@@ -128,6 +128,13 @@
     "dep-check": "aegir dep-check",
     "doc-check": "aegir doc-check",
     "build": "aegir build",
+    "test": "aegir test",
+    "test:chrome": "aegir test -t browser --cov",
+    "test:chrome-webworker": "aegir test -t webworker",
+    "test:firefox": "aegir test -t browser -- --browser firefox",
+    "test:firefox-webworker": "aegir test -t webworker -- --browser firefox",
+    "test:node": "aegir test -t node --cov",
+    "test:electron-main": "aegir test -t electron-main",
     "release": "aegir release"
   },
   "dependencies": {
