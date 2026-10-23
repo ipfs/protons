@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, message, reader, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, MaxLengthError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -38,6 +38,7 @@ export namespace SubSubMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           foo: []
         }
@@ -49,6 +50,7 @@ export namespace SubSubMessage {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('foo', opts.totalLimits?.foo)
               if (opts.limits?.foo != null && obj.foo.length === opts.limits.foo) {
                 throw new MaxLengthError('Decode error - repeated field "foo" had too many elements')
               }
@@ -69,6 +71,7 @@ export namespace SubSubMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           foo: 0
         }
@@ -88,6 +91,7 @@ export namespace SubSubMessage {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('foo', opts.totalLimits?.foo)
               if (opts.limits?.foo != null && obj.foo === opts.limits.foo) {
                 throw new MaxLengthError('Streaming decode error - repeated field "foo" had too many elements')
               }
@@ -123,7 +127,7 @@ export namespace SubSubMessage {
             message: 'SubSubMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -205,6 +209,7 @@ export namespace SubMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           foo: [],
           messages: []
@@ -217,6 +222,7 @@ export namespace SubMessage {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('foo', opts.totalLimits?.foo)
               if (opts.limits?.foo != null && obj.foo.length === opts.limits.foo) {
                 throw new MaxLengthError('Decode error - repeated field "foo" had too many elements')
               }
@@ -229,19 +235,22 @@ export namespace SubMessage {
               break
             }
             case 3: {
-              obj.message = SubSubMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.message
-              })
+              obj.message = SubSubMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'message', {
+                limits: opts.limits?.message,
+                totalLimits: opts.totalLimits?.message
+              }))
               break
             }
             case 4: {
+              decodeContext?.consume('messages', opts.totalLimits?.messages)
               if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
                 throw new MaxLengthError('Decode error - repeated field "messages" had too many elements')
               }
 
-              obj.messages.push(SubSubMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.messages$
-              }))
+              obj.messages.push(SubSubMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'messages', {
+                limits: opts.limits?.messages$,
+                totalLimits: opts.totalLimits?.messages$
+              })))
               break
             }
             default: {
@@ -253,6 +262,7 @@ export namespace SubMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           foo: 0,
           messages: 0
@@ -273,6 +283,7 @@ export namespace SubMessage {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('foo', opts.totalLimits?.foo)
               if (opts.limits?.foo != null && obj.foo === opts.limits.foo) {
                 throw new MaxLengthError('Streaming decode error - repeated field "foo" had too many elements')
               }
@@ -295,20 +306,23 @@ export namespace SubMessage {
               break
             }
             case 3: {
-              yield * SubSubMessage.codec().stream(r, r.uint32(), `${prefix}message.`, {
-                limits: opts.limits?.message
-              })
+              yield * SubSubMessage.codec().stream(r, r.uint32(), `${prefix}message.`, DecodeContext.child(decodeContext, 'message', {
+                limits: opts.limits?.message,
+                totalLimits: opts.totalLimits?.message
+              }))
 
               break
             }
             case 4: {
+              decodeContext?.consume('messages', opts.totalLimits?.messages)
               if (opts.limits?.messages != null && obj.messages === opts.limits.messages) {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubSubMessage.codec().stream(r, r.uint32(), `${prefix}messages[].`, {
-                limits: opts.limits?.messages$
-              })) {
+              for (const evt of SubSubMessage.codec().stream(r, r.uint32(), `${prefix}messages[].`, DecodeContext.child(decodeContext, 'messages', {
+                limits: opts.limits?.messages$,
+                totalLimits: opts.totalLimits?.messages$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.messages
@@ -333,7 +347,7 @@ export namespace SubMessage {
             message: 'SubMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -479,6 +493,7 @@ export namespace RepeatedTypes {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           number: [],
           limitedNumber: [],
@@ -496,6 +511,7 @@ export namespace RepeatedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('number', opts.totalLimits?.number)
                 if (opts.limits?.number != null && obj.number.length === opts.limits.number) {
                   throw new MaxLengthError('Decode error - repeated field "number" had too many elements')
                 }
@@ -510,6 +526,7 @@ export namespace RepeatedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('limitedNumber', opts.totalLimits?.limitedNumber)
                 if (opts.limits?.limitedNumber != null && obj.limitedNumber.length === opts.limits.limitedNumber) {
                   throw new MaxLengthError('Decode error - repeated field "limitedNumber" had too many elements')
                 }
@@ -524,19 +541,22 @@ export namespace RepeatedTypes {
               break
             }
             case 3: {
+              decodeContext?.consume('messages', opts.totalLimits?.messages)
               if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
                 throw new MaxLengthError('Decode error - repeated field "messages" had too many elements')
               }
 
-              obj.messages.push(SubMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.messages$
-              }))
+              obj.messages.push(SubMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'messages', {
+                limits: opts.limits?.messages$,
+                totalLimits: opts.totalLimits?.messages$
+              })))
               break
             }
             case 4: {
-              obj.message = SubMessage.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.message
-              })
+              obj.message = SubMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'message', {
+                limits: opts.limits?.message,
+                totalLimits: opts.totalLimits?.message
+              }))
               break
             }
             case 5: {
@@ -552,6 +572,7 @@ export namespace RepeatedTypes {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           number: 0,
           limitedNumber: 1,
@@ -577,6 +598,7 @@ export namespace RepeatedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('number', opts.totalLimits?.number)
                 if (opts.limits?.number != null && obj.number === opts.limits.number) {
                   throw new MaxLengthError('Streaming decode error - repeated field "number" had too many elements')
                 }
@@ -597,6 +619,7 @@ export namespace RepeatedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('limitedNumber', opts.totalLimits?.limitedNumber)
                 if (opts.limits?.limitedNumber != null && obj.limitedNumber === opts.limits.limitedNumber) {
                   throw new MaxLengthError('Streaming decode error - repeated field "limitedNumber" had too many elements')
                 }
@@ -617,13 +640,15 @@ export namespace RepeatedTypes {
               break
             }
             case 3: {
+              decodeContext?.consume('messages', opts.totalLimits?.messages)
               if (opts.limits?.messages != null && obj.messages === opts.limits.messages) {
                 throw new MaxLengthError('Streaming decode error - repeated field "messages" had too many elements')
               }
 
-              for (const evt of SubMessage.codec().stream(r, r.uint32(), `${prefix}messages[].`, {
-                limits: opts.limits?.messages$
-              })) {
+              for (const evt of SubMessage.codec().stream(r, r.uint32(), `${prefix}messages[].`, DecodeContext.child(decodeContext, 'messages', {
+                limits: opts.limits?.messages$,
+                totalLimits: opts.totalLimits?.messages$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.messages
@@ -635,9 +660,10 @@ export namespace RepeatedTypes {
               break
             }
             case 4: {
-              yield * SubMessage.codec().stream(r, r.uint32(), `${prefix}message.`, {
-                limits: opts.limits?.message
-              })
+              yield * SubMessage.codec().stream(r, r.uint32(), `${prefix}message.`, DecodeContext.child(decodeContext, 'message', {
+                limits: opts.limits?.message,
+                totalLimits: opts.totalLimits?.message
+              }))
 
               break
             }
@@ -662,7 +688,7 @@ export namespace RepeatedTypes {
             message: 'RepeatedTypes'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

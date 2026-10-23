@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, reader, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, MaxLengthError, MaxSizeError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -60,6 +60,7 @@ export namespace SubMessage {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           foo: '',
           bar: []
@@ -80,6 +81,7 @@ export namespace SubMessage {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('bar', opts.totalLimits?.bar)
                 if (opts.limits?.bar != null && obj.bar.length === opts.limits.bar) {
                   throw new MaxLengthError('Decode error - repeated field "bar" had too many elements')
                 }
@@ -98,6 +100,7 @@ export namespace SubMessage {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           bar: 0
         }
@@ -128,6 +131,7 @@ export namespace SubMessage {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('bar', opts.totalLimits?.bar)
                 if (opts.limits?.bar != null && obj.bar === opts.limits.bar) {
                   throw new MaxLengthError('Streaming decode error - repeated field "bar" had too many elements')
                 }
@@ -157,7 +161,7 @@ export namespace SubMessage {
             message: 'SubMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -308,7 +312,7 @@ export namespace MapTypes {
               message: 'MapTypes.MapTypes$stringMapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -441,7 +445,7 @@ export namespace MapTypes {
               message: 'MapTypes.MapTypes$intMapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -574,7 +578,7 @@ export namespace MapTypes {
               message: 'MapTypes.MapTypes$boolMapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -637,6 +641,7 @@ export namespace MapTypes {
             w.ldelim()
           }
         }, (r, length, opts = {}) => {
+          const decodeContext = DecodeContext.get(opts)
           const obj: any = {
             key: ''
           }
@@ -652,9 +657,10 @@ export namespace MapTypes {
                 break
               }
               case 2: {
-                obj.value = SubMessage.codec().decode(r, r.uint32(), {
-                  limits: opts.limits?.value
-                })
+                obj.value = SubMessage.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'value', {
+                  limits: opts.limits?.value,
+                  totalLimits: opts.totalLimits?.value
+                }))
                 break
               }
               default: {
@@ -666,6 +672,7 @@ export namespace MapTypes {
 
           return obj
         }, function * (r, length, prefix, opts = {}) {
+          const decodeContext = DecodeContext.get(opts)
           const end = length == null ? r.len : r.pos + length
 
           if (prefix !== '.') {
@@ -688,9 +695,10 @@ export namespace MapTypes {
                 break
               }
               case 2: {
-                yield * SubMessage.codec().stream(r, r.uint32(), `${prefix}value.`, {
-                  limits: opts.limits?.value
-                })
+                yield * SubMessage.codec().stream(r, r.uint32(), `${prefix}value.`, DecodeContext.child(decodeContext, 'value', {
+                  limits: opts.limits?.value,
+                  totalLimits: opts.totalLimits?.value
+                }))
 
                 break
               }
@@ -708,7 +716,7 @@ export namespace MapTypes {
               message: 'MapTypes.MapTypes$messageMapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -857,7 +865,7 @@ export namespace MapTypes {
               message: 'MapTypes.MapTypes$enumMapEntry'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -934,6 +942,7 @@ export namespace MapTypes {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           stringMap: new Map<string, string>(),
           intMap: new Map<number, number>(),
@@ -949,67 +958,77 @@ export namespace MapTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('stringMap', opts.totalLimits?.stringMap, MaxSizeError)
               if (opts.limits?.stringMap != null && obj.stringMap.size === opts.limits.stringMap) {
                 throw new MaxSizeError('Decode error - map field "stringMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(r, r.uint32(), {
+              const entry = MapTypes.MapTypes$stringMapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'stringMap', {
                 limits: {
                   value: opts.limits?.stringMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.stringMap$value == null ? undefined : { value: opts.totalLimits.stringMap$value }
+              }))
               obj.stringMap.set(entry.key, entry.value)
               break
             }
             case 2: {
+              decodeContext?.consume('intMap', opts.totalLimits?.intMap, MaxSizeError)
               if (opts.limits?.intMap != null && obj.intMap.size === opts.limits.intMap) {
                 throw new MaxSizeError('Decode error - map field "intMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$intMapEntry.codec().decode(r, r.uint32(), {
+              const entry = MapTypes.MapTypes$intMapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'intMap', {
                 limits: {
                   value: opts.limits?.intMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.intMap$value == null ? undefined : { value: opts.totalLimits.intMap$value }
+              }))
               obj.intMap.set(entry.key, entry.value)
               break
             }
             case 3: {
+              decodeContext?.consume('boolMap', opts.totalLimits?.boolMap, MaxSizeError)
               if (opts.limits?.boolMap != null && obj.boolMap.size === opts.limits.boolMap) {
                 throw new MaxSizeError('Decode error - map field "boolMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(r, r.uint32(), {
+              const entry = MapTypes.MapTypes$boolMapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'boolMap', {
                 limits: {
                   value: opts.limits?.boolMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.boolMap$value == null ? undefined : { value: opts.totalLimits.boolMap$value }
+              }))
               obj.boolMap.set(entry.key, entry.value)
               break
             }
             case 4: {
+              decodeContext?.consume('messageMap', opts.totalLimits?.messageMap, MaxSizeError)
               if (opts.limits?.messageMap != null && obj.messageMap.size === opts.limits.messageMap) {
                 throw new MaxSizeError('Decode error - map field "messageMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(r, r.uint32(), {
+              const entry = MapTypes.MapTypes$messageMapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'messageMap', {
                 limits: {
                   value: opts.limits?.messageMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.messageMap$value == null ? undefined : { value: opts.totalLimits.messageMap$value }
+              }))
               obj.messageMap.set(entry.key, entry.value)
               break
             }
             case 5: {
+              decodeContext?.consume('enumMap', opts.totalLimits?.enumMap, MaxSizeError)
               if (opts.limits?.enumMap != null && obj.enumMap.size === opts.limits.enumMap) {
                 throw new MaxSizeError('Decode error - map field "enumMap" had too many elements')
               }
 
-              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(r, r.uint32(), {
+              const entry = MapTypes.MapTypes$enumMapEntry.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'enumMap', {
                 limits: {
                   value: opts.limits?.enumMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.enumMap$value == null ? undefined : { value: opts.totalLimits.enumMap$value }
+              }))
               obj.enumMap.set(entry.key, entry.value)
               break
             }
@@ -1022,6 +1041,7 @@ export namespace MapTypes {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           stringMap: 0,
           intMap: 0,
@@ -1045,75 +1065,85 @@ export namespace MapTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('stringMap', opts.totalLimits?.stringMap, MaxSizeError)
               if (opts.limits?.stringMap != null && obj.stringMap === opts.limits.stringMap) {
                 throw new MaxLengthError('Decode error - map field "stringMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(r, r.uint32(), `${prefix}stringMap{}.`, {
+              yield * MapTypes.MapTypes$stringMapEntry.codec().stream(r, r.uint32(), `${prefix}stringMap{}.`, DecodeContext.child(decodeContext, 'stringMap', {
                 limits: {
                   value: opts.limits?.stringMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.stringMap$value == null ? undefined : { value: opts.totalLimits.stringMap$value }
+              }))
 
               obj.stringMap++
 
               break
             }
             case 2: {
+              decodeContext?.consume('intMap', opts.totalLimits?.intMap, MaxSizeError)
               if (opts.limits?.intMap != null && obj.intMap === opts.limits.intMap) {
                 throw new MaxLengthError('Decode error - map field "intMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$intMapEntry.codec().stream(r, r.uint32(), `${prefix}intMap{}.`, {
+              yield * MapTypes.MapTypes$intMapEntry.codec().stream(r, r.uint32(), `${prefix}intMap{}.`, DecodeContext.child(decodeContext, 'intMap', {
                 limits: {
                   value: opts.limits?.intMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.intMap$value == null ? undefined : { value: opts.totalLimits.intMap$value }
+              }))
 
               obj.intMap++
 
               break
             }
             case 3: {
+              decodeContext?.consume('boolMap', opts.totalLimits?.boolMap, MaxSizeError)
               if (opts.limits?.boolMap != null && obj.boolMap === opts.limits.boolMap) {
                 throw new MaxLengthError('Decode error - map field "boolMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(r, r.uint32(), `${prefix}boolMap{}.`, {
+              yield * MapTypes.MapTypes$boolMapEntry.codec().stream(r, r.uint32(), `${prefix}boolMap{}.`, DecodeContext.child(decodeContext, 'boolMap', {
                 limits: {
                   value: opts.limits?.boolMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.boolMap$value == null ? undefined : { value: opts.totalLimits.boolMap$value }
+              }))
 
               obj.boolMap++
 
               break
             }
             case 4: {
+              decodeContext?.consume('messageMap', opts.totalLimits?.messageMap, MaxSizeError)
               if (opts.limits?.messageMap != null && obj.messageMap === opts.limits.messageMap) {
                 throw new MaxLengthError('Decode error - map field "messageMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(r, r.uint32(), `${prefix}messageMap{}.`, {
+              yield * MapTypes.MapTypes$messageMapEntry.codec().stream(r, r.uint32(), `${prefix}messageMap{}.`, DecodeContext.child(decodeContext, 'messageMap', {
                 limits: {
                   value: opts.limits?.messageMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.messageMap$value == null ? undefined : { value: opts.totalLimits.messageMap$value }
+              }))
 
               obj.messageMap++
 
               break
             }
             case 5: {
+              decodeContext?.consume('enumMap', opts.totalLimits?.enumMap, MaxSizeError)
               if (opts.limits?.enumMap != null && obj.enumMap === opts.limits.enumMap) {
                 throw new MaxLengthError('Decode error - map field "enumMap" had too many elements')
               }
 
-              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(r, r.uint32(), `${prefix}enumMap{}.`, {
+              yield * MapTypes.MapTypes$enumMapEntry.codec().stream(r, r.uint32(), `${prefix}enumMap{}.`, DecodeContext.child(decodeContext, 'enumMap', {
                 limits: {
                   value: opts.limits?.enumMap$value
-                }
-              })
+                },
+                totalLimits: opts.totalLimits?.enumMap$value == null ? undefined : { value: opts.totalLimits.enumMap$value }
+              }))
 
               obj.enumMap++
 
@@ -1133,7 +1163,7 @@ export namespace MapTypes {
             message: 'MapTypes'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

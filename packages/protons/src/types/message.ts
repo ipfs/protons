@@ -176,19 +176,22 @@ export class Message implements Type {
     let opts = ''
 
     if (field instanceof MessageField) {
-      opts = `, {
-${indent}                limits: opts.limits?.${field.name}
-${indent}              }`
+      opts = `, DecodeContext.child(decodeContext, '${field.name}', {
+${indent}                limits: opts.limits?.${field.name},
+${indent}                totalLimits: opts.totalLimits?.${field.name}
+${indent}              })`
     } else if (field instanceof ArrayField) {
-      opts = `, {
-${indent}                limits: opts.limits?.${field.name}$
-${indent}              }`
+      opts = `, DecodeContext.child(decodeContext, '${field.name}', {
+${indent}                limits: opts.limits?.${field.name}$,
+${indent}                totalLimits: opts.totalLimits?.${field.name}$
+${indent}              })`
     } else if (field instanceof MapField) {
-      opts = `, {
+      opts = `, DecodeContext.child(decodeContext, '${field.name}', {
 ${indent}                limits: {
 ${indent}                  value: opts.limits?.${field.name}$value
-                }
-${indent}              }`
+                },
+${indent}                totalLimits: opts.totalLimits?.${field.name}$value == null ? undefined : { value: opts.totalLimits.${field.name}$value }
+${indent}              })`
     }
 
     return `${this.jsType.decode}.codec().decode(${reader}, ${reader}.uint32()${opts})`
@@ -198,13 +201,15 @@ ${indent}              }`
     let opts = ''
 
     if (field instanceof MessageField) {
-      opts = `, {
-${indent}              limits: opts.limits?.${field.name}
-${indent}            }`
+      opts = `, DecodeContext.child(decodeContext, '${field.name}', {
+${indent}              limits: opts.limits?.${field.name},
+${indent}              totalLimits: opts.totalLimits?.${field.name}
+${indent}            })`
     } else if (field instanceof ArrayField) {
-      opts = `, {
-${indent}              limits: opts.limits?.${field.name}$
-${indent}            }`
+      opts = `, DecodeContext.child(decodeContext, '${field.name}', {
+${indent}              limits: opts.limits?.${field.name}$,
+${indent}              totalLimits: opts.totalLimits?.${field.name}$
+${indent}            })`
 
       return `for (const evt of ${this.jsType.decode}.codec().stream(${reader}, ${reader}.uint32(), ${prefix}${opts})) {
 ${indent}              yield {
@@ -213,11 +218,12 @@ ${indent}                index: obj.${field.name}
 ${indent}              }
 ${indent}            }`
     } else if (field instanceof MapField) {
-      opts = `, {
+      opts = `, DecodeContext.child(decodeContext, '${field.name}', {
 ${indent}              limits: {
 ${indent}                value: opts.limits?.${field.name}$value
-                }
-${indent}            }`
+${indent}              },
+${indent}              totalLimits: opts.totalLimits?.${field.name}$value == null ? undefined : { value: opts.totalLimits.${field.name}$value }
+${indent}            })`
     }
 
     return `yield * ${this.jsType.decode}.codec().stream(${reader}, ${reader}.uint32(), ${prefix}${opts})`
@@ -302,6 +308,13 @@ export interface ${this.pbType}Input {
     const decodeOpts = this.fields.some(field => field instanceof ArrayField || field instanceof MapField || field instanceof MessageField)
       ? ', opts = {}'
       : ''
+    const decodeContext = decodeOpts === ''
+      ? ''
+      : '\n        const decodeContext = DecodeContext.get(opts)'
+
+    if (decodeContext !== '') {
+      parent.addImport('protons-runtime', 'DecodeContext')
+    }
 
     interfaceCodecDef = `
   let _codec: Codec<${this.pbType}, ${this.pbType}Input>
@@ -316,7 +329,7 @@ export interface ${this.pbType}Input {
         if (opts.lengthDelimited !== false) {
           w.ldelim()
         }
-      }, (r, length${decodeOpts}) => {
+      }, (r, length${decodeOpts}) => {${decodeContext}
         const obj: any = {${this.createDefaultObject()}}
 
         const end = length == null ? r.len : r.pos + length
@@ -333,7 +346,7 @@ export interface ${this.pbType}Input {
         }
 ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
         return obj
-      }, function * (r, length, prefix${decodeOpts}) {
+      }, function * (r, length, prefix${decodeOpts}) {${decodeContext}
         ${this.createLimitObject()}const end = length == null ? r.len : r.pos + length
 
         if (prefix !== '.') {
@@ -362,7 +375,7 @@ ${enforceOneOfDecoding === '' ? '' : `${enforceOneOfDecoding}\n`}
             message: '${this.jsType.decode}'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

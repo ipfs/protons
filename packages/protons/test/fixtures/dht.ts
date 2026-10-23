@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, enumeration, MaxLengthError, message, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -157,7 +157,7 @@ export namespace Record {
             message: 'Record'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -307,6 +307,7 @@ export namespace Message {
             w.ldelim()
           }
         }, (r, length, opts = {}) => {
+          const decodeContext = DecodeContext.get(opts)
           const obj: any = {
             addrs: []
           }
@@ -322,6 +323,7 @@ export namespace Message {
                 break
               }
               case 2: {
+                decodeContext?.consume('addrs', opts.totalLimits?.addrs)
                 if (opts.limits?.addrs != null && obj.addrs.length === opts.limits.addrs) {
                   throw new MaxLengthError('Decode error - repeated field "addrs" had too many elements')
                 }
@@ -342,6 +344,7 @@ export namespace Message {
 
           return obj
         }, function * (r, length, prefix, opts = {}) {
+          const decodeContext = DecodeContext.get(opts)
           const obj = {
             addrs: 0
           }
@@ -368,6 +371,7 @@ export namespace Message {
                 break
               }
               case 2: {
+                decodeContext?.consume('addrs', opts.totalLimits?.addrs)
                 if (opts.limits?.addrs != null && obj.addrs === opts.limits.addrs) {
                   throw new MaxLengthError('Streaming decode error - repeated field "addrs" had too many elements')
                 }
@@ -403,7 +407,7 @@ export namespace Message {
               message: 'Message.Peer'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -485,6 +489,7 @@ export namespace Message {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           closerPeers: [],
           providerPeers: []
@@ -513,23 +518,27 @@ export namespace Message {
               break
             }
             case 8: {
+              decodeContext?.consume('closerPeers', opts.totalLimits?.closerPeers)
               if (opts.limits?.closerPeers != null && obj.closerPeers.length === opts.limits.closerPeers) {
                 throw new MaxLengthError('Decode error - repeated field "closerPeers" had too many elements')
               }
 
-              obj.closerPeers.push(Message.Peer.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.closerPeers$
-              }))
+              obj.closerPeers.push(Message.Peer.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'closerPeers', {
+                limits: opts.limits?.closerPeers$,
+                totalLimits: opts.totalLimits?.closerPeers$
+              })))
               break
             }
             case 9: {
+              decodeContext?.consume('providerPeers', opts.totalLimits?.providerPeers)
               if (opts.limits?.providerPeers != null && obj.providerPeers.length === opts.limits.providerPeers) {
                 throw new MaxLengthError('Decode error - repeated field "providerPeers" had too many elements')
               }
 
-              obj.providerPeers.push(Message.Peer.codec().decode(r, r.uint32(), {
-                limits: opts.limits?.providerPeers$
-              }))
+              obj.providerPeers.push(Message.Peer.codec().decode(r, r.uint32(), DecodeContext.child(decodeContext, 'providerPeers', {
+                limits: opts.limits?.providerPeers$,
+                totalLimits: opts.totalLimits?.providerPeers$
+              })))
               break
             }
             default: {
@@ -541,6 +550,7 @@ export namespace Message {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           closerPeers: 0,
           providerPeers: 0
@@ -589,13 +599,15 @@ export namespace Message {
               break
             }
             case 8: {
+              decodeContext?.consume('closerPeers', opts.totalLimits?.closerPeers)
               if (opts.limits?.closerPeers != null && obj.closerPeers === opts.limits.closerPeers) {
                 throw new MaxLengthError('Streaming decode error - repeated field "closerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(r, r.uint32(), `${prefix}closerPeers[].`, {
-                limits: opts.limits?.closerPeers$
-              })) {
+              for (const evt of Message.Peer.codec().stream(r, r.uint32(), `${prefix}closerPeers[].`, DecodeContext.child(decodeContext, 'closerPeers', {
+                limits: opts.limits?.closerPeers$,
+                totalLimits: opts.totalLimits?.closerPeers$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.closerPeers
@@ -607,13 +619,15 @@ export namespace Message {
               break
             }
             case 9: {
+              decodeContext?.consume('providerPeers', opts.totalLimits?.providerPeers)
               if (opts.limits?.providerPeers != null && obj.providerPeers === opts.limits.providerPeers) {
                 throw new MaxLengthError('Streaming decode error - repeated field "providerPeers" had too many elements')
               }
 
-              for (const evt of Message.Peer.codec().stream(r, r.uint32(), `${prefix}providerPeers[].`, {
-                limits: opts.limits?.providerPeers$
-              })) {
+              for (const evt of Message.Peer.codec().stream(r, r.uint32(), `${prefix}providerPeers[].`, DecodeContext.child(decodeContext, 'providerPeers', {
+                limits: opts.limits?.providerPeers$,
+                totalLimits: opts.totalLimits?.providerPeers$
+              }))) {
                 yield {
                   ...evt,
                   index: obj.providerPeers
@@ -638,7 +652,7 @@ export namespace Message {
             message: 'Message'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

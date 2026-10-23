@@ -85,7 +85,7 @@ export namespace MessageWithRequired {
             message: 'MessageWithRequired'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

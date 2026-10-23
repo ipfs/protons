@@ -209,7 +209,7 @@ export namespace OneOfMessage {
             message: 'OneOfMessage'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -414,7 +414,7 @@ export namespace MessageWithoutOneOfs {
             message: 'MessageWithoutOneOfs'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

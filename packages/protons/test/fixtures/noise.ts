@@ -131,7 +131,7 @@ export namespace pb {
               message: 'pb.NoiseHandshakePayload'
             }
           }
-        })
+        }, { totalLimits: true })
       }
 
       return _codec
@@ -223,7 +223,7 @@ export namespace pb {
             message: 'pb'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

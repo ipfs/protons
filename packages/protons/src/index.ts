@@ -170,6 +170,25 @@
  * })
  * ```
  *
+ * #### Limiting totals across nested messages
+ *
+ * `limits` applies separately to each container. To bound the total number of
+ * decoded elements at a field path, use `totalLimits` with the same shape:
+ *
+ * ```TypeScript
+ * const message = MyMessage.decode(buf, {
+ *   limits: { messages$value: { repeatedField: 5 } },
+ *   totalLimits: { messages$value: { repeatedField: 10 } }
+ * })
+ * ```
+ * Each nested list may contain up to five elements, and all those lists together
+ * may contain up to ten. Totals include repeated occurrences of singular parent
+ * messages and duplicate map entries, even when earlier values are overwritten.
+ * Limits are checked before decoding the next element. The same options work
+ * with `.stream()` and can be reused: each operation starts with fresh counters.
+ * Regenerate existing codecs to use this option. Older generated codecs throw
+ * `UnsupportedDecodeLimitsError` when passed `totalLimits`.
+ *
  * ### Overriding 64 bit types
  *
  * By default 64 bit types are implemented as [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)s.

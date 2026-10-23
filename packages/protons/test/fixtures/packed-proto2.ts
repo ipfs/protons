@@ -1,4 +1,4 @@
-import { decodeMessage, encodeMessage, MaxLengthError, message, reader, streamMessage } from 'protons-runtime'
+import { DecodeContext, decodeMessage, encodeMessage, MaxLengthError, message, reader, streamMessage } from 'protons-runtime'
 import type { Codec, DecodeOptions } from 'protons-runtime'
 import type { Uint8ArrayList } from 'uint8arraylist'
 
@@ -139,6 +139,7 @@ export namespace Proto2DefaultPackedTypes {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           doubles: [],
           floats: [],
@@ -162,6 +163,7 @@ export namespace Proto2DefaultPackedTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('doubles', opts.totalLimits?.doubles)
               if (opts.limits?.doubles != null && obj.doubles.length === opts.limits.doubles) {
                 throw new MaxLengthError('Decode error - repeated field "doubles" had too many elements')
               }
@@ -170,6 +172,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 2: {
+              decodeContext?.consume('floats', opts.totalLimits?.floats)
               if (opts.limits?.floats != null && obj.floats.length === opts.limits.floats) {
                 throw new MaxLengthError('Decode error - repeated field "floats" had too many elements')
               }
@@ -178,6 +181,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 3: {
+              decodeContext?.consume('int32s', opts.totalLimits?.int32s)
               if (opts.limits?.int32s != null && obj.int32s.length === opts.limits.int32s) {
                 throw new MaxLengthError('Decode error - repeated field "int32s" had too many elements')
               }
@@ -186,6 +190,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 4: {
+              decodeContext?.consume('int64s', opts.totalLimits?.int64s)
               if (opts.limits?.int64s != null && obj.int64s.length === opts.limits.int64s) {
                 throw new MaxLengthError('Decode error - repeated field "int64s" had too many elements')
               }
@@ -194,6 +199,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 5: {
+              decodeContext?.consume('uint32s', opts.totalLimits?.uint32s)
               if (opts.limits?.uint32s != null && obj.uint32s.length === opts.limits.uint32s) {
                 throw new MaxLengthError('Decode error - repeated field "uint32s" had too many elements')
               }
@@ -202,6 +208,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 6: {
+              decodeContext?.consume('uint64s', opts.totalLimits?.uint64s)
               if (opts.limits?.uint64s != null && obj.uint64s.length === opts.limits.uint64s) {
                 throw new MaxLengthError('Decode error - repeated field "uint64s" had too many elements')
               }
@@ -210,6 +217,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 7: {
+              decodeContext?.consume('sint32s', opts.totalLimits?.sint32s)
               if (opts.limits?.sint32s != null && obj.sint32s.length === opts.limits.sint32s) {
                 throw new MaxLengthError('Decode error - repeated field "sint32s" had too many elements')
               }
@@ -218,6 +226,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 8: {
+              decodeContext?.consume('sint64s', opts.totalLimits?.sint64s)
               if (opts.limits?.sint64s != null && obj.sint64s.length === opts.limits.sint64s) {
                 throw new MaxLengthError('Decode error - repeated field "sint64s" had too many elements')
               }
@@ -226,6 +235,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 9: {
+              decodeContext?.consume('fixed32s', opts.totalLimits?.fixed32s)
               if (opts.limits?.fixed32s != null && obj.fixed32s.length === opts.limits.fixed32s) {
                 throw new MaxLengthError('Decode error - repeated field "fixed32s" had too many elements')
               }
@@ -234,6 +244,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 10: {
+              decodeContext?.consume('fixed64s', opts.totalLimits?.fixed64s)
               if (opts.limits?.fixed64s != null && obj.fixed64s.length === opts.limits.fixed64s) {
                 throw new MaxLengthError('Decode error - repeated field "fixed64s" had too many elements')
               }
@@ -242,6 +253,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 11: {
+              decodeContext?.consume('sfixed32s', opts.totalLimits?.sfixed32s)
               if (opts.limits?.sfixed32s != null && obj.sfixed32s.length === opts.limits.sfixed32s) {
                 throw new MaxLengthError('Decode error - repeated field "sfixed32s" had too many elements')
               }
@@ -250,6 +262,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 12: {
+              decodeContext?.consume('sfixed64s', opts.totalLimits?.sfixed64s)
               if (opts.limits?.sfixed64s != null && obj.sfixed64s.length === opts.limits.sfixed64s) {
                 throw new MaxLengthError('Decode error - repeated field "sfixed64s" had too many elements')
               }
@@ -258,6 +271,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 13: {
+              decodeContext?.consume('bools', opts.totalLimits?.bools)
               if (opts.limits?.bools != null && obj.bools.length === opts.limits.bools) {
                 throw new MaxLengthError('Decode error - repeated field "bools" had too many elements')
               }
@@ -274,6 +288,7 @@ export namespace Proto2DefaultPackedTypes {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           doubles: 0,
           floats: 0,
@@ -305,6 +320,7 @@ export namespace Proto2DefaultPackedTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('doubles', opts.totalLimits?.doubles)
               if (opts.limits?.doubles != null && obj.doubles === opts.limits.doubles) {
                 throw new MaxLengthError('Streaming decode error - repeated field "doubles" had too many elements')
               }
@@ -320,6 +336,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 2: {
+              decodeContext?.consume('floats', opts.totalLimits?.floats)
               if (opts.limits?.floats != null && obj.floats === opts.limits.floats) {
                 throw new MaxLengthError('Streaming decode error - repeated field "floats" had too many elements')
               }
@@ -335,6 +352,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 3: {
+              decodeContext?.consume('int32s', opts.totalLimits?.int32s)
               if (opts.limits?.int32s != null && obj.int32s === opts.limits.int32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "int32s" had too many elements')
               }
@@ -350,6 +368,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 4: {
+              decodeContext?.consume('int64s', opts.totalLimits?.int64s)
               if (opts.limits?.int64s != null && obj.int64s === opts.limits.int64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "int64s" had too many elements')
               }
@@ -365,6 +384,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 5: {
+              decodeContext?.consume('uint32s', opts.totalLimits?.uint32s)
               if (opts.limits?.uint32s != null && obj.uint32s === opts.limits.uint32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "uint32s" had too many elements')
               }
@@ -380,6 +400,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 6: {
+              decodeContext?.consume('uint64s', opts.totalLimits?.uint64s)
               if (opts.limits?.uint64s != null && obj.uint64s === opts.limits.uint64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "uint64s" had too many elements')
               }
@@ -395,6 +416,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 7: {
+              decodeContext?.consume('sint32s', opts.totalLimits?.sint32s)
               if (opts.limits?.sint32s != null && obj.sint32s === opts.limits.sint32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sint32s" had too many elements')
               }
@@ -410,6 +432,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 8: {
+              decodeContext?.consume('sint64s', opts.totalLimits?.sint64s)
               if (opts.limits?.sint64s != null && obj.sint64s === opts.limits.sint64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sint64s" had too many elements')
               }
@@ -425,6 +448,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 9: {
+              decodeContext?.consume('fixed32s', opts.totalLimits?.fixed32s)
               if (opts.limits?.fixed32s != null && obj.fixed32s === opts.limits.fixed32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "fixed32s" had too many elements')
               }
@@ -440,6 +464,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 10: {
+              decodeContext?.consume('fixed64s', opts.totalLimits?.fixed64s)
               if (opts.limits?.fixed64s != null && obj.fixed64s === opts.limits.fixed64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "fixed64s" had too many elements')
               }
@@ -455,6 +480,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 11: {
+              decodeContext?.consume('sfixed32s', opts.totalLimits?.sfixed32s)
               if (opts.limits?.sfixed32s != null && obj.sfixed32s === opts.limits.sfixed32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sfixed32s" had too many elements')
               }
@@ -470,6 +496,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 12: {
+              decodeContext?.consume('sfixed64s', opts.totalLimits?.sfixed64s)
               if (opts.limits?.sfixed64s != null && obj.sfixed64s === opts.limits.sfixed64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sfixed64s" had too many elements')
               }
@@ -485,6 +512,7 @@ export namespace Proto2DefaultPackedTypes {
               break
             }
             case 13: {
+              decodeContext?.consume('bools', opts.totalLimits?.bools)
               if (opts.limits?.bools != null && obj.bools === opts.limits.bools) {
                 throw new MaxLengthError('Streaming decode error - repeated field "bools" had too many elements')
               }
@@ -513,7 +541,7 @@ export namespace Proto2DefaultPackedTypes {
             message: 'Proto2DefaultPackedTypes'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -799,6 +827,7 @@ export namespace Proto2PackedTypes {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           doubles: [],
           floats: [],
@@ -826,6 +855,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('doubles', opts.totalLimits?.doubles)
                 if (opts.limits?.doubles != null && obj.doubles.length === opts.limits.doubles) {
                   throw new MaxLengthError('Decode error - repeated field "doubles" had too many elements')
                 }
@@ -840,6 +870,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('floats', opts.totalLimits?.floats)
                 if (opts.limits?.floats != null && obj.floats.length === opts.limits.floats) {
                   throw new MaxLengthError('Decode error - repeated field "floats" had too many elements')
                 }
@@ -854,6 +885,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('int32s', opts.totalLimits?.int32s)
                 if (opts.limits?.int32s != null && obj.int32s.length === opts.limits.int32s) {
                   throw new MaxLengthError('Decode error - repeated field "int32s" had too many elements')
                 }
@@ -868,6 +900,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('int64s', opts.totalLimits?.int64s)
                 if (opts.limits?.int64s != null && obj.int64s.length === opts.limits.int64s) {
                   throw new MaxLengthError('Decode error - repeated field "int64s" had too many elements')
                 }
@@ -882,6 +915,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('uint32s', opts.totalLimits?.uint32s)
                 if (opts.limits?.uint32s != null && obj.uint32s.length === opts.limits.uint32s) {
                   throw new MaxLengthError('Decode error - repeated field "uint32s" had too many elements')
                 }
@@ -896,6 +930,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('uint64s', opts.totalLimits?.uint64s)
                 if (opts.limits?.uint64s != null && obj.uint64s.length === opts.limits.uint64s) {
                   throw new MaxLengthError('Decode error - repeated field "uint64s" had too many elements')
                 }
@@ -910,6 +945,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sint32s', opts.totalLimits?.sint32s)
                 if (opts.limits?.sint32s != null && obj.sint32s.length === opts.limits.sint32s) {
                   throw new MaxLengthError('Decode error - repeated field "sint32s" had too many elements')
                 }
@@ -924,6 +960,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sint64s', opts.totalLimits?.sint64s)
                 if (opts.limits?.sint64s != null && obj.sint64s.length === opts.limits.sint64s) {
                   throw new MaxLengthError('Decode error - repeated field "sint64s" had too many elements')
                 }
@@ -938,6 +975,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('fixed32s', opts.totalLimits?.fixed32s)
                 if (opts.limits?.fixed32s != null && obj.fixed32s.length === opts.limits.fixed32s) {
                   throw new MaxLengthError('Decode error - repeated field "fixed32s" had too many elements')
                 }
@@ -952,6 +990,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('fixed64s', opts.totalLimits?.fixed64s)
                 if (opts.limits?.fixed64s != null && obj.fixed64s.length === opts.limits.fixed64s) {
                   throw new MaxLengthError('Decode error - repeated field "fixed64s" had too many elements')
                 }
@@ -966,6 +1005,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sfixed32s', opts.totalLimits?.sfixed32s)
                 if (opts.limits?.sfixed32s != null && obj.sfixed32s.length === opts.limits.sfixed32s) {
                   throw new MaxLengthError('Decode error - repeated field "sfixed32s" had too many elements')
                 }
@@ -980,6 +1020,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sfixed64s', opts.totalLimits?.sfixed64s)
                 if (opts.limits?.sfixed64s != null && obj.sfixed64s.length === opts.limits.sfixed64s) {
                   throw new MaxLengthError('Decode error - repeated field "sfixed64s" had too many elements')
                 }
@@ -994,6 +1035,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('bools', opts.totalLimits?.bools)
                 if (opts.limits?.bools != null && obj.bools.length === opts.limits.bools) {
                   throw new MaxLengthError('Decode error - repeated field "bools" had too many elements')
                 }
@@ -1012,6 +1054,7 @@ export namespace Proto2PackedTypes {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           doubles: 0,
           floats: 0,
@@ -1047,6 +1090,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('doubles', opts.totalLimits?.doubles)
                 if (opts.limits?.doubles != null && obj.doubles === opts.limits.doubles) {
                   throw new MaxLengthError('Streaming decode error - repeated field "doubles" had too many elements')
                 }
@@ -1067,6 +1111,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('floats', opts.totalLimits?.floats)
                 if (opts.limits?.floats != null && obj.floats === opts.limits.floats) {
                   throw new MaxLengthError('Streaming decode error - repeated field "floats" had too many elements')
                 }
@@ -1087,6 +1132,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('int32s', opts.totalLimits?.int32s)
                 if (opts.limits?.int32s != null && obj.int32s === opts.limits.int32s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "int32s" had too many elements')
                 }
@@ -1107,6 +1153,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('int64s', opts.totalLimits?.int64s)
                 if (opts.limits?.int64s != null && obj.int64s === opts.limits.int64s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "int64s" had too many elements')
                 }
@@ -1127,6 +1174,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('uint32s', opts.totalLimits?.uint32s)
                 if (opts.limits?.uint32s != null && obj.uint32s === opts.limits.uint32s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "uint32s" had too many elements')
                 }
@@ -1147,6 +1195,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('uint64s', opts.totalLimits?.uint64s)
                 if (opts.limits?.uint64s != null && obj.uint64s === opts.limits.uint64s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "uint64s" had too many elements')
                 }
@@ -1167,6 +1216,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sint32s', opts.totalLimits?.sint32s)
                 if (opts.limits?.sint32s != null && obj.sint32s === opts.limits.sint32s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "sint32s" had too many elements')
                 }
@@ -1187,6 +1237,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sint64s', opts.totalLimits?.sint64s)
                 if (opts.limits?.sint64s != null && obj.sint64s === opts.limits.sint64s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "sint64s" had too many elements')
                 }
@@ -1207,6 +1258,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('fixed32s', opts.totalLimits?.fixed32s)
                 if (opts.limits?.fixed32s != null && obj.fixed32s === opts.limits.fixed32s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "fixed32s" had too many elements')
                 }
@@ -1227,6 +1279,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('fixed64s', opts.totalLimits?.fixed64s)
                 if (opts.limits?.fixed64s != null && obj.fixed64s === opts.limits.fixed64s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "fixed64s" had too many elements')
                 }
@@ -1247,6 +1300,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sfixed32s', opts.totalLimits?.sfixed32s)
                 if (opts.limits?.sfixed32s != null && obj.sfixed32s === opts.limits.sfixed32s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "sfixed32s" had too many elements')
                 }
@@ -1267,6 +1321,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('sfixed64s', opts.totalLimits?.sfixed64s)
                 if (opts.limits?.sfixed64s != null && obj.sfixed64s === opts.limits.sfixed64s) {
                   throw new MaxLengthError('Streaming decode error - repeated field "sfixed64s" had too many elements')
                 }
@@ -1287,6 +1342,7 @@ export namespace Proto2PackedTypes {
               const r2 = reader(b)
 
               while (r2.pos < r2.len) {
+                decodeContext?.consume('bools', opts.totalLimits?.bools)
                 if (opts.limits?.bools != null && obj.bools === opts.limits.bools) {
                   throw new MaxLengthError('Streaming decode error - repeated field "bools" had too many elements')
                 }
@@ -1316,7 +1372,7 @@ export namespace Proto2PackedTypes {
             message: 'Proto2PackedTypes'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec
@@ -1550,6 +1606,7 @@ export namespace Proto2ExpandedTypes {
           w.ldelim()
         }
       }, (r, length, opts = {}) => {
+        const decodeContext = DecodeContext.get(opts)
         const obj: any = {
           doubles: [],
           floats: [],
@@ -1573,6 +1630,7 @@ export namespace Proto2ExpandedTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('doubles', opts.totalLimits?.doubles)
               if (opts.limits?.doubles != null && obj.doubles.length === opts.limits.doubles) {
                 throw new MaxLengthError('Decode error - repeated field "doubles" had too many elements')
               }
@@ -1581,6 +1639,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 2: {
+              decodeContext?.consume('floats', opts.totalLimits?.floats)
               if (opts.limits?.floats != null && obj.floats.length === opts.limits.floats) {
                 throw new MaxLengthError('Decode error - repeated field "floats" had too many elements')
               }
@@ -1589,6 +1648,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 3: {
+              decodeContext?.consume('int32s', opts.totalLimits?.int32s)
               if (opts.limits?.int32s != null && obj.int32s.length === opts.limits.int32s) {
                 throw new MaxLengthError('Decode error - repeated field "int32s" had too many elements')
               }
@@ -1597,6 +1657,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 4: {
+              decodeContext?.consume('int64s', opts.totalLimits?.int64s)
               if (opts.limits?.int64s != null && obj.int64s.length === opts.limits.int64s) {
                 throw new MaxLengthError('Decode error - repeated field "int64s" had too many elements')
               }
@@ -1605,6 +1666,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 5: {
+              decodeContext?.consume('uint32s', opts.totalLimits?.uint32s)
               if (opts.limits?.uint32s != null && obj.uint32s.length === opts.limits.uint32s) {
                 throw new MaxLengthError('Decode error - repeated field "uint32s" had too many elements')
               }
@@ -1613,6 +1675,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 6: {
+              decodeContext?.consume('uint64s', opts.totalLimits?.uint64s)
               if (opts.limits?.uint64s != null && obj.uint64s.length === opts.limits.uint64s) {
                 throw new MaxLengthError('Decode error - repeated field "uint64s" had too many elements')
               }
@@ -1621,6 +1684,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 7: {
+              decodeContext?.consume('sint32s', opts.totalLimits?.sint32s)
               if (opts.limits?.sint32s != null && obj.sint32s.length === opts.limits.sint32s) {
                 throw new MaxLengthError('Decode error - repeated field "sint32s" had too many elements')
               }
@@ -1629,6 +1693,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 8: {
+              decodeContext?.consume('sint64s', opts.totalLimits?.sint64s)
               if (opts.limits?.sint64s != null && obj.sint64s.length === opts.limits.sint64s) {
                 throw new MaxLengthError('Decode error - repeated field "sint64s" had too many elements')
               }
@@ -1637,6 +1702,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 9: {
+              decodeContext?.consume('fixed32s', opts.totalLimits?.fixed32s)
               if (opts.limits?.fixed32s != null && obj.fixed32s.length === opts.limits.fixed32s) {
                 throw new MaxLengthError('Decode error - repeated field "fixed32s" had too many elements')
               }
@@ -1645,6 +1711,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 10: {
+              decodeContext?.consume('fixed64s', opts.totalLimits?.fixed64s)
               if (opts.limits?.fixed64s != null && obj.fixed64s.length === opts.limits.fixed64s) {
                 throw new MaxLengthError('Decode error - repeated field "fixed64s" had too many elements')
               }
@@ -1653,6 +1720,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 11: {
+              decodeContext?.consume('sfixed32s', opts.totalLimits?.sfixed32s)
               if (opts.limits?.sfixed32s != null && obj.sfixed32s.length === opts.limits.sfixed32s) {
                 throw new MaxLengthError('Decode error - repeated field "sfixed32s" had too many elements')
               }
@@ -1661,6 +1729,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 12: {
+              decodeContext?.consume('sfixed64s', opts.totalLimits?.sfixed64s)
               if (opts.limits?.sfixed64s != null && obj.sfixed64s.length === opts.limits.sfixed64s) {
                 throw new MaxLengthError('Decode error - repeated field "sfixed64s" had too many elements')
               }
@@ -1669,6 +1738,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 13: {
+              decodeContext?.consume('bools', opts.totalLimits?.bools)
               if (opts.limits?.bools != null && obj.bools.length === opts.limits.bools) {
                 throw new MaxLengthError('Decode error - repeated field "bools" had too many elements')
               }
@@ -1685,6 +1755,7 @@ export namespace Proto2ExpandedTypes {
 
         return obj
       }, function * (r, length, prefix, opts = {}) {
+        const decodeContext = DecodeContext.get(opts)
         const obj = {
           doubles: 0,
           floats: 0,
@@ -1716,6 +1787,7 @@ export namespace Proto2ExpandedTypes {
 
           switch (tag >>> 3) {
             case 1: {
+              decodeContext?.consume('doubles', opts.totalLimits?.doubles)
               if (opts.limits?.doubles != null && obj.doubles === opts.limits.doubles) {
                 throw new MaxLengthError('Streaming decode error - repeated field "doubles" had too many elements')
               }
@@ -1731,6 +1803,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 2: {
+              decodeContext?.consume('floats', opts.totalLimits?.floats)
               if (opts.limits?.floats != null && obj.floats === opts.limits.floats) {
                 throw new MaxLengthError('Streaming decode error - repeated field "floats" had too many elements')
               }
@@ -1746,6 +1819,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 3: {
+              decodeContext?.consume('int32s', opts.totalLimits?.int32s)
               if (opts.limits?.int32s != null && obj.int32s === opts.limits.int32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "int32s" had too many elements')
               }
@@ -1761,6 +1835,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 4: {
+              decodeContext?.consume('int64s', opts.totalLimits?.int64s)
               if (opts.limits?.int64s != null && obj.int64s === opts.limits.int64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "int64s" had too many elements')
               }
@@ -1776,6 +1851,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 5: {
+              decodeContext?.consume('uint32s', opts.totalLimits?.uint32s)
               if (opts.limits?.uint32s != null && obj.uint32s === opts.limits.uint32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "uint32s" had too many elements')
               }
@@ -1791,6 +1867,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 6: {
+              decodeContext?.consume('uint64s', opts.totalLimits?.uint64s)
               if (opts.limits?.uint64s != null && obj.uint64s === opts.limits.uint64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "uint64s" had too many elements')
               }
@@ -1806,6 +1883,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 7: {
+              decodeContext?.consume('sint32s', opts.totalLimits?.sint32s)
               if (opts.limits?.sint32s != null && obj.sint32s === opts.limits.sint32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sint32s" had too many elements')
               }
@@ -1821,6 +1899,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 8: {
+              decodeContext?.consume('sint64s', opts.totalLimits?.sint64s)
               if (opts.limits?.sint64s != null && obj.sint64s === opts.limits.sint64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sint64s" had too many elements')
               }
@@ -1836,6 +1915,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 9: {
+              decodeContext?.consume('fixed32s', opts.totalLimits?.fixed32s)
               if (opts.limits?.fixed32s != null && obj.fixed32s === opts.limits.fixed32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "fixed32s" had too many elements')
               }
@@ -1851,6 +1931,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 10: {
+              decodeContext?.consume('fixed64s', opts.totalLimits?.fixed64s)
               if (opts.limits?.fixed64s != null && obj.fixed64s === opts.limits.fixed64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "fixed64s" had too many elements')
               }
@@ -1866,6 +1947,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 11: {
+              decodeContext?.consume('sfixed32s', opts.totalLimits?.sfixed32s)
               if (opts.limits?.sfixed32s != null && obj.sfixed32s === opts.limits.sfixed32s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sfixed32s" had too many elements')
               }
@@ -1881,6 +1963,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 12: {
+              decodeContext?.consume('sfixed64s', opts.totalLimits?.sfixed64s)
               if (opts.limits?.sfixed64s != null && obj.sfixed64s === opts.limits.sfixed64s) {
                 throw new MaxLengthError('Streaming decode error - repeated field "sfixed64s" had too many elements')
               }
@@ -1896,6 +1979,7 @@ export namespace Proto2ExpandedTypes {
               break
             }
             case 13: {
+              decodeContext?.consume('bools', opts.totalLimits?.bools)
               if (opts.limits?.bools != null && obj.bools === opts.limits.bools) {
                 throw new MaxLengthError('Streaming decode error - repeated field "bools" had too many elements')
               }
@@ -1924,7 +2008,7 @@ export namespace Proto2ExpandedTypes {
             message: 'Proto2ExpandedTypes'
           }
         }
-      })
+      }, { totalLimits: true })
     }
 
     return _codec

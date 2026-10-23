@@ -45,6 +45,7 @@ export type {
 } from './codec.ts'
 
 export { enumeration } from './codecs/enum.ts'
+export { DecodeContext } from './decode-context.ts'
 export { message } from './codecs/message.ts'
 export { createReader as reader } from './utils/reader.ts'
 export { createWriter as writer } from './utils/writer.ts'
@@ -394,6 +395,13 @@ export class MaxSizeError extends Error {
    */
   public code = 'ERR_MAX_SIZE'
   public name = 'MaxSizeError'
+}
+
+/**
+ * Thrown when aggregate limits are requested from a codec that cannot enforce them
+ */
+export class UnsupportedDecodeLimitsError extends Error {
+  public name = 'UnsupportedDecodeLimitsError'
 }
 
 export class ParseError extends Error {
